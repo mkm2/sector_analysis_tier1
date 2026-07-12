@@ -281,6 +281,22 @@ def _analyze_condensation(comp_sizes: List[int], succ_comps: List[set]):
     return terminal, transient_depth, basin_of_terminal, shared
 
 
+def recurrent_classes(rule: int, N: int, bc: str, t: Tuple4) -> List[List[int]]:
+    """
+    Return the member state lists of the recurrent classes (terminal SCCs) of
+    the directed transition graph.  Used by Tier 1b (attractor classification).
+    """
+    succ_fn = _make_succ(rule, N, bc, t)
+    comp_id, comp_sizes, ergodic, _ = tarjan(N, succ_fn, detect_ergodic=False)
+    n_comp = len(comp_sizes)
+    succ_comps = _condensation(N, succ_fn, comp_id, n_comp)
+    terminal = [len(succ_comps[c]) == 0 for c in range(n_comp)]
+    members: List[List[int]] = [[] for _ in range(n_comp)]
+    for x in range(1 << N):
+        members[comp_id[x]].append(x)
+    return [members[c] for c in range(n_comp) if terminal[c]]
+
+
 def analyze(
     rule: int,
     N: int,

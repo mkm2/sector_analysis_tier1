@@ -123,9 +123,9 @@ def _apply_site_unitary(amps: Dict[int, Tuple[int, int]], m: int,
     return out, m + 1
 
 
-def _apply_site_general(branch: Branch, i: int, lpos: int, rpos: int,
-                        t: Tuple4) -> List[Branch]:
-    """General path (I / V / D / E); returns up to two Kraus sub-branches."""
+def _split_site(branch: Branch, i: int, lpos: int, rpos: int, t: Tuple4):
+    """General path (I/V/D/E). Returns (a0_branch_or_None, a1_branch_or_None):
+    the no-jump (A0) sub-branch and the jump (A1) sub-branch at site i."""
     amps, m = branch
     bit = 1 << i
 
@@ -178,11 +178,9 @@ def _apply_site_general(branch: Branch, i: int, lpos: int, rpos: int,
                 acc0(x | bit, num0, a)
     a0 = {k: v for k, v in a0.items() if v[0] or v[1]}
     m0 = m + 1 if has_fire else m
+    a0_branch = (a0, m0) if a0 else None
 
-    branches: List[Branch] = []
-    if a0:
-        branches.append((a0, m0))
-
+    a1_branch = None
     if has_jump:
         a1: Dict[int, Tuple[int, int]] = {}
         g1 = a1.get
@@ -198,9 +196,21 @@ def _apply_site_general(branch: Branch, i: int, lpos: int, rpos: int,
                 a1[k] = (a, b) if p is None else (p[0] + a, p[1] + b)
         a1 = {k: v for k, v in a1.items() if v[0] or v[1]}
         if a1:
-            branches.append((a1, m))
+            a1_branch = (a1, m)
 
-    return branches
+    return a0_branch, a1_branch
+
+
+def _apply_site_general(branch: Branch, i: int, lpos: int, rpos: int,
+                        t: Tuple4) -> List[Branch]:
+    """General path returning the surviving sub-branches as a list."""
+    a0, a1 = _split_site(branch, i, lpos, rpos, t)
+    out = []
+    if a0 is not None:
+        out.append(a0)
+    if a1 is not None:
+        out.append(a1)
+    return out
 
 
 def apply_site(branch: Branch, i: int, N: int, t: Tuple4, bc: str) -> List[Branch]:
@@ -227,6 +237,30 @@ def one_cycle_branches(x: int, N: int, t: Tuple4, bc: str) -> List[Branch]:
         nxt: List[Branch] = []
         for br in branches:
             nxt.extend(_apply_site_general(br, i, lpos, rpos, tt))
+        branches = nxt
+    return branches
+
+
+def one_cycle_branches_labeled(x: int, N: int, t: Tuple4, bc: str):
+    """
+    Like one_cycle_branches, but tags each surviving branch with the set of
+    sites at which the A1 (jump) Kraus operator was applied.  That set uniquely
+    labels the GLOBAL Kraus operator K_b (product of per-site A_{b_i}(i) in the
+    fixed even-then-odd processing order), so branches of different input states
+    can be paired by label to build the exact channel superoperator (Tier 1b).
+
+    Returns list of (amps, m, frozenset_of_jump_sites).
+    """
+    steps = _compile(N, t, bc)
+    branches = [({x: (1, 0)}, 0, frozenset())]
+    for (i, lpos, rpos, tt) in steps:
+        nxt = []
+        for (amps, m, lab) in branches:
+            a0, a1 = _split_site((amps, m), i, lpos, rpos, tt)
+            if a0 is not None:
+                nxt.append((a0[0], a0[1], lab))
+            if a1 is not None:
+                nxt.append((a1[0], a1[1], lab | {i}))
         branches = nxt
     return branches
 
