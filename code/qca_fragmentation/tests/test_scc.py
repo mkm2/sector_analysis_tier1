@@ -78,6 +78,26 @@ def test_rule22_pbc_three_recurrent(N):
     assert r.sizes_recurrent == [1, 1, 1]
 
 
+def test_dissipative_directed_structure():
+    # Directed transition graph for dissipative rules: recurrent classes
+    # (terminal SCCs), transient SCCs, basins, and transient depth.
+    # Rule 22 (I,V,V,D): 3 point attractors (vacuum + 2 Neel), positive
+    # transient depth, most states in a shared multi-attractor basin.
+    r22 = A(22, 10, "pbc")
+    assert r22.n_recurrent == 3 and r22.sizes_recurrent == [1, 1, 1]
+    assert r22.n_transient_scc > 0 and r22.transient_depth > 0
+    assert r22.shared_basin_size > 0
+    # Rule 50 (D,V,V,V): a single mixing attractor (one recurrent class).
+    r50 = A(50, 10, "pbc")
+    assert r50.n_recurrent == 1 and r50.sizes_recurrent == [1]
+    # Rule 28 (I,I,V,D): several multi-state recurrent classes (not all size 1).
+    r28 = A(28, 12, "pbc")
+    assert r28.n_recurrent > 1 and max(r28.sizes_recurrent) > 1
+    # every non-ergodic result: recurrent + transient SCCs partition all SCCs
+    for res in (r22, r50, r28):
+        assert res.n_recurrent + res.n_transient_scc == res.n_scc
+
+
 @pytest.mark.parametrize("bc", ["pbc", "obc0"])
 def test_reflection_preserves_sector_sizes_unitary(bc):
     # For UNITARY rules, left-right reflection (swap r01,r10) preserves the
