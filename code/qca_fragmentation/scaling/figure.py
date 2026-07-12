@@ -82,7 +82,8 @@ def fig_series(bc: str, key: str, ylabel: str, title: str, out: str,
     ax.set_xlabel("chain length $N$")
     ax.set_ylabel(ylabel)
     ax.set_title(title, fontsize=11, loc="left")
-    ax.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
+    if ax.get_legend_handles_labels()[0]:
+        ax.legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
     fig.tight_layout()
     fig.savefig(out, bbox_inches="tight")
     fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
@@ -119,7 +120,8 @@ def fig_growth_scatter(bc: str, out: str):
     ax.set_xlabel(r"$\kappa$ of #sectors  (exp. rate of sector count)")
     ax.set_ylabel(r"$\kappa$ of $D_{\max}$  (exp. rate of largest sector)")
     ax.set_title(f"Fragmentation growth-rate map ({bc})", fontsize=11, loc="left")
-    ax.legend(frameon=False, fontsize=9, title="D_max growth", loc="best")
+    if ax.get_legend_handles_labels()[0]:
+        ax.legend(frameon=False, fontsize=9, title="D_max growth", loc="best")
     fig.tight_layout()
     fig.savefig(out, bbox_inches="tight")
     fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
