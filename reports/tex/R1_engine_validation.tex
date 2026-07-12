@@ -1,0 +1,167 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,columns=fullflexible,breaklines=true}
+
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\Zsqrt}{\ensuremath{\mathbb{Z}[1/\sqrt{2}]}}
+
+\title{\textbf{Report R1 --- Tier 1a exact engine: construction and validation}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-12 \quad\small(engine\_version \texttt{1a.1})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report documents the exact Tier-1a pipeline that classifies quantum
+elementary cellular automata (QCA) by the fragmentation structure of their
+one-cycle evolution channel, and the validation gate it has passed. The engine
+computes the directed one-cycle transition graph on the $2^N$ computational
+basis states using \emph{exact} \Zsqrt{} amplitude arithmetic (no floating point,
+no tolerances), extracts strongly connected components (Krylov sectors for
+unitary rules), and records sector sizes and basin structure. Three independent
+checks all pass: (i) the one-step support $\operatorname{succ}(x)$ agrees with a
+dense brick-wall unitary oracle on 3840 checks; (ii) the eight ground-truth
+regression items of the specification are reproduced exactly, including rule 150
+open-boundary sector sizes up to $N=17$; (iii) 35/35 sector-size cross-checks
+against the independent Julia \rt{HSF} code match exactly. We also report a
+physically instructive finding on the spin-flip (inversion) symmetry of rules
+201 and 108.
+\end{abstract}
+
+\section{Model and conventions}
+$N$ qubits sit on a line, sites $i=0,\dots,N-1$, site $0$ the least significant
+bit. A classical ECA rule $R\in\{0,\dots,255\}$ is recoded into a local-channel
+tuple $(r_{00},r_{01},r_{10},r_{11})$ with each $r_{mn}\in\{\rt I,\rt V,\rt D,
+\rt E\}$ indexed by the neighbour pair $(m,n)=(x_{i-1},x_{i+1})$:
+\[
+(c_p,c_q)=(0,1)\to\rt I,\quad (1,0)\to\rt V,\quad (0,0)\to\rt D,\quad (1,1)\to\rt E,
+\]
+where $c_p=c_{4m+n}$, $c_q=c_{4m+n+2}$ are the rule's outputs for centre $0/1$.
+The unitary gate is $\rt V=H$ (Hadamard); $\rt D,\rt E$ are the reset (decay /
+excitation) channels used only for dissipative rules (Tier 1b onward). One QCA
+cycle is the brick-wall product: apply the local update at all \emph{even} sites,
+then at all \emph{odd} sites, controls reading the current (mid-cycle) bitmask.
+Two boundary conventions are implemented and always recorded: periodic
+(\rt{pbc}) and open with fixed vacuum padding $x_{-1}=x_N=0$ (\rt{obc0}).
+
+A rule is \emph{unitary} iff every $r_{mn}\in\{\rt I,\rt V\}$; there are exactly
+$2^4=16$ such rules, the subject of this report.
+
+\subsection{Exact amplitude arithmetic}
+Every amplitude produced by conditional Hadamards lies in $\Zsqrt$. We store a
+branch as a dictionary $\{x:(a,b)\}$ with one shared dyadic exponent $m$,
+amplitude $(a+b\sqrt2)/2^m$, $a,b$ arbitrary-precision integers. A conditional-$H$
+layer sets $m\to m+1$ and updates non-fired entries $(a,b)\to(2a,2b)$, fired
+entries $(a,b)\to\pm(2b,a)$; addition is componentwise; the exact-zero test is
+$a=b=0$ (correct because $\sqrt2$ is irrational). No tolerance is used anywhere
+in the graph stage. Unitary branch norms evaluate to exactly $1$ (as \rt{Fraction}s).
+
+\section{Directed graph and sectors}
+Nodes are bitmasks; edges are implicit via the memo-free
+$\operatorname{succ}(x)=\{y:\langle y|\Phi_C(|x\rangle\!\langle x|)|y\rangle\neq0\}$,
+the union of Kraus-branch supports after one cycle. Sectors are the strongly
+connected components (SCCs) of this \emph{directed} graph. For unitary rules the
+channel is doubly stochastic, so every state is recurrent and each weakly
+connected component is a single SCC; we therefore extract sectors with a
+memory-light union--find over streamed edges (one \rt{succ} pass, $O(2^N)$
+integers). This reduced the peak memory of rule 150 at $N=17$ from
+$2073$\,MB (stack-based Tarjan) to $45$\,MB at equal runtime, and matches the
+directed Tarjan result on all 16 unitary rules. An ergodic early-exit flags a
+rule "effectively ergodic at this $N$" when one sector exceeds a fraction
+$f_\mathrm{erg}$ of the space.
+
+\section{Validation}
+
+\subsection{Dense brick-wall oracle}
+For every unitary rule, $N=3,\dots,6$, both boundary conventions, and every basis
+state, the support of the corresponding column of the exactly-built dense
+unitary equals $\operatorname{succ}(x)$: \textbf{3840/3840 checks pass}
+(oracle unitarity error $<10^{-15}$).
+
+\subsection{Ground-truth regression table (specification \S8)}
+All eight items pass (\texttt{pytest}, 68 tests green):
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Rule & Claim & Result \\
+\midrule
+204 $(\rt I\rt I\rt I\rt I)$ & $2^N$ singleton SCCs & pass, both bc \\
+51 $(\rt V\rt V\rt V\rt V)$ & single SCC of size $2^N$ & pass, both bc \\
+150, \rt{obc0} & domain-wall sectors $\binom{N+1}{w}$, $w$ even & pass, $N=8\text{--}17$ \\
+54 & one frozen $|0\rangle$ + one giant SCC of size $2^N-1$ & pass, $N\le12$ \\
+156, \rt{pbc} & \# sectors $=L_N+1$ (Lucas) & pass, $N=3\text{--}11$ \\
+22, \rt{pbc} even $N$ & 3 recurrent classes, each size 1 & pass \\
+0,22,28,29 & dissipative branch norms $=1$ exactly & pass \\
+\bottomrule
+\end{tabular}
+\end{center}
+For rule 150 at $N=17$, \rt{obc0}, the exact sector sizes are
+\[
+[43758,43758,18564,18564,3060,3060,153,153,1,1]=\{\,\tbinom{18}{w}:w\text{ even}\,\},
+\]
+reproduced bit-for-bit.
+
+\subsection{Cross-check against the \texttt{HSF} Julia oracle}
+The pre-existing \rt{HSF} code builds the sparse unitary and extracts Krylov
+sectors by connected components on the symmetrised adjacency (valid for unitary
+rules). Its \rt{\_H\_} \rt{SectorData} files use $\rt V=H$, \rt{obc0}. Matching
+its rule numbering (HSF $0\text{--}15$; $6{=}150$, $1{=}201$, $2{=}198$,
+$4{=}156$, $8{=}108$), \textbf{35/35 $(\text{rule},N)$ sector-size multisets
+match exactly} for $N=8\text{--}14$, and rule 150 additionally at $N=15,16,17$.
+Representative largest-sector ($D_{\max}$) sequences (\rt{obc0}):
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Wolfram (HSF) & $D_{\max}(N)$ & character \\
+\midrule
+150 (6) & $126,210,462,924,1716,\dots,43758$ & central binomials \\
+201 (1) & $55,89,144,233,377,610,\dots$ & Fibonacci ($\varphi$) \\
+108 (8) & $21,34,55,89,144,\dots$ & shifted Fibonacci \\
+156 (4) $=$ 198 (2) & $12,16,20,27,36,48,64,\dots$ & base $\approx4^{1/5}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+That 156 and 198 share sector data confirms the reflection reduction (they are a
+reflection pair). The Fibonacci $D_{\max}$ of 201 is the Floquet-PXP golden-ratio
+scaling.
+
+\section{Symmetry note: rules 201 vs.\ 108 (broken inversion)}
+Rules $201=(\rt V,\rt I,\rt I,\rt I)$ and $108=(\rt I,\rt I,\rt I,\rt V)$ are
+$0\!\leftrightarrow\!1$ spin-flip (complement) partners. Classically the
+complement is a symmetry, but here the flip also conjugates the gate by $X$, and
+$XHX\neq\pm H$. We find, exactly:
+\begin{itemize}
+  \item \rt{pbc}: 201 and 108 have \emph{identical} sector sizes for all $N$
+  tested ($47,76,123,199,322,521,\dots$). Because $|\langle y|XHX|x\rangle|=
+  |\langle y|H|x\rangle|$, the bit-flip $X^{\otimes N}$ (a basis permutation)
+  preserves the support graph, hence the sector partition.
+  \item \rt{obc0}: 201 and 108 \emph{differ} ($D_{\max}$ Fibonacci vs.\ shifted
+  Fibonacci, as in \rt{HSF} rules 1 vs.\ 8). The fixed vacuum-0 padding is mapped
+  to vacuum-1 by the bit-flip, so the boundary breaks the symmetry.
+\end{itemize}
+The full dynamics (spectra, entanglement) is spin-flip-broken \emph{everywhere}
+because $XHX\neq\pm H$ changes amplitude signs. Consequently the pipeline never
+reduces $\rt V$-containing rules by spin-flip. Reflection sector-size invariance
+is likewise used only for unitary rules; under the even-first brick-wall
+convention it does not extend to dissipative rules (reflection swaps the two
+layers).
+
+\section{Reproducibility}
+The engine is deterministic (no RNG in Tier 1a). Results are append-only JSON
+lines \rt{results/\{rule\}\_\{bc\}.jsonl} keyed by
+(\rt{engine\_version},\,rule,\,$N$,\,bc), with an audit trail in
+\rt{checkpoints/manifest.jsonl}; a killed run resumes without recomputation.
+Regression items are encoded as \rt{pytest} tests under
+\rt{code/qca\_fragmentation/tests/}. This report rests on engine\_version
+\texttt{1a.1}.
+
+\end{document}

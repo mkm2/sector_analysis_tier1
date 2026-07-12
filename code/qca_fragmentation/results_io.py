@@ -16,7 +16,14 @@ import os
 import time
 from typing import Dict, Iterable, Optional, Tuple
 
+from collections import Counter
+
 from . import ENGINE_VERSION
+
+# Store at most this many explicit sizes; longer multisets are also summarised as
+# a {size: count} histogram (which reconstructs the full multiset exactly, and is
+# tiny even for rule 204's 2^N singletons).
+_SIZES_CAP = 2048
 
 # repo root = two levels up from this file's package dir (code/qca_fragmentation)
 _PKG_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,10 +35,27 @@ MANIFEST = os.path.join(CHECKPOINTS_DIR, "manifest.jsonl")
 # Schema field order (context Tier 1 sec.7).
 FIELDS = [
     "rule", "bc", "N", "n_scc", "n_recurrent", "sizes_recurrent", "sizes_scc",
-    "sizes_basins", "shared_basin_size", "transient_depth", "n_transient_scc",
-    "ergodic_flag", "ergodic_bound", "attractor_types", "d_max_quantum",
-    "runtime", "engine_version",
+    "size_hist", "sizes_truncated", "sizes_basins", "shared_basin_size",
+    "transient_depth", "n_transient_scc", "ergodic_flag", "ergodic_bound",
+    "attractor_types", "d_max_quantum", "runtime", "engine_version",
 ]
+
+
+def _histogram(sizes):
+    """Compact {size: count} histogram (JSON keys are strings)."""
+    return {str(s): c for s, c in sorted(Counter(sizes).items(), reverse=True)}
+
+
+def sizes_from_record(rec, key="sizes_recurrent"):
+    """Reconstruct the full sorted size multiset from a record, using the
+    histogram when the explicit list was truncated."""
+    if rec.get("sizes_truncated") and rec.get("size_hist"):
+        out = []
+        for s, c in rec["size_hist"].items():
+            out.extend([int(s)] * c)
+        out.sort(reverse=True)
+        return out
+    return rec.get(key) or []
 
 
 def results_path(rule: int, bc: str) -> str:
@@ -81,16 +105,20 @@ def record_from_graph_result(res, runtime: float) -> dict:
     if res.ergodic:
         rec.update({
             "n_scc": None, "n_recurrent": None, "sizes_recurrent": None,
-            "sizes_scc": None, "sizes_basins": None, "shared_basin_size": None,
+            "sizes_scc": None, "size_hist": None, "sizes_truncated": False,
+            "sizes_basins": None, "shared_basin_size": None,
             "transient_depth": None, "n_transient_scc": None,
         })
     else:
+        truncated = len(res.sizes_recurrent) > _SIZES_CAP
         rec.update({
             "n_scc": res.n_scc,
             "n_recurrent": res.n_recurrent,
-            "sizes_recurrent": res.sizes_recurrent,
-            "sizes_scc": res.sizes_scc,
-            "sizes_basins": res.sizes_basins,
+            "sizes_recurrent": res.sizes_recurrent[:_SIZES_CAP],
+            "sizes_scc": res.sizes_scc[:_SIZES_CAP],
+            "size_hist": _histogram(res.sizes_recurrent),
+            "sizes_truncated": truncated,
+            "sizes_basins": res.sizes_basins[:_SIZES_CAP],
             "shared_basin_size": res.shared_basin_size,
             "transient_depth": res.transient_depth,
             "n_transient_scc": res.n_transient_scc,
