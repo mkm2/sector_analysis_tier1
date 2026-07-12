@@ -121,14 +121,16 @@ def _all_diagonal(basis: np.ndarray, k: int, tol=1e-6) -> bool:
 
 
 def classify_attractor(R: List[int], N: int, t: Tuple4, bc: str,
-                       cap: int = 4096) -> AttractorType:
-    """Classify one recurrent class by its peripheral spectrum."""
+                       max_size: int = 32) -> AttractorType:
+    """Classify one recurrent class by its peripheral spectrum.  Classes larger
+    than max_size are reported 'unresolved' (the dense |R|^2 x |R|^2 superoperator
+    and its eigensolve become expensive; small attractors are the physically
+    interesting case)."""
     k = len(R)
     if k == 1:
         return AttractorType(size=1, kind="mixing", n_peripheral=1, mult_one=1,
                              period=1, d_k=1, peripheral_eigs=[1.0])
-    if k * k > cap:
-        # too large for a dense superoperator here; report unresolved
+    if k > max_size:
         return AttractorType(size=k, kind="unresolved", n_peripheral=0,
                              mult_one=0)
 

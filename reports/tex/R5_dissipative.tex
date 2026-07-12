@@ -1,0 +1,110 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+
+\title{\textbf{Report R5 --- Dissipative rules: recurrent classes, attractors,
+and protected coherence}\\
+\large Krylov sector analysis of quantum cellular automata (Tier 1a/1b)}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-12 \quad\small(engine\_version \texttt{1a.1})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We extend the exact pipeline to the 240 dissipative quantum cellular automata
+(rules containing a reset channel $\rt D$ or $\rt E$). The one-cycle channel is
+now genuinely non-unitary: the directed transition graph has \emph{transient}
+strongly connected components flowing into \emph{recurrent classes}
+(attractors). We sweep all dissipative rules (both boundary conventions,
+$N=6\ldots13$), census their attractor structure, and classify each recurrent
+class by the peripheral spectrum of its exact restricted superoperator (Tier 1b)
+as a classical pointer state (\emph{mixing}), a \emph{limit cycle}, or a
+\emph{coherence-carrying} attractor. Finally we quantify, exactly at small $N$,
+the \emph{protected-coherence gap} --- the amount by which the full channel's
+fixed-point space exceeds the classical pointer count --- which the transition
+graph provably under-resolves for weakly dissipative rules.
+\end{abstract}
+
+\section{Dissipative graph structure}
+For a dissipative rule the channel $\Phi_C(\rho)=\sum_\mu K_\mu\rho K_\mu^\dagger$
+has $\ge 2$ Kraus operators. The exact engine propagates every Kraus branch
+(never merging incoherent alternatives) and records the directed transition
+graph $M_{yx}=\sum_\mu|\langle y|K_\mu|x\rangle|^2$. Its terminal strongly
+connected components are the recurrent classes (attractors); non-terminal
+components are transient. We record, per $(\text{rule},N,\text{bc})$: the number
+and sizes of recurrent classes, the transient depth (longest condensation-DAG
+path), and the basin structure (states reaching a single vs.\ several
+attractors). The engine and its dissipative branch machinery are validated
+against an independent dense-channel oracle (528/528 support checks; per-site
+Kraus completeness $A_0^\dagger A_0+A_1^\dagger A_1=\mathbb{1}$).
+
+\section{Census of attractor structure}
+Table~\ref{tab:census} classifies every dissipative rule by the structure at the
+largest computed $N$: a unique classical fixed point, several point attractors
+(multistability, signalling a strong basis-diagonal conserved charge), or one or
+more extended ($>\!1$-state) attractors.
+\begin{table}[h]\centering\small\input{tab_diss_census.tex}
+\caption{Dissipative rules by attractor structure and boundary convention.}
+\label{tab:census}\end{table}
+
+Two ground-truth items (context \S8) are reproduced: rule 22 $(\rt{IVVD})$ on
+\rt{pbc} at even $N$ has exactly three point attractors (the vacuum and the two
+N\'eel states); rules 28/29 illustrate the boundary/wall-transparency contrast.
+
+\section{Tier 1b: attractor types}
+For each recurrent class $R$ we build the \emph{exact} restricted superoperator
+$\Phi_R$ on $\mathrm{span}(R)\otimes\mathrm{span}(R)^*$ from the labelled Kraus
+branches, and read its peripheral spectrum (geometric multiplicities, robust to
+the non-normal transient Jordan structure). A class is \emph{mixing} (a unique
+steady state; a classical pointer/dark state when $|R|=1$), a \emph{limit cycle}
+(peripheral roots of unity, basis-diagonal eigenoperators), or
+\emph{coherence-carrying} (a decoherence-free subsystem of dimension $d_k>1$).
+Table~\ref{tab:tier1b} surveys representative rules.
+\begin{table}[h]\centering\small\input{tab_diss_tier1b.tex}
+\caption{Tier-1b attractor classification (pbc, $N=8$). Rule 28 carries
+coherence-protecting extended attractors ($d_k>1$); most others relax to
+classical pointer states.}
+\label{tab:tier1b}\end{table}
+
+\section{Protected coherence: the Cesaro gap}
+The transition graph sees only \emph{strong} (basis-diagonal) conserved charges;
+\emph{weak} symmetries protect coherences that the graph misses (context \S5).
+We quantify this exactly at small $N$ by the \emph{Cesaro rank} --- the geometric
+multiplicity of eigenvalue 1 of the full $4^N$-dimensional channel superoperator,
+i.e.\ the dimension of the steady-state space --- and compare it to the
+graph-resolved dimension $\sum_R \dim\mathrm{Fix}(\Phi_R)$ obtained by summing the
+per-recurrent-class fixed-point dimensions (Table~\ref{tab:cesaro}). The
+difference is the extra cross-class / weak-symmetry protected coherence, which is
+non-negative and invisible to the transition graph.
+\begin{table}[h]\centering\small\input{tab_diss_cesaro.tex}
+\caption{Exact Cesaro rank vs.\ classical pointer dimension (pbc, $N=4$). A large
+gap (rule 22: $25$ vs.\ $3$; rule 50: $13$ vs.\ $1$) flags a weakly dissipative
+rule whose channel protects extensive coherence invisible to the graph; a zero
+gap (rule 0, pure decay) is fully classical.}
+\label{tab:cesaro}\end{table}
+
+\section{Transient relaxation}
+Figure~\ref{fig:depth} shows the transient depth (an exact integer proxy for the
+relaxation time) growing with $N$ for representative multistable rules.
+\begin{figure}[h]\centering
+\includegraphics[width=0.7\linewidth]{../../figures/fig_transient_depth_pbc.pdf}
+\caption{Transient depth vs.\ $N$ (pbc) for selected dissipative rules.}
+\label{fig:depth}\end{figure}
+
+\section{Status and next steps}
+The graph-level dissipative classification is complete and checkpointed; Tier-1b
+per-class attractor types are exact and validated. The protected-coherence gap
+identifies the rules whose full attractor algebra (cross-class noiseless
+subsystems, weak-symmetry coherences) exceeds the graph's resolution --- the
+targets for a complete Tier-1b/Tier-2 treatment. All numbers derive from
+\rt{results/*.jsonl} (engine\_version \texttt{1a.1}) and the exact superoperator
+engine; regenerated by \rt{python -m qca\_fragmentation.quantum.dissipative\_report}.
+
+\end{document}

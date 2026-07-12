@@ -25,6 +25,7 @@ def load_series(rule: int, bc: str):
     """Return dict with N grid and y-series (ergodic units excluded)."""
     recs = results_io.load_results(rule, bc)
     Ns, n_rec, d_max, max_basin = [], [], [], []
+    depth, shared = [], []
     ergodic_from: Optional[int] = None
     for N in sorted(recs):
         rec = recs[N]
@@ -38,8 +39,11 @@ def load_series(rule: int, bc: str):
         n_rec.append(rec["n_recurrent"])
         d_max.append(sizes[0] if sizes else 0)
         max_basin.append(basins[0] if basins else (sizes[0] if sizes else 0))
+        depth.append(rec.get("transient_depth") or 0)
+        shared.append(rec.get("shared_basin_size") or 0)
     return {"N": Ns, "n_recurrent": n_rec, "d_max": d_max,
-            "max_basin": max_basin, "ergodic_from": ergodic_from}
+            "max_basin": max_basin, "transient_depth": depth,
+            "shared_basin": shared, "ergodic_from": ergodic_from}
 
 
 def summarize_rule(rule: int, bc: str) -> Dict:
