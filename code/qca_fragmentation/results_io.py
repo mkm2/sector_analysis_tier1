@@ -1,0 +1,122 @@
+"""
+On-disk formats and the checkpoint/manifest audit trail (PLAN.md sec.3, sec.4).
+
+Tier 1a results are append-only JSON lines, one object per (rule, N, bc), stored
+in  results/{rule}_{bc}.jsonl.  A unit already present (same engine_version) is
+skipped by the sweep; this makes overnight runs idempotent and resumable.
+
+Every completed unit is also logged to  checkpoints/manifest.jsonl  with a
+timestamp and wall-time (the audit trail cited by the reports).
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import time
+from typing import Dict, Iterable, Optional, Tuple
+
+from . import ENGINE_VERSION
+
+# repo root = two levels up from this file's package dir (code/qca_fragmentation)
+_PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(_PKG_DIR, "..", ".."))
+RESULTS_DIR = os.path.join(REPO_ROOT, "results")
+CHECKPOINTS_DIR = os.path.join(REPO_ROOT, "checkpoints")
+MANIFEST = os.path.join(CHECKPOINTS_DIR, "manifest.jsonl")
+
+# Schema field order (context Tier 1 sec.7).
+FIELDS = [
+    "rule", "bc", "N", "n_scc", "n_recurrent", "sizes_recurrent", "sizes_scc",
+    "sizes_basins", "shared_basin_size", "transient_depth", "n_transient_scc",
+    "ergodic_flag", "ergodic_bound", "attractor_types", "d_max_quantum",
+    "runtime", "engine_version",
+]
+
+
+def results_path(rule: int, bc: str) -> str:
+    return os.path.join(RESULTS_DIR, f"{rule}_{bc}.jsonl")
+
+
+def _ensure_dirs():
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    os.makedirs(CHECKPOINTS_DIR, exist_ok=True)
+
+
+def load_results(rule: int, bc: str) -> Dict[int, dict]:
+    """Return {N: record} for the units already computed for (rule, bc)."""
+    path = results_path(rule, bc)
+    out: Dict[int, dict] = {}
+    if not os.path.exists(path):
+        return out
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            out[rec["N"]] = rec
+    return out
+
+
+def has_unit(rule: int, bc: str, N: int, *, engine_version: str = ENGINE_VERSION) -> bool:
+    """True iff (rule, N, bc) already computed with the current engine_version."""
+    rec = load_results(rule, bc).get(N)
+    return rec is not None and rec.get("engine_version") == engine_version
+
+
+def record_from_graph_result(res, runtime: float) -> dict:
+    """Build a schema record from a graph.scc.GraphResult."""
+    rec = {
+        "rule": res.rule,
+        "bc": res.bc,
+        "N": res.N,
+        "ergodic_flag": bool(res.ergodic),
+        "ergodic_bound": res.ergodic_bound,
+        "attractor_types": None,   # filled by Tier 1b
+        "d_max_quantum": None,     # filled by Tier 1b
+        "runtime": runtime,
+        "engine_version": ENGINE_VERSION,
+    }
+    if res.ergodic:
+        rec.update({
+            "n_scc": None, "n_recurrent": None, "sizes_recurrent": None,
+            "sizes_scc": None, "sizes_basins": None, "shared_basin_size": None,
+            "transient_depth": None, "n_transient_scc": None,
+        })
+    else:
+        rec.update({
+            "n_scc": res.n_scc,
+            "n_recurrent": res.n_recurrent,
+            "sizes_recurrent": res.sizes_recurrent,
+            "sizes_scc": res.sizes_scc,
+            "sizes_basins": res.sizes_basins,
+            "shared_basin_size": res.shared_basin_size,
+            "transient_depth": res.transient_depth,
+            "n_transient_scc": res.n_transient_scc,
+        })
+    return rec
+
+
+def append_result(rec: dict) -> None:
+    """Append one record to results/{rule}_{bc}.jsonl (ordered fields)."""
+    _ensure_dirs()
+    ordered = {k: rec.get(k) for k in FIELDS}
+    with open(results_path(rec["rule"], rec["bc"]), "a") as f:
+        f.write(json.dumps(ordered) + "\n")
+
+
+def append_manifest(rule: int, bc: str, N: int, runtime: float,
+                    ergodic: bool, extra: Optional[dict] = None) -> None:
+    _ensure_dirs()
+    entry = {
+        "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "rule": rule, "bc": bc, "N": N,
+        "runtime": round(runtime, 4),
+        "ergodic": ergodic,
+        "engine_version": ENGINE_VERSION,
+    }
+    if extra:
+        entry.update(extra)
+    with open(MANIFEST, "a") as f:
+        f.write(json.dumps(entry) + "\n")
