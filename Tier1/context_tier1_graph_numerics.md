@@ -1,0 +1,327 @@
+# CONTEXT: Tier 1 — Exact graph analysis of quantum elementary cellular automata (QCA)
+
+## Project summary
+
+We classify all 256 quantum elementary cellular automata (QCA) — quantum circuits
+synthesized from the 256 classical elementary CA rules — by the fragmentation
+structure of their one-cycle evolution channel. For each rule we compute, as a
+function of chain length N:
+
+1. the directed transition graph on the 2^N computational basis states,
+2. its strongly connected components (SCCs) and condensation DAG,
+3. recurrent classes (terminal SCCs), basins, and transient depth,
+4. per-recurrent-class quantum structure (peripheral spectrum, attractor type),
+5. scaling fits of (number of recurrent classes, largest class/basin) vs N.
+
+Physics vocabulary: for unitary rules the SCCs are Krylov sectors (Hilbert-space
+fragmentation); for dissipative rules the terminal SCCs are recurrent classes /
+attractors and non-terminal SCCs are transient. This code must handle both in one
+framework.
+
+**Everything in the graph stage must be exact. No floating point anywhere in
+Sections 3–6. Amplitudes live in the ring Z[1/sqrt(2)] and are represented
+exactly with Python integers.** Floating point is permitted only in Tier 1b
+(Arnoldi spectra) and Tier 1c (fits/plots).
+
+## 1. Model definition and conventions
+
+### 1.1 Chain, sites, boundary conditions
+
+- N qubits on a line, sites i = 0..N-1. Basis states are bitstrings, stored as
+  Python ints (bitmasks), site 0 = least significant bit.
+- Two boundary conventions, both must be implemented and selectable:
+  - `pbc`: periodic, neighbor indices mod N.
+  - `obc0`: open with fixed virtual vacuum padding x_{-1} = x_{N} = 0. The
+    padding sites are never updated but ARE read as controls by edge sites.
+- Results (sector structure, attractor sets) depend on the convention. Always
+  record which one was used. Known example: rule 22 on `pbc` (even N) has three
+  attractors (vacuum + two Neel states); on `obc0` the Neel attractors are
+  destabilized at the edges.
+
+### 1.2 Rule encoding (Wolfram number -> channel tuple)
+
+A classical ECA rule R in 0..255 has bits c_k, R = sum_k c_k 2^k, where
+k = 4*x_{i-1} + 2*x_i + x_{i+1} indexes the 3-site input configuration and c_k
+is the output of the center site.
+
+For each *neighbor* configuration (m, n) = (x_{i-1}, x_{i+1}) define
+  c_p = c_{4m+n}     (output when center = 0)
+  c_q = c_{4m+n+2}   (output when center = 1)
+and assign a local channel r_{mn} to that neighborhood:
+
+  (c_p, c_q) = (0, 1) -> `I`  identity
+  (c_p, c_q) = (1, 0) -> `V`  unitary gate on center (we use V = Hadamard H)
+  (c_p, c_q) = (0, 0) -> `D`  reset center to |0>  (decay channel)
+  (c_p, c_q) = (1, 1) -> `E`  reset center to |1>  (excitation channel)
+
+So each rule is a tuple (r_00, r_01, r_10, r_11) in {I,V,D,E}^4; the map is a
+bijection (4^4 = 256).
+
+Verification cases (MUST be unit tests):
+  rule 150 -> (I, V, V, I)
+  rule 156 -> (I, I, V, I)
+  rule  22 -> (I, V, V, D)
+  rule 204 -> (I, I, I, I)   (T0, FALSE: nothing ever happens)
+  rule  51 -> (V, V, V, V)   (T15, TRUE: H fires always)
+  rule 201 -> (V, I, I, I)   (T1, NOR; Floquet-PXP relative)
+  rule   0 -> (D, D, D, D)
+
+NOTE (known typos in the paper draft — do NOT inherit them):
+  (a) In the draft's Sec. III.B the decay channel is written with sigma^+ and the
+      excitation channel with sigma^-. With the draft's own definitions
+      sigma^- = |0><1| and sigma^+ = |1><0| this is swapped. Correct Kraus sets:
+        decay  to |0>:  { P0 = |0><0|,  sigma^- = |0><1| }
+        excite to |1>:  { P1 = |1><1|,  sigma^+ = |1><0| }
+  (b) In the draft's Eq. (A7) the exponent of the unitary superoperator should
+      be c_p (1 - c_q), and of the identity (1-c_p) c_q.
+
+### 1.3 One QCA cycle (brickwork)
+
+One timestep = apply the local update at all EVEN sites (these commute: controls
+are on odd neighbors, action on even sites), then at all ODD sites. The controls
+always read the CURRENT values of the neighbors (i.e., odd-layer controls see
+the post-even-layer state).
+
+Local update at site i, given the rule tuple:
+- On basis states whose neighbors are in configuration (m, n):
+  - r_{mn} = I: do nothing.
+  - r_{mn} = V: apply Hadamard to site i:
+      |0> -> (|0> + |1>)/sqrt2,  |1> -> (|0> - |1>)/sqrt2.
+  - r_{mn} = D: apply decay channel with Kraus {P0, sigma^-}.
+  - r_{mn} = E: apply excitation channel with Kraus {P1, sigma^+}.
+
+Because the four neighborhoods are mutually exclusive projectors, the full local
+channel at site i has AT MOST TWO Kraus operators:
+  A0(i) = sum over (m,n): [r=I] P^m P^n
+        + [r=V] P^m H_i P^n
+        + [r=D] P^m P0_i P^n
+        + [r=E] P^m P1_i P^n
+  A1(i) = sum over (m,n): [r=D] P^m sigma^-_i P^n + [r=E] P^m sigma^+_i P^n
+(P^m, P^n are neighbor projectors.) A1 exists only if the rule contains D or E.
+Unit test: A0^dag A0 + A1^dag A1 = Identity (verify symbolically on 3 sites).
+
+## 2. Exact amplitude arithmetic
+
+All amplitudes generated by conditional Hadamards and resets lie in the ring
+Z[1/sqrt2]. Represent every amplitude as an element of Z[sqrt2] over a SHARED
+dyadic denominator per branch:
+
+    amplitude = (a + b * sqrt2) / 2^m,   a, b arbitrary-precision Python ints,
+                                         m a single int shared by the whole
+                                         branch dictionary.
+
+WHY this and not a per-entry sqrt2-exponent: a conditional-H layer multiplies
+FIRED components by 1/sqrt2 and leaves non-fired components untouched; with a
+per-entry exponent this forces mixed-parity additions (integer times sqrt2),
+which have no integer representation. With the (a, b, shared m) form the layer
+update is closed over the integers:
+
+- Conditional-H layer at site i: set m -> m + 1, then
+    non-fired entries:  (a, b) -> (2a, 2b)                 [value unchanged]
+    fired entries:      contribute (a + b*sqrt2)/sqrt2 = (2b + a*sqrt2)/2
+                        i.e. numerator (a, b) -> (2b, a), with the +- sign of
+                        the H matrix element, accumulated additively into the
+                        output bitstring's entry.
+- Addition (same m by construction): componentwise on (a, b).
+- Zero test: a == 0 AND b == 0. Exact — no tolerance, ever. (Correct because
+  sqrt2 is irrational: a + b*sqrt2 = 0 with integers forces a = b = 0.)
+- Optional renormalization: if every entry in the dict has both a and b even,
+  halve all numerators and decrement m (keeps integers small).
+- Kraus jumps (D/E channels) multiply by 0 or 1 only: no change to m.
+- Probabilities (Tier 1b / validation only): |a + b*sqrt2|^2 =
+  (a^2 + 2 b^2) + 2ab*sqrt2, again an exact element of Z[sqrt2] over 4^m;
+  norm checks must yield exactly (numerator, sqrt2-part) = (4^m, 0).
+
+State container: per branch, a dict {bitmask: (int a, int b)} plus one shared
+int m. Prune entries with (a, b) == (0, 0) after every gate.
+
+## 3. succ(x): one-cycle support propagation with branch semantics
+
+Purpose: succ(x) = { y : <y| Phi_C(|x><x|) |y> != 0 }
+                 = union over Kraus branches mu of support(K_mu |x>).
+
+Algorithm (per initial basis state x):
+1. branches = [ {x: 1} with k = 0 ].
+2. For layer in (even sites, odd sites):
+   For each site i in the layer:
+     For each branch:
+       - Partition the branch's basis states by whether site i's neighborhood
+         triggers I / V / D / E (neighborhood read from the CURRENT bitmask,
+         respecting boundary convention).
+       - Apply A0: V-states H-split with signs (interference within the dict:
+         accumulate integer amplitudes, prune exact zeros); D-states keep only
+         center=0 components; E-states keep only center=1 components; I-states
+         unchanged.
+       - If the rule has D or E and the branch contains any D/E-triggered
+         states: create a SECOND branch from A1 (D-states with center=1 get
+         center flipped to 0 with the same amplitude; everything else
+         annihilated; mirror for E). Drop the new branch if empty.
+       - NEVER merge branches. Merging would fabricate interference between
+         incoherent Kraus alternatives. (Cross-branch contributions to
+         <y|Phi|y> are |.|^2 and cannot cancel; only intra-branch amplitude
+         sums can cancel, which the dict addition handles exactly.)
+3. succ(x) = union of dict keys over all surviving branches.
+
+Correctness invariants (unit tests):
+- Purely unitary rule -> exactly one branch, and sum over y of
+  Fraction(a_y^2, 2^k) == 1.
+- For dissipative rules: sum over branches of branch norms == 1 (Fractions).
+- Representation independence: computing succ via the {A0, A1} unraveling and
+  via the finer per-neighborhood unraveling must give identical succ(x)
+  (property-based test on random rules, N <= 8).
+
+Complexity note: dict sizes can reach 2^N for ergodic rules (cost O(4^N) total).
+Mitigate with the early-exit policy in Sec. 4. For fragmented rules dicts stay
+small; that is the physics.
+
+## 4. Graph, SCC, condensation
+
+- Nodes: bitmasks 0 .. 2^N - 1. Edges: implicit via memoized succ(x).
+- Run ITERATIVE Tarjan (no recursion; N up to ~22 means deep stacks) over the
+  implicit graph. Output: SCC id per node, condensation DAG, terminal SCCs
+  (= recurrent classes), non-terminal SCCs (transient).
+- Basins: for each node, the set of terminal SCCs reachable from it (backward
+  propagate over the reverse condensation DAG). Report basin sizes; nodes
+  reaching multiple attractors counted in a "shared" category (also record the
+  full reachability signature).
+- Transient depth: longest path length in the condensation DAG (proxy for
+  relaxation time; exact integer).
+- Early exit: if during exploration one SCC exceeds a fraction f_erg (default
+  0.5) of 2^N, mark the rule "effectively ergodic at this N", record the bound,
+  and skip the rest of the enumeration for this N. This is a classification
+  outcome, not a failure.
+- IMPORTANT unitary subtlety: <y|U|x> != 0 does NOT imply <x|U|y> != 0 for
+  Hadamard circuits (U is real orthogonal, not symmetric). Do NOT symmetrize
+  edges by hand; SCC on the directed graph is the correct and sufficient
+  treatment. For unitary rules M is doubly stochastic, hence every state is
+  recurrent and all SCCs are terminal (assert this as a runtime check for
+  unitary rules).
+- Symmetry reduction across rules: left-right reflection maps rule tuples by
+  swapping (r_01, r_10); results are isomorphic — compute one representative
+  per reflection pair. Spin-flip (0<->1) conjugation is VALID ONLY for rules
+  containing no V (Hadamard breaks it: X H X != +-H). Do not apply it
+  elsewhere.
+
+## 5. Strong vs weak symmetries — what this graph does and does not see
+
+- The graph encodes M_{yx} = <y|Phi(|x><x|)|y> = sum_mu |<y|K_mu|x>|^2
+  (column-stochastic classical Markov chain; Kraus-representation independent).
+- A STRONG symmetry (commutes with every Kraus operator) that is diagonal in
+  the computational basis fragments this graph; its eigenspaces are invariant
+  blocks and each occupied eigenvalue carries >= 1 recurrent class.
+- A WEAK symmetry (only the channel is covariant) does NOT constrain the graph
+  in general; its effects (protected coherences, peripheral degeneracies) are
+  captured in Tier 1b only.
+- For unitary rules there is a single Kraus operator, so strong == weak.
+- Consequence: after Tier 1a, always run Tier 1b on each recurrent class; the
+  graph alone under-resolves attractor structure for dissipative rules.
+
+## 6. Tier 1b: per-class quantum structure (floating point allowed here)
+
+For each recurrent class R (skip if |R| > cap, default cap 2^13):
+1. Build the restricted superoperator Phi_R on span(R) tensor span(R)*
+   (dimension |R|^2), matrix-free: apply the branch machinery to |x><y| inputs
+   (propagate ket and bra branches; combine as sum_mu K_mu |x><y| K_mu^dag —
+   implement as an operator-on-vectorized-matrix using the same exact engine,
+   then cast to float for Arnoldi).
+2. scipy.sparse.linalg.eigs for the eigenvalues of largest magnitude; identify
+   the peripheral set { |lambda| within 1e-10 of 1 } (justify tolerance by the
+   spectral gap; cross-check by iterating Phi^t on random Hermitian inputs).
+3. Classify the attractor:
+   - unique eigenvalue 1, eigenoperator positive & basis-diagonal after
+     hermitization, no other peripheral eigenvalues -> MIXING (record tau).
+   - peripheral roots of unity, all peripheral eigenoperators basis-diagonal
+     -> CLASSICAL LIMIT CYCLE (record period).
+   - eigenvalue-1 multiplicity > number explained by diagonal operators, or
+     any off-diagonal peripheral eigenoperator -> COHERENCE-CARRYING
+     (estimate d_k from the fixed-point algebra: rank structure of the
+     hermitized fixed-point space; record d_k).
+4. Cross-class blocks: for each ordered pair (R_i, R_j), the map
+   A -> sum_mu K_mu|_{R_i} A K_mu^dag|_{R_j}; spectral radius 1 flags a
+   noiseless subsystem pairing two classes. Only run for pairs of equal-size
+   small classes (heuristic; log skipped pairs).
+5. VALIDATION at N <= 8: dense eigendecomposition of the full 4^N
+   superoperator. Assert: number of terminal SCCs == number of attractor
+   blocks; sum over k of d_k^2 == peripheral eigenvalue-1 multiplicity of the
+   full channel (Cesaro projection rank).
+
+## 7. Tier 1c: scaling extraction
+
+- Sweep N (per rule, as feasible): fragmented rules N = 6..22; ergodic rules
+  stop at the early-exit bound.
+- For each rule, N, boundary convention, record (JSON lines, one record per
+  (rule, N, bc)):
+  { rule, bc, N, n_scc, n_recurrent, sizes_recurrent (exact ints, sorted),
+    sizes_basins, shared_basin_size, transient_depth, ergodic_flag,
+    attractor_types (from 1b when run), d_max_quantum, runtime, mem }
+- Fits (float): for y in {n_recurrent, max_recurrent, max_basin}:
+  compare models ln y = c;  ln y = c + alpha ln N;  ln y = c + alpha ln N +
+  kappa N  (least squares on exact ln values; select by BIC; report kappa with
+  confidence interval from leave-one-out).
+  ALWAYS include the alpha ln N term when fitting kappa: binomial-type sectors
+  (charge conservation) have sqrt(N) prefactors that otherwise bias kappa.
+- Growth-class label per rule: constant / polynomial / exponential (for the
+  final figure's marker shape).
+- Final figure: scatter of (ln a, ln b) = (kappa of n_recurrent, kappa of
+  max basin), marker = growth class, color = max d_k.
+
+## 8. Ground-truth validation table (regression tests; all must pass)
+
+- Rule 204 (I,I,I,I): 2^N SCCs, all size 1, all terminal. Any N, both bc.
+- Rule 51 (V,V,V,V): single SCC of size 2^N (H^{tensor N} has full support);
+  the dynamics is period-2 (U_C^2 = 1) — graph must still report 1 sector.
+- Rule 150, obc0: sectors are eigenspaces of the domain-wall number
+  W = sum_{i=0..N} (x_i XOR x_{i+1}) with padding x_{-1}=x_N=0... precisely:
+  bonds b_i = x_i XOR x_{i+1} for i = -1..N-1 boundary-inclusive; W even;
+  number of sectors = #{even w in [0, N+1]}; sector dimension = C(N+1, w).
+  Reference data (user-verified numerics):
+    N:        [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+    Dmax:     [126, 210, 462, 924, 1716, 3003, 6435, 12870, 24310, 43758]
+    #sectors: [5, 6, 6, 7, 7, 8, 8, 9, 9, 10]
+    sizes at N=17: [43758, 43758, 18564, 18564, 3060, 3060, 153, 153, 1, 1]
+  (These are C(18, w) for even w. Match exactly.)
+- Rule 54: one frozen state |0...0>; remainder one giant SCC (assert at
+  N <= 14 before early exit).
+- Rule 156, pbc: #sectors = Lucas number L_N + 1 for N >= 3 (walls `01`);
+  largest sector base ~ 1.3195 (4^{1/5}); at N=3: 5 sectors, sizes
+  {1,1,2,2,2}. Enumerate exactly at small N to confirm.
+- Rule 22, pbc even N: exactly 3 recurrent classes, each of size 1
+  (vacuum, two Neel states); all-1 state reaches Neel in one cycle.
+- Rule 201: largest sector ~ Fibonacci (golden ratio base), per Floquet-PXP
+  literature.
+
+## 9. Deliverables and repo layout
+
+  qca_fragmentation/
+    core/ring.py          exact Z[1/sqrt2] arithmetic (+ tests)
+    core/rules.py         Wolfram -> channel tuple, reflections, tests
+    core/cycle.py         branch propagation, succ(x)  (+ invariant tests)
+    graph/scc.py          iterative Tarjan, condensation, basins, depth
+    quantum/peripheral.py Tier 1b restricted-superoperator analysis
+    scaling/fits.py       Tier 1c model fits + growth classification
+    scaling/figure.py     final scatter plot
+    run_rule.py           CLI: --rule R --N n --bc {pbc,obc0} --tiers 1a,1b
+    sweep.py              orchestrates the 136 reflection representatives
+    tests/                pytest; ALL Sec. 8 items as regression tests
+  Output: results/{rule}_{bc}.jsonl per Sec. 7 schema; figures/ for plots.
+
+Coding standards: Python 3.11+, numpy/scipy only in Tiers 1b/1c, pure-Python
+ints in the exact engine (no numba there — arbitrary precision required),
+pytest for everything in Sec. 8, deterministic (no RNG in Tiers 1a).
+Performance targets: rule 156 at N = 21 within minutes; memory is the binding
+constraint — stream succ, never materialize the edge list.
+
+## 10. Pitfalls checklist (read before coding)
+
+- No floats in the graph stage. No tolerances. Exact zero means a == 0.
+- Never merge Kraus branches. Never symmetrize the digraph by hand.
+- Controls read current (mid-cycle) neighbor values; even layer first.
+- obc0 padding is read as control but never updated.
+- Spin-flip conjugation only for V-free rules; reflection always allowed.
+- Sector structure is boundary-condition dependent; label every result.
+- The draft paper's sigma^+/sigma^- labels in Sec. III.B are swapped; use the
+  Kraus sets of Sec. 1.2/1.3 of this file.
+- Amplitudes are (a + b*sqrt2)/2^m with the dyadic exponent m shared per
+  branch; conditional-H layers update non-fired entries (a,b)->(2a,2b) and
+  fired entries (a,b)->(+-)(2b,a) with m->m+1. Never store a per-entry
+  sqrt2-exponent (mixed-parity addition is not integer-closed).

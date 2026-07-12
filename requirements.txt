@@ -1,0 +1,15 @@
+# Tier 1a / Tier 2 exact + analytic stages (pure Python ints + these):
+sympy>=1.9
+mpmath>=1.2
+
+# Tier 1b / Tier 1c (numeric — NOT needed for the exact stages).
+# NOTE: the current environment has scipy 1.8.0 against numpy 2.2.6, which is
+# ABI-incompatible. Pin a compatible pair before running Tier 1b, e.g.:
+#   numpy>=1.22,<1.25
+#   scipy>=1.8,<1.12
+# or upgrade scipy to a numpy-2-compatible release. Left unpinned here so the
+# exact stages install cleanly regardless.
+numpy
+scipy
+matplotlib
+pytest

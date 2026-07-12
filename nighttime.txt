@@ -1,0 +1,27 @@
+# Service, das den eigentlichen Rechenjob anstößt (Beispiel)
+sudo tee /etc/systemd/system/krylov-run.service << 'EOF'
+[Unit]
+Description=Krylov Sektor Analyse (Nachtlauf)
+
+[Service]
+Type=oneshot
+User=max
+WorkingDirectory=/home/max/pfad/zu/qca-projekt
+ExecStart=/usr/bin/julia --project=. run_krylov.jl
+EOF
+
+# Timer: startet z.B. 23:00, systemd killt/pausiert nicht automatisch —
+# dafür separat einen Stop-Timer, falls der Job täglich pausieren soll
+sudo tee /etc/systemd/system/krylov-run.timer << 'EOF'
+[Unit]
+Description=Startet Krylov-Lauf nachts
+
+[Timer]
+OnCalendar=*-*-* 23:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+sudo systemctl enable --now krylov-run.timer

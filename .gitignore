@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# LaTeX build artifacts (keep the .tex and the final .pdf under reports/pdf)
+reports/tex/*.aux
+reports/tex/*.log
+reports/tex/*.out
+reports/tex/*.toc
+reports/tex/*.fls
+reports/tex/*.fdb_latexmk
+reports/tex/*.synctex.gz
+
+# Large scratch — checkpoints ARE committed (they are the reconstruction cache);
+# only ignore genuinely transient scratch here.
+*.tmp
+scratch/
+
+# OS
+.DS_Store
