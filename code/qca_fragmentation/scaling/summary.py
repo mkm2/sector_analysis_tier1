@@ -95,6 +95,48 @@ def write_csv(rows: List[Dict], path: str):
 
 
 FIGURES_DIR = os.path.join(results_io.REPO_ROOT, "figures")
+TEX_DIR = os.path.join(results_io.REPO_ROOT, "reports", "tex")
+
+
+def _fmt(x, nd=3):
+    if x is None:
+        return "--"
+    if isinstance(x, float):
+        return f"{x:.{nd}f}"
+    return str(x)
+
+
+def latex_summary_table(rows: List[Dict], path: str):
+    """Emit a booktabs table of the per-rule scaling summary (\\input-able)."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    order = {"exponential": 0, "polynomial": 1, "constant": 2, "n/a": 3}
+    rows = sorted(rows, key=lambda r: (r["bc"],
+                                       order.get(r["d_max_growth"], 9),
+                                       -(r["d_max_kappa"] or 0)))
+    lines = [
+        r"\begin{tabular}{@{}rl l r rr l l@{}}",
+        r"\toprule",
+        r"W & tuple & bc & $N_{\max}$ & \#sec & $D_{\max}$ & "
+        r"\#sec growth & $D_{\max}$ growth (base) \\",
+        r"\midrule",
+    ]
+    for r in rows:
+        if r["ergodic_from"] is not None and r["n_points"] == 0:
+            growth_n = growth_d = "ergodic"
+            base = ""
+        else:
+            growth_n = r["n_recurrent_growth"]
+            gd = r["d_max_growth"]
+            base = f" ({_fmt(r['d_max_base'],3)})" if gd == "exponential" else ""
+            growth_d = gd
+        erg = "" if r["ergodic_from"] is None else f"$^{{\\dagger{r['ergodic_from']}}}$"
+        lines.append(
+            f"{r['rule']} & \\texttt{{{r['tuple']}}} & {r['bc']}{erg} & "
+            f"{_fmt(r['N_max'])} & {_fmt(r['n_sectors_at_Nmax'])} & "
+            f"{_fmt(r['d_max_at_Nmax'])} & {growth_n} & {growth_d}{base} \\\\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    with open(path, "w") as f:
+        f.write("\n".join(lines) + "\n")
 
 
 def main(argv=None):
@@ -108,6 +150,7 @@ def main(argv=None):
                else rules.unitary_reflection_reps())
     rows = summarize(ruleset)
     write_csv(rows, args.out)
+    latex_summary_table(rows, os.path.join(TEX_DIR, "tab_unitary_summary.tex"))
     # pretty print
     for r in rows:
         print(f"W{r['rule']:3d} {r['tuple']} {r['bc']:5s} "

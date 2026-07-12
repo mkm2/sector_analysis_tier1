@@ -1,0 +1,114 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\newcommand{\rt}[1]{\texttt{#1}}
+
+\title{\textbf{Report R2 --- Unitary sweep and fragmentation scaling}\\
+\large Krylov sector analysis of quantum cellular automata (Tier 1a/1c)}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-12 \quad\small(engine\_version \texttt{1a.1})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We sweep all sixteen unitary quantum elementary cellular automata over chain
+lengths $N=6\ldots18$, both boundary conventions, and classify each by the
+scaling of its Krylov-sector structure. Sector sizes are exact; the growth of
+the number of sectors and of the largest sector $D_{\max}$ is fit by BIC model
+selection ($\ln y=c\,[+\alpha\ln N]\,[+\kappa N]$). Seven rules are effectively
+ergodic (a single sector spanning the space); the remainder fall into three
+fragmentation families --- exponential ($156/198$, $108$, $201$), a
+domain-wall family with a linearly growing sector count but an extensive
+$D_{\max}=2^{N-1}$ ($60/102$, \rt{obc0} only), and $150/105$ with central-binomial
+sectors. We highlight two boundary-sensitive phenomena and one broken symmetry.
+\end{abstract}
+
+\section{Method}
+Each unit $(\text{rule},N,\text{bc})$ is computed by the exact Tier-1a engine
+(Report R1) and cached as one JSON line in \rt{results/}. Unitary sectors are the
+weakly connected components of the one-cycle transition graph (extracted by
+union--find; see R1). A rule is flagged \emph{effectively ergodic at $N$} when one
+sector exceeds $90\%$ of the $2^N$ states; the sweep then stops increasing $N$ for
+that rule/bc. Growth classes are assigned to the series $y(N)\in\{\#\text{sectors},
+D_{\max}\}$ by BIC selection among constant / power-law / exponential models, with
+the $\alpha\ln N$ prefactor always carried when reporting the exponential rate
+$\kappa$ (so that $\sqrt N$-type binomial prefactors do not bias $\kappa$).
+
+\section{Results}
+Table~\ref{tab:summary} lists every computed rule/bc with its sector count and
+$D_{\max}$ at the largest $N$ reached and the fitted growth classes. Figures
+\ref{fig:nsec}--\ref{fig:scatter} show the scaling.
+
+\begin{table}[h]
+\centering
+\small
+\input{tab_unitary_summary.tex}
+\caption{Per-rule fragmentation scaling (unitary rules). $^{\dagger}N$ marks the
+$N$ at which a rule first becomes effectively ergodic for that boundary
+convention. Rules reduced by reflection are represented once where noted.}
+\label{tab:summary}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.78\linewidth]{../../figures/fig_nsectors_obc0.pdf}
+\caption{Number of Krylov sectors vs $N$ (\rt{obc0}), log scale. Exponential
+fragmentation ($156$, $108$, $201$) vs.\ linear/central-binomial sector counts
+($60/102$, $150/105$).}
+\label{fig:nsec}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.78\linewidth]{../../figures/fig_dmax_obc0.pdf}
+\caption{Largest sector $D_{\max}$ vs $N$ (\rt{obc0}), log scale. Slopes give the
+exponential base: $\varphi$ (golden ratio) for $201$, $4^{1/5}\approx1.32$ for
+$156/198$, $2$ for the domain-wall family $60/102$.}
+\label{fig:dmax}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.72\linewidth]{../../figures/fig_growth_scatter_obc0.pdf}
+\caption{Growth-rate map (\rt{obc0}): exponential rate of the sector count
+($\kappa_{\#}$) vs.\ of the largest sector ($\kappa_{D}$), one point per rule.}
+\label{fig:scatter}
+\end{figure}
+
+\section{Boundary-sensitive fragmentation}
+Two rules change fragmentation class with the boundary:
+\begin{itemize}
+  \item \textbf{Rules 60/102 $(\rt{IIVV})/(\rt{IVIV})$:} under \rt{obc0} the
+  domain-wall charge fragments the space into $N+1$ sectors with an extensive
+  dominant sector $D_{\max}=2^{N-1}$; under \rt{pbc} the periodic seam destroys
+  the charge and the dynamics is ergodic --- a single sector of size $2^N-1$ plus
+  the frozen vacuum $|0\cdots0\rangle$ ($D_{\max}/2^N\to1$).
+  \item \textbf{Rules 150/105:} identical sector data under \rt{obc0} (central
+  binomials $\binom{N+1}{w}$), but they \emph{differ} under \rt{pbc}, where the
+  periodic domain-wall counting is rule-specific.
+\end{itemize}
+
+\section{Broken inversion symmetry (201 vs.\ 108)}
+Rules $201=(\rt{VIII})$ and $108=(\rt{IIIV})$ are $0\!\leftrightarrow\!1$
+spin-flip partners. Because the flip conjugates the Hadamard by $X$ and
+$XHX\neq\pm H$, the symmetry is broken for the full dynamics. At the level of the
+sector partition it survives under \rt{pbc} (bit-flip is a graph symmetry: $|XHX|
+=|H|$) but is broken under \rt{obc0} by the vacuum-0 padding: there $201$ has
+Fibonacci $D_{\max}$ and $108$ shifted-Fibonacci $D_{\max}$ (matching \rt{HSF}
+rules 1 and 8). See Report R1 for the exact statement.
+
+\section{Reproducibility}
+All numbers derive from \rt{results/*.jsonl} (engine\_version \texttt{1a.1});
+the table and figures are regenerated by
+\rt{python -m qca\_fragmentation.scaling.summary} and
+\rt{...scaling.figure}. The sweep is idempotent and checkpointed
+(\rt{checkpoints/manifest.jsonl}).
+
+\end{document}
