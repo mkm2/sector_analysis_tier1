@@ -1,0 +1,9 @@
+rule,tuple,bc,hsf,n_points,N_min,N_max,ergodic_from,n_sectors_at_Nmax,d_max_at_Nmax,n_recurrent_growth,n_recurrent_kappa,n_recurrent_base,n_recurrent_alpha,n_recurrent_model,d_max_growth,d_max_kappa,d_max_base,d_max_alpha,d_max_model,max_basin_growth,max_basin_kappa,max_basin_base,max_basin_alpha,max_basin_model
+51,VVVV,obc0,15,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,
+51,VVVV,pbc,15,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,
+54,IVVV,obc0,14,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,
+54,IVVV,pbc,14,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,
+57,VIVV,obc0,13,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,
+57,VIVV,pbc,13,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,
+60,IIVV,obc0,12,11,6,16,,17,32768,exponential,0.008298086294922125,1.008332610842821,0.8217388953062545,M2,exponential,0.6931471805599438,1.9999999999999971,1.6542323066914832e-14,M2,exponential,0.6931471805599438,1.9999999999999971,1.6542323066914832e-14,M2
+60,IIVV,pbc,12,0,,,6,,,n/a,,,,,n/a,,,,,n/a,,,,

@@ -25,7 +25,11 @@ from typing import Dict, List, Sequence
 
 import numpy as np
 
-_KAPPA_EPS = 1e-3  # |kappa| below this is treated as non-exponential
+# |kappa| below this is treated as non-exponential (base < e^0.02 ~ 1.02).
+# Genuine exponential fragmentation here has kappa >= 0.27 (base 4^{1/5}) up to
+# ln 2; a linear sector count (e.g. rule 60: n_sec = N+1) yields a spurious
+# kappa ~ 0.008 that must NOT be labelled exponential.
+_KAPPA_EPS = 0.02
 
 
 def _design(Ns: np.ndarray, model: str) -> np.ndarray:
@@ -47,9 +51,12 @@ def _fit(Ns: np.ndarray, lny: np.ndarray, model: str):
     return beta, rss
 
 
-def _bic(rss: float, n: int, k: int) -> float:
-    # Gaussian BIC up to additive const; k = number of fitted params.
-    rss = max(rss, 1e-300)
+def _bic(rss: float, n: int, k: int, floor: float) -> float:
+    # Gaussian BIC up to additive const; k = number of fitted params.  The RSS
+    # floor prevents n*log(RSS) from being driven by floating-point noise when a
+    # model fits essentially perfectly (then all such models tie and the fewest-
+    # parameter one wins on the k*log(n) penalty).
+    rss = max(rss, floor)
     return n * math.log(rss / n) + k * math.log(n)
 
 
@@ -68,12 +75,18 @@ def fit_series(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
     lny = np.log(ys)
     n = len(Ns)
 
+    # RSS noise floor scaled to the data spread: a fit tighter than this is
+    # "perfect" for model-selection purposes.
+    ss_total = float(((lny - lny.mean()) ** 2).sum())
+    floor = 1e-9 * max(1.0, ss_total)
+
     fits = {}
     for model, k in (("M0", 1), ("M1", 2), ("M2", 3)):
         if n <= k:
             continue
         beta, rss = _fit(Ns, lny, model)
-        fits[model] = {"beta": beta, "rss": rss, "bic": _bic(rss, n, k), "k": k}
+        fits[model] = {"beta": beta, "rss": rss,
+                       "bic": _bic(rss, n, k, floor), "k": k}
 
     best = min(fits, key=lambda m: fits[m]["bic"])
 

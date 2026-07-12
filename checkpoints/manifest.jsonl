@@ -15,3 +15,5 @@
 {"ts": "2026-07-12T20:31:19", "rule": 60, "bc": "obc0", "N": 13, "runtime": 1.0434, "ergodic": false, "engine_version": "1a.1"}
 {"ts": "2026-07-12T20:31:22", "rule": 60, "bc": "obc0", "N": 14, "runtime": 3.0157, "ergodic": false, "engine_version": "1a.1"}
 {"ts": "2026-07-12T20:31:31", "rule": 60, "bc": "obc0", "N": 15, "runtime": 9.307, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-12T20:31:59", "rule": 60, "bc": "obc0", "N": 16, "runtime": 27.2052, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-12T20:33:23", "rule": 60, "bc": "obc0", "N": 17, "runtime": 84.6151, "ergodic": false, "engine_version": "1a.1"}
