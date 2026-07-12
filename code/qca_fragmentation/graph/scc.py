@@ -96,6 +96,8 @@ def tarjan(
                 index[node] = counter
                 lowlink[node] = counter
                 counter += 1
+                if node_budget is not None and counter > node_budget:
+                    return None, [], True, node_budget
                 tarjan_stack.append(node)
                 onstack[node] = 1
                 frame[1] = succ_fn(node)
@@ -138,6 +140,59 @@ def tarjan(
                     lowlink[parent] = lowlink[node]
 
     return comp_id, comp_sizes, False, 0
+
+
+def sectors_union_find(
+    N: int,
+    succ_fn: Callable[[int], List[int]],
+    *,
+    f_erg: float = 0.5,
+    detect_ergodic: bool = True,
+    node_budget: Optional[int] = None,
+):
+    """
+    Sector sizes for a UNITARY rule via union-find over streamed edges.
+
+    Valid because a unitary (doubly stochastic) channel makes every state
+    recurrent, so each weakly connected component is a single SCC; the sector
+    partition equals the connected components of the undirected graph.  This is
+    the memory-light path (O(2^N) ints, no stored adjacency, no DFS stack) used
+    for the overnight sweep and mirrors the HSF oracle's method.
+
+    Returns (sizes_desc, ergodic, max_size).  Early-exits when a component
+    exceeds f_erg*2^N (returns (None, True, size)).
+    """
+    total = 1 << N
+    parent = array("q", range(total))
+    size = array("q", [1]) * total
+    erg_thresh = int(f_erg * total)
+    max_size = 1
+
+    def find(a: int) -> int:
+        root = a
+        while parent[root] != root:
+            root = parent[root]
+        while parent[a] != root:
+            parent[a], a = root, parent[a]
+        return root
+
+    for x in range(total):
+        rx = find(x)
+        for y in succ_fn(x):
+            ry = find(y)
+            if rx != ry:
+                if size[rx] < size[ry]:
+                    rx, ry = ry, rx
+                parent[ry] = rx
+                size[rx] += size[ry]
+                if size[rx] > max_size:
+                    max_size = size[rx]
+        if detect_ergodic and max_size > erg_thresh:
+            return None, True, max_size
+
+    sizes = [size[r] for r in range(total) if parent[r] == r]
+    sizes.sort(reverse=True)
+    return sizes, False, max_size
 
 
 def _condensation(
@@ -234,27 +289,60 @@ def analyze(
     *,
     f_erg: float = 0.5,
     detect_ergodic: bool = True,
+    node_budget: Optional[int] = None,
     keep_comp_id: bool = False,
 ) -> GraphResult:
     """Full Tier-1a analysis of one (rule, N, bc) unit."""
     succ_fn = _make_succ(rule, N, bc, t)
+    unitary = is_unitary(t)
+
+    if unitary and not keep_comp_id:
+        # Doubly stochastic => SCC == weakly connected component.  Use the
+        # memory-light union-find path (O(2^N) ints, one streamed succ pass;
+        # mirrors the HSF oracle).  All sectors terminal, transient depth 0.
+        sizes, ergodic, max_size = sectors_union_find(
+            N, succ_fn, f_erg=f_erg, detect_ergodic=detect_ergodic,
+            node_budget=node_budget,
+        )
+        if ergodic:
+            return GraphResult(N=N, rule=rule, bc=bc, ergodic=True,
+                               ergodic_bound=max_size, f_erg=f_erg)
+        n_comp = len(sizes)
+        return GraphResult(
+            N=N, rule=rule, bc=bc, ergodic=False,
+            n_scc=n_comp, n_recurrent=n_comp,
+            sizes_scc=sizes, sizes_recurrent=list(sizes),
+            sizes_basins=list(sizes), shared_basin_size=0,
+            transient_depth=0, n_transient_scc=0, f_erg=f_erg,
+        )
+
     comp_id, comp_sizes, ergodic, bound = tarjan(
-        N, succ_fn, f_erg=f_erg, detect_ergodic=detect_ergodic
+        N, succ_fn, f_erg=f_erg, detect_ergodic=detect_ergodic,
+        node_budget=node_budget,
     )
     if ergodic:
         return GraphResult(N=N, rule=rule, bc=bc, ergodic=True,
                            ergodic_bound=bound, f_erg=f_erg)
 
     n_comp = len(comp_sizes)
+
+    if unitary:
+        # keep_comp_id path: Tarjan ran; all SCCs terminal (asserted elsewhere).
+        sizes_scc = sorted(comp_sizes, reverse=True)
+        res = GraphResult(
+            N=N, rule=rule, bc=bc, ergodic=False,
+            n_scc=n_comp, n_recurrent=n_comp,
+            sizes_scc=sizes_scc, sizes_recurrent=list(sizes_scc),
+            sizes_basins=list(sizes_scc), shared_basin_size=0,
+            transient_depth=0, n_transient_scc=0, f_erg=f_erg,
+        )
+        res.comp_id = comp_id
+        return res
+
     succ_comps = _condensation(N, succ_fn, comp_id, n_comp)
     terminal, depth, basin_of_terminal, shared = _analyze_condensation(
         comp_sizes, succ_comps
     )
-
-    unitary = is_unitary(t)
-    if unitary:
-        # doubly stochastic => every state recurrent, all SCCs terminal
-        assert all(terminal), "unitary rule produced a non-terminal SCC (bug)"
 
     sizes_scc = sorted(comp_sizes, reverse=True)
     rec_sizes = sorted((comp_sizes[c] for c in range(n_comp) if terminal[c]),

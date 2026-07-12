@@ -95,12 +95,43 @@ def test_reflection_preserves_sector_sizes_unitary(bc):
             assert A(r, N, bc).sizes_scc == A(rr, N, bc).sizes_scc, (r, rr, N, bc)
 
 
+def test_spinflip_partners_201_vs_108():
+    # 201=(V,I,I,I) and 108=(I,I,I,V) are 0<->1 spin-flip (complement) partners.
+    # Spin-flip = bit-flip X^{tensor N}, a basis permutation; XHX preserves gate
+    # magnitudes, so it preserves the support/transition graph -> sector sizes
+    # match under pbc (no boundary).  Under obc0 the fixed vacuum-0 padding maps
+    # to vacuum-1, breaking the symmetry -> sizes differ (Fibonacci for 201 vs
+    # shifted-Fibonacci for 108, matching HSF rules 1 and 8).
+    for N in (8, 9, 10, 11, 12):
+        assert A(201, N, "pbc").sizes_scc == A(108, N, "pbc").sizes_scc, N
+        assert A(201, N, "obc0").sizes_scc != A(108, N, "obc0").sizes_scc, N
+    # obc0 largest sectors follow the two Fibonacci offsets
+    fib = {55: 8, 89: 9, 144: 10, 233: 11, 377: 12}
+    for D, N in fib.items():
+        assert A(201, N, "obc0").sizes_recurrent[0] == D
+    shifted = {21: 8, 34: 9, 55: 10, 89: 11, 144: 12}
+    for D, N in shifted.items():
+        assert A(108, N, "obc0").sizes_recurrent[0] == D
+
+
 def test_reflection_size_variance_is_unitary_only():
     # Guard the documented fact: at least one dissipative reflection pair has
     # DIFFERENT sector sizes under the even-first convention (here 187<->243).
     rr = rules.reflect_wolfram(187)
     assert rr == 243
     assert A(187, 6, "obc0").sizes_scc != A(243, 6, "obc0").sizes_scc
+
+
+@pytest.mark.parametrize("bc", ["pbc", "obc0"])
+@pytest.mark.parametrize("N", [6, 8, 10])
+def test_union_find_matches_tarjan_unitary(bc, N):
+    # For unitary rules the memory-light union-find path (default) must agree
+    # with the directed Tarjan path (keep_comp_id=True) on the sector sizes.
+    for r in rules.UNITARY_RULES:
+        t = rules.wolfram_to_tuple(r)
+        uf = scc.analyze(r, N, bc, t, detect_ergodic=False)
+        tj = scc.analyze(r, N, bc, t, detect_ergodic=False, keep_comp_id=True)
+        assert uf.sizes_scc == tj.sizes_scc, (r, bc, N)
 
 
 def test_ergodic_early_exit_flags():
