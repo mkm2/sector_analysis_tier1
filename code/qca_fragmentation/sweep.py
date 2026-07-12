@@ -50,12 +50,22 @@ def rule_set(which: str, explicit: List[int]):
         # only; the dissipative reduction is not a size symmetry -- see
         # rules.reflect_tuple).
         return rules.reflection_pairs(range(256))
+    if which == "all256":
+        # every rule 0..255 (reflection is NOT a sector-size symmetry for
+        # dissipative rules under the even-first convention, so do not reduce).
+        return list(range(256))
+    if which == "dissipative":
+        # only the rules that contain a D or E channel (208 of 256).
+        return [r for r in range(256)
+                if not rules.is_unitary(rules.wolfram_to_tuple(r))]
     raise ValueError(which)
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Tier 1a checkpointed sweep")
-    ap.add_argument("--which", choices=["unitary", "unitary-all", "all"],
+    ap.add_argument("--which",
+                    choices=["unitary", "unitary-all", "all", "all256",
+                             "dissipative"],
                     default="unitary")
     ap.add_argument("--rules", type=str, default="",
                     help="comma-separated Wolfram numbers (overrides --which)")
