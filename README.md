@@ -16,11 +16,30 @@ authoritative specification lives in the two context files:
 
 Conceptual background: `QCA_Circuits.pdf` (this folder).
 
-## Status
+## Status (Tier 1, branch `worktree-tier1-analysis`)
 
-**Initialized — analysis not yet started.** The directory tree, plan, and
-tooling are in place. Simulations will begin on instruction (see `PLAN.md`),
-running overnight (see `nighttime.txt`).
+**Tier 1 implemented and validated.** engine_version `1a.1`.
+
+- **T1 — exact engine**: `core/ring.py` (exact ℤ[1/√2]), `core/rules.py`,
+  `core/cycle.py` (brickwork `succ`, unitary + dissipative Kraus branches),
+  `graph/scc.py` (directed Tarjan + union-find). Validated vs a dense oracle
+  (3840 unitary + 528 dissipative support checks).
+- **T2 — Tier 1a graph + cross-checks**: §8 regression table reproduced;
+  35/35 sector-size cross-checks vs the Julia `HSF` oracle exact. **Report R1**.
+- **T3 — unitary sweep** (N=6–18, both bc, checkpointed) + BIC scaling fits +
+  figures. **Report R2**.
+- **T6 — dissipative extension**: all-256 sweep (N=6–13), recurrent classes /
+  attractors / basins / transient depth; **Tier 1b** exact restricted
+  superoperator + attractor-type classification (mixing / limit-cycle /
+  coherence-carrying) and the exact Cesaro-rank protected-coherence diagnostic.
+  **Report R5**.
+
+Reports are in `reports/pdf/`; sweep results in `results/*.jsonl`
+(reconstructable, `checkpoints/manifest.jsonl`); figures in `figures/`.
+Regenerate: `python -m qca_fragmentation.scaling.summary`,
+`...scaling.figure`, `...quantum.dissipative_report`. All 90 pytest tests pass.
+
+Tier 2 (analytic machinery, `qca_analytics/`) is tracked separately.
 
 ## Plan of record
 
