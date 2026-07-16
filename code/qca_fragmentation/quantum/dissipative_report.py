@@ -138,6 +138,41 @@ def _tex_tier1b(path: str, N=8, bc="pbc"):
         f.write("\n".join(lines) + "\n")
 
 
+def faithfulness_census(N: int = 4, bc: str = "pbc"):
+    """Split the dissipative rules by whether the Tier-1a (dephased) graph is a
+    faithful picture of the coherent channel's attractor support."""
+    faithful, unfaithful = [], []
+    for r in range(256):
+        t = rules.wolfram_to_tuple(r)
+        if rules.is_unitary(t):
+            continue
+        d = pp.graph_faithfulness(N, t, bc)
+        (faithful if d["faithful"] else unfaithful).append((r, d))
+    return faithful, unfaithful
+
+
+def _tex_faithful(path: str, N=4, bc="pbc"):
+    f, uf = faithfulness_census(N, bc)
+    lines = [r"\begin{tabular}{@{}rl rrr l@{}}", r"\toprule",
+             r"W & tuple & \#rec.\ states & $\dim\mathrm{Fix}(\Phi)$ & "
+             r"leaked weight & graph faithful? \\", r"\midrule"]
+    yes = "yes"
+    no = r"\textbf{no}"
+    for r in [0, 200, 232, 28, 76, 22, 50, 178, 106]:
+        t = rules.wolfram_to_tuple(r)
+        d = pp.graph_faithfulness(N, t, bc)
+        verdict = yes if d["faithful"] else no
+        tup = "".join(t)
+        lines.append(f"{r} & \\texttt{{{tup}}} & {d['n_recurrent_states']} & "
+                     f"{d['dim_fix']} & {d['leak_flow']:.3f} & {verdict} \\\\")
+    lines += [r"\midrule",
+              f"\\multicolumn{{6}}{{@{{}}l}}{{census at $N={N}$, {bc}: "
+              f"{len(f)} faithful / {len(uf)} unfaithful of 240 dissipative rules}} \\\\",
+              r"\bottomrule", r"\end{tabular}"]
+    with open(path, "w") as fh:
+        fh.write("\n".join(lines) + "\n")
+
+
 def _tex_cesaro(path: str, N=4, bc="pbc"):
     lines = [r"\begin{tabular}{@{}rl rrr@{}}", r"\toprule",
              r"W & tuple & classical dim & Cesaro rank & coherence gap \\",
@@ -196,6 +231,10 @@ def main(argv=None):
     _tex_census(os.path.join(TEX_DIR, "tab_diss_census.tex"))
     _tex_tier1b(os.path.join(TEX_DIR, "tab_diss_tier1b.tex"))
     _tex_cesaro(os.path.join(TEX_DIR, "tab_diss_cesaro.tex"))
+    _tex_faithful(os.path.join(TEX_DIR, "tab_diss_faithful.tex"))
+    f, uf = faithfulness_census()
+    print(f"=== graph faithfulness (N=4,pbc): {len(f)} faithful / {len(uf)} unfaithful "
+          f"of 240 dissipative rules ===")
     for bc in ("pbc", "obc0"):
         transient_depth_figure(bc)
     print("wrote R5 tables to", TEX_DIR)

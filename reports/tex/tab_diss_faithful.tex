@@ -1,0 +1,17 @@
+\begin{tabular}{@{}rl rrr l@{}}
+\toprule
+W & tuple & \#rec.\ states & $\dim\mathrm{Fix}(\Phi)$ & leaked weight & graph faithful? \\
+\midrule
+0 & \texttt{DDDD} & 1 & 1 & 0.000 & yes \\
+200 & \texttt{DIII} & 10 & 100 & 0.000 & yes \\
+232 & \texttt{DIIE} & 6 & 36 & 0.000 & yes \\
+28 & \texttt{IIVD} & 3 & 9 & 0.000 & yes \\
+76 & \texttt{IIID} & 11 & 121 & 0.000 & yes \\
+22 & \texttt{IVVD} & 3 & 25 & 0.125 & \textbf{no} \\
+50 & \texttt{DVVV} & 1 & 13 & 0.250 & \textbf{no} \\
+178 & \texttt{DVVE} & 2 & 9 & 0.063 & \textbf{no} \\
+106 & \texttt{DEIV} & 1 & 8 & 0.422 & \textbf{no} \\
+\midrule
+\multicolumn{6}{@{}l}{census at $N=4$, pbc: 202 faithful / 38 unfaithful of 240 dissipative rules} \\
+\bottomrule
+\end{tabular}

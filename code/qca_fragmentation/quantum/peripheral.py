@@ -221,6 +221,60 @@ def full_channel_superoperator(N: int, t: Tuple4, bc: str) -> np.ndarray:
     return S
 
 
+def graph_faithfulness(N: int, t: Tuple4, bc: str, iters: int = 400) -> Dict:
+    """
+    Is the Tier-1a transition graph a faithful picture of the COHERENT channel?
+
+    The graph encodes M_{yx} = sum_mu |<y|K_mu|x>|^2, i.e. the chain obtained by
+    DEPHASING in the computational basis after every cycle.  Phi's populations
+    are not determined by M (coherences feed back into populations), so a state
+    that is transient for M need not be transient for Phi.
+
+    Diagnostics (exact at small N):
+      leak_fix   -- largest matrix element of a Fix(Phi) basis operator OUTSIDE
+                    the block spanned by the graph's recurrent states.  0 => the
+                    fixed-point space lives exactly where the graph says.
+      leak_flow  -- weight of Phi^iters(1/d) remaining on graph-transient states.
+      faithful   -- True iff both vanish (to tolerance).
+
+    A faithful rule's coherence gap is pure CROSS-CLASS coherence among the
+    graph's pointer states (e.g. rule 200).  An unfaithful rule's true attractor
+    is a decoherence-free structure the graph cannot represent at all (rule 22).
+    """
+    from ..graph.scc import recurrent_classes
+    dim = 1 << N
+    S = full_channel_superoperator(N, t, bc)
+    rec = sorted(x for R in recurrent_classes(_rule_of(t), N, bc, t) for x in R)
+
+    ns = _null_space(S - np.eye(dim * dim))
+    mask = np.zeros((dim, dim), dtype=bool)
+    for a in rec:
+        for b in rec:
+            mask[a, b] = True
+    leak_fix = 0.0
+    for j in range(ns.shape[1]):
+        M = ns[:, j].reshape(dim, dim)
+        if M.size:
+            leak_fix = max(leak_fix, float(np.abs(M[~mask]).max()))
+
+    v = (np.eye(dim) / dim).reshape(-1)
+    for _ in range(iters):
+        v = S @ v
+    diag = np.real(np.diag(v.reshape(dim, dim)))
+    leak_flow = float(1.0 - diag[rec].sum())
+
+    return {"n_recurrent_states": len(rec),
+            "dim_fix": int(ns.shape[1]),
+            "leak_fix": leak_fix,
+            "leak_flow": leak_flow,
+            "faithful": bool(leak_fix < 1e-6 and abs(leak_flow) < 1e-6)}
+
+
+def _rule_of(t: Tuple4) -> int:
+    from ..core.rules import tuple_to_wolfram
+    return tuple_to_wolfram(t)
+
+
 def cesaro_rank(N: int, t: Tuple4, bc: str) -> int:
     """Exact dimension of the full channel's fixed-point space (geometric
     multiplicity of eigenvalue 1) -- the Cesaro projection rank.  N <= ~6."""

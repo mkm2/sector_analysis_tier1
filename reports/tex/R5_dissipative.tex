@@ -46,10 +46,13 @@ against an independent dense-channel oracle (528/528 support checks; per-site
 Kraus completeness $A_0^\dagger A_0+A_1^\dagger A_1=\mathbb{1}$).
 
 \section{Census of attractor structure}
+\label{sec:census}
 Table~\ref{tab:census} classifies every dissipative rule by the structure at the
 largest computed $N$: a unique classical fixed point, several point attractors
 (multistability, signalling a strong basis-diagonal conserved charge), or one or
-more extended ($>\!1$-state) attractors.
+more extended ($>\!1$-state) attractors. These are properties of the
+\emph{dephased} chain $M$; \S\ref{sec:strongweak} tests when that coincides with
+the coherent channel's attractors (it does for 202 of the 240 rules).
 \begin{table}[h]\centering\small\input{tab_diss_census.tex}
 \caption{Dissipative rules by attractor structure and boundary convention.}
 \label{tab:census}\end{table}
@@ -73,21 +76,70 @@ coherence-protecting extended attractors ($d_k>1$); most others relax to
 classical pointer states.}
 \label{tab:tier1b}\end{table}
 
-\section{Protected coherence: the Cesaro gap}
-The transition graph sees only \emph{strong} (basis-diagonal) conserved charges;
-\emph{weak} symmetries protect coherences that the graph misses (context \S5).
-We quantify this exactly at small $N$ by the \emph{Cesaro rank} --- the geometric
-multiplicity of eigenvalue 1 of the full $4^N$-dimensional channel superoperator,
-i.e.\ the dimension of the steady-state space --- and compare it to the
-graph-resolved dimension $\sum_R \dim\mathrm{Fix}(\Phi_R)$ obtained by summing the
-per-recurrent-class fixed-point dimensions (Table~\ref{tab:cesaro}). The
-difference is the extra cross-class / weak-symmetry protected coherence, which is
-non-negative and invisible to the transition graph.
+\section{Strong vs.\ weak symmetry: what each stage can see}
+\label{sec:strongweak}
+A \emph{strong} symmetry commutes with every Kraus operator individually; a
+\emph{weak} symmetry only makes the channel covariant (context \S5). For unitary
+rules there is a single Kraus operator and the two coincide. This pipeline does
+\textbf{not} detect symmetry \emph{operators} (no commutant of $\{K_\mu\}$, no
+charge null-space --- that is Tier 2); it separates the two \emph{operationally},
+because the two stages of the pipeline are sensitive to different things:
+
+\begin{itemize}
+  \item \textbf{Tier 1a (graph).} The graph encodes
+  $M_{yx}=\sum_\mu|\langle y|K_\mu|x\rangle|^2$, i.e.\ the chain obtained by
+  \emph{dephasing in the computational basis after every cycle}. Only
+  basis-diagonal \emph{strong} charges fragment it; their signature is the number
+  of recurrent classes (multistability, Table~\ref{tab:census}). This is the only
+  symmetry information the graph carries.
+  \item \textbf{Tier 1b (channel).} The exact Cesaro rank
+  $\dim\mathrm{Fix}(\Phi)$ (geometric multiplicity of eigenvalue 1 of the full
+  $4^N$ superoperator) sees the coherent fixed-point algebra. Weak symmetries and
+  protected coherences appear here and \emph{only} here.
+\end{itemize}
+The gap $\dim\mathrm{Fix}(\Phi)-\sum_R\dim\mathrm{Fix}(\Phi_R)\ge 0$ measures what
+the graph misses (Table~\ref{tab:cesaro}).
+
+\subsection{Caveat: the graph is the dephased chain, and can misplace attractors}
+$\Phi$'s populations are \emph{not} determined by $M$ --- coherences feed back into
+populations --- so ``transient for $M$'' does not imply ``transient for $\Phi$''.
+We therefore test faithfulness exactly (Table~\ref{tab:faithful}) by asking
+whether $\mathrm{Fix}(\Phi)$ is contained in the block spanned by the graph's
+recurrent states, and whether $\Phi^{t}(\mathbb{1}/d)$ actually flows onto them.
+Two regimes occur, and the distinction matters:
+\begin{itemize}
+  \item \textbf{Graph-faithful} (202 of 240 rules at $N=4$, \rt{pbc}): e.g.\ rule
+  200 --- $\mathrm{Fix}(\Phi)$ lies entirely in the recurrent block and
+  $\Phi^{400}(\mathbb{1}/d)$ converges exactly onto the ten pointer states. Here
+  ``recurrent class $=$ attractor'' is legitimate and the gap ($100$ vs.\ $10$) is
+  genuine \emph{cross-class} coherence: a $10$-dimensional decoherence-free
+  subspace built on the graph's own pointer states.
+  \item \textbf{Graph-unfaithful} (38 of 240): e.g.\ rule 22 --- fixed-point
+  operators carry weight $0.49$ \emph{outside} the recurrent block and
+  $\Phi^{400}(\mathbb{1}/d)$ retains $12.5\%$ of its population on
+  graph-``transient'' states (limit support: 11 basis states, not 3). Since
+  $\dim\mathrm{Fix}=25=5^2$, the true attractor is a \textbf{5-dimensional
+  decoherence-free subspace}; the ``three point attractors'' of the graph is an
+  artifact of dephasing. Rule 50 ($\dim\mathrm{Fix}=13$, $25\%$ leaked) and rule
+  106 ($42\%$) are stronger cases.
+\end{itemize}
+For unfaithful rules the graph-level attractor language of \S\ref{sec:census}
+describes the \emph{dephased} dynamics only; the coherent attractor requires
+Tier 1b. This is the quantitative form of the context's warning that the graph
+under-resolves dissipative attractor structure.
+
+\begin{table}[h]\centering\small\input{tab_diss_faithful.tex}
+\caption{Exact faithfulness test (pbc, $N=4$): leaked weight is the population of
+$\Phi^{400}(\mathbb{1}/d)$ remaining on graph-transient states. Non-zero leak
+means the graph misplaces the coherent attractor.}
+\label{tab:faithful}\end{table}
+
 \begin{table}[h]\centering\small\input{tab_diss_cesaro.tex}
-\caption{Exact Cesaro rank vs.\ classical pointer dimension (pbc, $N=4$). A large
-gap (rule 22: $25$ vs.\ $3$; rule 50: $13$ vs.\ $1$) flags a weakly dissipative
-rule whose channel protects extensive coherence invisible to the graph; a zero
-gap (rule 0, pure decay) is fully classical.}
+\caption{Exact Cesaro rank vs.\ the graph-resolved per-class fixed dimension
+(pbc, $N=4$). A zero gap (rule 0, pure decay) is fully classical; a large gap
+flags protected coherence. Read together with Table~\ref{tab:faithful}: for
+faithful rules the gap is cross-class coherence, for unfaithful rules it also
+includes structure the graph places on the wrong states.}
 \label{tab:cesaro}\end{table}
 
 \section{Transient relaxation}

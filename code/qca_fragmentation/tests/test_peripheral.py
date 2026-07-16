@@ -60,6 +60,25 @@ def test_cesaro_rank_and_coherence_gap():
     assert cr > classical  # protected coherence present
 
 
+def test_graph_faithfulness_two_regimes():
+    # The Tier-1a graph is the DEPHASED chain; it need not describe the coherent
+    # channel's attractors.  Rule 200 is faithful: Fix(Phi) sits inside the
+    # recurrent block and Phi^t flows onto the graph's pointer states.
+    d200 = pp.graph_faithfulness(4, rules.wolfram_to_tuple(200), "pbc")
+    assert d200["faithful"]
+    assert d200["leak_fix"] < 1e-9 and abs(d200["leak_flow"]) < 1e-9
+    assert d200["dim_fix"] == 100 and d200["n_recurrent_states"] == 10
+
+    # Rule 22 is NOT faithful: fixed-point weight leaks outside the graph's
+    # recurrent block and population survives on graph-"transient" states.
+    d22 = pp.graph_faithfulness(4, rules.wolfram_to_tuple(22), "pbc")
+    assert not d22["faithful"]
+    assert d22["leak_fix"] > 0.1
+    assert d22["leak_flow"] > 0.1          # ~12.5% stays off the 3 pointer states
+    assert d22["dim_fix"] == 25            # = 5^2: a 5-dim decoherence-free space
+    assert d22["n_recurrent_states"] == 3  # graph says only 3
+
+
 def test_geometric_vs_algebraic_multiplicity():
     # geometric multiplicity of a defective 2x2 Jordan block at lambda=1 is 1
     J = np.array([[1.0, 1.0], [0.0, 1.0]])
