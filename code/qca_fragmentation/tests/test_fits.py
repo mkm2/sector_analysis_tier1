@@ -1,7 +1,9 @@
 """Growth-class fit tests (context Tier 1 sec.7)."""
 import math
 
-from qca_fragmentation.scaling.fits import (find_integer_recurrence, fit_pure_exponential,
+from qca_fragmentation.scaling.fits import (find_integer_recurrence,
+                                            find_recurrence_by_parity,
+                                            fit_pure_exponential,
                                             fit_series)
 
 
@@ -77,3 +79,27 @@ def test_pure_exponential_stays_inside_the_physical_bound():
 def test_pure_exponential_recovers_a_clean_rate():
     e = fit_pure_exponential(NS, [1 << (N - 1) for N in NS])
     assert abs(e["base"] - 2.0) < 1e-9 and e["rms"] < 1e-9 and e["bounded"]
+
+
+def test_parity_recurrence_reports_the_per_site_base():
+    # A series growing as 3^(N/2) on both parities: the per-parity recurrence
+    # has root 3, but the base per SITE is sqrt(3), not 3.
+    Ns = list(range(6, 20))
+    seq = [3 ** (n // 2) if n % 2 == 0 else 2 * 3 ** (n // 2) for n in Ns]
+    r = find_recurrence_by_parity(Ns, seq)
+    assert r["ok"] and r["step"] == 2
+    assert abs(r["base"] - 3 ** 0.5) < 1e-9
+    assert r["name"] == "$\\sqrt{3}$"
+
+
+def test_parity_recurrence_rejects_disagreeing_parities():
+    Ns = list(range(6, 20))
+    seq = [3 ** (n // 2) if n % 2 == 0 else 2 ** (n // 2) for n in Ns]
+    assert not find_recurrence_by_parity(Ns, seq)["ok"]
+
+
+def test_step_one_is_unchanged():
+    seq = [18, 29, 47, 76, 123, 199, 322, 521]
+    assert find_integer_recurrence(seq)["step"] == 1
+    assert (find_integer_recurrence(seq)["base"]
+            == find_integer_recurrence(seq, step=1)["base"])

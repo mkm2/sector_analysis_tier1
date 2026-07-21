@@ -173,7 +173,7 @@ def name_base(x: float, tol: float = 1e-6) -> Optional[str]:
 
 
 def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
-                            coeff_max: int = 30) -> Dict:
+                            coeff_max: int = 30, step: int = 1) -> Dict:
     """Smallest-order EXACT integer linear recurrence a(n) = sum_i c_i a(n-i).
 
     Solves the first `order` equations over the rationals, keeps the solution
@@ -181,6 +181,12 @@ def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
     remaining term (so a returned recurrence is exact on the whole series, not
     a fit).  The growth base is the largest |root| of the characteristic
     polynomial -- an algebraic number, not a regression estimate.
+
+    `step` is the spacing in N between consecutive terms of `seq`.  It is 2 when
+    the caller has split a parity-oscillating series into its even and odd
+    subsequences, and then the root gives the growth per TWO sites, so the
+    reported base is its `step`-th root -- otherwise a parity-split rule would
+    be credited with the square of its actual growth base.
     """
     seq = [int(v) for v in seq]
     for order in range(1, max_order + 1):
@@ -208,10 +214,34 @@ def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
                        for k in range(order, len(seq))):
                 continue
             roots = np.roots([1] + [-x for x in c])
-            base = float(max(abs(roots)))
-            return {"ok": True, "order": order, "coeffs": c,
+            base = float(max(abs(roots))) ** (1.0 / step)
+            return {"ok": True, "order": order, "coeffs": c, "step": step,
                     "base": base, "name": name_base(base)}
     return {"ok": False}
+
+
+def find_recurrence_by_parity(Ns: Sequence[int], seq: Sequence[int],
+                              **kw) -> Dict:
+    """Exact recurrence for a parity-oscillating series, per parity.
+
+    A series that jumps between even and odd N obeys no recurrence as a whole,
+    but each parity subsequence generally does.  We accept the result only when
+    BOTH parities have one and they agree on the base to 1e-9 -- one parity
+    alone is half the data and could be a coincidence at these lengths, and
+    disagreeing bases mean there is no single growth base to report.
+    """
+    got = {}
+    for name, keep in (("even", 0), ("odd", 1)):
+        sub = [y for n, y in zip(Ns, seq) if n % 2 == keep]
+        got[name] = find_integer_recurrence(sub, step=2, **kw)
+    if not (got["even"]["ok"] and got["odd"]["ok"]):
+        return {"ok": False}
+    if abs(got["even"]["base"] - got["odd"]["base"]) > 1e-9:
+        return {"ok": False}
+    out = dict(got["even"])
+    out["parity"] = True
+    out["coeffs_odd"] = got["odd"]["coeffs"]
+    return out
 
 
 def fit_pure_exponential(Ns: Sequence[int], ys: Sequence[int]) -> Dict:

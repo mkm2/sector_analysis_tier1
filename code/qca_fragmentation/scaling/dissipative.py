@@ -39,7 +39,8 @@ import numpy as np
 
 from .. import results_io
 from ..core import rules
-from .fits import find_integer_recurrence, fit_pure_exponential, fit_series
+from .fits import (find_integer_recurrence, find_recurrence_by_parity,
+                   fit_pure_exponential, fit_series)
 from .summary import load_series
 
 FIGURES_DIR = os.path.join(results_io.REPO_ROOT, "figures")
@@ -191,10 +192,15 @@ def summarize_rule(rule: int, bc: str, coherent: Optional[set] = None) -> Dict:
             e = f[p + "_exp"]
             row[f"{key}_kappa_{p}"] = e["kappa"] if e.get("ok") else None
         # EXACT base: an integer linear recurrence satisfied by the whole
-        # series pins the growth base as an algebraic number.  Only meaningful
-        # for a parity-clean series (a split series has two interleaved laws).
-        rec = (find_integer_recurrence(s[key])
-               if (s[key] and not f["parity_split"]) else {"ok": False})
+        # series pins the growth base as an algebraic number.  A parity-split
+        # series obeys no single recurrence, but each parity subsequence
+        # usually does, so it gets the per-parity search instead.
+        if not s[key]:
+            rec = {"ok": False}
+        elif f["parity_split"]:
+            rec = find_recurrence_by_parity(s["N"], s[key])
+        else:
+            rec = find_integer_recurrence(s[key])
         row[f"{key}_rec_order"] = rec["order"] if rec["ok"] else None
         row[f"{key}_rec_coeffs"] = (",".join(map(str, rec["coeffs"]))
                                     if rec["ok"] else None)
