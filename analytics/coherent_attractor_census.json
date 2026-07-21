@@ -1,0 +1,1981 @@
+{
+ "bc": "pbc",
+ "by_N": {
+  "4": {
+   "bc": "pbc",
+   "coherent_rules": [
+    3,
+    6,
+    11,
+    17,
+    18,
+    19,
+    20,
+    22,
+    23,
+    25,
+    27,
+    33,
+    35,
+    36,
+    37,
+    38,
+    39,
+    41,
+    43,
+    44,
+    45,
+    46,
+    47,
+    49,
+    50,
+    52,
+    53,
+    55,
+    59,
+    61,
+    62,
+    63,
+    67,
+    75,
+    81,
+    83,
+    89,
+    91,
+    97,
+    100,
+    101,
+    103,
+    104,
+    106,
+    107,
+    113,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    131,
+    134,
+    139,
+    145,
+    146,
+    148,
+    151,
+    154,
+    155,
+    158,
+    159,
+    161,
+    166,
+    169,
+    178,
+    179,
+    180,
+    182,
+    183,
+    203,
+    209,
+    210,
+    211,
+    214,
+    215,
+    217,
+    219,
+    225,
+    233
+   ],
+   "n_coherent": 84,
+   "not_converged": 0,
+   "rules": {
+    "100": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 6,
+     "n_rec": 5,
+     "tuple": "IDIV"
+    },
+    "101": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "EDIV"
+    },
+    "103": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 13,
+     "tuple": "EVIV"
+    },
+    "104": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 8,
+     "n_rec": 5,
+     "tuple": "DIIV"
+    },
+    "106": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 4,
+     "n_rec": 1,
+     "tuple": "DEIV"
+    },
+    "107": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 12,
+     "tuple": "VEIV"
+    },
+    "11": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "VEDD"
+    },
+    "113": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "VDEV"
+    },
+    "115": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 9,
+     "n_rec": 12,
+     "tuple": "VVEV"
+    },
+    "116": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 4,
+     "n_rec": 3,
+     "tuple": "IDEV"
+    },
+    "117": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "EDEV"
+    },
+    "118": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "IVEV"
+    },
+    "119": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "EVEV"
+    },
+    "120": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 4,
+     "n_rec": 1,
+     "tuple": "DIEV"
+    },
+    "121": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 12,
+     "tuple": "VIEV"
+    },
+    "122": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 4,
+     "n_rec": 1,
+     "tuple": "DEEV"
+    },
+    "123": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 10,
+     "tuple": "VEEV"
+    },
+    "131": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "VVDI"
+    },
+    "134": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "IVDI"
+    },
+    "139": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 4,
+     "n_rec": 3,
+     "tuple": "VEDI"
+    },
+    "145": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "VDVI"
+    },
+    "146": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 4,
+     "n_rec": 2,
+     "tuple": "DVVI"
+    },
+    "148": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "IDVI"
+    },
+    "151": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 5,
+     "n_rec": 3,
+     "tuple": "EVVI"
+    },
+    "154": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 6,
+     "n_rec": 8,
+     "tuple": "DEVI"
+    },
+    "155": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 6,
+     "n_rec": 7,
+     "tuple": "VEVI"
+    },
+    "158": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "IEVI"
+    },
+    "159": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "EEVI"
+    },
+    "161": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 4,
+     "n_rec": 1,
+     "tuple": "VDDE"
+    },
+    "166": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 6,
+     "n_rec": 8,
+     "tuple": "IVDE"
+    },
+    "169": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 4,
+     "n_rec": 1,
+     "tuple": "VIDE"
+    },
+    "17": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "VDVD"
+    },
+    "178": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "DVVE"
+    },
+    "179": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "VVVE"
+    },
+    "18": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "DVVD"
+    },
+    "180": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 6,
+     "n_rec": 8,
+     "tuple": "IDVE"
+    },
+    "182": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 4,
+     "n_rec": 2,
+     "tuple": "IVVE"
+    },
+    "183": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "EVVE"
+    },
+    "19": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 5,
+     "n_rec": 13,
+     "tuple": "VVVD"
+    },
+    "20": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "IDVD"
+    },
+    "203": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 6,
+     "n_rec": 5,
+     "tuple": "VEII"
+    },
+    "209": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 4,
+     "n_rec": 3,
+     "tuple": "VDEI"
+    },
+    "210": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 6,
+     "n_rec": 8,
+     "tuple": "DVEI"
+    },
+    "211": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 6,
+     "n_rec": 7,
+     "tuple": "VVEI"
+    },
+    "214": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "IVEI"
+    },
+    "215": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "EVEI"
+    },
+    "217": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 6,
+     "n_rec": 5,
+     "tuple": "VIEI"
+    },
+    "219": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 6,
+     "n_rec": 5,
+     "tuple": "VEEI"
+    },
+    "22": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 5,
+     "n_rec": 3,
+     "tuple": "IVVD"
+    },
+    "225": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 4,
+     "n_rec": 1,
+     "tuple": "VDIE"
+    },
+    "23": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "EVVD"
+    },
+    "233": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 8,
+     "n_rec": 5,
+     "tuple": "VIIE"
+    },
+    "25": {
+     "basis_in_att": 0,
+     "burn": 2000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 13,
+     "tuple": "VIVD"
+    },
+    "27": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "VEVD"
+    },
+    "3": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "VVDD"
+    },
+    "33": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 10,
+     "tuple": "VDDV"
+    },
+    "35": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 9,
+     "n_rec": 12,
+     "tuple": "VVDV"
+    },
+    "36": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 6,
+     "n_rec": 5,
+     "tuple": "IDDV"
+    },
+    "37": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 7,
+     "tuple": "EDDV"
+    },
+    "38": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 6,
+     "n_rec": 7,
+     "tuple": "IVDV"
+    },
+    "39": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "EVDV"
+    },
+    "41": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 12,
+     "tuple": "VIDV"
+    },
+    "43": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "VEDV"
+    },
+    "44": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 6,
+     "n_rec": 5,
+     "tuple": "IIDV"
+    },
+    "45": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "EIDV"
+    },
+    "46": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 4,
+     "n_rec": 3,
+     "tuple": "IEDV"
+    },
+    "47": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "EEDV"
+    },
+    "49": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 9,
+     "n_rec": 12,
+     "tuple": "VDVV"
+    },
+    "50": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "DVVV"
+    },
+    "52": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 6,
+     "n_rec": 7,
+     "tuple": "IDVV"
+    },
+    "53": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "EDVV"
+    },
+    "55": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 5,
+     "n_rec": 13,
+     "tuple": "EVVV"
+    },
+    "59": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 9,
+     "n_rec": 12,
+     "tuple": "VEVV"
+    },
+    "6": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "IVDD"
+    },
+    "61": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 13,
+     "tuple": "EIVV"
+    },
+    "62": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 8,
+     "n_rec": 10,
+     "tuple": "IEVV"
+    },
+    "63": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 7,
+     "n_rec": 9,
+     "tuple": "EEVV"
+    },
+    "67": {
+     "basis_in_att": 0,
+     "burn": 2000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 13,
+     "tuple": "VVID"
+    },
+    "75": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "VEID"
+    },
+    "81": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 3,
+     "n_rec": 2,
+     "tuple": "VDED"
+    },
+    "83": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "VVED"
+    },
+    "89": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 9,
+     "tuple": "VIED"
+    },
+    "91": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 1,
+     "n_rec": 7,
+     "tuple": "VEED"
+    },
+    "97": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 12,
+     "tuple": "VDIV"
+    }
+   }
+  },
+  "6": {
+   "bc": "pbc",
+   "coherent_rules": [
+    3,
+    6,
+    17,
+    18,
+    19,
+    20,
+    22,
+    23,
+    25,
+    26,
+    27,
+    33,
+    35,
+    38,
+    39,
+    41,
+    49,
+    50,
+    52,
+    53,
+    55,
+    59,
+    61,
+    62,
+    63,
+    67,
+    82,
+    83,
+    97,
+    103,
+    107,
+    115,
+    118,
+    119,
+    121,
+    123,
+    131,
+    134,
+    145,
+    146,
+    148,
+    151,
+    154,
+    155,
+    158,
+    159,
+    166,
+    167,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    188,
+    210,
+    211,
+    214,
+    215,
+    230
+   ],
+   "n_coherent": 60,
+   "not_converged": 0,
+   "rules": {
+    "103": {
+     "basis_in_att": 33,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 39,
+     "n_rec": 45,
+     "tuple": "EVIV"
+    },
+    "107": {
+     "basis_in_att": 26,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VEIV"
+    },
+    "115": {
+     "basis_in_att": 20,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VVEV"
+    },
+    "118": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "IVEV"
+    },
+    "119": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "EVEV"
+    },
+    "121": {
+     "basis_in_att": 26,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VIEV"
+    },
+    "123": {
+     "basis_in_att": 20,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 22,
+     "n_rec": 28,
+     "tuple": "VEEV"
+    },
+    "131": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "VVDI"
+    },
+    "134": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "IVDI"
+    },
+    "145": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "VDVI"
+    },
+    "146": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 6,
+     "n_rec": 2,
+     "tuple": "DVVI"
+    },
+    "148": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "IDVI"
+    },
+    "151": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 8,
+     "dim_att": 11,
+     "n_rec": 3,
+     "tuple": "EVVI"
+    },
+    "154": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 8,
+     "n_rec": 11,
+     "tuple": "DEVI"
+    },
+    "155": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 7,
+     "n_rec": 10,
+     "tuple": "VEVI"
+    },
+    "158": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "IEVI"
+    },
+    "159": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "EEVI"
+    },
+    "166": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 8,
+     "n_rec": 11,
+     "tuple": "IVDE"
+    },
+    "167": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 10,
+     "n_rec": 13,
+     "tuple": "EVDE"
+    },
+    "17": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "VDVD"
+    },
+    "178": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 5,
+     "n_rec": 2,
+     "tuple": "DVVE"
+    },
+    "179": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "VVVE"
+    },
+    "18": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "DVVD"
+    },
+    "180": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 8,
+     "n_rec": 11,
+     "tuple": "IDVE"
+    },
+    "181": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 10,
+     "n_rec": 13,
+     "tuple": "EDVE"
+    },
+    "182": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 6,
+     "n_rec": 2,
+     "tuple": "IVVE"
+    },
+    "183": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "EVVE"
+    },
+    "188": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 8,
+     "n_rec": 2,
+     "tuple": "IIVE"
+    },
+    "19": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 5,
+     "n_rec": 45,
+     "tuple": "VVVD"
+    },
+    "20": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "IDVD"
+    },
+    "210": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 8,
+     "n_rec": 11,
+     "tuple": "DVEI"
+    },
+    "211": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 7,
+     "n_rec": 10,
+     "tuple": "VVEI"
+    },
+    "214": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "IVEI"
+    },
+    "215": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "EVEI"
+    },
+    "22": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 8,
+     "dim_att": 11,
+     "n_rec": 3,
+     "tuple": "IVVD"
+    },
+    "23": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 5,
+     "n_rec": 2,
+     "tuple": "EVVD"
+    },
+    "230": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 8,
+     "n_rec": 2,
+     "tuple": "IVIE"
+    },
+    "25": {
+     "basis_in_att": 33,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 39,
+     "n_rec": 45,
+     "tuple": "VIVD"
+    },
+    "26": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 10,
+     "n_rec": 13,
+     "tuple": "DEVD"
+    },
+    "27": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "VEVD"
+    },
+    "3": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "VVDD"
+    },
+    "33": {
+     "basis_in_att": 20,
+     "burn": 1000,
+     "coh_dirs": 2,
+     "dim_att": 22,
+     "n_rec": 28,
+     "tuple": "VDDV"
+    },
+    "35": {
+     "basis_in_att": 20,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VVDV"
+    },
+    "38": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 7,
+     "n_rec": 10,
+     "tuple": "IVDV"
+    },
+    "39": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "EVDV"
+    },
+    "41": {
+     "basis_in_att": 26,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VIDV"
+    },
+    "49": {
+     "basis_in_att": 20,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VDVV"
+    },
+    "50": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "DVVV"
+    },
+    "52": {
+     "basis_in_att": 4,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 7,
+     "n_rec": 10,
+     "tuple": "IDVV"
+    },
+    "53": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "EDVV"
+    },
+    "55": {
+     "basis_in_att": 0,
+     "burn": 2000,
+     "coh_dirs": 5,
+     "dim_att": 5,
+     "n_rec": 45,
+     "tuple": "EVVV"
+    },
+    "59": {
+     "basis_in_att": 20,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VEVV"
+    },
+    "6": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "IVDD"
+    },
+    "61": {
+     "basis_in_att": 33,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 39,
+     "n_rec": 45,
+     "tuple": "EIVV"
+    },
+    "62": {
+     "basis_in_att": 10,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 19,
+     "n_rec": 28,
+     "tuple": "IEVV"
+    },
+    "63": {
+     "basis_in_att": 9,
+     "burn": 1000,
+     "coh_dirs": 9,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "EEVV"
+    },
+    "67": {
+     "basis_in_att": 33,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 39,
+     "n_rec": 45,
+     "tuple": "VVID"
+    },
+    "82": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 3,
+     "dim_att": 10,
+     "n_rec": 13,
+     "tuple": "DVED"
+    },
+    "83": {
+     "basis_in_att": 7,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 18,
+     "n_rec": 27,
+     "tuple": "VVED"
+    },
+    "97": {
+     "basis_in_att": 26,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 31,
+     "n_rec": 40,
+     "tuple": "VDIV"
+    }
+   }
+  },
+  "8": {
+   "bc": "pbc",
+   "coherent_rules": [
+    3,
+    6,
+    17,
+    18,
+    19,
+    20,
+    22,
+    23,
+    25,
+    27,
+    33,
+    35,
+    37,
+    38,
+    39,
+    41,
+    45,
+    49,
+    50,
+    52,
+    53,
+    55,
+    59,
+    61,
+    62,
+    63,
+    67,
+    75,
+    83,
+    89,
+    91,
+    97,
+    101,
+    103,
+    104,
+    106,
+    107,
+    115,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    131,
+    134,
+    145,
+    146,
+    148,
+    151,
+    154,
+    155,
+    158,
+    159,
+    161,
+    163,
+    166,
+    169,
+    177,
+    178,
+    179,
+    180,
+    182,
+    183,
+    188,
+    210,
+    211,
+    214,
+    215,
+    225,
+    230,
+    233
+   ],
+   "n_coherent": 72,
+   "not_converged": 0,
+   "rules": {
+    "101": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 12,
+     "n_rec": 16,
+     "tuple": "EDIV"
+    },
+    "103": {
+     "basis_in_att": 105,
+     "burn": 1000,
+     "coh_dirs": 26,
+     "dim_att": 131,
+     "n_rec": 161,
+     "tuple": "EVIV"
+    },
+    "104": {
+     "basis_in_att": 13,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 17,
+     "n_rec": 13,
+     "tuple": "DIIV"
+    },
+    "106": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "DEIV"
+    },
+    "107": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 136,
+     "tuple": "VEIV"
+    },
+    "115": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 85,
+     "dim_att": 93,
+     "n_rec": 136,
+     "tuple": "VVEV"
+    },
+    "118": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "IVEV"
+    },
+    "119": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "EVEV"
+    },
+    "120": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "DIEV"
+    },
+    "121": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 136,
+     "tuple": "VIEV"
+    },
+    "122": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "DEEV"
+    },
+    "123": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 82,
+     "tuple": "VEEV"
+    },
+    "131": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "VVDI"
+    },
+    "134": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "IVDI"
+    },
+    "145": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "VDVI"
+    },
+    "146": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 10,
+     "dim_att": 12,
+     "n_rec": 2,
+     "tuple": "DVVI"
+    },
+    "148": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "IDVI"
+    },
+    "151": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 14,
+     "n_rec": 3,
+     "tuple": "EVVI"
+    },
+    "154": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 10,
+     "n_rec": 14,
+     "tuple": "DEVI"
+    },
+    "155": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 9,
+     "n_rec": 13,
+     "tuple": "VEVI"
+    },
+    "158": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "IEVI"
+    },
+    "159": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "EEVI"
+    },
+    "161": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "VDDE"
+    },
+    "163": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 45,
+     "dim_att": 46,
+     "n_rec": 1,
+     "tuple": "VVDE"
+    },
+    "166": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 10,
+     "n_rec": 14,
+     "tuple": "IVDE"
+    },
+    "169": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "VIDE"
+    },
+    "17": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "VDVD"
+    },
+    "177": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 45,
+     "dim_att": 46,
+     "n_rec": 1,
+     "tuple": "VDVE"
+    },
+    "178": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 7,
+     "n_rec": 2,
+     "tuple": "DVVE"
+    },
+    "179": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 6,
+     "n_rec": 1,
+     "tuple": "VVVE"
+    },
+    "18": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "DVVD"
+    },
+    "180": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 10,
+     "n_rec": 14,
+     "tuple": "IDVE"
+    },
+    "182": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 10,
+     "dim_att": 12,
+     "n_rec": 2,
+     "tuple": "IVVE"
+    },
+    "183": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 1,
+     "dim_att": 2,
+     "n_rec": 1,
+     "tuple": "EVVE"
+    },
+    "188": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 8,
+     "dim_att": 10,
+     "n_rec": 2,
+     "tuple": "IIVE"
+    },
+    "19": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 11,
+     "n_rec": 161,
+     "tuple": "VVVD"
+    },
+    "20": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "IDVD"
+    },
+    "210": {
+     "basis_in_att": 6,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 10,
+     "n_rec": 14,
+     "tuple": "DVEI"
+    },
+    "211": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 9,
+     "n_rec": 13,
+     "tuple": "VVEI"
+    },
+    "214": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "IVEI"
+    },
+    "215": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "EVEI"
+    },
+    "22": {
+     "basis_in_att": 3,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 14,
+     "n_rec": 3,
+     "tuple": "IVVD"
+    },
+    "225": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 5,
+     "n_rec": 1,
+     "tuple": "VDIE"
+    },
+    "23": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 7,
+     "n_rec": 2,
+     "tuple": "EVVD"
+    },
+    "230": {
+     "basis_in_att": 2,
+     "burn": 1000,
+     "coh_dirs": 8,
+     "dim_att": 10,
+     "n_rec": 2,
+     "tuple": "IVIE"
+    },
+    "233": {
+     "basis_in_att": 13,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 17,
+     "n_rec": 13,
+     "tuple": "VIIE"
+    },
+    "25": {
+     "basis_in_att": 105,
+     "burn": 1000,
+     "coh_dirs": 26,
+     "dim_att": 131,
+     "n_rec": 161,
+     "tuple": "VIVD"
+    },
+    "27": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "VEVD"
+    },
+    "3": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "VVDD"
+    },
+    "33": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 82,
+     "tuple": "VDDV"
+    },
+    "35": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 85,
+     "dim_att": 93,
+     "n_rec": 136,
+     "tuple": "VVDV"
+    },
+    "37": {
+     "basis_in_att": 15,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 21,
+     "n_rec": 47,
+     "tuple": "EDDV"
+    },
+    "38": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 9,
+     "n_rec": 13,
+     "tuple": "IVDV"
+    },
+    "39": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "EVDV"
+    },
+    "41": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 136,
+     "tuple": "VIDV"
+    },
+    "45": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 12,
+     "n_rec": 16,
+     "tuple": "EIDV"
+    },
+    "49": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 85,
+     "dim_att": 93,
+     "n_rec": 136,
+     "tuple": "VDVV"
+    },
+    "50": {
+     "basis_in_att": 1,
+     "burn": 1000,
+     "coh_dirs": 5,
+     "dim_att": 6,
+     "n_rec": 1,
+     "tuple": "DVVV"
+    },
+    "52": {
+     "basis_in_att": 5,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 9,
+     "n_rec": 13,
+     "tuple": "IDVV"
+    },
+    "53": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "EDVV"
+    },
+    "55": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 11,
+     "dim_att": 11,
+     "n_rec": 161,
+     "tuple": "EVVV"
+    },
+    "59": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 85,
+     "dim_att": 93,
+     "n_rec": 136,
+     "tuple": "VEVV"
+    },
+    "6": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "IVDD"
+    },
+    "61": {
+     "basis_in_att": 105,
+     "burn": 1000,
+     "coh_dirs": 26,
+     "dim_att": 131,
+     "n_rec": 161,
+     "tuple": "EIVV"
+    },
+    "62": {
+     "basis_in_att": 18,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 48,
+     "n_rec": 82,
+     "tuple": "IEVV"
+    },
+    "63": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "EEVV"
+    },
+    "67": {
+     "basis_in_att": 105,
+     "burn": 1000,
+     "coh_dirs": 26,
+     "dim_att": 131,
+     "n_rec": 161,
+     "tuple": "VVID"
+    },
+    "75": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 12,
+     "n_rec": 16,
+     "tuple": "VEID"
+    },
+    "83": {
+     "basis_in_att": 17,
+     "burn": 1000,
+     "coh_dirs": 30,
+     "dim_att": 47,
+     "n_rec": 81,
+     "tuple": "VVED"
+    },
+    "89": {
+     "basis_in_att": 8,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 12,
+     "n_rec": 16,
+     "tuple": "VIED"
+    },
+    "91": {
+     "basis_in_att": 15,
+     "burn": 1000,
+     "coh_dirs": 6,
+     "dim_att": 21,
+     "n_rec": 47,
+     "tuple": "VEED"
+    },
+    "97": {
+     "basis_in_att": 0,
+     "burn": 1000,
+     "coh_dirs": 4,
+     "dim_att": 4,
+     "n_rec": 136,
+     "tuple": "VDIV"
+    }
+   }
+  }
+ },
+ "description": "Coherent-attractor census: rules whose channel attractor is NOT spanned by computational-basis states (dim_att > basis_in_att), i.e. rules for which the Tier-1a transition graph cannot name the attractor.",
+ "engine_version": "1a.1",
+ "method": "Cesaro average of Phi^n(1/d); eigenvalues kept above 1e-9 and the burn-in doubled until smallest_kept/largest_dropped > 1e4 (spectral-gap convergence guarantee); basis_in_att = # computational-basis states inside the attractor support.",
+ "n_dissipative": 240,
+ "source": "qca_fragmentation.quantum.attractor_structure"
+}

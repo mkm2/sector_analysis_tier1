@@ -21,7 +21,8 @@ Growth class label (for the final figure's marker shape):
 from __future__ import annotations
 
 import math
-from typing import Dict, List, Sequence
+from fractions import Fraction
+from typing import Dict, List, Optional, Sequence
 
 import numpy as np
 
@@ -132,3 +133,110 @@ def fit_series(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
     if best == "M1":
         out["alpha"] = float(fits["M1"]["beta"][1])
     return out
+
+
+# --- pure exponential rate ---------------------------------------------------
+# M2 carries an  alpha ln N  term so that binomial prefactors do not bias kappa.
+# That is right for the clean, monotone unitary series, but it is unstable on
+# the ragged dissipative ones: with few points alpha absorbs the curvature and
+# kappa runs away (rule 90's D_max = 1,15,1,7,3,63,2,127 yields alpha = -7.5 and
+# a "base" of 11, when D_max <= 2^N forces base <= 2).  For those series we fit
+# the two-parameter model  ln y = c + kappa N  instead, which cannot trade the
+# rate against a power and stays inside the physical bound.
+
+LN2 = math.log(2.0)
+
+# Named algebraic constants that show up as growth bases, for labelling.
+_NAMED_BASES = [
+    (2.0, "2"),
+    (1.9659482366, "root of $x^3=2x^2-1$"),
+    (1.8392867552, "tribonacci $\\psi$"),
+    (1.7548776662, "root of $x^3=2x^2-x+1$"),
+    (1.7320508076, "$\\sqrt{3}$"),
+    (1.6180339887, "golden $\\varphi$"),
+    (1.4655712319, "supergolden $\\psi$"),
+    (1.4142135624, "$\\sqrt{2}$"),
+    (1.3247179572, "plastic $\\rho$"),
+    (1.2599210499, "$2^{1/3}$"),
+    (1.1892071150, "$2^{1/4}$"),
+]
+
+
+def name_base(x: float, tol: float = 1e-6) -> Optional[str]:
+    """Return a label if `x` matches a known algebraic constant."""
+    if x is None:
+        return None
+    for v, nm in _NAMED_BASES:
+        if abs(x - v) < tol:
+            return nm
+    return None
+
+
+def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
+                            coeff_max: int = 30) -> Dict:
+    """Smallest-order EXACT integer linear recurrence a(n) = sum_i c_i a(n-i).
+
+    Solves the first `order` equations over the rationals, keeps the solution
+    only if the coefficients are integers, and then VERIFIES it against every
+    remaining term (so a returned recurrence is exact on the whole series, not
+    a fit).  The growth base is the largest |root| of the characteristic
+    polynomial -- an algebraic number, not a regression estimate.
+    """
+    seq = [int(v) for v in seq]
+    for order in range(1, max_order + 1):
+        if len(seq) < 2 * order + 1:
+            break
+        M = [[Fraction(seq[n - 1 - i]) for i in range(order)] + [Fraction(seq[n])]
+             for n in range(order, 2 * order)]
+        for c in range(order):                       # Gauss-Jordan over Q
+            p = next((r for r in range(c, order) if M[r][c] != 0), None)
+            if p is None:
+                break
+            M[c], M[p] = M[p], M[c]
+            pv = M[c][c]
+            M[c] = [x / pv for x in M[c]]
+            for r in range(order):
+                if r != c and M[r][c] != 0:
+                    f = M[r][c]
+                    M[r] = [a - f * b for a, b in zip(M[r], M[c])]
+        else:
+            coeffs = [M[i][order] for i in range(order)]
+            if not all(x.denominator == 1 and abs(x) <= coeff_max for x in coeffs):
+                continue
+            c = [int(x) for x in coeffs]
+            if not all(seq[k] == sum(c[i] * seq[k - 1 - i] for i in range(order))
+                       for k in range(order, len(seq))):
+                continue
+            roots = np.roots([1] + [-x for x in c])
+            base = float(max(abs(roots)))
+            return {"ok": True, "order": order, "coeffs": c,
+                    "base": base, "name": name_base(base)}
+    return {"ok": False}
+
+
+def fit_pure_exponential(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
+    """Least-squares ln y = c + kappa N.  Returns kappa, base, rms residual.
+
+    `bounded` is False when the fitted base exceeds 2, which is impossible for
+    any series bounded by the Hilbert-space dimension 2^N and therefore marks
+    the series as too irregular for an exponential description.
+    """
+    Ns = np.asarray(list(Ns), dtype=float)
+    ys = np.asarray(list(ys), dtype=float)
+    good = ys > 0
+    Ns, ys = Ns[good], ys[good]
+    if len(Ns) < 2 or len(set(Ns.tolist())) < 2:
+        return {"ok": False, "reason": "need >=2 positive points"}
+    lny = np.log(ys)
+    X = np.column_stack([np.ones_like(Ns), Ns])
+    beta, *_ = np.linalg.lstsq(X, lny, rcond=None)
+    resid = lny - X @ beta
+    kappa = float(beta[1])
+    return {
+        "ok": True,
+        "n_points": int(len(Ns)),
+        "kappa": kappa,
+        "base": math.exp(kappa),
+        "rms": float(np.sqrt((resid ** 2).mean())),
+        "bounded": kappa <= LN2 + 1e-6,
+    }

@@ -9,10 +9,10 @@
 \newcommand{\rt}[1]{\texttt{#1}}
 
 \title{\textbf{Report R5 --- Dissipative rules: recurrent classes, attractors,
-and protected coherence}\\
-\large Krylov sector analysis of quantum cellular automata (Tier 1a/1b)}
+protected coherence, and growth laws}\\
+\large Krylov sector analysis of quantum cellular automata (Tier 1a/1b/1c)}
 \author{QCA Sector Analysis project (Tier 1)}
-\date{2026-07-12 \quad\small(engine\_version \texttt{1a.1})}
+\date{2026-07-22 \quad\small(engine\_version \texttt{1a.1})}
 
 \begin{document}
 \maketitle
@@ -21,15 +21,22 @@ and protected coherence}\\
 We extend the exact pipeline to the 240 dissipative quantum cellular automata
 (rules containing a reset channel $\rt D$ or $\rt E$). The one-cycle channel is
 now genuinely non-unitary: the directed transition graph has \emph{transient}
-strongly connected components flowing into \emph{recurrent classes}
-(attractors). We sweep all dissipative rules (both boundary conventions,
-$N=6\ldots13$), census their attractor structure, and classify each recurrent
-class by the peripheral spectrum of its exact restricted superoperator (Tier 1b)
-as a classical pointer state (\emph{mixing}), a \emph{limit cycle}, or a
-\emph{coherence-carrying} attractor. Finally we quantify, exactly at small $N$,
-the \emph{protected-coherence gap} --- the amount by which the full channel's
-fixed-point space exceeds the classical pointer count --- which the transition
-graph provably under-resolves for weakly dissipative rules.
+strongly connected components flowing into \emph{recurrent classes}. We sweep
+all dissipative rules (both boundary conventions, $N=6\ldots13$), census their
+attractor structure, classify each recurrent class by the peripheral spectrum of
+its exact restricted superoperator (Tier 1b), and --- new in this revision ---
+extract the \emph{growth laws} of the attractor count and the largest attractor
+(Tier 1c). Two results organise the report. First, the transition graph is not a
+lossy picture of the channel but the \emph{exact} description of a different
+experiment (the monitored QCA), and it fails to describe the unmonitored channel
+in a way we can now census exactly: for $92$ of $240$ \rt{pbc} rules the
+channel's attractor is not spanned by computational-basis states at all, and
+every one of those rules contains a Hadamard, while all $80$ Hadamard-free
+dissipative rules are basis-spanned without exception. Second, dissipative
+growth is far from generic: $58$ of the \rt{pbc} series satisfy an \emph{exact}
+integer linear recurrence, so their growth bases are algebraic numbers ---
+$\varphi$, $\sqrt3$, the supergolden and plastic constants --- rather than
+fitted slopes.
 \end{abstract}
 
 \section{Dissipative graph structure}
@@ -37,24 +44,33 @@ For a dissipative rule the channel $\Phi_C(\rho)=\sum_\mu K_\mu\rho K_\mu^\dagge
 has $\ge 2$ Kraus operators. The exact engine propagates every Kraus branch
 (never merging incoherent alternatives) and records the directed transition
 graph $M_{yx}=\sum_\mu|\langle y|K_\mu|x\rangle|^2$. Its terminal strongly
-connected components are the recurrent classes (attractors); non-terminal
-components are transient. We record, per $(\text{rule},N,\text{bc})$: the number
-and sizes of recurrent classes, the transient depth (longest condensation-DAG
-path), and the basin structure (states reaching a single vs.\ several
-attractors). The engine and its dissipative branch machinery are validated
+connected components are the recurrent classes; non-terminal components are
+transient. We record, per $(\text{rule},N,\text{bc})$: the number and sizes of
+recurrent classes, the transient depth (longest condensation-DAG path), and the
+basin structure. The engine and its dissipative branch machinery are validated
 against an independent dense-channel oracle (528/528 support checks; per-site
 Kraus completeness $A_0^\dagger A_0+A_1^\dagger A_1=\mathbb{1}$).
 
+\paragraph{What $M$ is, exactly.} It is worth being precise about the status of
+$M$, because the usual phrase ``the graph is an approximation'' is wrong in a
+way that matters. $M$ is the transition matrix of the QCA \emph{monitored in the
+computational basis after every cycle}: measure all $N$ qubits at the end of each
+brickwork cycle and $M$ gives the exact conditional distribution of outcomes. So
+$M$ is not an approximation of anything --- it is the exact dynamics of a
+different (and physically realisable) experiment. What it cannot do is predict
+the \emph{unmonitored} channel, because there coherences feed back into
+populations between cycles. Everything below is a statement about how far apart
+those two experiments are, rule by rule.
+
 \section{Census of attractor structure}
 \label{sec:census}
-Table~\ref{tab:census} classifies every dissipative rule by the structure at the
-largest computed $N$: a unique classical fixed point, several point attractors
-(multistability, signalling a strong basis-diagonal conserved charge), or one or
-more extended ($>\!1$-state) attractors. These are properties of the
-\emph{dephased} chain $M$; \S\ref{sec:strongweak} tests when that coincides with
-the coherent channel's attractors (it does for 202 of the 240 rules).
+Table~\ref{tab:census} classifies every dissipative rule by the structure of $M$
+at the largest computed $N$: a unique classical fixed point, several point
+attractors (multistability, signalling a basis-diagonal conserved charge), or one
+or more extended ($>\!1$-state) attractors.
 \begin{table}[h]\centering\small\input{tab_diss_census.tex}
-\caption{Dissipative rules by attractor structure and boundary convention.}
+\caption{Dissipative rules by attractor structure of the monitored chain $M$ and
+boundary convention.}
 \label{tab:census}\end{table}
 
 Two ground-truth items (context \S8) are reproduced: rule 22 $(\rt{IVVD})$ on
@@ -69,7 +85,6 @@ the non-normal transient Jordan structure). A class is \emph{mixing} (a unique
 steady state; a classical pointer/dark state when $|R|=1$), a \emph{limit cycle}
 (peripheral roots of unity, basis-diagonal eigenoperators), or
 \emph{coherence-carrying} (a decoherence-free subsystem of dimension $d_k>1$).
-Table~\ref{tab:tier1b} surveys representative rules.
 \begin{table}[h]\centering\small\input{tab_diss_tier1b.tex}
 \caption{Tier-1b attractor classification (pbc, $N=8$). Rule 28 carries
 coherence-protecting extended attractors ($d_k>1$); most others relax to
@@ -82,54 +97,102 @@ A \emph{strong} symmetry commutes with every Kraus operator individually; a
 \emph{weak} symmetry only makes the channel covariant (context \S5). For unitary
 rules there is a single Kraus operator and the two coincide. This pipeline does
 \textbf{not} detect symmetry \emph{operators} (no commutant of $\{K_\mu\}$, no
-charge null-space --- that is Tier 2); it separates the two \emph{operationally},
-because the two stages of the pipeline are sensitive to different things:
+charge null-space --- that is Tier 2); it separates the two \emph{operationally}:
 
 \begin{itemize}
-  \item \textbf{Tier 1a (graph).} The graph encodes
-  $M_{yx}=\sum_\mu|\langle y|K_\mu|x\rangle|^2$, i.e.\ the chain obtained by
-  \emph{dephasing in the computational basis after every cycle}. Only
+  \item \textbf{Tier 1a (graph).} $M$ is the monitored chain. Only
   basis-diagonal \emph{strong} charges fragment it; their signature is the number
-  of recurrent classes (multistability, Table~\ref{tab:census}). This is the only
-  symmetry information the graph carries.
+  of recurrent classes (Table~\ref{tab:census}). This is the only symmetry
+  information the graph carries.
   \item \textbf{Tier 1b (channel).} The exact Cesaro rank
   $\dim\mathrm{Fix}(\Phi)$ (geometric multiplicity of eigenvalue 1 of the full
   $4^N$ superoperator) sees the coherent fixed-point algebra. Weak symmetries and
   protected coherences appear here and \emph{only} here.
 \end{itemize}
 The gap $\dim\mathrm{Fix}(\Phi)-\sum_R\dim\mathrm{Fix}(\Phi_R)\ge 0$ measures what
-the graph misses (Table~\ref{tab:cesaro}).
+the monitored description misses (Table~\ref{tab:cesaro}).
 
-\subsection{Caveat: the graph is the dephased chain, and can misplace attractors}
-$\Phi$'s populations are \emph{not} determined by $M$ --- coherences feed back into
-populations --- so ``transient for $M$'' does not imply ``transient for $\Phi$''.
-We therefore test faithfulness exactly (Table~\ref{tab:faithful}) by asking
-whether $\mathrm{Fix}(\Phi)$ is contained in the block spanned by the graph's
-recurrent states, and whether $\Phi^{t}(\mathbb{1}/d)$ actually flows onto them.
-Two regimes occur, and the distinction matters:
+\section{When the graph cannot name the attractor: two distinct failure modes}
+\label{sec:failure}
+The earlier revision of this report reported a single number --- ``38 of 240
+rules are unfaithful'' --- from a leakage test. That test is the weaker of two,
+and it misses the more common failure. We now separate them.
+
+\paragraph{Mode 1: leakage (the weak test).} Ask whether
+$\Phi^{t}(\mathbb{1}/d)$ retains population on states the graph calls transient,
+and whether $\mathrm{Fix}(\Phi)$ has weight outside the recurrent block. This
+catches rules where the graph puts the attractor on the \emph{wrong states}:
+$\mathbf{38}$ of $240$ at $N=4$, \rt{pbc} (Table~\ref{tab:faithful}). Rule 22 is
+the sharp case --- fixed-point operators carry weight $0.49$ outside the
+recurrent block and $\Phi^{400}(\mathbb{1}/d)$ retains $12.5\%$ of its population
+on graph-``transient'' states (limit support: 11 basis states, not 3). Since
+$\dim\mathrm{Fix}=25=5^2$ the true attractor is a $5$-dimensional
+decoherence-free subspace, and the ``three point attractors'' are an artifact of
+dephasing. Rule 50 ($\dim\mathrm{Fix}=13$, $25\%$ leaked) and rule 106 ($42\%$)
+are stronger cases.
+
+\paragraph{Mode 2: coherence (the structural test).} A rule can pass the leakage
+test and still be undescribable by any state-space graph, because the graph's
+vertices \emph{are} basis states: whatever it calls the attractor is a
+\emph{set}, while the channel's attractor is a \emph{subspace}. The right
+question is therefore whether that subspace is basis-spanned,
+\[
+  \dim_{\mathrm{att}} \;=\; \dim\operatorname{supp}
+  \lim_{T\to\infty}\tfrac1T\sum_{n<T}\Phi^n(\mathbb{1}/d),
+  \qquad
+  \mathrm{coh\ dirs} \;=\; \dim_{\mathrm{att}} - \#\{\text{basis states inside}\},
+\]
+and $\mathrm{coh\ dirs}>0$ is exactly the structure no graph can represent.
+Rule 27 $(\rt{VEVD})$ shows the two tests are genuinely different: the graph
+reports $9$ recurrent states, the truth is \emph{one} pure stationary
+superposition --- and the leak is $0$, so Mode 1 sees nothing. Unlike the leaked
+weight, $\mathrm{coh\ dirs}$ is initial-state independent and not normalised by
+$2^N$ (leakage from $\mathbb{1}/d$ gives rules 104/233 a spurious $2/2^N$ that
+vanishes with $N$ for purely dilutional reasons).
+
+The Cesaro limit must be taken to a genuine \emph{spectral gap}, not to a fixed
+burn-in. With burn-in $600$, rule 19 at $N=6$ reports $\dim_{\mathrm{att}}=35$
+with smallest kept eigenvalue $1.9\cdot10^{-9}$ against largest dropped
+$4.8\cdot10^{-10}$: no gap, so the ``attractor'' is mostly still-decaying
+transient. Converged (burn-in $4000$) it is $5$, with a gap of $1.8\cdot10^{-2}$
+against $10^{-15}$. We therefore double the burn-in until
+$\lambda_{\text{kept}}/\lambda_{\text{dropped}}>10^{4}$.
+
+\paragraph{Census.} All $240$ dissipative rules, \rt{pbc}, $N=4,6,8$, every rule
+converged:
+\begin{center}\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+ & $N=4$ & $N=6$ & $N=8$ \\
+\midrule
+rules with a non-basis-spanned attractor & 84 & 60 & 72 \\
+not converged & 0 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+The count is \textbf{non-monotonic} in $N$ and stays extensive: $54$ rules are
+coherent at all three sizes and $92$ at some size, so this is not a small-$N$
+accident that washes out. Two structural facts stand out:
 \begin{itemize}
-  \item \textbf{Graph-faithful} (202 of 240 rules at $N=4$, \rt{pbc}): e.g.\ rule
-  200 --- $\mathrm{Fix}(\Phi)$ lies entirely in the recurrent block and
-  $\Phi^{400}(\mathbb{1}/d)$ converges exactly onto the ten pointer states. Here
-  ``recurrent class $=$ attractor'' is legitimate and the gap ($100$ vs.\ $10$) is
-  genuine \emph{cross-class} coherence: a $10$-dimensional decoherence-free
-  subspace built on the graph's own pointer states.
-  \item \textbf{Graph-unfaithful} (38 of 240): e.g.\ rule 22 --- fixed-point
-  operators carry weight $0.49$ \emph{outside} the recurrent block and
-  $\Phi^{400}(\mathbb{1}/d)$ retains $12.5\%$ of its population on
-  graph-``transient'' states (limit support: 11 basis states, not 3). Since
-  $\dim\mathrm{Fix}=25=5^2$, the true attractor is a \textbf{5-dimensional
-  decoherence-free subspace}; the ``three point attractors'' of the graph is an
-  artifact of dephasing. Rule 50 ($\dim\mathrm{Fix}=13$, $25\%$ leaked) and rule
-  106 ($42\%$) are stronger cases.
+  \item \textbf{The Hadamard is necessary.} All $80$ Hadamard-free dissipative
+  rules ($\rt V\notin$ tuple) are basis-spanned at every censused size, and all
+  $92$ coherent rules contain at least one $\rt V$. With only $\rt I$, $\rt D$,
+  $\rt E$ the Kraus operators are basis permutations composed with resets, so
+  the channel maps basis-diagonal states to basis-diagonal states and the graph
+  is complete by construction.
+  \item \textbf{The wall-Hadamard core.} The $12$ rules with $r_{01}=r_{10}=\rt V$
+  --- $\{18,19,22,23,50,55,146,151,178,179,182,183\}$, i.e.\ Hadamard exactly on
+  the domain-wall configurations --- are coherent \emph{without exception}. A
+  Hadamard driven by the wall pattern rather than by the site occupation is the
+  mechanism that keeps a superposition stationary.
 \end{itemize}
-For unfaithful rules the graph-level attractor language of \S\ref{sec:census}
-describes the \emph{dephased} dynamics only; the coherent attractor requires
-Tier 1b. This is the quantitative form of the context's warning that the graph
-under-resolves dissipative attractor structure.
+Mode 2 also cuts across the graph-level classification of \S\ref{sec:census}:
+$37$ of the $47$ \rt{pbc} rules with a single extended attractor are coherent,
+against $13$ of $75$ multistable rules --- extended graph attractors are the ones
+most likely not to be attractors at all in the coherent sense.
 
 \begin{table}[h]\centering\small\input{tab_diss_faithful.tex}
-\caption{Exact faithfulness test (pbc, $N=4$): leaked weight is the population of
+\caption{Mode-1 (leakage) test (pbc, $N=4$): leaked weight is the population of
 $\Phi^{400}(\mathbb{1}/d)$ remaining on graph-transient states. Non-zero leak
 means the graph misplaces the coherent attractor.}
 \label{tab:faithful}\end{table}
@@ -137,10 +200,125 @@ means the graph misplaces the coherent attractor.}
 \begin{table}[h]\centering\small\input{tab_diss_cesaro.tex}
 \caption{Exact Cesaro rank vs.\ the graph-resolved per-class fixed dimension
 (pbc, $N=4$). A zero gap (rule 0, pure decay) is fully classical; a large gap
-flags protected coherence. Read together with Table~\ref{tab:faithful}: for
-faithful rules the gap is cross-class coherence, for unfaithful rules it also
-includes structure the graph places on the wrong states.}
+flags protected coherence.}
 \label{tab:cesaro}\end{table}
+
+\section{Tier 1c: dissipative growth laws}
+\label{sec:scaling}
+We now fit the $N$-dependence of the attractor count $\#\mathrm{att}$, the
+largest attractor $D_{\max}$, the largest basin, and the transient depth for all
+$240$ rules and both boundary conventions over $N=6\ldots13$ (coverage is
+complete; no rule is ergodic). Two methodological points were forced by the data
+and are worth recording, since they are the difference between a result and an
+artifact.
+
+\paragraph{Parity.} Dissipative series oscillate between even and odd $N$ --- a
+\rt{pbc} chain of odd length cannot host the two N\'eel states --- so a joint fit
+is meaningless. We fit all $N$, even $N$, and odd $N$ separately and declare a
+\emph{parity split} when the split halves the rms $\ln$-residual; $43$ \rt{pbc}
+rules ($16$ \rt{obc0}) split.
+
+\paragraph{Rate model.} The unitary pipeline fits
+$\ln y = c + \alpha\ln N + \kappa N$, carrying the $\alpha\ln N$ term so that
+binomial prefactors do not bias $\kappa$. On the ragged dissipative series that
+model is unstable: for rule 90, $D_{\max}=1,15,1,7,3,63,2,127$ yields
+$\alpha=-7.5$ and a growth base of $11.25$ --- impossible, since $D_{\max}\le2^N$
+forces base $\le2$. We therefore take the growth \emph{class} from BIC model
+selection but the growth \emph{rate} from the two-parameter fit
+$\ln y=c+\kappa N$, which cannot trade the rate against a power, and mark a
+series \emph{irregular} (no rate reported) if it exceeds the physical bound or
+keeps an rms residual above $0.35$ after the parity split.
+
+\paragraph{Results.} For \rt{pbc}: $\#\mathrm{att}$ is constant for $140$ rules,
+exponential for $72$, polynomial for $16$, irregular for $12$; $D_{\max}$ is
+constant for $109$, exponential for $68$, polynomial for $41$, irregular for
+$22$. \rt{obc0} is markedly tamer ($162$ constant, $54$ exponential, $22$
+polynomial, $2$ irregular for $\#\mathrm{att}$), the same open-vs-periodic
+asymmetry seen for the unitary rules. The largest rates are
+$\kappa\approx0.61$ for $\#\mathrm{att}$ (rule 76) and $\kappa\approx0.64$ for
+$D_{\max}$ (rule 67), both comfortably below $\ln2$.
+
+\begin{table}[h]\centering\small\input{tab_diss_scaling.tex}
+\caption{Growth laws for representative dissipative rules (pbc, $N=6\ldots13$).
+$^{\ast}$ marks a series whose even- and odd-$N$ subsequences obey different
+laws. Where an exact integer recurrence exists, the base is the named algebraic
+constant rather than a fitted slope.}
+\label{tab:scaling}\end{table}
+
+\subsection{Exact algebraic growth bases}
+For $58$ of the \rt{pbc} series (and $81$ \rt{obc0}) the integers themselves
+satisfy an \emph{exact} linear recurrence $a(n)=\sum_i c_i\,a(n-i)$ with integer
+coefficients, solved over $\mathbb{Q}$ on the first equations and then
+\emph{verified against every remaining term}. For those the growth base is the
+largest root of the characteristic polynomial: an algebraic number, not a
+regression estimate. They cluster on a handful of constants
+(Figure~\ref{fig:bases}):
+\begin{center}\small
+\begin{tabular}{@{}llrr@{}}
+\toprule
+base & constant & \rt{pbc} & \rt{obc0} \\
+\midrule
+$1.618034$ & golden $\varphi$                 & 26 & 33 \\
+$1.732051$ & $\sqrt3$                          & 10 & 16 \\
+$1.465571$ & supergolden $\psi$                & 10 & 15 \\
+$1.324718$ & plastic $\rho$                    &  8 & 13 \\
+$1.839287$ & tribonacci $\psi$                 &  2 &  2 \\
+$1.754878$ & root of $x^3=2x^2-x+1$            &  2 &  2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Representative cases, all verified on the full series:
+\begin{itemize}\itemsep2pt
+  \item W4 $(\rt{IDDD})$: $\#\mathrm{att}=18,29,47,76,123,199,322,521$ obeys
+  $a(n)=a(n-1)+a(n-2)$ --- Lucas numbers, base $\varphi$.
+  \item W3 $(\rt{VVDD})$: $D_{\max}$ obeys $a(n)=3\,a(n-2)$, base $\sqrt3$.
+  \item W200 $(\rt{DIII})$: $\#\mathrm{att}$ obeys
+  $a(n)=2a(n-1)-a(n-2)+a(n-3)$, base $1.754878$.
+  \item W5 $(\rt{EDDD})$: $\#\mathrm{att}$ obeys $a(n)=a(n-2)+a(n-3)$, base
+  plastic $\rho$.
+  \item W36/44/72/73: $\#\mathrm{att}$ obeys $a(n)=a(n-1)+a(n-3)$, supergolden.
+\end{itemize}
+These are the counting signatures of local constraints: a Fibonacci-type
+recurrence is what one gets when a configuration is admissible unless it contains
+a forbidden local pattern, so the attractor count is a transfer-matrix count over
+a constrained chain and its base is that transfer matrix's Perron root. This is
+the same mechanism as the unitary sector counts (R2), now visible in the
+dissipative attractor structure.
+
+\subsection{The growth-rate map}
+Figure~\ref{fig:scatter} places every rule at its pair of exponential rates.
+Figure~\ref{fig:scatterannot} is the same map with the structural annotation:
+hue and marker give the graph-level attractor class, a hollow ring marks a rule
+whose attractor is \emph{not} basis-spanned (\S\ref{sec:failure}, Mode 2), and a
+purple halo marks a parity split. The map has visible structure rather than a
+cloud: rules concentrate on the axes ($\kappa\approx0$ for one quantity while the
+other grows), the coherent rules sit overwhelmingly in the ``extended attractor''
+band at high $\kappa_{D_{\max}}$, and the multistable rules occupy a separate arm
+along $\kappa_{D_{\max}}\approx0$ reaching $\kappa_{\#\mathrm{att}}\approx0.6$.
+Irregular rules carry no rate and are absent from both panels ($26$ of $240$ for
+\rt{pbc}, $5$ for \rt{obc0}).
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.78\linewidth]{../../figures/fig_diss_growth_scatter_pbc.pdf}
+\caption{Dissipative growth-rate map (pbc): exponential rate of the attractor
+count against that of the largest attractor, one point per rule. Coincident
+points are spread over a small disc so that they can be counted.}
+\label{fig:scatter}\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{../../figures/fig_diss_growth_scatter_annot_pbc.pdf}
+\caption{The same map, annotated. Hue/marker: graph-level attractor structure at
+$N_{\max}$. Hollow ring: the channel attractor is not spanned by basis states, so
+no state-space graph can name it. Purple halo: even- and odd-$N$ subsequences
+obey different growth laws.}
+\label{fig:scatterannot}\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.78\linewidth]{../../figures/fig_diss_bases_pbc.pdf}
+\caption{Exact growth bases (pbc): the largest root of each verified integer
+recurrence. The bases are not spread over an interval --- they pile up on a few
+algebraic constants.}
+\label{fig:bases}\end{figure}
 
 \section{Transient relaxation}
 Figure~\ref{fig:depth} shows the transient depth (an exact integer proxy for the
@@ -151,12 +329,21 @@ relaxation time) growing with $N$ for representative multistable rules.
 \label{fig:depth}\end{figure}
 
 \section{Status and next steps}
-The graph-level dissipative classification is complete and checkpointed; Tier-1b
-per-class attractor types are exact and validated. The protected-coherence gap
-identifies the rules whose full attractor algebra (cross-class noiseless
-subsystems, weak-symmetry coherences) exceeds the graph's resolution --- the
-targets for a complete Tier-1b/Tier-2 treatment. All numbers derive from
-\rt{results/*.jsonl} (engine\_version \texttt{1a.1}) and the exact superoperator
-engine; regenerated by \rt{python -m qca\_fragmentation.quantum.dissipative\_report}.
+The graph-level dissipative classification, the Tier-1b per-class attractor
+types, the coherent-attractor census and the Tier-1c growth laws are complete and
+checkpointed. The open targets are: (i) whether the wall-Hadamard core's coherent
+attractor is a decoherence-free subsystem with a Tier-2 symmetry operator behind
+it; (ii) why the coherent count is non-monotonic in $N$ ($84\to60\to72$), which
+looks like a parity effect of the same kind as \S\ref{sec:scaling} but is not yet
+proved; and (iii) pushing the census beyond $N=8$, currently limited by the
+$2^N$ dense $\rho$.
+
+All numbers derive from \rt{results/*.jsonl} (engine\_version \texttt{1a.1}),
+\rt{analytics/coherent\_attractor\_census.json}, and
+\rt{figures/dissipative\_summary.csv}; regenerated by
+\rt{python -m qca\_fragmentation.quantum.dissipative\_report},
+\rt{python -m qca\_fragmentation.quantum.attractor\_structure},
+\rt{python -m qca\_fragmentation.scaling.dissipative} and
+\rt{python -m qca\_fragmentation.scaling.diss\_figure}.
 
 \end{document}

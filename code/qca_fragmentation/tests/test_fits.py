@@ -1,7 +1,8 @@
 """Growth-class fit tests (context Tier 1 sec.7)."""
 import math
 
-from qca_fragmentation.scaling.fits import fit_series
+from qca_fragmentation.scaling.fits import (find_integer_recurrence, fit_pure_exponential,
+                                            fit_series)
 
 
 NS = list(range(6, 19))
@@ -42,3 +43,37 @@ def test_fibonacci_is_golden_exponential():
     f = fit_series(NS, seq)
     assert f["growth_class"] == "exponential"
     assert abs(f["base"] - (1 + 5 ** 0.5) / 2) < 1e-2
+
+
+# --- exact recurrences and the bounded rate model -----------------------------
+
+def test_lucas_recurrence_is_exact_and_gives_phi():
+    # rule 4 (IDDD) attractor count, pbc, N = 6..13
+    seq = [18, 29, 47, 76, 123, 199, 322, 521]
+    r = find_integer_recurrence(seq)
+    assert r["ok"] and r["order"] == 2 and r["coeffs"] == [1, 1]
+    assert abs(r["base"] - (1 + 5 ** 0.5) / 2) < 1e-12
+    assert r["name"] == "golden $\\varphi$"
+
+
+def test_recurrence_must_verify_on_every_term():
+    # Lucas for six terms, then broken: no recurrence may be returned.
+    assert not find_integer_recurrence([18, 29, 47, 76, 123, 199, 322, 999])["ok"]
+
+
+def test_recurrence_rejects_non_integer_solution():
+    assert not find_integer_recurrence([1, 2, 3, 5, 8, 13, 21, 35])["ok"]
+
+
+def test_pure_exponential_stays_inside_the_physical_bound():
+    # rule 90 D_max (pbc, N = 6..13): ragged, and M2 fits it with base ~11 by
+    # trading kappa against alpha ln N.  The 2-parameter model cannot do that.
+    ragged = [1, 15, 1, 7, 3, 63, 2, 127]
+    assert fit_series(list(range(6, 14)), ragged)["base"] > 2.0
+    e = fit_pure_exponential(list(range(6, 14)), ragged)
+    assert e["ok"] and e["bounded"] and e["base"] <= 2.0
+
+
+def test_pure_exponential_recovers_a_clean_rate():
+    e = fit_pure_exponential(NS, [1 << (N - 1) for N in NS])
+    assert abs(e["base"] - 2.0) < 1e-9 and e["rms"] < 1e-9 and e["bounded"]
