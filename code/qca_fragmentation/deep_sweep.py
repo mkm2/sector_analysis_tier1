@@ -77,8 +77,13 @@ DEFAULT_TIERS = ((2, 8, 43200), (1, 26, 43200), (1, 28, 86400))
 def _units(N: int, bcs, rule_list) -> List[Tuple[int, str]]:
     """Uncached (rule, bc) units at this N, cheapest first.
 
-    Cost is ranked by the wall time the same unit took at N-1, which is the
-    best predictor available and costs nothing to read.
+    Cost is ranked by the wall time the same unit took at the largest N already
+    computed, which is the best predictor available and costs nothing to read.
+
+    A rule that has gone ergodic is dropped, and the flag must be looked for
+    across ALL cached sizes rather than at N-1: an ergodic rule STOPS, so by
+    N=19 its most recent record is the one at N=6 that flagged it, and checking
+    only the previous size makes it look like fresh work.
     """
     out = []
     for rule in rule_list:
@@ -86,9 +91,9 @@ def _units(N: int, bcs, rule_list) -> List[Tuple[int, str]]:
             if results_io.has_unit(rule, bc, N):
                 continue
             recs = results_io.load_results(rule, bc)
-            prev = recs.get(N - 1) or recs.get(N - 2) or {}
-            if prev.get("ergodic_flag"):
+            if any(r.get("ergodic_flag") for r in recs.values()):
                 continue          # fragmentation cannot reappear at larger N
+            prev = recs[max(recs)] if recs else {}
             out.append((prev.get("runtime") or 0.0, rule, bc))
     out.sort()
     return out
