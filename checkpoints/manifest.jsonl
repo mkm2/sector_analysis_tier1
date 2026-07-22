@@ -5991,3 +5991,7 @@
 {"ts": "2026-07-22T11:18:06", "rule": 111, "bc": "pbc", "N": 17, "runtime": 116.017, "ergodic": false, "engine_version": "1a.1"}
 {"ts": "2026-07-22T11:19:27", "rule": 125, "bc": "pbc", "N": 17, "runtime": 115.6079, "ergodic": false, "engine_version": "1a.1"}
 {"ts": "2026-07-22T11:20:18", "rule": 48, "bc": "obc0", "N": 17, "runtime": 131.4935, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-22T11:21:53", "rule": 9, "bc": "obc0", "N": 17, "runtime": 145.4395, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-22T11:22:48", "rule": 161, "bc": "obc0", "N": 17, "runtime": 149.8544, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-22T11:24:06", "rule": 129, "bc": "pbc", "N": 17, "runtime": 133.214, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-22T11:25:03", "rule": 126, "bc": "pbc", "N": 17, "runtime": 135.5683, "ergodic": false, "engine_version": "1a.1"}
