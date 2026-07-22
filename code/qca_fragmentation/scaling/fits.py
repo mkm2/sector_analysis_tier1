@@ -165,6 +165,13 @@ _NAMED_BASES = [
     (1.4142135624, "$\\sqrt{2}$"),
     (1.3802775691, "root of $x^4=x^3+1$"),
     (1.3247179572, "plastic $\\rho$"),
+    # CAUTION: 3^{1/4} = 1.31607 and 4^{1/5} = 1.31951 differ by 0.26% and are
+    # the two INTEGER neighbours of the same continuous optimum (see W156 in
+    # QCA_Circuits.pdf App. B: b(l) = (l+1)^{1/(l+2)} for rooms of length l,
+    # maximised at l = 2.5911).  A dozen sizes cannot tell them apart, so never
+    # award either from a fit alone -- l=3, i.e. 4^{1/5}, is the true maximum.
+    (1.3195079108, "$4^{1/5}$"),
+    (1.3160740130, "$3^{1/4}$"),
     (1.2599210499, "$2^{1/3}$"),
     (1.1892071150, "$2^{1/4}$"),
 ]
@@ -181,7 +188,8 @@ def name_base(x: float, tol: float = 1e-6) -> Optional[str]:
 
 
 def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
-                            coeff_max: int = 30, step: int = 1) -> Dict:
+                            coeff_max: int = 30, step: int = 1,
+                            max_skip: int = 0, min_verify: int = 3) -> Dict:
     """Smallest-order EXACT integer linear recurrence a(n) = sum_i c_i a(n-i).
 
     Solves the first `order` equations over the rationals, keeps the solution
@@ -197,8 +205,32 @@ def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
     be credited with the square of its actual growth base.
     """
     seq = [int(v) for v in seq]
+    # `max_skip` lets the search step over a FINITE-SIZE TRANSIENT at the small-N
+    # end.  W156/198 D_max is the motivating case: a(N+4) = 3 a(N) exactly, but
+    # only from N >= 11, because one residue class mod 4 has not settled at the
+    # smallest sizes.  Refusing to skip reports "no recurrence" and leaves the
+    # base to a regression, which is how 3^{1/4} came to be recorded as 4^{1/5}.
+    #
+    # SKIPPING IS NOT FREE and is therefore OFF BY DEFAULT.  Measured on 4000
+    # smooth-exponential-plus-25%-noise surrogates: max_skip=0 gives 0.000%
+    # false positives, max_skip=5 gives 1.9% at min_verify=4.  Raising
+    # min_verify to 5 brings it back to 0.35% but then loses W156 itself, so
+    # there is no threshold that buys the transient for nothing.  Treat any
+    # result found with max_skip>0 as a LEAD needing independent confirmation
+    # (W156 has it: the same law holds in both boundary conditions and for the
+    # reflection partner W198, four series, and pbc is obc0 shifted one site).
+    for skip in range(max_skip + 1):
+        r = _recurrence_no_skip(seq[skip:], max_order, coeff_max, step,
+                                min_verify)
+        if r["ok"]:
+            r["skip"] = skip
+            return r
+    return {"ok": False}
+
+
+def _recurrence_no_skip(seq, max_order, coeff_max, step, min_verify) -> Dict:
     for order in range(1, max_order + 1):
-        if len(seq) < 2 * order + 1:
+        if len(seq) < order + max(min_verify, order):
             break
         M = [[Fraction(seq[n - 1 - i]) for i in range(order)] + [Fraction(seq[n])]
              for n in range(order, 2 * order)]
@@ -231,6 +263,7 @@ def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
             if abs(base - 1.0) < 1e-4:
                 base = 1.0
             return {"ok": True, "order": order, "coeffs": c, "step": step,
+                    "skip": 0, "n_verified": len(seq) - order,
                     "base": base, "name": name_base(base)}
     return {"ok": False}
 

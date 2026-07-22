@@ -119,3 +119,53 @@ def test_parity_doubled_bases_are_named():
     # a(n) = 4a(n-2) - 2a(n-4): x^4 = 4x^2 - 2, so the base is sqrt(2+sqrt2).
     assert name_base(2 ** 0.5 * 0 + (2 + 2 ** 0.5) ** 0.5) is not None
     assert "cos" in name_base((2 + 2 ** 0.5) ** 0.5)
+
+
+def test_w156_tail_admits_two_near_degenerate_laws():
+    """A cautionary case: the data CANNOT pin W156's base, and a fit that says
+    otherwise is overfitting.
+
+    QCA_Circuits.pdf App. B derives the asymptote combinatorially: the chain
+    splits into "rooms" of length l separated by domain walls, giving
+    b(l) = (l+1)^(1/(l+2)).  The continuous optimum is l = 2.5911, so the
+    integer candidates are its two neighbours,
+
+        l = 2 -> 3^(1/4) = 1.316074      l = 3 -> 4^(1/5) = 1.319508
+
+    and l = 3 wins, so the true base is 4^(1/5).  They differ by 0.26%, and at
+    finite N the largest sector is a MIXTURE of rooms of length 2 and 3, so
+    neither pure law is exact.  Both a(N+4)=3a(N) and a(N+5)=4a(N) fit the
+    observed series with exactly the same two exceptions -- which is why no
+    amount of curve-fitting on 13 terms can choose between them, and why the
+    base here comes from theory rather than from the fit.
+    """
+    w156 = [6, 9, 12, 16, 20, 27, 36, 48, 64, 81, 108, 144, 192]
+    ns = list(range(6, 19))
+    d = dict(zip(ns, w156))
+    miss4 = [n for n in ns if n + 4 in d and d[n + 4] != 3 * d[n]]
+    miss5 = [n for n in ns if n + 5 in d and d[n + 5] != 4 * d[n]]
+    assert miss4 == [6, 10] and miss5 == [6, 10]      # equally (in)exact
+    assert abs(3 ** 0.25 - 4 ** 0.2) < 0.004          # near-degenerate
+    assert (3 + 1) ** (1 / (3 + 2)) > (2 + 1) ** (1 / (2 + 2))   # l=3 wins
+    assert name_base(4 ** 0.2) == "$4^{1/5}$"
+
+
+def test_skipping_costs_false_positives_so_it_stays_opt_in():
+    """The guard on the tradeoff: with skipping the null rate is no longer 0,
+    which is exactly why it is not the default."""
+    import random
+    from qca_fragmentation.scaling.fits import find_integer_recurrence
+    ns = list(range(6, 19))
+
+    def null(max_skip):
+        rng = random.Random(11)
+        hits = 0
+        for _ in range(500):
+            k = rng.uniform(0.05, 0.6)
+            seq = [max(1, int(round(2.718281828 ** (k * n) * (1 + rng.gauss(0, 0.25)))))
+                   for n in ns]
+            hits += find_integer_recurrence(seq, max_skip=max_skip)["ok"]
+        return hits
+
+    assert null(0) == 0
+    assert null(5) > 0

@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 from .. import results_io
 from ..core import rules
-from .fits import fit_series
+from .fits import find_integer_recurrence, fit_pure_exponential, fit_series
 from .summary import load_series
 
 # CVD-validated categorical hues in fixed order (dataviz reference palette, light).
@@ -90,38 +90,111 @@ def fig_series(bc: str, key: str, ylabel: str, title: str, out: str,
     plt.close(fig)
 
 
+# The growth BASE, not the rate kappa = ln(base), is the informative coordinate.
+# Every series here is bounded by the Hilbert-space dimension, so the base lives
+# in [1, 2] -- a scale on which the interesting values are recognisable numbers
+# (the golden ratio, the plastic number, 4^{1/5}) rather than the anonymous
+# kappa in [0, ln 2].  Marking them turns the axis into a reference the reader
+# can read a rule's mechanism off directly.
+BASE_LIM = (0.98, 2.04)
+
+# Constants that actually occur in the unitary sweep; the dissipative map passes
+# its own list (there are many more there).  Kept short on purpose: one faint
+# line per constant is a reference, sixteen is a grid.
+UNITARY_REF = [(4 ** 0.2, r"$4^{1/5}$"),
+               (1.6180339887, r"$\varphi$"),
+               (1.7548776662, r"$x^3\!=\!2x^2\!-\!x\!+\!1$"),
+               (2.0, r"$2$")]
+
+
+def _base_of(Ns, ys):
+    """Growth base of a series, preferring the exact algebraic value.
+
+    NOT `fit_series`'s kappa: that comes from the M2 model c + alpha ln N +
+    kappa N, whose ln N term absorbs part of the growth and biases the base
+    downwards -- it put W156/198 at 1.281, well below its true asymptote
+    4^{1/5} = 1.3195 (QCA_Circuits.pdf App. B).  The 2-parameter fit is
+    unbiased for this purpose, and an exact recurrence beats both.
+    Returns (base, exact?).
+    """
+    rec = find_integer_recurrence(ys)
+    if rec["ok"] and rec["base"] > 1.0:
+        return rec["base"], True
+    f = fit_pure_exponential(Ns, ys)
+    return (f["base"] if f.get("ok") else 1.0), False
+
+
+def base_reference(ax, refs, axis="both"):
+    """Faint lines at named growth bases, labelled on the top/right spines."""
+    for v, name in refs:
+        if axis in ("x", "both"):
+            ax.axvline(v, color=MUTED, lw=0.6, ls=":", zorder=1, alpha=0.7)
+            # rotated, inside the axes at the bottom: the names are long enough
+            # ("x^3=2x^2-x+1") that a horizontal label along the top collides
+            # with both the title and its neighbours
+            ax.annotate(name, (v, 0.0), xycoords=("data", "axes fraction"),
+                        textcoords="offset points", xytext=(-3, 6),
+                        rotation=90, ha="right", va="bottom",
+                        fontsize=7, color=MUTED)
+        if axis in ("y", "both"):
+            ax.axhline(v, color=MUTED, lw=0.6, ls=":", zorder=1, alpha=0.7)
+            ax.annotate(name, (1.0, v), xycoords=("axes fraction", "data"),
+                        textcoords="offset points", xytext=(4, 0),
+                        va="center", fontsize=7.5, color=MUTED)
+
+
 def fig_growth_scatter(bc: str, out: str):
     fig, ax = plt.subplots(figsize=(6.2, 4.8))
     _style(ax)
     marker_for = {"exponential": "o", "polynomial": "s", "constant": "^"}
     color_for = {"exponential": "#e34948", "polynomial": "#2a78d6",
                  "constant": "#8a8a86"}
+    base_reference(ax, UNITARY_REF)
     seen = set()
+    pts = []
     for rule in rules.UNITARY_RULES:
         s = load_series(rule, bc)
         if len(s["N"]) < 3:
             continue
-        fn = fit_series(s["N"], s["n_recurrent"])
         fd = fit_series(s["N"], s["d_max"])
-        if not (fn.get("ok") and fd.get("ok")):
+        if not fd.get("ok"):
             continue
-        kn = fn["kappa"] or 0.0
-        kd = fd["kappa"] or 0.0
+        bn, en = _base_of(s["N"], s["n_recurrent"])
+        bd, ed = _base_of(s["N"], s["d_max"])
         gc = fd["growth_class"]
-        ax.scatter(kn, kd, s=70, color=color_for.get(gc, "#000"),
+        ax.scatter(bn, bd, s=70, color=color_for.get(gc, "#000"),
                    marker=marker_for.get(gc, "o"), edgecolor="white",
                    linewidth=0.8, zorder=3,
                    label=gc if gc not in seen else None)
         seen.add(gc)
-        ax.annotate(f"W{rule}", (kn, kd), textcoords="offset points",
-                    xytext=(5, 3), fontsize=7.5, color=TEXT)
-    ax.axhline(0, color=MUTED, lw=0.8)
-    ax.axvline(0, color=MUTED, lw=0.8)
-    ax.set_xlabel(r"$\kappa$ of #sectors  (exp. rate of sector count)")
-    ax.set_ylabel(r"$\kappa$ of $D_{\max}$  (exp. rate of largest sector)")
-    ax.set_title(f"Fragmentation growth-rate map ({bc})", fontsize=11, loc="left")
+        pts.append((bn, bd, rule, en and ed))
+
+    # Direct labels.  Several rules land on the SAME point -- 156/198 are
+    # reflection partners, 60/102 share the domain-wall law, 201/108 are
+    # spin-flip partners -- so labels are clustered and stacked rather than
+    # offset individually, which just piles them on top of each other.
+    clusters: List[list] = []
+    for bn, bd, rule, exact in sorted(pts, key=lambda p: (-p[1], p[0])):
+        for cl in clusters:
+            if abs(cl[0][0] - bn) < 0.04 and abs(cl[0][1] - bd) < 0.04:
+                cl.append((bn, bd, rule, exact))
+                break
+        else:
+            clusters.append([(bn, bd, rule, exact)])
+    for cl in clusters:
+        bn, bd = cl[0][0], cl[0][1]
+        for k, (_, _, rule, exact) in enumerate(cl):
+            ax.annotate(f"W{rule}" + ("" if exact else r"$^\dagger$"), (bn, bd),
+                        textcoords="offset points", xytext=(7, 4 - 11 * k),
+                        fontsize=7.5, color=TEXT, zorder=5)
+    ax.set_xlim(*BASE_LIM)
+    ax.set_ylim(*BASE_LIM)
+    ax.set_xlabel(r"growth base of $\#$sectors")
+    ax.set_ylabel(r"growth base of $D_{\max}$")
+    ax.set_title(f"Fragmentation growth-base map ({bc})", fontsize=11, loc="left", pad=16)
     if ax.get_legend_handles_labels()[0]:
-        ax.legend(frameon=False, fontsize=9, title="D_max growth", loc="best")
+        ax.legend(frameon=False, fontsize=9, title="$D_{\\max}$ growth",
+                  loc="lower right")
     fig.tight_layout()
     fig.savefig(out, bbox_inches="tight")
     fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")

@@ -74,7 +74,7 @@ fragmentation ($156$, $108$, $201$) vs.\ linear/central-binomial sector counts
 \centering
 \includegraphics[width=0.78\linewidth]{../../figures/fig_dmax_obc0.pdf}
 \caption{Largest sector $D_{\max}$ vs $N$ (\rt{obc0}), log scale. Slopes give the
-exponential base: $\varphi$ (golden ratio) for $201$, $4^{1/5}\approx1.32$ for
+exponential base: $\varphi$ (golden ratio) for $201$, $4^{1/5}\approx1.3195$ for
 $156/198$, $2$ for the domain-wall family $60/102$.}
 \label{fig:dmax}
 \end{figure}
@@ -82,10 +82,55 @@ $156/198$, $2$ for the domain-wall family $60/102$.}
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.72\linewidth]{../../figures/fig_growth_scatter_obc0.pdf}
-\caption{Growth-rate map (\rt{obc0}): exponential rate of the sector count
-($\kappa_{\#}$) vs.\ of the largest sector ($\kappa_{D}$), one point per rule.}
+\caption{Growth-\emph{base} map (\rt{obc0}): the base $b=e^{\kappa}$ of the
+sector count against that of the largest sector, one point per rule. Plotting
+$b\in[1,2]$ rather than $\kappa\in[0,\ln 2]$ puts the named constants at
+recognisable positions; the dotted lines mark them. $\dagger$ marks a base from
+the two-parameter fit $\ln y=c+\kappa N$ rather than an exact recurrence --- note
+in particular that the M2 model $c+\alpha\ln N+\kappa N$ used for the growth
+\emph{class} is biased low as a rate estimator, reporting $1.281$ for $156/198$
+against its true asymptote $4^{1/5}$.}
 \label{fig:scatter}
 \end{figure}
+
+\section{A caution on reading bases off these fits: rule 156}
+\label{sec:156}
+The growth-base map invites reading a constant off each point, and $156/198$ is
+the case where that fails. Its $D_{\max}$ series (\rt{obc0}) is
+\[
+  6,\,9,\,12,\,16,\,20,\,27,\,36,\,48,\,64,\,81,\,108,\,144,\,192
+  \qquad (N=6\ldots18),
+\]
+and it satisfies \emph{both} $a(N{+}4)=3a(N)$ and $a(N{+}5)=4a(N)$ with exactly
+the same two exceptions ($N=6,10$). The implied bases are $3^{1/4}=1.31607$ and
+$4^{1/5}=1.31951$ --- they differ by $0.26\%$, and thirteen terms cannot choose
+between them. No fit should be allowed to.
+
+The combinatorial derivation does choose. Writing the chain as ``rooms'' of
+length $l$ separated by domain walls, a room contributes $l+1$ states and
+consumes $l+2$ sites, so $D_{\max}=b^N$ with
+\begin{equation}
+  b(l)=(l+1)^{1/(l+2)} ,
+\end{equation}
+whose saddle point $\mathrm{d}\ln b/\mathrm{d}l=0$ gives the transcendental
+condition $\ln x = 1+1/x$ with $x=l+1$, i.e.\ $l\approx 2.5911$. The two
+integer neighbours of that optimum are precisely the two candidates above, and
+$l=3$ is the larger:
+\[
+  b(2)=3^{1/4}=1.31607 \;<\; b(3)=4^{1/5}=1.31951 .
+\]
+So the asymptotic base is $4^{1/5}$, and at finite $N$ the largest sector is a
+\emph{mixture} of rooms of length 2 and 3 --- which is exactly why neither pure
+recurrence is exact over the computed range. This is the one base in the report
+that comes from theory rather than from the data, and it should stay that way.
+
+A second, purely numerical trap sits on the same rule. The BIC model
+$\ln y = c+\alpha\ln N+\kappa N$ is the right tool for the growth \emph{class},
+but its $\alpha\ln N$ term absorbs part of the growth and makes $\kappa$ a
+biased rate estimator: it reports base $1.281$ for $156/198$, far enough below
+$4^{1/5}$ to look like a different constant. Rates in the growth-base map are
+therefore taken from the two-parameter fit $\ln y=c+\kappa N$, or from an exact
+recurrence where one exists.
 
 \section{The ergodic rules are ergodic at every $N$, not just at $N=6$}
 \label{sec:ergodic}
