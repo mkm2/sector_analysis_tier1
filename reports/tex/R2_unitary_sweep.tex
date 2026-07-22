@@ -8,6 +8,8 @@
 \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
 
 \newcommand{\rt}[1]{\texttt{#1}}
+\providecommand{\ket}[1]{|#1\rangle}
+\providecommand{\bra}[1]{\langle #1|}
 
 \title{\textbf{Report R2 --- Unitary sweep and fragmentation scaling}\\
 \large Krylov sector analysis of quantum cellular automata (Tier 1a/1c)}
@@ -23,8 +25,11 @@ lengths $N=6\ldots18$, both boundary conventions, and classify each by the
 scaling of its Krylov-sector structure. Sector sizes are exact; the growth of
 the number of sectors and of the largest sector $D_{\max}$ is fit by BIC model
 selection ($\ln y=c\,[+\alpha\ln N]\,[+\kappa N]$). Seven rules are effectively
-ergodic (a single sector spanning the space); the remainder fall into three
-fragmentation families --- exponential ($156/198$, $108$, $201$), a
+ergodic under \rt{obc0} and nine under \rt{pbc}; that verdict originally rested
+on $N=6$ alone, and \S\ref{sec:ergodic} re-establishes it over $N=6\ldots13$ with
+the full sector decomposition, where it turns out to be exactly $N$-independent
+and derivable from the rule encoding. The remaining rules fall into three
+fragmentation families: exponential ($156/198$, $108$, $201$), a
 domain-wall family with a linearly growing sector count but an extensive
 $D_{\max}=2^{N-1}$ ($60/102$, \rt{obc0} only), and $150/105$ with central-binomial
 sectors. We highlight two boundary-sensitive phenomena and one broken symmetry.
@@ -81,6 +86,58 @@ $156/198$, $2$ for the domain-wall family $60/102$.}
 ($\kappa_{\#}$) vs.\ of the largest sector ($\kappa_{D}$), one point per rule.}
 \label{fig:scatter}
 \end{figure}
+
+\section{The ergodic rules are ergodic at every $N$, not just at $N=6$}
+\label{sec:ergodic}
+The ergodicity verdict as originally produced rested on a single system size.
+The sweep aborts a unit the moment one component exceeds $90\%$ of $2^N$ and then
+stops increasing $N$ for that rule, so an ergodic-flagged unit had exactly one
+record, at $N=6$ --- and it carried no sector data at all, only the flag. Six
+sites is far too small to distinguish genuine ergodicity from a finite-size
+accident, so this claim was re-established from scratch: every ergodic-flagged
+unit was recomputed with the abort disabled (\rt{run\_rule -{}-no-ergodic-abort}),
+which performs the \emph{full} decomposition and reports how many sectors there
+really are, over $N=6\ldots13$.
+
+The outcome is completely rigid. Across all sixteen units and all eight sizes,
+only two structures occur --- one sector of size $2^N$, or one sector of size
+$2^N-1$ together with a single frozen basis state --- and \emph{each unit gives
+the same structure at every $N$}. Nothing drifts, nothing crosses over, and no
+small sector appears at any size.
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+rule & tuple & \rt{pbc} & \rt{obc0}\\
+\midrule
+$51$  & $\rt{VVVV}$ & $\{2^N\}$ & $\{2^N\}$\\
+$57$  & $\rt{VIVV}$ & $\{2^N\}$ & $\{2^N\}$\\
+$99$  & $\rt{VVIV}$ & $\{2^N\}$ & $\{2^N\}$\\
+$54$  & $\rt{IVVV}$ & $\{2^N\!-\!1,\,1\}$ & $\{2^N\!-\!1,\,1\}$\\
+$60$  & $\rt{IIVV}$ & $\{2^N\!-\!1,\,1\}$ & fragmented ($N+1$ sectors)\\
+$102$ & $\rt{IVIV}$ & $\{2^N\!-\!1,\,1\}$ & fragmented ($N+1$ sectors)\\
+$147$ & $\rt{VVVI}$ & $\{2^N\!-\!1,\,1\}$ & $\{2^N\}$\\
+$153$ & $\rt{VIVI}$ & $\{2^N\!-\!1,\,1\}$ & $\{2^N\}$\\
+$195$ & $\rt{VVII}$ & $\{2^N\!-\!1,\,1\}$ & $\{2^N\}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The pattern is not empirical --- it follows from the encoding, which is why more
+data would add nothing. The all-zeros state has every site sitting in neighbour
+configuration $(0,0)$, so it is frozen precisely when $r_{00}=\rt I$; the
+all-ones state has every site in configuration $(1,1)$ and is frozen precisely
+when $r_{11}=\rt I$. Those are the only two configurations that are homogeneous
+across the whole chain, so no other singleton sector can exist. The table follows
+immediately: $54/60/102$ carry $r_{00}=\rt I$ and freeze the vacuum under both
+conventions; $147/153/195$ carry $r_{11}=\rt I$ and freeze $\ket{1\cdots1}$ under
+\rt{pbc} only, because the \rt{obc0} padding gives the two end sites a $0$
+neighbour and breaks the homogeneity; $51/57/99$ have neither and are a single
+sector. The singleton was verified directly at $N=8$ in each case.
+
+The practical upshot for the scaling tables is that these units are not missing
+data but a trivial growth law: $\#\text{sectors}$ is constant ($1$ or $2$) and
+$D_{\max}=2^N$ or $2^N-1$, i.e.\ exponential with base exactly $2$.
 
 \section{Boundary-sensitive fragmentation}
 Two rules change fragmentation class with the boundary:
