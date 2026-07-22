@@ -17,9 +17,11 @@ series with holes in it cannot be fitted or checked against a recurrence.
 Units are ordered cheapest-first (by the time the same rule took at the previous
 N) so the easy majority is banked before the expensive tail starts.
 
-Budgets are per size, from the measured cost of the worst rule (3 Hadamards):
-32 GB total, so N=17 must run alone.  Nothing here overrides the idempotence of
-run_rule -- a cached unit is skipped, and the sweep is safe to re-run.
+Budgets are per unit, in three tiers, because cost is wildly uneven: at N=16
+most units finish in seconds while the three-Hadamard rules need the box to
+themselves.  Nothing here overrides the idempotence of run_rule -- a cached unit
+is skipped, so re-running the sweep is exactly how a failed unit is retried
+(under whatever budget the tiers give it now).
 
     python -m qca_fragmentation.deep_sweep --n-min 14 --n-max 17
 """
@@ -46,24 +48,30 @@ from .core import rules
 # rule took at the previous size (which doubles-ish per step, so a unit under
 # ~5 s at N-1 is nowhere near the memory ceiling at N).
 #
+# A third tier is needed for the handful of three-Hadamard rules: W55 obc0 took
+# 415 s at N=15 and then died on a 8 GB cap at N=16.  The cap is on ADDRESS
+# SPACE, which numpy reserves well beyond its resident set, so these want the
+# box to themselves rather than a slightly larger share of it.
+#
 # tier -> (parallel workers, address-space cap per worker in GB, timeout in s)
 SMALL_CUTOFF_S = 5.0
-TIERS: Dict[int, Tuple[Tuple[int, int, int], Tuple[int, int, int]]] = {
-    #      small units            large units
-    14: ((10, 3, 1800), (6, 4, 1800)),
-    15: ((10, 3, 3600), (5, 5, 3600)),
-    16: ((8, 3, 7200), (3, 8, 7200)),
-    17: ((6, 4, 21600), (1, 22, 21600)),
-    18: ((4, 6, 43200), (1, 26, 43200)),
+HUGE_CUTOFF_S = 250.0
+TIERS: Dict[int, Tuple[Tuple[int, int, int], ...]] = {
+    #      small units          large units       huge units
+    14: ((10, 3, 1800), (6, 4, 1800), (2, 12, 7200)),
+    15: ((10, 3, 3600), (5, 5, 3600), (2, 12, 14400)),
+    16: ((8, 3, 7200), (3, 8, 7200), (1, 26, 28800)),
+    17: ((6, 4, 21600), (2, 12, 21600), (1, 28, 57600)),
+    18: ((4, 6, 43200), (1, 26, 43200), (1, 28, 86400)),
     # N >= 19 is unitary territory: sectors are found by union-find (SCC == WCC
     # for a permutation), which is far leaner than the directed Tarjan the
     # dissipative rules need, so several heavy units fit side by side.
-    19: ((6, 4, 43200), (4, 6, 43200)),
-    20: ((5, 5, 43200), (4, 6, 43200)),
-    21: ((4, 6, 86400), (3, 8, 86400)),
-    22: ((3, 8, 86400), (2, 12, 86400)),
+    19: ((6, 4, 43200), (4, 6, 43200), (2, 12, 86400)),
+    20: ((5, 5, 43200), (4, 6, 43200), (2, 12, 86400)),
+    21: ((4, 6, 86400), (3, 8, 86400), (1, 26, 172800)),
+    22: ((3, 8, 86400), (2, 12, 86400), (1, 28, 172800)),
 }
-DEFAULT_TIERS = ((2, 8, 43200), (1, 26, 43200))
+DEFAULT_TIERS = ((2, 8, 43200), (1, 26, 43200), (1, 28, 86400))
 
 
 def _units(N: int, bcs, rule_list) -> List[Tuple[int, str]]:
@@ -113,19 +121,23 @@ def sweep(n_min: int, n_max: int, bcs, rule_list, f_erg: float,
           node_budget: int, log_path: Optional[str] = None):
     failures: List[Dict] = []
     for N in range(n_min, n_max + 1):
-        small_cfg, large_cfg = TIERS.get(N, DEFAULT_TIERS)
+        cfgs = TIERS.get(N, DEFAULT_TIERS)
         units = _units(N, bcs, rule_list)
-        small = [(r, bc) for c, r, bc in units if c < SMALL_CUTOFF_S]
-        large = [(r, bc) for c, r, bc in units if c >= SMALL_CUTOFF_S]
-        print(f"\n=== N={N}: {len(units)} units "
-              f"({len(small)} small, {len(large)} large)", flush=True)
+        buckets = {
+            "small": [(r, bc) for c, r, bc in units if c < SMALL_CUTOFF_S],
+            "large": [(r, bc) for c, r, bc in units
+                      if SMALL_CUTOFF_S <= c < HUGE_CUTOFF_S],
+            "huge": [(r, bc) for c, r, bc in units if c >= HUGE_CUTOFF_S],
+        }
+        print(f"\n=== N={N}: {len(units)} units ("
+              + ", ".join(f"{len(v)} {k}" for k, v in buckets.items())
+              + ")", flush=True)
         if not units:
             continue
         t0 = time.time()
-        # The small tier runs first and wide; the large tier then has the box to
-        # itself, so its high memory caps are actually honourable.
-        for tier, cfg in (("small", small_cfg), ("large", large_cfg)):
-            todo = small if tier == "small" else large
+        # Tiers run cheapest-first and in sequence, so by the time the huge tier
+        # starts it has the box to itself and its high cap is honourable.
+        for (tier, todo), cfg in zip(buckets.items(), cfgs):
             if not todo:
                 continue
             workers, mem_gb, timeout = cfg
