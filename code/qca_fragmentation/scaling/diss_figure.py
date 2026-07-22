@@ -179,9 +179,10 @@ def fig_scatter_annotated(rows: List[Dict], bc: str, out: str):
                    label=label if label not in seen else None)
         seen.add(label)
 
-    # parity-split rules get a light halo (their two parities obey different laws)
+    # period-split rules get a light halo (their residue classes mod p obey
+    # different laws); p is usually 2 (Neel) but 3 and 4 also occur
     for (x, y, r), ox, oy in zip(pts, dx, dy):
-        if r["n_recurrent_parity_split"] or r["d_max_parity_split"]:
+        if int(r["n_recurrent_period"] or 1) > 1 or int(r["d_max_period"] or 1) > 1:
             ax.scatter(x + ox, y + oy, s=118, marker="o", facecolor="none",
                        edgecolor="#4a3aa7", linewidth=0.7, alpha=0.55, zorder=2)
 

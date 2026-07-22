@@ -235,28 +235,45 @@ def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
     return {"ok": False}
 
 
+def find_recurrence_by_period(Ns: Sequence[int], seq: Sequence[int],
+                              period: int = 2, **kw) -> Dict:
+    """Exact recurrence for an N-oscillating series, per residue class mod p.
+
+    A series that jumps between residue classes of N obeys no recurrence as a
+    whole, but each subsequence generally does.  We accept the result only when
+    EVERY class has one and they all agree on the base to 1e-9 -- one class
+    alone is a fraction of the data and could be a coincidence at these lengths,
+    and disagreeing bases mean there is no single growth base to report.
+
+    The period is a commensurability effect: a rule whose attractor is a
+    period-3 density wave can only realise it when 3 divides N, so D_max jumps
+    between three different laws.  Period 2 (the Neel case: an odd pbc ring
+    cannot host the two Neel states) is the common one, but periods 3 and 4 are
+    both real here -- see `dissipative._RESID_*` for how the period is chosen.
+    """
+    got = []
+    for k in range(period):
+        sub = [y for n, y in zip(Ns, seq) if n % period == k]
+        r = find_integer_recurrence(sub, step=period, **kw)
+        if not r["ok"]:
+            return {"ok": False}
+        got.append(r)
+    if max(abs(r["base"] - got[0]["base"]) for r in got) > 1e-9:
+        return {"ok": False}
+    out = dict(got[0])
+    out["period"] = period
+    out["parity"] = period == 2      # back-compat with the parity-only callers
+    out["coeffs_by_class"] = [r["coeffs"] for r in got]
+    if period == 2:
+        out["coeffs_odd"] = got[1]["coeffs"]
+    return out
+
+
 def find_recurrence_by_parity(Ns: Sequence[int], seq: Sequence[int],
                               **kw) -> Dict:
-    """Exact recurrence for a parity-oscillating series, per parity.
-
-    A series that jumps between even and odd N obeys no recurrence as a whole,
-    but each parity subsequence generally does.  We accept the result only when
-    BOTH parities have one and they agree on the base to 1e-9 -- one parity
-    alone is half the data and could be a coincidence at these lengths, and
-    disagreeing bases mean there is no single growth base to report.
-    """
-    got = {}
-    for name, keep in (("even", 0), ("odd", 1)):
-        sub = [y for n, y in zip(Ns, seq) if n % 2 == keep]
-        got[name] = find_integer_recurrence(sub, step=2, **kw)
-    if not (got["even"]["ok"] and got["odd"]["ok"]):
-        return {"ok": False}
-    if abs(got["even"]["base"] - got["odd"]["base"]) > 1e-9:
-        return {"ok": False}
-    out = dict(got["even"])
-    out["parity"] = True
-    out["coeffs_odd"] = got["odd"]["coeffs"]
-    return out
+    """Period-2 special case of `find_recurrence_by_period` (kept by name
+    because parity is what the even/odd Neel splitting is called throughout)."""
+    return find_recurrence_by_period(Ns, seq, period=2, **kw)
 
 
 def fit_pure_exponential(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
