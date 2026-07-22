@@ -23,3 +23,7 @@ scratch/
 
 # OS
 .DS_Store
+reports/tex/*.pdf
+reports/tex/*.aux
+reports/tex/*.log
+reports/tex/*.out
