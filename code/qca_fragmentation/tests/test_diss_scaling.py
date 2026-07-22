@@ -31,10 +31,30 @@ def test_period_three_series_is_not_irregular():
     assert f["kappa_eff"] == pytest.approx(np.log(2) / 3, rel=1e-6)
 
 
-def test_period_four_series_is_not_irregular():
+def test_period_four_is_refused_when_the_sizes_cannot_settle_it():
+    """W11 VEDD *looks* period-4 (9,15,21 / 11,17,23 / 2,2,2 / 2,2,2) but at
+    N<=17 each class has 3 points against a 2-parameter line, and no exact
+    recurrence certifies it either.  Claiming period 4 here would be exactly
+    the overfitting the BIC margin exists to prevent, so it must NOT be split.
+    """
     f = fit_with_period(NS, W11_DMAX)
+    assert f["period"] == 1
+
+
+def test_period_four_is_accepted_once_there_are_enough_sizes():
+    """The same shape with 20 sizes has 5 points per class and is claimed."""
+    ns = list(range(6, 26))
+    ys = [(2 if n % 4 in (2, 3) else 9 + 6 * (n // 4) + (n % 4)) for n in ns]
+    f = fit_with_period(ns, ys)
     assert f["period"] == 4
-    assert not f["irregular"]
+
+
+def test_an_exact_recurrence_can_license_a_period_bic_cannot_afford():
+    """The recurrence route is stricter than any residual test (0/4000 on
+    surrogates), so it is allowed to certify a period with small classes."""
+    f = fit_with_period(NS, W28_DMAX)
+    assert f["period"] == 3
+    assert f["period_via"] in ("bic", "recurrence")
 
 
 def test_a_clean_exponential_is_not_split():
@@ -83,6 +103,27 @@ def test_recurrence_by_period_reports_the_per_site_base():
     r = find_recurrence_by_period(NS, W28_DMAX, period=3)
     assert r["ok"] and r["period"] == 3
     assert r["base"] == pytest.approx(2 ** (1 / 3), rel=1e-9)
+
+
+def test_null_false_split_rate_stays_low():
+    """Calibration guard on _BIC_MARGIN / _MIN_PER_CLASS.
+
+    Surrogates are smooth exponentials with 25% multiplicative noise -- no
+    period structure whatsoever -- so every split is a false positive.  The
+    ratio-of-residuals rule this replaced scored 21% here.  Kept as a test
+    because the thresholds are the kind of thing that gets "tuned" later.
+    """
+    from qca_fragmentation.scaling.overfit_audit import null_period_rate
+    r = null_period_rate(noise=0.25, trials=400, seed=7)
+    assert r["false_split_rate"] < 0.08, r
+
+
+def test_null_false_recurrence_rate_is_zero():
+    """The exact-recurrence search must not fire on structureless data at all;
+    this is what licenses it to certify periods BIC cannot afford."""
+    from qca_fragmentation.scaling.overfit_audit import null_recurrence_rate
+    r = null_recurrence_rate(trials=1500, seed=3)
+    assert r["false_positives"] == 0, r
 
 
 def test_whole_series_recurrence_already_covers_periodicity():

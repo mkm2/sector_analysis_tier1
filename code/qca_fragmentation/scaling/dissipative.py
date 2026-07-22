@@ -20,22 +20,39 @@ length cannot host the two Neel states, so e.g. rule 22 has 3 attractors at even
 N and 2 at odd N, while its largest attractor is a single state at even N but
 grows like 2N at odd N.  A single fit then reports a meaningless average.
 
-Parity is NOT the only period.  Rules whose attractor is a period-3 or period-4
-density wave oscillate with that period instead -- rule 28 (IIVD) has D_max =
-4,2,4,8,4,8,16,8,16,32,16,32 over N=6..17, which is three interleaved doubling
-sequences with base 2^(1/3), not noise.  While the fitter only knew about
-parity, 32 of the 240 pbc D_max series were stamped "irregular"; 22 of those are
-regular at period 3 or 4, and generalising the split leaves 6 (three spin-flip
-pairs whose N-dependence is genuinely number-theoretic).
+Parity is NOT the only period.  Rules whose attractor is a period-3 density wave
+oscillate with that period instead -- rule 28 (IIVD) has D_max =
+4,2,4,8,4,8,16,8,16,32,16,32 over N=6..17, three interleaved doubling sequences
+with base 2^(1/3), not noise.  While the fitter only knew about parity, 32 of
+the 240 pbc D_max series were stamped "irregular"; generalising the period
+brings that to 20.
 
-So we fit jointly and at each period in _PERIODS, and take the SMALLEST period
-that cuts the residual by _RESID_GAIN -- not the best-fitting one, since a
-larger period always fits at least as well.  `kappa_eff` is the number to plot:
-the joint fit when the series is period-clean, otherwise the residue class with
-the larger |kappa| (the dominant growth).  Note the exact-base search does not
-need any of this: a period-p oscillation is itself a recurrence of order >= p,
-so `find_integer_recurrence` already caught these on the whole series -- the
-period split fixes the growth CLASS, not the base.
+CHOOSING THE PERIOD IS WHERE OVERFITTING LIVES, so the criterion is calibrated
+against a null, not tuned by eye (see scaling/overfit_audit.py):
+
+  * a split must clear the unsplit model by _BIC_MARGIN in BIC, with at least
+    _MIN_PER_CLASS points per class.  The obvious cheaper rules both fail the
+    null: "smallest period that cuts the residual by 2x" splits 21% of smooth
+    exponentials with 25% noise, and plain argmin-BIC splits 33%.  The
+    calibrated rule splits 3%.
+  * OR an exact integer recurrence holds on every residue class, which fired
+    0/4000 times on the same surrogates and so is allowed to certify a period
+    whose classes are too small for BIC to afford.
+  * and in either case only when the joint fit is actually failing
+    (r_all > _RESID_BAD) -- otherwise a constant series, which satisfies
+    a(n)=a(n-p) for every p, gets a meaningless period.
+
+The consequence worth stating: at N<=17 NO period-4 claim survives.  Rule 11
+(VEDD) looks period-4 by eye -- 9,11,2,2,15,17,2,2,21,23,2,2 -- but that leaves
+3 points per class against a 2-parameter line and no recurrence certifies it, so
+it is reported irregular.  Period 4 needs N>=21 to be honest.
+
+`kappa_eff` is the number to plot: the joint fit when the series is
+period-clean, otherwise the residue class with the larger |kappa| (the dominant
+growth).  Note the exact-base search needs none of this -- a period-p
+oscillation is itself a recurrence of order >= p, so `find_integer_recurrence`
+already caught these on the whole series.  The period split fixes the growth
+CLASS, not the base, and the exact-base counts are identical either way.
 
 Outputs
     figures/dissipative_summary.csv     one row per (rule, bc)
@@ -63,11 +80,9 @@ ANALYTICS_DIR = os.path.join(results_io.REPO_ROOT, "analytics")
 
 SERIES_KEYS = ("n_recurrent", "d_max", "max_basin", "transient_depth")
 
-# A joint fit whose ln-residuals exceed this (rms) is suspect...
+# A joint fit whose ln-residuals exceed this (rms) is suspect, and is the
+# PRECONDITION for considering any period split at all.
 _RESID_BAD = 0.15
-# ...and is declared split at period p if splitting by N mod p cuts the residual
-# by at least this factor.
-_RESID_GAIN = 2.0
 # Scatter (rms of ln y) that survives the split: the series is then not
 # described by any smooth growth law and is reported as "irregular".
 _RESID_NOISY = 0.35
@@ -76,10 +91,25 @@ _RESID_NOISY = 0.35
 # pbc ring cannot host the two Neel states); 3 and 4 are equally real and were
 # being mislabelled "irregular" until N reached 17 -- e.g. W28 IIVD has
 # D_max = 4,2,4,8,4,8,16,8,16,32,16,32, which is three interleaved doubling
-# sequences (base 2^(1/3)), not noise.  Periods beyond 4 are not admitted: with
-# ~12 sizes they would leave under 3 points per class, which fits anything.
+# sequences (base 2^(1/3)), not noise.  Periods beyond 4 are never admitted, and
+# at N<=17 even 4 is unreachable -- see the module docstring.
 _PERIODS = (1, 2, 3, 4)
-_MIN_PER_CLASS = 3
+# Splitting at period p costs 2p parameters against the same n points, so it
+# must be paid for.  A ratio-of-residuals rule cannot do that job: measured
+# against a smooth exponential with 25% multiplicative noise it split 21% of
+# structureless series (mostly to p=3), which is straightforward overfitting.
+# BIC over the pooled log-residuals is the principled version and is what the
+# growth-class selection already uses; _MIN_PER_CLASS keeps a class from being
+# fitted by a 2-parameter line through 3 points.
+_MIN_PER_CLASS = 4
+# ...and BIC alone is not enough at n ~ 12: plain argmin-BIC split 33% of the
+# smooth-plus-noise surrogates, because with 12 points the RSS drop from 2 to 6
+# parameters beats 2p ln n by chance a third of the time.  A split must clear
+# the unsplit model by a decisive margin.  10 is the Kass-Raftery "very strong
+# evidence" threshold; the genuine period-3/4 series clear it by hundreds,
+# because their residue classes fit EXACTLY (RSS at the floor), so the margin
+# costs nothing real.
+_BIC_MARGIN = 10.0
 
 
 def dissipative_rules() -> List[int]:
@@ -112,6 +142,37 @@ def _split_by(Ns: Sequence[int], ys: Sequence[int], p: int):
              [y for n, y in zip(Ns, ys) if n % p == k]) for k in range(p)]
 
 
+# Relative floor on the pooled RSS, so an exactly-fitting split (which the real
+# period-3/4 series are) does not produce log(0) and win by an infinite margin.
+_RSS_FLOOR = 1e-12
+
+
+def _period_bic(Ns: Sequence[int], ys: Sequence[int], p: int) -> float:
+    """BIC of the model "log-linear in N, separately on each class mod p".
+
+    n ln(RSS/n) + k ln n with k = 2p, the honest parameter count: splitting
+    buys a fresh intercept and slope per class and must pay for both.
+    """
+    tot, npts = 0.0, 0
+    for sn, sy in _split_by(Ns, ys, p):
+        x = np.asarray(sn, float)
+        y = np.asarray(sy, float)
+        good = y > 0
+        x, y = x[good], y[good]
+        if len(x) < _MIN_PER_CLASS:
+            return float("inf")          # not enough data to earn this period
+        ly = np.log(y)
+        X = np.column_stack([np.ones_like(x), x])
+        beta, *_ = np.linalg.lstsq(X, ly, rcond=None)
+        r = ly - X @ beta
+        tot += float(r @ r)
+        npts += len(x)
+    if npts == 0:
+        return float("inf")
+    rss = max(tot, _RSS_FLOOR * npts)
+    return npts * np.log(rss / npts) + 2 * p * np.log(npts)
+
+
 def fit_with_period(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
     """Fit a series jointly and split by N mod p, choosing the smallest p that
     works.
@@ -122,21 +183,26 @@ def fit_with_period(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
     fits.fit_pure_exponential).  A series that is still scattered after the best
     split is labelled "irregular" and carries no rate at all.
 
-    Choosing p by "smallest that cuts the residual by _RESID_GAIN" rather than
-    "whichever fits best" matters: a larger p always fits at least as well
-    (fewer points per class), so picking the minimiser would drive every series
-    to p=4.  Classes with under _MIN_PER_CLASS points disqualify a period
-    outright for the same reason.
+    The period is chosen by BIC (`_period_bic`), NOT by comparing residuals.
+    A larger p always fits at least as well -- it has 2p free parameters for the
+    same n points -- so any criterion that does not charge for parameters will
+    drift to p=4.  A ratio-of-residuals rule was measured splitting 21% of pure
+    smooth-exponential-plus-noise surrogates; under BIC that falls to ~0 while
+    the real period-3/4 series, whose classes fit exactly, are kept.
+    Ties go to the smaller period.
     """
     Ns = list(Ns)
     ys = list(ys)
     out: Dict = {"all": fit_series(Ns, ys), "all_exp": fit_pure_exponential(Ns, ys)}
 
-    # Evaluate every admissible period; keep the per-class fits for the winner.
+    # Per-class fits for every period that can be fitted at all.  The
+    # _MIN_PER_CLASS gate lives in _period_bic, not here: the recurrence route
+    # below may legitimately select a period with small classes, and it still
+    # needs the per-class rates to report.
     cand: Dict[int, Dict] = {}
     for p in _PERIODS:
         cls = _split_by(Ns, ys, p)
-        if any(len(sn) < _MIN_PER_CLASS for sn, _ in cls):
+        if any(len(sn) < 2 for sn, _ in cls):
             continue
         fits = [fit_series(sn, sy) for sn, sy in cls]
         exps = [fit_pure_exponential(sn, sy) for sn, sy in cls]
@@ -146,12 +212,40 @@ def fit_with_period(Ns: Sequence[int], ys: Sequence[int]) -> Dict:
                    "resid": max(rs) if rs else float("nan")}
 
     r_all = _rms_resid(Ns, ys, out["all"])
+    # Period by BIC, but only against a decisive margin over the unsplit model
+    # (see _BIC_MARGIN).  Smallest qualifying period wins.
+    bics = {p: _period_bic(Ns, ys, p) for p in _PERIODS}
+    out["period_bic"] = bics
     period = 1
-    if r_all == r_all and r_all > _RESID_BAD:
+    out["period_via"] = None
+
+    # PRECONDITION for any split: the unsplit model must actually be failing.
+    # Without this the recurrence route below fires on trivially constant
+    # series -- a run of 3s satisfies a(n)=a(n-p) for every p -- and labels
+    # them "period 2", which is true and useless.  A split has to buy
+    # something.
+    splittable = r_all == r_all and r_all > _RESID_BAD
+    if splittable:
         for p in _PERIODS[1:]:
-            c = cand.get(p)
-            if c and c["resid"] == c["resid"] and c["resid"] * _RESID_GAIN < r_all:
+            if bics[p] < bics[1] - _BIC_MARGIN:
                 period = p
+                out["period_via"] = "bic"
+                break
+
+    # Second, independent route to a period: an EXACT integer recurrence holding
+    # on every residue class.  This licenses periods that BIC cannot afford --
+    # p=4 leaves only 3 points per class at N<=17, too few for a 2-parameter
+    # line -- because it is a far stricter certificate than any residual test:
+    # measured on 4000 smooth-plus-noise surrogates it fired 0 times at every
+    # period, since noise does not satisfy a small-coefficient integer
+    # recurrence exactly on every remaining term.  A series that passes neither
+    # route stays unsplit and will usually be reported irregular, which is the
+    # honest verdict when the sizes cannot settle the question.
+    if splittable and period == 1 and len(ys) >= 6:
+        for p in _PERIODS[1:]:
+            if p in cand and find_recurrence_by_period(Ns, ys, period=p).get("ok"):
+                period = p
+                out["period_via"] = "recurrence"
                 break
 
     # Parity is reported by name whatever the winning period, because the
