@@ -6095,3 +6095,4 @@
 {"ts": "2026-07-22T17:15:19", "rule": 119, "bc": "pbc", "N": 17, "runtime": 824.7257, "ergodic": false, "engine_version": "1a.1"}
 {"ts": "2026-07-22T17:26:53", "rule": 63, "bc": "pbc", "N": 17, "runtime": 693.5353, "ergodic": false, "engine_version": "1a.1"}
 {"ts": "2026-07-22T17:41:36", "rule": 17, "bc": "obc0", "N": 17, "runtime": 882.9265, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-07-22T17:55:51", "rule": 3, "bc": "obc0", "N": 17, "runtime": 855.433, "ergodic": false, "engine_version": "1a.1"}

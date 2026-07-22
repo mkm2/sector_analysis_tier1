@@ -338,6 +338,19 @@ def summarize_rule(rule: int, bc: str, coherent: Optional[set] = None) -> Dict:
         row[f"{key}_base"] = (np.exp(f["kappa_eff"])
                               if f["kappa_eff"] is not None else None)
         row[f"{key}_period"] = f["period"]
+        # "irregular" conflates two very different situations, so name which.
+        # A V-free rule is DETERMINISTIC on basis states (D and E are resets --
+        # both Kraus branches land on the same basis state -- and I is the
+        # identity; only V branches), so its graph is a map and d_max is the
+        # length of a cycle.  Cycle lengths are multiplicative orders: they are
+        # arithmetic functions of N and no growth law exists to be found.  That
+        # is a RESULT.  A rule containing a V that comes out irregular is
+        # instead a rule whose period the available sizes cannot settle, which
+        # is a statement about the dataset, not about the rule.
+        row[f"{key}_irregular_kind"] = (
+            None if not f["irregular"]
+            else ("arithmetic" if not rules.has_V(rules.wolfram_to_tuple(rule))
+                  else "undetermined"))
         row[f"{key}_parity_split"] = f["parity_split"]
         row[f"{key}_irregular"] = f["irregular"]
         row[f"{key}_resid"] = f["resid_eff"]

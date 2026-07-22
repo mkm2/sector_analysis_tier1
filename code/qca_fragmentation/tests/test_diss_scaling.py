@@ -132,3 +132,76 @@ def test_whole_series_recurrence_already_covers_periodicity():
     This is why generalising the period changed no exact-base count."""
     r = find_integer_recurrence(W28_DMAX)
     assert r["ok"] and r["base"] == pytest.approx(2 ** (1 / 3), rel=1e-9)
+
+
+def test_rule90_dmax_is_the_order_of_its_gf2_cycle_matrix():
+    """W90 (DEED) is x_i <- x_{i-1} XOR x_{i+1}: linear over GF(2), so the one-
+    cycle map is a matrix and d_max is the order of that matrix on its eventual
+    image (= lcm of the cycle lengths, which for an abelian group is also the
+    longest cycle).  Verified against the recorded sweep data at every size.
+
+    This is why W90 is "irregular" and always will be: d_max is a multiplicative
+    order, an arithmetic function of N, not a growth law.  In particular it
+    collapses to 1 exactly when the matrix is NILPOTENT -- N+1 a power of 2
+    under obc0, N a power of 2 under pbc.
+    """
+    import numpy as np
+    from qca_fragmentation import results_io
+    from qca_fragmentation.core import rules
+    from qca_fragmentation.core.cycle import even_sites, odd_sites
+    from qca_fragmentation.graph import scc
+
+    def cycle_matrix(N, bc):
+        M = np.eye(N, dtype=np.uint8)
+        for layer in (even_sites(N), odd_sites(N)):
+            for i in layer:                     # sequential: pbc odd N has a seam
+                E = np.eye(N, dtype=np.uint8)
+                E[i] = 0
+                for j in (i - 1, i + 1):
+                    if bc == "pbc":
+                        E[i, j % N] ^= 1
+                    elif 0 <= j < N:
+                        E[i, j] ^= 1
+                M = (E @ M) % 2
+        return M
+
+    def order_on_image(M):
+        N = M.shape[0]
+        Mi = M.copy()
+        for _ in range(N):                      # M^N kills the nilpotent part
+            Mi = (Mi @ M) % 2
+        k, P = 1, (Mi @ M) % 2
+        while not np.array_equal(P, Mi):
+            P, k = (P @ M) % 2, k + 1
+            assert k < 10000
+        return k
+
+    t = rules.wolfram_to_tuple(90)
+    checked = 0
+    for bc in ("pbc", "obc0"):
+        for N, rec in sorted(results_io.load_results(90, bc).items()):
+            if rec.get("sizes_recurrent") is None:
+                continue
+            M = cycle_matrix(N, bc)
+            # the matrix must reproduce the engine's successor exactly
+            f = scc._make_succ(90, N, bc, t)
+            for x in (0, 1, 3, 5, (1 << N) - 1):
+                v = np.array([(x >> i) & 1 for i in range(N)], dtype=np.uint8)
+                got = list(f(x))[0]
+                assert np.array_equal(
+                    np.array([(got >> i) & 1 for i in range(N)], dtype=np.uint8),
+                    (M @ v) % 2)
+            assert order_on_image(M) == rec["sizes_recurrent"][0], (bc, N)
+            checked += 1
+    assert checked >= 20
+
+
+def test_irregular_is_split_into_arithmetic_and_undetermined():
+    """V-free rules are deterministic on basis states, so their irregularity is
+    structural; a V-carrying irregular is just an unsettled period."""
+    from qca_fragmentation.core import rules
+    from qca_fragmentation.scaling.dissipative import summarize_rule
+    assert summarize_rule(90, "pbc", None)["d_max_irregular_kind"] == "arithmetic"
+    assert not rules.has_V(rules.wolfram_to_tuple(90))
+    assert summarize_rule(11, "pbc", None)["d_max_irregular_kind"] == "undetermined"
+    assert rules.has_V(rules.wolfram_to_tuple(11))
