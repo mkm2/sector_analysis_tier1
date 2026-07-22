@@ -150,12 +150,20 @@ LN2 = math.log(2.0)
 _NAMED_BASES = [
     (2.0, "2"),
     (1.9659482366, "root of $x^3=2x^2-1$"),
+    # The square-root forms below all come from parity-doubled recurrences
+    # (a(n) = c_2 a(n-2) + c_4 a(n-4)): the characteristic polynomial is a
+    # quadratic in x^2, so the base is the square root of a quadratic surd.
+    (1.8872076761, "$\\sqrt{(3+\\sqrt{17})/2}$"),
+    (1.8477590650, "$\\sqrt{2+\\sqrt2}=2\\cos(\\pi/8)$"),
     (1.8392867552, "tribonacci $\\psi$"),
+    (1.7989074399, "$\\sqrt{1+\\sqrt5}$"),
     (1.7548776662, "root of $x^3=2x^2-x+1$"),
     (1.7320508076, "$\\sqrt{3}$"),
+    (1.6528916503, "$\\sqrt{1+\\sqrt3}$"),
     (1.6180339887, "golden $\\varphi$"),
     (1.4655712319, "supergolden $\\psi$"),
     (1.4142135624, "$\\sqrt{2}$"),
+    (1.3802775691, "root of $x^4=x^3+1$"),
     (1.3247179572, "plastic $\\rho$"),
     (1.2599210499, "$2^{1/3}$"),
     (1.1892071150, "$2^{1/4}$"),
@@ -215,6 +223,13 @@ def find_integer_recurrence(seq: Sequence[int], max_order: int = 4,
                 continue
             roots = np.roots([1] + [-x for x in c])
             base = float(max(abs(roots))) ** (1.0 / step)
+            # A polynomial series has a repeated root at exactly 1, and np.roots
+            # splits a triple root into a cluster ~1e-5 wide -- (x-1)^3 comes
+            # back as 1.000007.  Snap it, or a polynomial growth law would be
+            # reported with a spurious exponential base.  Nothing genuine sits
+            # this close to 1: the smallest real base observed is 1.19.
+            if abs(base - 1.0) < 1e-4:
+                base = 1.0
             return {"ok": True, "order": order, "coeffs": c, "step": step,
                     "base": base, "name": name_base(base)}
     return {"ok": False}

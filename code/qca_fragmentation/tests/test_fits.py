@@ -3,7 +3,7 @@ import math
 
 from qca_fragmentation.scaling.fits import (find_integer_recurrence,
                                             find_recurrence_by_parity,
-                                            fit_pure_exponential,
+                                            fit_pure_exponential, name_base,
                                             fit_series)
 
 
@@ -103,3 +103,19 @@ def test_step_one_is_unchanged():
     assert find_integer_recurrence(seq)["step"] == 1
     assert (find_integer_recurrence(seq)["base"]
             == find_integer_recurrence(seq, step=1)["base"])
+
+
+def test_repeated_unit_root_is_snapped_to_one():
+    # A quadratic series obeys a(n)=3a(n-1)-3a(n-2)+a(n-3), i.e. (x-1)^3, and
+    # np.roots splits that triple root into a cluster ~1e-5 wide.  An unsnapped
+    # base would label polynomial growth as exponential.
+    seq = [n * n for n in range(6, 20)]
+    r = find_integer_recurrence(seq)
+    assert r["ok"] and r["coeffs"] == [3, -3, 1]
+    assert r["base"] == 1.0
+
+
+def test_parity_doubled_bases_are_named():
+    # a(n) = 4a(n-2) - 2a(n-4): x^4 = 4x^2 - 2, so the base is sqrt(2+sqrt2).
+    assert name_base(2 ** 0.5 * 0 + (2 + 2 ** 0.5) ** 0.5) is not None
+    assert "cos" in name_base((2 + 2 ** 0.5) ** 0.5)
