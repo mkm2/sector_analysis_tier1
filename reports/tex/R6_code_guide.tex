@@ -1,0 +1,551 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\pf}[1]{\texttt{#1}}          % file / module
+\newcommand{\fn}[1]{\texttt{#1}}          % function / symbol
+\providecommand{\ket}[1]{|#1\rangle}
+\providecommand{\bra}[1]{\langle #1|}
+\newcommand{\Zh}{\mathbb{Z}[1/\sqrt2]}
+
+\title{\textbf{Report R6 --- Code guide and reference}\\
+\large Tier-1 Krylov sector analysis of quantum cellular automata:
+data structures, algorithms, and file map}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{engine\_version \texttt{1a.1}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report is documentation, not results. It describes the Tier-1 codebase
+precisely enough to verify every number in R1, R2, and R5 against the source:
+the exact-arithmetic representation of amplitudes, the construction of the
+transition graph, the two graph algorithms (union--find for unitary rules,
+iterative Tarjan plus condensation for dissipative rules), the Tier-1b
+superoperator and its spectral classification, the fit models and the
+null-calibrated growth-law extraction, and which Python file is responsible for
+each of these. Section~\ref{sec:map} is the file map; the later sections walk
+the pipeline stage by stage. Paths are relative to \pf{code/qca\_fragmentation/}.
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================================
+\section{Pipeline at a glance}
+\label{sec:pipeline}
+One rule is a Wolfram number $R\in\{0,\dots,255\}$; the analysis is run per
+$(\text{rule},N,\text{bc})$ \emph{unit}, where $N$ is the chain length and
+$\text{bc}\in\{\rt{pbc},\rt{obc0}\}$ the boundary convention. The stages are:
+
+\begin{description}
+\item[Tier 1a --- graph.] Build the directed one-cycle transition graph on the
+  $2^N$ computational-basis states and decompose it into strongly connected
+  components (SCCs). For unitary rules the SCCs are Krylov sectors; for
+  dissipative rules the terminal SCCs are recurrent classes (attractors) and the
+  rest are transients. Output: one JSON line per unit in \pf{results/}.
+\item[Tier 1b --- per-class quantum structure.] For each recurrent class build
+  the exact restricted superoperator and read its peripheral spectrum to label
+  the attractor \emph{mixing} / \emph{limit cycle} / \emph{coherence-carrying}.
+  Also the exact channel-level diagnostics (graph faithfulness, Ces\`aro rank).
+\item[Tier 1c --- scaling.] Aggregate the per-$N$ series, fit growth laws with
+  BIC model selection and exact integer recurrences, and emit CSVs, LaTeX
+  tables, and figures.
+\end{description}
+
+The graph stage is \emph{exact} --- integers only, no floating point and no
+tolerances (\S\ref{sec:ring}). Floating point enters only in Tier 1b, where a
+dense eigensolve is unavoidable, and in the Tier-1c regressions.
+
+% =====================================================================
+\section{Repository / file map}
+\label{sec:map}
+All code lives under \pf{code/qca\_fragmentation/}; data and outputs are
+siblings of \pf{code/} in the repository root.
+
+\begin{center}\small
+\begin{longtable}{@{}>{\footnotesize}p{0.29\linewidth} p{0.63\linewidth}@{}}
+\toprule
+\textbf{path} & \textbf{responsibility} \\
+\midrule
+\endhead
+\pf{\_\_init\_\_.py} & defines \fn{ENGINE\_VERSION = "1a.1"} (stamped into every
+record; a unit is recomputed only if its stored version differs). \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{core/} --- rule algebra and one-cycle dynamics}\\
+\pf{core/rules.py} & Wolfram $\leftrightarrow$ tuple $(r_{00},r_{01},r_{10},r_{11})$
+encoding; \fn{is\_unitary}, \fn{channel\_kraus\_symbols}, reflection / spin-flip
+maps; HSF oracle numbering. \\
+\pf{core/ring.py} & exact arithmetic in $\Zh$: amplitude $(a+b\sqrt2)/2^m$,
+addition, $\times\tfrac1{\sqrt2}$, exact-zero, norm. \\
+\pf{core/cycle.py} & one brickwork cycle; branch propagation; \fn{succ(x)} (graph
+edges); \fn{one\_cycle\_branches\_labeled} (Kraus-labelled, for Tier 1b). \\
+\pf{core/ring.py}, \pf{core/cycle.py} & together define the amplitude data
+structure \fn{Branch} (\S\ref{sec:branch}). \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{graph/} --- Tier 1a}\\
+\pf{graph/scc.py} & \fn{analyze} (dispatcher), \fn{sectors\_union\_find} (unitary),
+\fn{tarjan} (iterative, dissipative), \fn{\_condensation},
+\fn{\_analyze\_condensation}, \fn{recurrent\_classes}; the \fn{GraphResult}
+dataclass. \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{quantum/} --- Tier 1b}\\
+\pf{quantum/peripheral.py} & \fn{restricted\_superoperator}, \fn{classify\_attractor}
+(mixing / limit-cycle / coherent), \fn{geometric\_multiplicity},
+\fn{graph\_faithfulness}, \fn{full\_channel\_superoperator}, \fn{cesaro\_rank}. \\
+\pf{quantum/attractor\_structure.py} & the structural coherence test:
+$\dim_{\text{att}}$ vs.\ basis content, with a spectral-gap guarantee;
+\fn{census}. \\
+\pf{quantum/dissipative\_report.py} & assembles the R5 census, Tier-1b table, and
+Ces\`aro-gap table. \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{scaling/} --- Tier 1c}\\
+\pf{scaling/fits.py} & \fn{fit\_series} (M0/M1/M2 BIC), \fn{fit\_pure\_exponential},
+\fn{find\_integer\_recurrence}, \fn{find\_recurrence\_by\_period}, \fn{name\_base}. \\
+\pf{scaling/summary.py} & unitary series extraction + per-rule summary + the
+\pf{tab\_unitary\_summary} table. \\
+\pf{scaling/dissipative.py} & dissipative series; \fn{fit\_with\_period} (period
+selection); exact bases; \fn{summarize\_rule}; CSV + \pf{tab\_diss\_scaling}. \\
+\pf{scaling/figure.py} & unitary figures incl.\ the growth-base scatter. \\
+\pf{scaling/diss\_figure.py} & dissipative growth-rate scatter maps. \\
+\pf{scaling/growth\_map.py} & the unified $(\text{base},\alpha)$ plane and
+base-vs-base map over all 256 rules. \\
+\pf{scaling/audit.py} & coverage gate: missing / interior-gap / too-short units. \\
+\pf{scaling/overfit\_audit.py} & null-model + hold-out calibration of the
+recurrence and period searches. \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textbf{drivers and I/O}}\\
+\pf{results\_io.py} & JSONL record schema, \fn{load\_results}, \fn{has\_unit},
+\fn{record\_from\_graph\_result}, the checkpoint manifest. \\
+\pf{run\_rule.py} & analyse one unit (CLI); \fn{--no-ergodic-abort}. \\
+\pf{sweep.py} & idempotent in-process sweep. \\
+\pf{deep\_sweep.py} & memory-guarded subprocess sweep for large $N$. \\
+\pf{tests/} & \fn{pytest} suite (\S\ref{sec:tests}). \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{outputs (repo root)}}\\
+\pf{results/\{rule\}\_\{bc\}.jsonl} & one Tier-1a record per $N$ (append-only). \\
+\pf{checkpoints/manifest.jsonl} & timestamped audit log of completed units. \\
+\pf{analytics/} & census / audit JSON checkpoints. \\
+\pf{figures/}, \pf{reports/} & CSVs, PDFs, and the LaTeX reports. \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+% =====================================================================
+\section{Rule encoding (\pf{core/rules.py})}
+\label{sec:rules}
+An elementary rule $R=\sum_k c_k 2^k$ is decoded per neighbour pair
+$(m,n)=(x_{i-1},x_{i+1})$ into a local channel symbol from the output bits
+$c_p=c_{4m+n}$ (centre $0$) and $c_q=c_{4m+n+2}$ (centre $1$):
+\[
+(c_p,c_q)=\begin{cases}
+(0,1)\to\rt I & \text{identity}\\
+(1,0)\to\rt V & \text{Hadamard on the centre}\\
+(0,0)\to\rt D & \text{reset to }\ket0\\
+(1,1)\to\rt E & \text{reset to }\ket1
+\end{cases}
+\]
+So each rule is a 4-tuple $(r_{00},r_{01},r_{10},r_{11})\in\{\rt I,\rt V,\rt D,\rt E\}^4$
+(\fn{wolfram\_to\_tuple} / \fn{tuple\_to\_wolfram}, a bijection $4^4=256$). Key
+predicates: \fn{is\_unitary(t)} $=$ every symbol in $\{\rt I,\rt V\}$ (16 rules);
+\fn{channel\_kraus\_symbols(t)} $=$ ``has any $\rt D$/$\rt E$'', i.e.\ needs a
+second Kraus branch. The 16 unitary rules carry an HSF oracle number
+(\fn{wolfram\_to\_hsf}, obc0, $\rt V=$ Hadamard) used only to cross-check against
+the independent Julia sector counts.
+
+\paragraph{Symmetry maps.} \fn{reflect\_tuple} swaps $r_{01}\leftrightarrow r_{10}$
+(left--right reflection; a valid sector-size reduction for \emph{unitary} rules
+only, since the even/odd brickwork order matters for dissipative graphs).
+\fn{spinflip\_wolfram} implements $0\!\leftrightarrow\!1$ conjugation, valid only
+for $\rt V$-free rules (Hadamard breaks it: $XHX\neq\pm H$).
+
+% =====================================================================
+\section{Exact amplitudes: the ring \texorpdfstring{$\Zh$}{Z[1/sqrt2]}
+(\pf{core/ring.py})}
+\label{sec:ring}
+Every amplitude produced by an $\rt I/\rt V/\rt D/\rt E$ circuit lies in $\Zh$.
+It is stored as
+\[
+\text{value}=\frac{a+b\sqrt2}{2^{m}},\qquad a,b\in\mathbb Z\ (\text{arbitrary
+precision}),
+\]
+with a \emph{single} exponent $m$ shared by a whole branch dictionary. The one
+non-trivial gate, a conditional Hadamard, multiplies fired components by
+$1/\sqrt2$; with $(a+b\sqrt2)/\sqrt2=(2b+a\sqrt2)/2$ this stays integer-closed:
+
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+operation & effect on numerator $(a,b)$, exponent $m$ \\
+\midrule
+identity / value unchanged, $m\!\to\!m{+}1$ & $(a,b)\to(2a,2b)$ \quad(\fn{double})\\
+$\times\,1/\sqrt2$, $m\!\to\!m{+}1$ & $(a,b)\to(2b,a)$ \quad(\fn{div\_sqrt2})\\
+exact zero test & $a=0 \wedge b=0$ \quad(\fn{is\_zero}; no tolerance)\\
+squared norm over $4^m$ & $|a+b\sqrt2|^2=(a^2+2b^2)+(2ab)\sqrt2$ \quad(\fn{prob\_int})\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Because $\sqrt2$ is irrational, $a+b\sqrt2=0$ with integer $a,b$ forces $a=b=0$:
+the zero test is exact and the graph never needs a numerical threshold.
+\fn{renorm} halves all numerators while both parities are even (keeping the
+integers bounded); \fn{branch\_norm} returns the squared norm as two rationals
+(rational part, $\sqrt2$ part) --- the $\sqrt2$ part must vanish for any physical
+total, and equals $1$ exactly for a normalised unitary branch (a runtime check).
+
+% =====================================================================
+\section{One cycle and the transition graph (\pf{core/cycle.py})}
+\label{sec:cycle}
+
+\subsection{The \fn{Branch} data structure}
+\label{sec:branch}
+\[
+\fn{Branch}=(\ \{\,\text{bitmask}\to(a,b)\,\},\ m\ )
+\]
+a dict from computational-basis state (an \fn{int} bitmask, site $i$ $=$ bit $i$)
+to its numerator $(a,b)$, plus the shared exponent $m$. One cycle applies the
+local update at all \emph{even} sites $0,2,4,\dots$ first, then all \emph{odd}
+sites (brickwork); odd-layer controls read the post-even-layer state. A rule is
+\emph{compiled} once per $(N,\text{bc})$ (\fn{\_compile}, \fn{lru\_cache}d) into
+an ordered list of site steps with precomputed neighbour bit-positions
+($-1$ marks a frozen-$0$ obc0 edge).
+
+\subsection{Kraus branching}
+A reset ($\rt D$/$\rt E$) splits a branch into two: the \emph{no-jump} $A_0$
+sub-branch and the \emph{jump} $A_1$ sub-branch (\fn{\_split\_site} returns
+\fn{(a0,a1)}). Branches are \textbf{never merged} --- merging would fabricate
+interference between incoherent Kraus alternatives. Two propagators:
+\begin{itemize}
+\item \fn{one\_cycle\_branches(x,N,t,bc)} --- surviving branches after one cycle.
+  Unitary rules take a single-branch fast path (\fn{\_apply\_site\_unitary}).
+\item \fn{one\_cycle\_branches\_labeled} --- additionally tags each branch with
+  the \fn{frozenset} of sites where $A_1$ fired. That set uniquely names the
+  global Kraus operator $K_b=\prod_i A_{b_i}(i)$ in the fixed processing order,
+  so branches of different inputs can be paired by label to assemble the exact
+  superoperator in Tier 1b.
+\end{itemize}
+
+\subsection{The edge relation}
+\begin{equation}
+\fn{succ}(x)=\{\,y:\ \bra{y}\Phi_C(\ket{x}\!\bra{x})\ket{y}\neq0\,\}
+          =\bigcup_{\text{branches}}\operatorname{supp}(\text{branch}),
+\label{eq:succ}
+\end{equation}
+the union of branch supports after one cycle, with exact-zero pruning. This is
+the directed edge set of the transition graph; it is streamed, never
+materialised. Equivalently $\fn{succ}$ is the support of the dephased kernel
+$M_{yx}=\sum_\mu|\bra{y}K_\mu\ket{x}|^2$ --- exactly the QCA \emph{monitored} in
+the computational basis after every cycle (see R5 for why this differs from the
+unmonitored channel for $\rt V$-carrying rules).
+
+% =====================================================================
+\section{Tier 1a: graph decomposition (\pf{graph/scc.py})}
+\label{sec:graph}
+\fn{analyze(rule,N,bc,t)} returns a \fn{GraphResult} and dispatches on
+unitarity.
+
+\subsection{Unitary rules: union--find}
+A unitary (doubly stochastic) channel makes every state recurrent, so each
+weakly connected component is a single SCC and the sector partition equals the
+undirected connected components. \fn{sectors\_union\_find} streams the edges once
+with union by size and path compression --- $O(2^N)$ integers, no stored
+adjacency, no DFS stack. This is the memory-light path that reaches $N=22$
+(2\,GB $\to$ 45\,MB at $N=17$ versus stack-Tarjan). It early-exits to
+\emph{ergodic} when a component first exceeds $f_{\text{erg}}\cdot2^N$.
+
+\subsection{Dissipative rules: iterative Tarjan + condensation}
+The directed graph is decomposed by an \textbf{iterative} (explicit-stack)
+Tarjan (\fn{tarjan}) --- recursion would overflow at $N\gtrsim20$. It returns
+\fn{comp\_id} (per-node SCC index, numbered in reverse-topological order) and the
+component sizes, and early-exits to ergodic if any SCC exceeds
+$f_{\text{erg}}\cdot2^N$ or the node count exceeds \fn{node\_budget}. Two further
+streaming passes:
+\begin{itemize}
+\item \fn{\_condensation} --- builds the successor sets of the condensation DAG
+  (one entry per SCC).
+\item \fn{\_analyze\_condensation} --- \emph{terminal} SCCs (no outgoing edge)
+  are the recurrent classes; a Kahn topological sort gives the longest path
+  ($=$ \fn{transient\_depth}); a reverse-topological DP assigns each transient a
+  single reachable terminal or a ``multiple'' flag, from which the exclusive
+  \fn{basin} sizes and the \fn{shared\_basin\_size} follow.
+\end{itemize}
+\fn{recurrent\_classes} returns the member-state lists of the terminal SCCs and
+is the entry point Tier 1b consumes.
+
+\subsection{The \fn{GraphResult} / record fields}
+\label{sec:record}
+\fn{record\_from\_graph\_result} (\pf{results\_io.py}) serialises to one JSON
+line. The schema (field order in \fn{results\_io.FIELDS}):
+
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+field & meaning \\
+\midrule
+\rt{rule}, \rt{bc}, \rt{N} & the unit key \\
+\rt{n\_scc} & number of SCCs \\
+\rt{n\_recurrent} & number of terminal SCCs (sectors / attractors) \\
+\rt{sizes\_recurrent} & terminal-SCC sizes, descending (capped at 2048) \\
+\rt{sizes\_scc} & all SCC sizes, descending (capped) \\
+\rt{size\_hist} & \{size:count\} histogram (exact reconstruction if capped) \\
+\rt{sizes\_truncated} & true if $>$2048 explicit sizes were dropped \\
+\rt{sizes\_basins} & exclusive basin sizes, descending \\
+\rt{shared\_basin\_size} & states whose forward orbit reaches $>1$ terminal \\
+\rt{transient\_depth} & longest condensation-DAG path (relaxation proxy) \\
+\rt{n\_transient\_scc} & number of non-terminal SCCs \\
+\rt{ergodic\_flag}, \rt{ergodic\_bound} & set when early-exit fired; the SCC size \\
+\rt{attractor\_types}, \rt{d\_max\_quantum} & filled by Tier 1b (else null) \\
+\rt{runtime}, \rt{engine\_version} & wall seconds; \rt{"1a.1"} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\fn{sizes\_from\_record} reconstructs the full multiset from \rt{size\_hist} when
+the explicit list was capped, so the sorted sizes ($D_{\max}$ etc.) are never
+corrupted by the cap. \fn{load\_results} returns $\{N:\text{record}\}$;
+\fn{has\_unit} gates idempotency on \rt{engine\_version}.
+
+% =====================================================================
+\section{Tier 1b: per-class quantum structure (\pf{quantum/peripheral.py})}
+\label{sec:tier1b}
+For a recurrent class $R$ (a terminal SCC, closed under the channel) the exact
+restricted superoperator on $\operatorname{span}(R)\otimes\operatorname{span}(R)^*$
+is assembled from the labelled Kraus branches (\S\ref{sec:cycle}):
+\begin{equation}
+\Phi_R\big[(y,y'),(x,x')\big]=\sum_b \bra{y}K_b\ket{x}\,\overline{\bra{y'}K_b\ket{x'}},
+\label{eq:phiR}
+\end{equation}
+a dense $|R|^2\times|R|^2$ real matrix (\fn{restricted\_superoperator}); matrix
+elements are exact $\Zh$ values cast to float only here. Classification
+(\fn{classify\_attractor}) reads the \emph{peripheral} spectrum
+($|\lambda|>1-10^{-8}$):
+
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+condition & label \\
+\midrule
+unique $\lambda=1$, no other peripheral eigenvalue & \textbf{mixing} (pointer / dark state) \\
+unique $\lambda=1$, peripheral roots of unity, eigenoperators diagonal & \textbf{limit cycle} (period $q$) \\
+geometric mult.\ of $\lambda=1$ exceeds \# diagonal fixed operators & \textbf{coherence-carrying} ($d_k=\sqrt{\text{mult}}$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The crucial subtlety is \fn{geometric\_multiplicity} (via SVD of
+$\Phi_R-\lambda I$): the \emph{algebraic} multiplicity is inflated by the
+transient$\to$recurrent Jordan structure and must not be used. Classes larger
+than \fn{max\_size}$=32$ are reported \emph{unresolved} (the dense eigensolve is
+$O(|R|^4)$).
+
+\paragraph{Channel-level diagnostics (validation, $N\lesssim6$).}
+\fn{full\_channel\_superoperator} builds the dense $4^N\times4^N$ channel from
+per-site Kraus $\{A_0,A_1\}$ as $\prod_{\text{sites}}(A_0\otimes\bar A_0+A_1\otimes\bar A_1)$.
+\fn{cesaro\_rank} is the geometric multiplicity of its eigenvalue $1$ (the
+protected-coherence dimension). \fn{graph\_faithfulness} returns \fn{leak\_fix}
+(Fix$(\Phi)$ weight outside the graph's recurrent block) and \fn{leak\_flow}
+(population off the recurrent set after many cycles); a rule is \emph{faithful}
+iff both vanish.
+
+\paragraph{Structural coherence test (\pf{quantum/attractor\_structure.py}).}
+\fn{graph\_faithfulness} catches only the weaker failure. The structural test
+computes $\dim_{\text{att}}=\dim\operatorname{supp}$ of the Ces\`aro limit of
+$\Phi^n(\mathbb 1/d)$ and the number of basis states inside it; the excess
+$\fn{coh\_dirs}=\dim_{\text{att}}-\fn{basis\_in\_att}>0$ is exactly the structure
+no basis-state graph can represent. It is iterated to a genuine \emph{spectral
+gap} (smallest kept eigenvalue over largest dropped $>\fn{GAP\_MIN}=10^4$), not a
+fixed burn-in --- burn-in $600$ gives rule 19 a bogus $\dim_{\text{att}}=35$ at
+$N=6$; converged it is $5$. \fn{census} runs this over all dissipative rules and
+checkpoints to \pf{analytics/}.
+
+% =====================================================================
+\section{Tier 1c: fit models (\pf{scaling/fits.py})}
+\label{sec:fits}
+
+\subsection{BIC model selection: \fn{fit\_series}}
+On the exact $\ln y$ values, three nested models are fitted by least squares and
+selected by BIC:
+\[
+\text{M0: }\ln y=c;\qquad
+\text{M1: }\ln y=c+\alpha\ln N;\qquad
+\text{M2: }\ln y=c+\alpha\ln N+\kappa N.
+\]
+$\text{BIC}=n\ln(\mathrm{RSS}/n)+k\ln n$, with a relative RSS floor so that a
+near-perfect fit does not let floating-point noise dominate $n\ln\mathrm{RSS}$
+(then the fewest-parameter model wins on the $k\ln n$ penalty). The class label:
+M0 $\to$ \emph{constant}, M1 $\to$ \emph{polynomial}, M2 $\to$ \emph{exponential}
+iff $|\kappa|>\fn{\_KAPPA\_EPS}=0.02$ (a linear sector count yields a spurious
+$\kappa\!\sim\!0.008$ that must not read as exponential). The $\alpha\ln N$ term
+is \emph{always} carried when reporting $\kappa$, because binomial / charge
+sectors carry $\sqrt N$ prefactors ($\alpha\approx-\tfrac12$) that otherwise bias
+$\kappa$; $\kappa$ is returned with a leave-one-out spread.
+
+\subsection{Pure-exponential rate: \fn{fit\_pure\_exponential}}
+The M2 $\alpha\ln N$ term is unstable on the ragged \emph{dissipative} series
+(rule 90's $D_{\max}=1,15,1,7,3,63,2,127$ gives $\alpha=-7.5$ and an impossible
+base 11). For rate extraction on those, the two-parameter $\ln y=c+\kappa N$ is
+used instead; it carries a \fn{bounded} flag ($\kappa\le\ln2$, since
+$D_{\max}\le2^N$). The report's rule of thumb (R2): read the base of a
+\emph{room-packing} (geometric $b^N$) series from this two-parameter fit, and the
+base of a \emph{binomial} series from M2 --- the mechanism, not the residual,
+selects the estimator.
+
+\subsection{Exact integer recurrences: \fn{find\_integer\_recurrence}}
+Searches for the smallest-order linear recurrence
+$a(n)=\sum_{i}c_i\,a(n-i)$, $c_i\in\mathbb Z$: the first $k$ equations are solved
+over $\mathbb Q$ (\fn{Fraction}), integrality is required, and the candidate is
+then \emph{verified on every remaining term}. The growth base is
+$\max|\text{root}|^{1/\text{step}}$ of the characteristic polynomial --- an
+algebraic number, not a regression. Guards: a repeated unit root (a polynomial
+series) is snapped to base $1$ (\fn{np.roots} splits $(x-1)^3$ into a cluster at
+$1.000007$); \fn{step} is the $N$-spacing (2 for a parity subsequence, so the
+root is taken to the $1/\text{step}$ power); \fn{max\_skip} may step over a
+finite-size transient but is \emph{off by default} (it costs false positives ---
+\S\ref{sec:overfit}). Matched constants are named by \fn{name\_base} against
+\fn{\_NAMED\_BASES} ($\varphi$, $\sqrt3$, plastic $\rho$, supergolden,
+tribonacci, $4^{1/5}$, the parity-doubled surds, \dots).
+
+\subsection{Period splitting: \fn{find\_recurrence\_by\_period}}
+Many dissipative series oscillate with $N$ because the attractor is a spatial
+pattern that only fits a commensurate ring (parity is the common case: an odd
+\rt{pbc} ring cannot host the two N\'eel states). \fn{find\_recurrence\_by\_period}
+runs the recurrence search per residue class $N\bmod p$ and accepts only when
+\emph{every} class has one and they agree on the base.
+
+% =====================================================================
+\section{Tier 1c: scaling drivers}
+\label{sec:scaling}
+
+\subsection{Unitary --- \pf{scaling/summary.py}}
+\fn{load\_series} reads \pf{results/} and builds the per-$N$ series
+$\rt{n\_recurrent}$ (sectors), $\rt{d\_max}$ (largest sector), $\rt{max\_basin}$;
+ergodic-flagged units are excluded and the first ergodic $N$ recorded.
+\fn{summarize\_rule} runs \fn{fit\_series} on each and \fn{latex\_summary\_table}
+writes \pf{tab\_unitary\_summary.tex}.
+
+\subsection{Dissipative --- \pf{scaling/dissipative.py}}
+The dissipative series are the same four keys but mean attractor count, largest
+attractor, largest basin, and transient depth. The extra machinery:
+\begin{itemize}
+\item \fn{fit\_with\_period} chooses a commensurability period by \textbf{BIC over
+  the pooled per-class log-residuals}, requiring a decisive margin
+  (\fn{\_BIC\_MARGIN}$=10$, Kass--Raftery ``very strong''), at least
+  \fn{\_MIN\_PER\_CLASS}$=4$ points per class, and the precondition that the
+  joint fit is actually failing ($\fn{\_RESID\_BAD}=0.15$). An exact per-class
+  recurrence is accepted as an independent second route. This replaced an
+  earlier ratio-of-residuals rule that over-split (\S\ref{sec:overfit}).
+\item \fn{summarize\_rule} emits, per series, the growth class, base (exact where
+  a recurrence exists), period, and --- for \emph{irregular} series --- the
+  \fn{irregular\_kind}: \emph{arithmetic} (a $\rt V$-free rule is deterministic
+  on basis states, so $D_{\max}$ is a cycle length / multiplicative order, not a
+  growth law --- e.g.\ rule 90 over $\mathrm{GF}(2)$) vs.\ \emph{undetermined}
+  (a $\rt V$-carrying rule whose period the sizes cannot settle).
+\end{itemize}
+\fn{attractor\_class} gives the coarse graph structure (unique-point /
+multistable / extended / multi-extended).
+
+\subsection{Figures}
+\pf{scaling/figure.py} plots $\ln y$ vs $N$ and the unitary growth-\emph{base}
+scatter; \pf{scaling/diss\_figure.py} the dissipative growth-rate maps;
+\pf{scaling/growth\_map.py} the unified maps over all 256 rules --- the
+$(\text{base},\alpha)$ plane (leading rate vs sub-leading power, non-degenerate
+across exponential / polynomial / ergodic) and the base-vs-base view. A filled
+marker is an analytically exact base; an open marker is a fit.
+
+% =====================================================================
+\section{Sweep drivers and idempotency}
+\label{sec:drivers}
+\fn{run\_rule.run\_unit} computes one unit unless it is already cached for the
+current \rt{engine\_version} (\fn{has\_unit}); results are append-only, so a
+sweep is safe to kill and restart. \fn{--no-ergodic-abort} performs the full
+decomposition even past the ergodic threshold, keeping the flag (used to prove
+the ``ergodic'' unitary rules are $N$-independent; see R2).
+
+\pf{sweep.py} walks $(\text{rule},N,\text{bc})$ in-process and stops enlarging
+$N$ once a rule is ergodic or budget-capped (fragmentation cannot reappear at
+larger $N$). \pf{deep\_sweep.py} runs each unit in a \emph{subprocess} under an
+address-space \fn{RLIMIT\_AS} cap and a wall timeout, in three cost tiers
+(small / large / huge), so one runaway unit dies alone instead of OOM-ing the
+night; $N$ is walked upward so an interrupted run still leaves a hole-free
+dataset at every completed size. The genuine ceiling on 32\,GB is $N=17$ for the
+dissipative rules ($N=16$ for the three-Hadamard rules 19/55, whose directed
+Tarjan does not fit $2^{17}$ states).
+
+% =====================================================================
+\section{Audits and overfitting calibration (\pf{scaling/})}
+\label{sec:overfit}
+\fn{audit.py} is the coverage gate: it reports MISSING (no data; expected only
+for ergodic units), interior GAPS (an absent $N$ inside the range --- fatal to a
+fit, non-zero exit), SHORT (fewer points than a recurrence of a given order
+needs, $2k{+}1$), and the parity-effective length. \fn{overfit\_audit.py}
+calibrates the two searches that could fake structure:
+\begin{itemize}
+\item \textbf{null recurrence rate} --- on structureless surrogates the exact
+  recurrence search fires $0/4000$; this is what licenses it to certify periods
+  BIC cannot afford.
+\item \textbf{null period rate} --- on smooth exponentials $+25\%$ noise the
+  calibrated period split fires $\sim3\%$, versus $21\%$ for the old
+  ratio-of-residuals rule and $33\%$ for plain argmin-BIC.
+\item \textbf{hold-out extrapolation} --- refit on all but the largest three
+  sizes and predict them: $854/854$ testable series extrapolate exactly, which is
+  far stronger evidence for the algebraic bases than any in-sample residual.
+\end{itemize}
+
+% =====================================================================
+\section{Tests (\pf{tests/})}
+\label{sec:tests}
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+file & covers \\
+\midrule
+\pf{test\_rules.py} & encoding bijection, unitarity, symmetry maps, HSF table \\
+\pf{test\_ring.py} & $\Zh$ closure, exact zero, norms \\
+\pf{test\_cycle.py} & branch propagation, \fn{succ}, unitary single-branch norm \\
+\pf{test\_scc.py} & Tarjan / union-find agreement, condensation, ergodic exit \\
+\pf{test\_peripheral.py} & superoperator vs dense channel, attractor labels \\
+\pf{test\_attractor\_structure.py} & rule-27 coherence, gap-driven convergence \\
+\pf{test\_fits.py} & recurrences, $\varphi$, parity bases, $4^{1/5}$ near-degeneracy \\
+\pf{test\_diss\_scaling.py} & period selection, null false-split, rule-90 GF(2) \\
+\pf{test\_growth\_map.py} & anchor-rule $(\text{class},\text{base},\alpha)$ \\
+\pf{test\_deep\_sweep.py} & ergodic-skip, cost ordering, tier table \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Reproducing the pipeline from scratch}
+\label{sec:repro}
+All commands use \pf{\textasciitilde/pyenvs/main/bin/python} from \pf{code/}.
+\begin{enumerate}
+\item \textbf{One unit:}\\
+  \rt{python -m qca\_fragmentation.run\_rule --rule 156 --N 6-18 --bc obc0}
+\item \textbf{Sweep} (idempotent; resume by re-running):\\
+  \rt{python -m qca\_fragmentation.sweep --which unitary --n-min 6 --n-max 18}\\
+  \rt{python -m qca\_fragmentation.deep\_sweep --n-min 14 --n-max 17 --which dissipative}
+\item \textbf{Coverage gate} (non-zero exit on gaps):\\
+  \rt{python -m qca\_fragmentation.scaling.audit}
+\item \textbf{Scaling tables / CSV:}\\
+  \rt{python -m qca\_fragmentation.scaling.summary}\qquad(unitary)\\
+  \rt{python -m qca\_fragmentation.scaling.dissipative}\quad(dissipative)
+\item \textbf{Figures:}\\
+  \rt{python -m qca\_fragmentation.scaling.figure}\\
+  \rt{python -m qca\_fragmentation.scaling.diss\_figure}\\
+  \rt{python -m qca\_fragmentation.scaling.growth\_map}
+\item \textbf{Overfitting calibration:}\\
+  \rt{python -m qca\_fragmentation.scaling.overfit\_audit}
+\item \textbf{Tests:}\quad\rt{python -m pytest qca\_fragmentation/tests -q}
+\end{enumerate}
+Every unit is cached in \pf{results/} and logged in
+\pf{checkpoints/manifest.jsonl}; nothing recomputes unless
+\rt{engine\_version} changes or \rt{--force} is given.
+
+\end{document}
