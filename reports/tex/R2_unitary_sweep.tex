@@ -192,10 +192,89 @@ Two rules change fragmentation class with the boundary:
   dominant sector $D_{\max}=2^{N-1}$; under \rt{pbc} the periodic seam destroys
   the charge and the dynamics is ergodic --- a single sector of size $2^N-1$ plus
   the frozen vacuum $|0\cdots0\rangle$ ($D_{\max}/2^N\to1$).
-  \item \textbf{Rules 150/105:} identical sector data under \rt{obc0} (central
-  binomials $\binom{N+1}{w}$), but they \emph{differ} under \rt{pbc}, where the
-  periodic domain-wall counting is rule-specific.
+  \item \textbf{Rules 150/105:} binomial sector sizes $\binom{N+1}{w}$ under
+  \rt{obc0} (analysed in \S\ref{sec:binomial}); they \emph{differ} under \rt{pbc},
+  where the periodic domain-wall counting is rule-specific.
 \end{itemize}
+
+\section{Analytic scaling of the binomial rules 150/105}
+\label{sec:binomial}
+Rules $150=(\rt{IVVI})$ and $105=(\rt{VIIV})$ are the two additive (\textsc{xor})
+elementary rules, $x_i\mapsto x_{i-1}\oplus x_i\oplus x_{i+1}$ and its complement. Under
+\rt{obc0} their sectors are not merely ``central-binomial-like'': every sector
+size is \emph{exactly} a binomial coefficient. Numerically, for all computed
+$N=6\ldots19$ the recurrent-class sizes are
+\begin{equation}
+  \Big\{\tbinom{N+1}{w}\Big\},\qquad
+  \sum_{\text{sectors}}\tbinom{N+1}{w}=2^{N},
+  \label{eq:binom-sectors}
+\end{equation}
+i.e.\ the $2^N$ states split into fixed-charge Krylov subspaces whose dimensions
+are the lower half of Pascal's row $N+1$ (the sum of that half is exactly $2^N$).
+The largest sector is therefore the central binomial,
+\begin{equation}
+  D_{\max}=\binom{N+1}{\lfloor (N+1)/2\rfloor}.
+  \label{eq:dmax-central}
+\end{equation}
+
+\paragraph{When the two rules agree.} For \emph{even} $N$ (so $N+1$ odd) the row
+has no self-conjugate entry and $150$ and $105$ give bit-for-bit identical sector
+multisets. For \emph{odd} $N$ the central weight $(N{+}1)/2$ is self-conjugate,
+and the two rules resolve that one sector differently: at $N\equiv1\ (\mathrm{mod}\ 4)$,
+where $(N{+}1)/2$ is itself odd, $105$ keeps the central binomial whole
+($D_{\max}=\binom{N+1}{(N+1)/2}$) while $150$ splits it into the conjugate pair
+$\binom{N+1}{(N\mp1)/2}$ (e.g.\ $N=9$: $105$ has $252$, $150$ has $210+210$).
+This does not change the exponents below, since
+$\binom{N+1}{(N-1)/2}\big/\binom{N+1}{(N+1)/2}=\tfrac{(N+1)/2}{(N+3)/2}\to1$.
+
+\paragraph{Expected exponents.} Applying Stirling to \eqref{eq:dmax-central},
+$\binom{2m}{m}\sim 4^m/\sqrt{\pi m}$ with $m=\lfloor(N+1)/2\rfloor$ gives
+\begin{equation}
+  D_{\max}\;\sim\;2^{N}\sqrt{\frac{8}{\pi (N+1)}},
+  \qquad
+  \ln D_{\max}=N\ln 2\;-\;\tfrac12\ln (N+1)\;+\;\tfrac12\ln\tfrac{8}{\pi}.
+  \label{eq:asymptote}
+\end{equation}
+So the largest sector is \emph{extensive with base exactly $2$}, dressed by a
+$1/\sqrt N$ prefactor. In the report's fit model $\ln y=c+\alpha\ln N+\kappa N$
+the prediction is sharp:
+\begin{equation}
+  \kappa=\ln 2=0.6931\ (\text{base }2),\qquad
+  \alpha=-\tfrac12,\qquad
+  c=\tfrac12\ln\tfrac{8}{\pi}=0.467.
+\end{equation}
+The number of sectors is the number of admissible charges, $\sim N/2$ ---
+exactly $\lceil (N+2)/2\rceil$ for $150$, and the same up to a small
+$\bmod\,4$ wobble for $105$. This is a \emph{linear} law ($\kappa=0$, base $1$,
+power $\alpha\simeq1$): subexponentially many sectors each of extensive
+dimension --- the signature of a single $U(1)$-like domain-wall charge rather
+than a shattered spectrum.
+
+\paragraph{Which fit to trust, and the mirror of rule 156.} The $-\tfrac12\ln N$
+term in \eqref{eq:asymptote} is not noise: it is the genuine asymptotic form, so
+the three-parameter M2 model is the correct estimator here and a bare
+two-parameter fit $\ln y=c+\kappa N$ is \emph{biased low}. On $N=6\ldots19$ the
+bare fit returns base $1.930$ --- and it creeps upward with the window
+($1.904,1.917,1.923,1.930$ for $N\le 10,13,16,19$), converging to $2$ only as
+$N\to\infty$, exactly as the $-\tfrac12\ln N/N$ drag predicts. This is the
+precise \emph{opposite} of rule $156$ (\S\ref{sec:156}), where the true law is a
+pure geometric $b^N$ and it is the M2 $\alpha\ln N$ term that spuriously eats the
+growth. The moral is that no single fit is universally right: a domain-wall
+(binomial) mechanism carries a real half-integer $\alpha$ and must be read from
+M2, whereas a room-packing (transfer-matrix) mechanism is pure-geometric and
+must be read from the two-parameter fit. Knowing the mechanism, not the residual,
+selects the estimator.
+
+Two honest finite-size caveats. The fitted $\alpha$ comes out in the range
+$-0.3$ to $-0.4$ (M2 gives $-0.31$; a fit of $\ln D_{\max}-N\ln2$ against
+$\ln N$ gives $-0.41$) rather than $-\tfrac12$ over this window, because the
+binomial argument is $N{+}1$
+(not $N$) and the next Stirling correction $\binom{2m}{m}\!\propto\!(1-\tfrac{1}{8m})$
+adds an $O(1/N)$ term that a three-parameter fit partly absorbs into $\alpha$;
+the residual against the \emph{exact} form \eqref{eq:asymptote} confirms
+$\alpha=-\tfrac12$. And $\kappa$ from M2 reads $0.684$ against the exact
+$\ln 2=0.693$ for the same reason --- close, and provably converging, but the
+exact value comes from \eqref{eq:dmax-central}, not from the regression.
 
 \section{Broken inversion symmetry (201 vs.\ 108)}
 Rules $201=(\rt{VIII})$ and $108=(\rt{IIIV})$ are $0\!\leftrightarrow\!1$
