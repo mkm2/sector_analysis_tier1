@@ -276,6 +276,64 @@ $\alpha=-\tfrac12$. And $\kappa$ from M2 reads $0.684$ against the exact
 $\ln 2=0.693$ for the same reason --- close, and provably converging, but the
 exact value comes from \eqref{eq:dmax-central}, not from the regression.
 
+\section{A unified growth map over all 256 rules}
+\label{sec:growthmap}
+The two preceding sections show why a single ``growth base'' axis is not enough:
+$156$ and $150/105$ both approach the \emph{same} base regime yet obey different
+laws, and the difference lives entirely in the sub-leading power $\alpha$. The
+honest coordinates are therefore the \emph{two} exponents of $y\sim N^{\alpha}b^{N}$
+--- the leading base $b=e^{\kappa}$ and the sub-leading power $\alpha$ --- and
+plotting both places every growth class on one map without degeneracy
+(Fig.~\ref{fig:growthplane}). Exponential rules sit at $b>1$ with $\alpha$ a small
+correction; polynomial rules sit at $b=1$ and climb the $\alpha$-axis by their
+degree; a constant law is the origin; an ergodic/volume-law rule is $(b,\alpha)=(2,0)$.
+The construction even resolves the two \emph{different} ways of reaching $b=2$:
+the binomial rules $150/105$ carry $\alpha=-\tfrac12$ and so sit \emph{below} the
+ergodic point, not on it, while the domain-wall rules $60/102$ (with $D_{\max}=2^{N-1}$)
+land on it and are separated only in the companion $\#$sectors panel, where their
+charge shows up as a linear ($\alpha\simeq1$) sector count.
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{../../figures/fig_growth_plane_obc0.pdf}
+\caption{Growth map of all $256$ rules in the two exponents of
+$y\sim N^{\alpha}b^{N}$: leading base $b=e^{\kappa}$ (horizontal) against
+sub-leading power $\alpha$ (vertical), for $D_{\max}$ (left) and the sector count
+(right), \rt{obc0}. Colour/marker encodes the growth class; the two
+\emph{irregular} \rt{obc0} rules ($90$, $165$, whose $D_{\max}$ is a
+multiplicative order rather than a growth law --- see R5) carry no base and are
+omitted. \textbf{Filled} markers are analytically exact bases (an exact integer
+recurrence, or a derived unitary constant such as $4^{1/5}$ or the binomial
+$\alpha=-\tfrac12$); \textbf{open} markers are BIC fits. The fill channel is the
+point of the figure: it shows at a glance which classifications are theorems ---
+almost all of the unitary rules and the algebraic dissipative ones --- and which
+rest on the null-calibrated model selection of R5.}
+\label{fig:growthplane}
+\end{figure}
+
+This directly addresses the asymmetry in how the classes are assigned. For the
+unitary rules the law is analytic: the Fibonacci/tribonacci bases are exact
+integer recurrences, and $156$'s $4^{1/5}$ and $150/105$'s $\alpha=-\tfrac12$ are
+derived in \S\S\ref{sec:156}--\ref{sec:binomial}. For the dissipative rules the
+class comes from BIC with the false-split rate pinned against a null (R5); the
+map does not pretend these are equally certain, but marks them open. A companion
+view (Fig.~\ref{fig:growthbaseonly}) keeps the base of the sector count against
+the base of $D_{\max}$ on $[1,2]^2$, with marker size encoding polynomial degree
+and ergodic rules as stars: it is the more direct way to read \emph{how} a rule
+fragments --- many small sectors (bottom-right, e.g.\ $204$'s $2^N$ singletons),
+one extensive sector (top-left, the ergodic/domain-wall corner), or both growing
+together (the diagonal, where $201/108$ and $156$ live).
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.72\linewidth]{../../figures/fig_growth_baseonly_obc0.pdf}
+\caption{Companion base-vs-base map (\rt{obc0}): growth base of the sector count
+against that of $D_{\max}$, marker size $\propto$ polynomial degree, ergodic
+rules as stars. The corners read directly: bottom-right $=$ shattered into
+$O(2^N)$ frozen sectors ($204$), top-left $=$ a single volume-law sector
+(ergodic and the domain-wall family), diagonal $=$ both count and size grow
+exponentially.}
+\label{fig:growthbaseonly}
+\end{figure}
+
 \section{Broken inversion symmetry (201 vs.\ 108)}
 Rules $201=(\rt{VIII})$ and $108=(\rt{IIIV})$ are $0\!\leftrightarrow\!1$
 spin-flip partners. Because the flip conjugates the Hadamard by $X$ and
