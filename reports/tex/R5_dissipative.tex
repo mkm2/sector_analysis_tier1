@@ -7,6 +7,8 @@
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
 \newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\oeis}[1]{\href{https://oeis.org/#1}{\texttt{#1}}}
 \providecommand{\ket}[1]{|#1\rangle}
 \providecommand{\bra}[1]{\langle #1|}
 
@@ -245,12 +247,15 @@ The count is \textbf{non-monotonic} in $N$ and stays extensive: $54$ rules are
 coherent at all three sizes and $92$ at some size, so this is not a small-$N$
 accident that washes out. Two structural facts stand out:
 \begin{itemize}
-  \item \textbf{The Hadamard is necessary.} All $80$ Hadamard-free dissipative
-  rules ($\rt V\notin$ tuple) are basis-spanned at every censused size, and all
-  $92$ coherent rules contain at least one $\rt V$. With only $\rt I$, $\rt D$,
-  $\rt E$ the Kraus operators are basis permutations composed with resets, so
-  the channel maps basis-diagonal states to basis-diagonal states and the graph
-  is complete by construction.
+  \item \textbf{The Hadamard is necessary --- and one half of this is trivial.}
+  All $80$ Hadamard-free dissipative rules ($\rt V\notin$ tuple) are basis-spanned
+  at every censused size, and all $92$ coherent rules contain at least one $\rt V$.
+  The first clause is not a discovery: a $\rt V$-free rule is \emph{deterministic
+  on basis states} (both Kraus branches of a reset land on the same state), so it
+  is an ordinary classical elementary cellular automaton and its graph is exact
+  by construction --- this is exactly why we treat those $80$ rules as a
+  \emph{classical baseline} (\S\ref{sec:classical}). The content is the converse:
+  coherence \emph{requires} a $\rt V$, without exception.
   \item \textbf{The wall-Hadamard core.} The $12$ rules with $r_{01}=r_{10}=\rt V$
   --- $\{18,19,22,23,50,55,146,151,178,179,182,183\}$, i.e.\ Hadamard exactly on
   the domain-wall configurations --- are coherent \emph{without exception}. A
@@ -352,9 +357,91 @@ Representative cases, all verified on the full series:
 These are the counting signatures of local constraints: a Fibonacci-type
 recurrence is what one gets when a configuration is admissible unless it contains
 a forbidden local pattern, so the attractor count is a transfer-matrix count over
-a constrained chain and its base is that transfer matrix's Perron root. This is
-the same mechanism as the unitary sector counts (R2), now visible in the
-dissipative attractor structure.
+a constrained chain and its base is that transfer matrix's Perron root. Almost
+all of these algebraic-base series belong to the $\rt V$-free family, and for
+those the mechanism is entirely classical --- \S\ref{sec:classical} identifies
+the sequences by name and places them against the elementary-CA literature.
+
+\section{The classical baseline: \texorpdfstring{$\rt V$}{V}-free rules are
+elementary cellular automata}
+\label{sec:classical}
+The $256$ rules split into three families by symbol content:
+\emph{unitary} ($\rt I/\rt V$ only, $16$ rules), \emph{classical} ($\rt V$-free,
+i.e.\ $\rt I/\rt D/\rt E$ with at least one reset, $80$ rules), and \emph{mixed}
+($\rt V$ together with a reset, $160$ rules). This section is about the middle
+family, and its purpose is to separate what is genuinely quantum in the
+dissipative results from what is textbook classical dynamics.
+
+\paragraph{Why they are classical.} A reset is deterministic on basis states:
+$\rt D$ sends the centre to $\ket0$ whether it started in $\ket0$ (branch $A_0$)
+or $\ket1$ (branch $A_1$), and likewise $\rt E$ to $\ket1$. So on a
+computational-basis input a $\rt V$-free rule has \emph{exactly one} successor
+--- $\fn{succ}(x)$ is single-valued (verified for every $\rt V$-free rule) --- and
+the transition graph is a deterministic \emph{functional graph}
+$f:\{0,1\}^N\!\to\!\{0,1\}^N$. This is precisely an elementary cellular automaton
+with the brickwork update. Its Krylov ``sectors'' are the classical recurrent
+sets: the terminal SCCs are the cycles of $f$, the transients are the trees
+feeding into them, $\#\mathrm{att}$ counts the cycles and $D_{\max}$ is the
+longest cycle length. For such a rule the graph is faithful \emph{by
+construction} (there is no coherence to miss), so the census result of
+\S\ref{sec:failures} --- all $80$ basis-spanned --- is automatic, not a finding.
+
+\paragraph{The growth bases are known integer sequences.} Because $f$ is local,
+the number of admissible recurrent configurations is a transfer-matrix count
+over a subshift of finite type, and its growth base is the Perron eigenvalue of
+that transfer matrix, i.e.\ $e^{h}$ with $h$ the topological entropy of the
+constraint. Every algebraic base we extract for a classical rule is the Perron
+root of a small non-negative integer matrix, and the resulting integer sequences
+are standard --- with the boundary convention selecting the \emph{path} version
+(\rt{obc0}) or the \emph{cycle} version (\rt{pbc}) of the same constraint:
+
+\begin{center}\small
+\begin{tabular}{@{}l l l l@{}}
+\toprule
+base & \rt{obc0} (path) & \rt{pbc} (cycle) & example rules \\
+\midrule
+$\varphi=1.618$ & Fibonacci \oeis{A000045} & Lucas \oeis{A000032} &
+  W4 \rt{IDDD}, W12 \rt{IIDD} \\
+plastic $\rho=1.325$ & Padovan \oeis{A000931} & Perrin \oeis{A001608} &
+  W5 \rt{EDDD}, W13 \rt{EIDD} \\
+supergolden $=1.466$ & Narayana \oeis{A000930} & --- & W72 \rt{DIID}, W164 \rt{IDDE} \\
+tribonacci $=1.839$ & \oeis{A000073} & --- & W76 \rt{IIID} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The Fibonacci/Lucas pair is the classic one: $\varphi^N$ counts the independent
+sets (no two adjacent $1$s) of the path $P_N$ (Fibonacci) and the cycle $C_N$
+(Lucas)~\cite{prodinger,oeis}, and rule W4 selects exactly the configurations of
+isolated $1$s as its fixed points. Padovan/Perrin ($\rho$), Narayana's cows
+(supergolden), and the tribonacci constant are the analogous Perron roots for
+longer forbidden patterns~\cite{lindmarcus}. None of this is new physics; it is
+the elementary-CA transfer-matrix combinatorics that has been studied since the
+1980s~\cite{wolfram,transfermatrix,fibcycles}, and it is the same mechanism that
+produces the unitary sector counts of R2.
+
+\paragraph{The additive rules.} The purely additive ($\mathrm{XOR}$/$\mathrm{XNOR}$)
+members of the classical family --- W90 $(\rt{DEED})$, $x_i\mapsto x_{i-1}\oplus
+x_{i+1}$, and its complement W165 --- are the two rules whose $D_{\max}$ we report
+as \emph{irregular}: for a linear map over $\mathrm{GF}(2)$ the cycle length is
+the multiplicative order of the one-cycle matrix on its eventual image, an
+arithmetic function of $N$ (it collapses to $1$ exactly when the matrix is
+nilpotent, at $N{+}1$ a power of $2$ under \rt{obc0} and $N$ a power of $2$ under
+\rt{pbc}), not a growth law. This is exactly the additive-CA cycle structure of
+Martin, Odlyzko and Wolfram~\cite{mow}, reproduced here as a consistency check
+(\S\ref{sec:scaling}); we verified the matrix against the engine's successor
+function at every computed $N$.
+
+\paragraph{What this leaves as quantum.} Once the classical family is set aside
+as a baseline, the genuinely non-classical content of the dissipative sweep is
+confined to the mixed family: the coherence-carrying attractors
+(\S\ref{sec:failures}) all live there, the wall-Hadamard core is there, and it is
+there that the transition graph fails to describe the channel. The
+family-coloured growth maps (Figure~\ref{fig:scatter} here, and the unified maps
+in R2) make the separation visible --- the classical rules populate the algebraic
+bases along $\kappa_{D_{\max}}\!\approx\!0$ (exponentially many point attractors),
+while the mixed rules form the high-$\kappa_{D_{\max}}$ band of extended,
+possibly coherent, attractors.
 
 \subsection{The growth-rate map}
 Figure~\ref{fig:scatter} places every rule at its pair of exponential rates.
@@ -416,5 +503,29 @@ All numbers derive from \rt{results/*.jsonl} (engine\_version \texttt{1a.1}),
 \rt{python -m qca\_fragmentation.quantum.attractor\_structure},
 \rt{python -m qca\_fragmentation.scaling.dissipative} and
 \rt{python -m qca\_fragmentation.scaling.diss\_figure}.
+
+\begin{thebibliography}{9}
+\bibitem{mow} O.~Martin, A.~M.~Odlyzko, S.~Wolfram,
+\emph{Algebraic properties of cellular automata},
+Comm.\ Math.\ Phys.\ \textbf{93} (1984) 219--258.
+\bibitem{lindmarcus} D.~Lind, B.~Marcus,
+\emph{An Introduction to Symbolic Dynamics and Coding},
+Cambridge University Press, 1995 (subshifts of finite type; Perron eigenvalue
+$=e^{\text{topological entropy}}$).
+\bibitem{prodinger} H.~Prodinger, R.~F.~Tichy,
+\emph{Fibonacci numbers of graphs},
+Fibonacci Quart.\ \textbf{20} (1982) 16--21 (independent sets of $P_n$/$C_n$
+$=$ Fibonacci/Lucas).
+\bibitem{transfermatrix} \emph{Counting short trajectories in elementary
+cellular automata using the transfer matrix method}, arXiv:2508.09768 (2025).
+\bibitem{fibcycles} \emph{Fibonacci cycles and fixed points}, arXiv:2310.04439
+(2023).
+\bibitem{oeis} OEIS Foundation, \emph{The On-Line Encyclopedia of Integer
+Sequences}, \href{https://oeis.org}{oeis.org}: A000045 (Fibonacci), A000032
+(Lucas), A000931 (Padovan), A001608 (Perrin), A000930 (Narayana), A000073
+(tribonacci).
+\bibitem{wolfram} S.~Wolfram, \emph{Statistical mechanics of cellular automata},
+Rev.\ Mod.\ Phys.\ \textbf{55} (1983) 601--644.
+\end{thebibliography}
 
 \end{document}

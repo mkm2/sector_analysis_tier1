@@ -293,20 +293,33 @@ ergodic point, not on it, while the domain-wall rules $60/102$ (with $D_{\max}=2
 land on it and are separated only in the companion $\#$sectors panel, where their
 charge shows up as a linear ($\alpha\simeq1$) sector count.
 
+The points are coloured by rule \emph{family} --- \emph{unitary} ($\rt I/\rt V$
+only, $16$), \emph{classical} ($\rt V$-free with a reset, $80$), and \emph{mixed}
+($\rt V$ and a reset, $160$) --- because that is what makes the algebraic bases
+(un)surprising. A $\rt V$-free rule is deterministic on basis states, so it is an
+ordinary classical elementary cellular automaton and its sector count is a
+transfer-matrix count (Fibonacci/Lucas, Padovan/Perrin, tribonacci, \dots; see
+R5, ``classical baseline''); the striking algebraic bases in the $\#$sectors
+panel are populated overwhelmingly by these classical rules and by the unitary
+rules, both classical combinatorics. The \emph{mixed} rules --- the genuinely
+non-classical ones --- carry no such clean bases and cluster near $b=1$ in
+$\#$sectors while spreading out in $D_{\max}$.
+
 \begin{figure}[h]\centering
 \includegraphics[width=\linewidth]{../../figures/fig_growth_plane_obc0.pdf}
 \caption{Growth map of all $256$ rules in the two exponents of
 $y\sim N^{\alpha}b^{N}$: leading base $b=e^{\kappa}$ (horizontal) against
 sub-leading power $\alpha$ (vertical), for $D_{\max}$ (left) and the sector count
-(right), \rt{obc0}. Colour/marker encodes the growth class; the two
-\emph{irregular} \rt{obc0} rules ($90$, $165$, whose $D_{\max}$ is a
-multiplicative order rather than a growth law --- see R5) carry no base and are
-omitted. \textbf{Filled} markers are analytically exact bases (an exact integer
+(right), \rt{obc0}. \textbf{Colour} encodes the rule family (blue unitary, green
+classical/$\rt V$-free, red mixed); \textbf{marker} the growth class
+($\circ$ exponential, $\square$ polynomial, $\triangle$ constant, $\star$
+ergodic); \textbf{fill} whether the base is analytically exact (an exact integer
 recurrence, or a derived unitary constant such as $4^{1/5}$ or the binomial
-$\alpha=-\tfrac12$); \textbf{open} markers are BIC fits. The fill channel is the
-point of the figure: it shows at a glance which classifications are theorems ---
-almost all of the unitary rules and the algebraic dissipative ones --- and which
-rest on the null-calibrated model selection of R5.}
+$\alpha=-\tfrac12$) versus a BIC fit. The two \emph{irregular} \rt{obc0} rules
+($90$, $165$, whose $D_{\max}$ is a multiplicative order rather than a growth law
+--- see R5) carry no base and are omitted. Reading the colour: the algebraic
+exponential bases in the $\#$sectors panel are green and blue (classical and
+unitary combinatorics), while the red mixed rules cluster at $b\!\approx\!1$.}
 \label{fig:growthplane}
 \end{figure}
 
@@ -326,10 +339,12 @@ together (the diagonal, where $201/108$ and $156$ live).
 \begin{figure}[h]\centering
 \includegraphics[width=0.72\linewidth]{../../figures/fig_growth_baseonly_obc0.pdf}
 \caption{Companion base-vs-base map (\rt{obc0}): growth base of the sector count
-against that of $D_{\max}$, marker size $\propto$ polynomial degree, ergodic
-rules as stars. The corners read directly: bottom-right $=$ shattered into
-$O(2^N)$ frozen sectors ($204$), top-left $=$ a single volume-law sector
-(ergodic and the domain-wall family), diagonal $=$ both count and size grow
+against that of $D_{\max}$, coloured by family (blue unitary, green classical,
+red mixed), marker size $\propto$ polynomial degree, ergodic rules as stars.
+The corners read directly:
+bottom-right $=$ shattered into $O(2^N)$ frozen sectors ($204$), top-left $=$ a
+single volume-law sector (ergodic and the domain-wall family), diagonal $=$ both
+count and size grow
 exponentially.}
 \label{fig:growthbaseonly}
 \end{figure}

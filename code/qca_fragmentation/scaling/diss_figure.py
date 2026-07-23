@@ -138,21 +138,40 @@ def _legend_box(fig, leg):
     return (bb.x0 - 4, bb.y0 - 4, bb.x1 + 4, bb.y1 + 4)
 
 
+# The dissipative rules split cleanly into two families: V-free (classical --
+# deterministic on basis states, so an ordinary elementary-CA functional graph)
+# and V-carrying (mixed -- genuinely non-classical, the graph need not be
+# faithful).  The plain scatter colours by this split, because it is what makes
+# the algebraic growth bases (un)surprising: the classical family is textbook
+# transfer-matrix combinatorics (R5, "classical baseline").
+FAMILY_COLOUR = {"classical": "#1a9e5a", "mixed": "#e34948"}
+
+
+def _family(r: Dict) -> str:
+    return "classical" if "V" not in r["tuple"] else "mixed"
+
+
 def fig_scatter_plain(rows: List[Dict], bc: str, out: str):
     pts = _points(rows, bc)
     dx, dy = _jitter(pts)
     fig, ax = plt.subplots(figsize=(6.2, 4.8))
     _style(ax)
-    ax.scatter([p[0] + d for p, d in zip(pts, dx)],
-               [p[1] + d for p, d in zip(pts, dy)],
-               s=34, color=PLAIN, alpha=0.75, edgecolor="white", linewidth=0.5,
-               zorder=3)
+    seen = set()
+    for (x, y, r), ddx, ddy in zip(pts, dx, dy):
+        fam = _family(r)
+        lbl = {"classical": "classical (V-free)",
+               "mixed": "mixed (V + reset)"}[fam]
+        ax.scatter(x + ddx, y + ddy, s=34, color=FAMILY_COLOUR[fam],
+                   alpha=0.8, edgecolor="white", linewidth=0.5, zorder=3,
+                   label=lbl if lbl not in seen else None)
+        seen.add(lbl)
     ax.axhline(0, color=MUTED, lw=0.8)
     ax.axvline(0, color=MUTED, lw=0.8)
     ax.set_xlabel(r"$\kappa$ of the attractor count")
     ax.set_ylabel(r"$\kappa$ of the largest attractor $D_{\max}$")
     ax.set_title(f"Dissipative growth-rate map ({bc}, {len(pts)} rules)",
                  fontsize=11, loc="left")
+    ax.legend(frameon=False, fontsize=8.5, loc="upper left")
     fig.tight_layout()
     fig.savefig(out, bbox_inches="tight")
     fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")

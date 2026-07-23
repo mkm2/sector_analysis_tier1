@@ -58,13 +58,30 @@ TEXT = "#0b0b0b"
 MUTED = "#8a8a86"
 
 # class -> (colour, marker, legend label).  Fixed CVD-safe hues.
-CLASS_STYLE = {
-    "ergodic":     ("#111111", "*", "ergodic (volume law)"),
-    "exponential": ("#e34948", "o", "exponential"),
-    "polynomial":  ("#2a78d6", "s", "polynomial"),
-    "constant":    ("#8a8a86", "^", "constant"),
-    "irregular":   ("#eda100", "X", "irregular (no base)"),
+# PRIMARY encoding is the rule FAMILY, because that is what makes the algebraic
+# bases (un)surprising: a V-free rule is DETERMINISTIC on basis states (both
+# Kraus branches of a reset land on the same state), so its transition graph is
+# a classical functional graph and its sector count is an ordinary elementary-CA
+# transfer-matrix count -- Fibonacci/Lucas, Padovan/Perrin, tribonacci, ... (R5,
+# "classical baseline").  The genuinely quantum rules are the MIXED ones, whose
+# graph is not faithful.  Colour = family; marker = growth class; fill = exact.
+FAMILY_STYLE = {
+    "unitary":   ("#2a78d6", "unitary (V only, 16)"),
+    "classical": ("#1a9e5a", "classical (V-free, 80)"),
+    "mixed":     ("#e34948", "mixed (V + reset, 160)"),
 }
+CLASS_MARKER = {
+    "exponential": "o", "polynomial": "s", "constant": "^",
+    "ergodic": "*", "irregular": "X",
+}
+
+
+def rule_family(t) -> str:
+    """unitary (I/V only) | classical (V-free, has a reset) | mixed (both)."""
+    from ..core.rules import is_unitary
+    if is_unitary(t):
+        return "unitary"
+    return "classical" if "V" not in t else "mixed"
 
 # Named exponential bases, for reference lines on the base axis.  Kept to the
 # iconic few; the plastic number rho=1.3247 is dropped because it sits 0.005
@@ -156,7 +173,7 @@ def rule_points(bc: str) -> List[Dict]:
         unitary = rules.is_unitary(t)
         ergodic = any(v.get("ergodic_flag") for v in recs.values())
         rec = {"rule": rule, "tuple": "".join(t), "unitary": unitary,
-               "ergodic": ergodic}
+               "ergodic": ergodic, "family": rule_family(t)}
         if ergodic:
             # A single volume-law sector: D_max ~ 2^N, #sectors O(1).
             rec["d_max"] = {"cls": "ergodic", "base": 2.0, "alpha": 0.0,
@@ -201,12 +218,12 @@ def _plane_panel(ax, pts, key, title):
         ax.annotate(name, (v, 1.0), xycoords=("data", "axes fraction"),
                     textcoords="offset points", xytext=(0, 2), ha="center",
                     fontsize=6.5, color=MUTED)
-    seen = set()
     for r in pts:
         d = r[key]
         if d is None or d["cls"] == "irregular" or d["base"] is None:
             continue
-        colour, marker, label = CLASS_STYLE[d["cls"]]
+        colour = FAMILY_STYLE[r["family"]][0]
+        marker = CLASS_MARKER[d["cls"]]
         # tiny deterministic jitter so coincident rules (reflection/spin-flip
         # partners land on the same exact point) do not fully overprint
         jx = ((r["rule"] * 37) % 7 - 3) * 0.004
@@ -214,9 +231,7 @@ def _plane_panel(ax, pts, key, title):
         ax.scatter(d["base"] + jx, d["alpha"] + jy, s=46, marker=marker,
                    facecolor=colour if d["exact"] else "none",
                    edgecolor=colour, linewidth=1.0,
-                   alpha=0.9 if d["exact"] else 0.75, zorder=3,
-                   label=label if label not in seen else None)
-        seen.add(label)
+                   alpha=0.9 if d["exact"] else 0.7, zorder=3)
     ax.axhline(0, color=MUTED, lw=0.8)
     ax.set_xlim(0.94, 2.06)
     ax.set_xlabel(r"growth base $b=e^{\kappa}$")
@@ -224,24 +239,38 @@ def _plane_panel(ax, pts, key, title):
     ax.set_title(title, fontsize=10, loc="left")
 
 
+def _family_class_legend(ax):
+    """Two-part legend: family (colour) and growth class (marker)."""
+    from matplotlib.lines import Line2D
+    fam = [Line2D([0], [0], marker="o", linestyle="none", color=c,
+                  markersize=6, label=lbl)
+           for c, lbl in FAMILY_STYLE.values()]
+    cls = [Line2D([0], [0], marker=m, linestyle="none", color="#555",
+                  markerfacecolor="none", markersize=6, label=name)
+           for name, m in CLASS_MARKER.items() if name != "irregular"]
+    fill = [Line2D([0], [0], marker="o", linestyle="none", color="#555",
+                   markerfacecolor="#555", markersize=6, label="exact base"),
+            Line2D([0], [0], marker="o", linestyle="none", color="#555",
+                   markerfacecolor="none", markersize=6, label="fitted base")]
+    leg1 = ax.legend(handles=fam, frameon=False, fontsize=7.5,
+                     loc="upper left", title="family")
+    leg1.get_title().set_fontsize(7.5)
+    ax.add_artist(leg1)
+    ax.legend(handles=cls + fill, frameon=False, fontsize=7,
+              loc="upper right", ncol=1)
+
+
 def fig_growth_plane(bc: str, out: str):
     pts = rule_points(bc)
     fig, axes = plt.subplots(1, 2, figsize=(11.4, 4.9))
     _plane_panel(axes[0], pts, "d_max", f"$D_{{\\max}}$ ({bc})")
     _plane_panel(axes[1], pts, "n_recurrent", f"$\\#$sectors ({bc})")
-    h, l = axes[0].get_legend_handles_labels()
-    # a second legend entry pair explaining fill
-    from matplotlib.lines import Line2D
-    fill_key = [Line2D([0], [0], marker="o", color="none", markerfacecolor="#444",
-                       markeredgecolor="#444", label="analytic / exact base"),
-                Line2D([0], [0], marker="o", color="none", markerfacecolor="none",
-                       markeredgecolor="#444", label="fitted base")]
-    axes[0].legend(h + fill_key, l + [k.get_label() for k in fill_key],
-                   frameon=False, fontsize=7.5, loc="upper right", ncol=1)
+    _family_class_legend(axes[0])
     n_irr = sum(1 for r in pts if r["d_max"] and r["d_max"]["cls"] == "irregular")
     fig.suptitle("Growth map: leading rate vs sub-leading power, all rules "
-                 f"({len(pts)} shown, {n_irr} irregular D_max omitted)",
-                 fontsize=11, x=0.01, ha="left", color=TEXT)
+                 f"({len(pts)} shown, {n_irr} irregular $D_{{\\max}}$ omitted). "
+                 "Colour = family, marker = growth class, filled = exact base.",
+                 fontsize=10.5, x=0.01, ha="left", color=TEXT)
     fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig.savefig(out, bbox_inches="tight")
     fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
@@ -270,16 +299,16 @@ def fig_growth_baseonly(bc: str, out: str):
         # sub-exponential pile at base 1 spreads out by degree
         deg = max(dd["alpha"], dn["alpha"], 0.0)
         size = 26 + 42 * min(deg, 3.0)
-        cls = "ergodic" if r["ergodic"] else dd["cls"]
-        colour, marker, label = CLASS_STYLE[cls]
+        # base-only view: colour = family, size = degree, single marker shape
+        # (the growth class is carried by the companion (base, alpha) plane)
+        colour = FAMILY_STYLE[r["family"]][0]
+        marker = "*" if r["ergodic"] else "o"
         jx = ((r["rule"] * 37) % 7 - 3) * 0.004
         jy = ((r["rule"] * 53) % 7 - 3) * 0.004
         ax.scatter(bn + jx, bd + jy, s=size, marker=marker,
                    facecolor=colour if dd["exact"] else "none",
                    edgecolor=colour, linewidth=1.0,
-                   alpha=0.85 if dd["exact"] else 0.7, zorder=3,
-                   label=label if label not in seen else None)
-        seen.add(label)
+                   alpha=0.85 if dd["exact"] else 0.7, zorder=3)
     # label the anchor rules, with hand-tuned offsets so coincident partners
     # (150 with the ergodic cluster; 108 on top of 201) do not overprint
     anchor = {204: (-24, -12), 156: (7, 3), 201: (7, 3), 108: (7, -11),
@@ -295,9 +324,12 @@ def fig_growth_baseonly(bc: str, out: str):
     ax.set_ylim(0.96, 2.08)
     ax.set_xlabel(r"growth base of $\#$sectors")
     ax.set_ylabel(r"growth base of $D_{\max}$")
-    ax.set_title(f"Growth-base map, marker size $\\propto$ polynomial degree ({bc})",
-                 fontsize=10, loc="left")
-    ax.legend(frameon=False, fontsize=8, loc="upper center",
+    ax.set_title(f"Growth-base map ({bc}): colour = family, size $\\propto$ "
+                 "poly. degree", fontsize=10, loc="left")
+    from matplotlib.lines import Line2D
+    fam = [Line2D([0], [0], marker="o", linestyle="none", color=c, markersize=7,
+                  label=lbl) for c, lbl in FAMILY_STYLE.values()]
+    ax.legend(handles=fam, frameon=False, fontsize=8, loc="upper center",
               bbox_to_anchor=(0.52, 0.99))
     fig.tight_layout()
     fig.savefig(out, bbox_inches="tight")
