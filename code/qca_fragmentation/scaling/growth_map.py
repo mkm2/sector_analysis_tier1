@@ -337,11 +337,130 @@ def fig_growth_baseonly(bc: str, out: str):
     plt.close(fig)
 
 
+# --------------------------------------------------------------------------
+# Figure 3: the corner map -- base-vs-base main panel with alpha margins
+# --------------------------------------------------------------------------
+# Merges the base-vs-base view and the two (base, alpha) panels into one joint
+# layout.  The main panel is base(#sec) x base(D_max); the bottom margin shares
+# its x-axis (base #sec) and plots the #sec sub-leading power below it; the left
+# margin shares its y-axis (base D_max) and plots the D_max sub-leading power
+# beside it.  Reading a rule: its horizontal position is fixed across the main
+# and bottom panels, its vertical position across the main and left panels, so
+# the full (base, alpha) description of both series is read off one point.
+_BASE_XLIM = (0.955, 2.065)
+_BASE_YLIM = (0.955, 2.085)
+_ANSEC_LIM = (-0.13, 1.18)     # #sectors sub-leading power (0..~1, linear)
+_ADMAX_LIM = (-0.72, 2.02)     # D_max sub-leading power (-1/2 binomial .. ~2)
+
+
+def _corner_points(bc):
+    """(bn, an, bd, ad, colour, en, ed) per rule with both bases defined."""
+    out = []
+    for r in rule_points(bc):
+        dn, dd = r["n_recurrent"], r["d_max"]
+        if (dn is None or dd is None or dn["cls"] == "irregular"
+                or dd["cls"] == "irregular" or dn["base"] is None
+                or dd["base"] is None):
+            continue
+        colour = FAMILY_STYLE[r["family"]][0]
+        jx = ((r["rule"] * 37) % 7 - 3) * 0.004
+        jy = ((r["rule"] * 53) % 7 - 3) * 0.004
+        out.append((dn["base"] + jx, dn["alpha"] + jy, dd["base"] + jy,
+                    dd["alpha"] + jx, colour, dn["exact"], dd["exact"]))
+    return out
+
+
+def _scatter(ax, xs, ys, cols, fills, s=34):
+    for x, y, c, f in zip(xs, ys, cols, fills):
+        ax.scatter(x, y, s=s, marker="o", facecolor=c if f else "none",
+                   edgecolor=c, linewidth=0.9, alpha=0.85 if f else 0.65,
+                   zorder=3)
+
+
+def fig_growth_corner(bc: str, out: str):
+    from matplotlib.gridspec import GridSpec
+    from matplotlib.lines import Line2D
+
+    P = _corner_points(bc)
+    bn = [p[0] for p in P]; an = [p[1] for p in P]
+    bd = [p[2] for p in P]; ad = [p[3] for p in P]
+    col = [p[4] for p in P]; en = [p[5] for p in P]; ed = [p[6] for p in P]
+
+    fig = plt.figure(figsize=(9.6, 8.6))
+    gs = GridSpec(2, 2, width_ratios=[1.05, 3.0], height_ratios=[3.0, 1.05],
+                  wspace=0.05, hspace=0.05)
+    ax_main = fig.add_subplot(gs[0, 1])
+    ax_left = fig.add_subplot(gs[0, 0], sharey=ax_main)
+    ax_bot = fig.add_subplot(gs[1, 1], sharex=ax_main)
+    ax_leg = fig.add_subplot(gs[1, 0]); ax_leg.axis("off")
+    for a in (ax_main, ax_left, ax_bot):
+        _style(a)
+
+    # --- main: base(#sec) vs base(D_max) --------------------------------
+    for v, _ in REF_BASES:
+        ax_main.axvline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+        ax_main.axhline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+    ax_main.plot([1, 2], [1, 2], color=MUTED, lw=0.7, ls="--", alpha=0.55, zorder=1)
+    _scatter(ax_main, bn, bd, col, [a and b for a, b in zip(en, ed)])
+    ax_main.set_xlim(*_BASE_XLIM); ax_main.set_ylim(*_BASE_YLIM)
+    ax_main.tick_params(labelbottom=False, labelleft=False)
+    for v, name in REF_BASES:
+        ax_main.annotate(name, (v, _BASE_YLIM[1]), textcoords="offset points",
+                         xytext=(0, 1), ha="center", va="bottom", fontsize=7,
+                         color=MUTED, annotation_clip=False)
+        ax_main.annotate(name, (_BASE_XLIM[1], v), textcoords="offset points",
+                         xytext=(2, 0), ha="left", va="center", fontsize=7,
+                         color=MUTED, annotation_clip=False)
+
+    # --- bottom margin: base(#sec) [shared x] vs alpha(#sec) -------------
+    for v, _ in REF_BASES:
+        ax_bot.axvline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+    ax_bot.axhline(0, color=MUTED, lw=0.8, zorder=1)
+    _scatter(ax_bot, bn, an, col, en)
+    ax_bot.set_ylim(*_ANSEC_LIM)
+    ax_bot.set_yticks([0, 0.5, 1.0])
+    ax_bot.set_xlabel(r"growth base of $\#$sectors")
+    ax_bot.set_ylabel(r"$\alpha_{\#\mathrm{sec}}$", labelpad=1)
+
+    # --- left margin: alpha(D_max) vs base(D_max) [shared y] -------------
+    for v, _ in REF_BASES:
+        ax_left.axhline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+    ax_left.axvline(0, color=MUTED, lw=0.8, zorder=1)
+    _scatter(ax_left, ad, bd, col, ed)
+    ax_left.set_xlim(*_ADMAX_LIM)
+    ax_left.invert_xaxis()          # alpha grows leftward, base spine by main
+    ax_left.set_ylabel(r"growth base of $D_{\max}$")
+    ax_left.set_xlabel(r"$\alpha_{D_{\max}}$")
+
+    # --- legend in the empty corner (hug the left, clear of the alpha label) --
+    short = {"unitary": "unitary (16)", "classical": "classical, V-free (80)",
+             "mixed": "mixed, V+reset (160)"}
+    fam = [Line2D([0], [0], marker="o", linestyle="none", color=c, markersize=8,
+                  label=short[k])
+           for k, (c, _) in FAMILY_STYLE.items()]
+    fillk = [Line2D([0], [0], marker="o", linestyle="none", color="#555",
+                    markerfacecolor="#555", markersize=7, label="exact base"),
+             Line2D([0], [0], marker="o", linestyle="none", color="#555",
+                    markerfacecolor="none", markersize=7, label="fitted base")]
+    leg = ax_leg.legend(handles=fam + fillk, frameon=False, fontsize=8.5,
+                        loc="center left", bbox_to_anchor=(-0.02, 0.5),
+                        title="family / base")
+    leg.get_title().set_fontsize(8.5)
+
+    fig.suptitle(f"Growth map ({bc}): base--base core with $\\alpha$ margins "
+                 "(colour = family, filled = exact base)",
+                 fontsize=11.5, x=0.5, y=0.995, color=TEXT)
+    fig.savefig(out, bbox_inches="tight")
+    fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
 def main(argv=None):
     os.makedirs(FIGURES_DIR, exist_ok=True)
     for bc in ("obc0", "pbc"):
         fig_growth_plane(bc, os.path.join(FIGURES_DIR, f"fig_growth_plane_{bc}.pdf"))
         fig_growth_baseonly(bc, os.path.join(FIGURES_DIR, f"fig_growth_baseonly_{bc}.pdf"))
+        fig_growth_corner(bc, os.path.join(FIGURES_DIR, f"fig_growth_corner_{bc}.pdf"))
     print(f"wrote growth maps to {FIGURES_DIR}")
 
 
