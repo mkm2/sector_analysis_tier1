@@ -284,7 +284,7 @@
    "rule": 3,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -304,19 +304,19 @@
    "rule": 3,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 2,
    "full_order": 2,
    "predicted": [
-    2187,
     4374,
-    6561
+    6561,
+    13122
    ],
    "actual": [
-    2187,
     4374,
-    6561
+    6561,
+    13122
    ],
    "same_base": true
   },
@@ -1480,8 +1480,20 @@
    "bc": "pbc",
    "key": "d_max",
    "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    7269,
+    14321,
+    25889
+   ],
+   "actual": [
+    7269,
+    14321,
+    25889
+   ],
+   "same_base": true
   },
   {
    "rule": 19,
@@ -1508,8 +1520,20 @@
    "bc": "obc0",
    "key": "d_max",
    "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    8042,
+    14321,
+    28642
+   ],
+   "actual": [
+    8042,
+    14321,
+    28642
+   ],
+   "same_base": true
   },
   {
    "rule": 20,
@@ -2676,7 +2700,7 @@
    "rule": 35,
    "bc": "pbc",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -2696,15 +2720,27 @@
    "rule": 35,
    "bc": "pbc",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    11144,
+    18464,
+    38048
+   ],
+   "actual": [
+    11144,
+    18464,
+    38048
+   ],
+   "same_base": true
   },
   {
    "rule": 35,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -2724,9 +2760,21 @@
    "rule": 35,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    11144,
+    15760,
+    38048
+   ],
+   "actual": [
+    11144,
+    15760,
+    38048
+   ],
+   "same_base": true
   },
   {
    "rule": 36,
@@ -3642,7 +3690,7 @@
    "rule": 49,
    "bc": "pbc",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -3662,14 +3710,14 @@
    "rule": 49,
    "bc": "pbc",
    "key": "d_max",
-   "n": 11,
+   "n": 12,
    "status": "no recurrence on full series"
   },
   {
    "rule": 49,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -3689,15 +3737,27 @@
    "rule": 49,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    11144,
+    22288,
+    38048
+   ],
+   "actual": [
+    11144,
+    22288,
+    38048
+   ],
+   "same_base": true
   },
   {
    "rule": 50,
    "bc": "pbc",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -3717,7 +3777,7 @@
    "rule": 50,
    "bc": "pbc",
    "key": "d_max",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -3737,7 +3797,7 @@
    "rule": 50,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -3757,7 +3817,7 @@
    "rule": 50,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -3958,36 +4018,60 @@
    "bc": "pbc",
    "key": "d_max",
    "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
-  },
-  {
-   "rule": 55,
-   "bc": "obc0",
-   "key": "n_recurrent",
-   "n": 11,
    "status": "predicted",
-   "train_order": 1,
-   "full_order": 1,
+   "train_order": 4,
+   "full_order": 4,
    "predicted": [
-    1,
-    1,
-    1
+    7269,
+    14321,
+    25889
    ],
    "actual": [
-    1,
-    1,
-    1
+    7269,
+    14321,
+    25889
    ],
    "same_base": true
   },
   {
    "rule": 55,
    "bc": "obc0",
+   "key": "n_recurrent",
+   "n": 11,
+   "status": "predicted",
+   "train_order": 1,
+   "full_order": 1,
+   "predicted": [
+    1,
+    1,
+    1
+   ],
+   "actual": [
+    1,
+    1,
+    1
+   ],
+   "same_base": true
+  },
+  {
+   "rule": 55,
+   "bc": "obc0",
    "key": "d_max",
    "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    6279,
+    14321,
+    22363
+   ],
+   "actual": [
+    6279,
+    14321,
+    22363
+   ],
+   "same_base": true
   },
   {
    "rule": 56,
@@ -4153,7 +4237,7 @@
    "rule": 59,
    "bc": "pbc",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -4173,15 +4257,27 @@
    "rule": 59,
    "bc": "pbc",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    11144,
+    18464,
+    38048
+   ],
+   "actual": [
+    11144,
+    18464,
+    38048
+   ],
+   "same_base": true
   },
   {
    "rule": 59,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -4201,9 +4297,21 @@
    "rule": 59,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    11144,
+    22288,
+    38048
+   ],
+   "actual": [
+    11144,
+    22288,
+    38048
+   ],
+   "same_base": true
   },
   {
    "rule": 61,
@@ -7897,7 +8005,7 @@
    "rule": 115,
    "bc": "pbc",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -7917,14 +8025,14 @@
    "rule": 115,
    "bc": "pbc",
    "key": "d_max",
-   "n": 11,
+   "n": 12,
    "status": "no recurrence on full series"
   },
   {
    "rule": 115,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -7944,9 +8052,21 @@
    "rule": 115,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    11144,
+    15760,
+    38048
+   ],
+   "actual": [
+    11144,
+    15760,
+    38048
+   ],
+   "same_base": true
   },
   {
    "rule": 116,
@@ -12256,7 +12376,7 @@
    "rule": 179,
    "bc": "pbc",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -12276,7 +12396,7 @@
    "rule": 179,
    "bc": "pbc",
    "key": "d_max",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -12296,7 +12416,7 @@
    "rule": 179,
    "bc": "obc0",
    "key": "n_recurrent",
-   "n": 11,
+   "n": 12,
    "status": "predicted",
    "train_order": 1,
    "full_order": 1,
@@ -12316,9 +12436,21 @@
    "rule": 179,
    "bc": "obc0",
    "key": "d_max",
-   "n": 11,
-   "status": "not recoverable from the training part",
-   "full_order": 4
+   "n": 12,
+   "status": "predicted",
+   "train_order": 4,
+   "full_order": 4,
+   "predicted": [
+    14321,
+    28642,
+    51005
+   ],
+   "actual": [
+    14321,
+    28642,
+    51005
+   ],
+   "same_base": true
   },
   {
    "rule": 180,
@@ -18744,8 +18876,8 @@
    "bc": "pbc",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 28,
@@ -18760,8 +18892,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 29,
@@ -18776,8 +18908,8 @@
    "bc": "pbc",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 29,
@@ -18792,8 +18924,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 30,
@@ -19024,8 +19156,8 @@
    "bc": "pbc",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 37,
@@ -19040,8 +19172,8 @@
    "bc": "obc0",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 37,
@@ -19280,8 +19412,8 @@
    "bc": "pbc",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 45,
@@ -19960,8 +20092,8 @@
    "bc": "pbc",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 70,
@@ -19976,8 +20108,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 71,
@@ -19992,8 +20124,8 @@
    "bc": "pbc",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 71,
@@ -20008,8 +20140,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 72,
@@ -20112,8 +20244,8 @@
    "bc": "pbc",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 75,
@@ -20136,8 +20268,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 76,
@@ -20560,8 +20692,8 @@
    "bc": "pbc",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 89,
@@ -20584,8 +20716,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 90,
@@ -20624,8 +20756,8 @@
    "bc": "pbc",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 91,
@@ -20912,8 +21044,8 @@
    "bc": "pbc",
    "key": "n_recurrent",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 101,
@@ -20936,8 +21068,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 103,
@@ -22488,8 +22620,8 @@
    "bc": "pbc",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 157,
@@ -22504,8 +22636,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 158,
@@ -23768,8 +23900,8 @@
    "bc": "pbc",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 199,
@@ -23784,8 +23916,8 @@
    "bc": "obc0",
    "key": "d_max",
    "period_full": 3,
-   "period_train": 3,
-   "stable": true
+   "period_train": 1,
+   "stable": false
   },
   {
    "rule": 200,
@@ -25527,10 +25659,10 @@
   "noise": 0.25,
   "trials": 600,
   "periods": {
-   "1": 581,
-   "2": 6,
+   "1": 580,
+   "2": 7,
    "3": 13
   },
-  "false_split_rate": 0.03166666666666662
+  "false_split_rate": 0.033333333333333326
  }
 }
