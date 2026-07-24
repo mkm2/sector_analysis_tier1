@@ -126,6 +126,69 @@ def fig_coherence_parity(rows: List[Dict], bc: str, out: str) -> int:
     return len(even) + len(odd)
 
 
+def _pair_status_by_rule(bc: str) -> Dict[int, Dict]:
+    """certified / coherent status at the largest computed N, per rule."""
+    out = {}
+    for f in (os.listdir(results_io.PAIR_RESULTS_DIR)
+              if os.path.isdir(results_io.PAIR_RESULTS_DIR) else []):
+        if not f.endswith(f"_{bc}.jsonl"):
+            continue
+        recs = results_io.load_pair_results(int(f.split("_")[0]), bc)
+        if not recs:
+            continue
+        r = recs[max(recs)]
+        out[r["rule"]] = {
+            "certified": r.get("certified"),
+            "coherent": (r.get("pair_offdiag") or 0) > 0,
+            "bounded_only": r.get("bounded_only"),
+        }
+    return out
+
+
+def fig_growth_certified(bc: str, out: str) -> int:
+    """The dissipative growth-rate plane, coloured by the unmonitored-channel
+    certificate: filled = certified exact, hollow ring = protected coherence."""
+    from .dissipative import summarize as diss_summarize
+    from .diss_figure import _points, _jitter
+    rows = diss_summarize((bc,))
+    pts = _points(rows, bc)
+    status = _pair_status_by_rule(bc)
+    if not pts or not status:
+        return 0
+    dx, dy = _jitter(pts)
+    fig, ax = plt.subplots(figsize=(6.4, 5.0))
+    _style(ax)
+    seen = set()
+    for (x, y, r), ddx, ddy in zip(pts, dx, dy):
+        st = status.get(r["rule"])
+        if st is None:
+            continue
+        if st["certified"] is True:
+            col, lbl, face, ring = EXACT, "certified exact", True, False
+        elif st["coherent"]:
+            col, lbl, face, ring = UPPER, "protected coherence", False, True
+        else:
+            col, lbl, face, ring = LOWER, "uncertified (interval)", True, False
+        ax.scatter(x + ddx, y + ddy, s=40 if not ring else 54, marker="o",
+                   facecolor="none" if not face else col,
+                   edgecolor=col, linewidth=1.4 if ring else 0.5,
+                   alpha=0.85, zorder=4 if ring else 3,
+                   label=lbl if lbl not in seen else None)
+        seen.add(lbl)
+    ax.axhline(0, color=MUTED, lw=0.8)
+    ax.axvline(0, color=MUTED, lw=0.8)
+    ax.set_xlabel(r"$\kappa$ of the attractor count")
+    ax.set_ylabel(r"$\kappa$ of the largest attractor $D_{\max}$")
+    ax.set_title(f"Dissipative growth plane by channel certificate ({bc})",
+                 fontsize=11, loc="left")
+    ax.legend(frameon=False, fontsize=8.5, loc="upper left")
+    fig.tight_layout()
+    fig.savefig(out, bbox_inches="tight")
+    fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    return len(pts)
+
+
 def main(argv=None):
     import argparse
     ap = argparse.ArgumentParser()
@@ -141,7 +204,11 @@ def main(argv=None):
     c = fig_coherence_parity(rows, args.bc,
                              os.path.join(FIGURES_DIR,
                                           f"fig_coherence_parity_{args.bc}.pdf"))
-    print(f"{args.bc}: sandwich {a} rules, coverage {b} sizes, parity {c} points")
+    d = fig_growth_certified(args.bc,
+                             os.path.join(FIGURES_DIR,
+                                          f"fig_growth_certified_{args.bc}.pdf"))
+    print(f"{args.bc}: sandwich {a} rules, coverage {b} sizes, parity {c} "
+          f"points, growth-certified {d} rules")
     print(f"wrote figures to {FIGURES_DIR}")
 
 
