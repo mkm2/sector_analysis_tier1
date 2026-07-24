@@ -128,3 +128,61 @@ def test_reflection_isomorphism_succ_obc0_odd_N():
             s1 = {revbits(y) for y in cycle.succ(x, N, t, bc)}
             s2 = set(cycle.succ(revbits(x), N, tr, bc))
             assert s1 == s2
+
+
+def _naive_support_succ(x, N, t, bc):
+    """succ(x) by SUPPORT propagation only: no amplitudes, no cancellation.
+    Always a superset of the exact succ; equal iff no path ever interferes.
+    Mirrors the branch structure of one_cycle_branches (context R1 sec.3)."""
+    steps = cycle._compile(N, t, bc)
+    branches = [{x}]
+    for (i, lpos, rpos, tt) in steps:
+        bit = 1 << i
+        nxt = []
+        for S in branches:
+            a0, a1 = set(), set()
+            for s in S:
+                sym = tt[cycle._mn(s, lpos, rpos)]
+                if sym == "I":
+                    a0.add(s)
+                elif sym == "V":
+                    a0.add(s & ~bit)
+                    a0.add(s | bit)
+                elif sym == "D":
+                    (a1 if s & bit else a0).add((s & ~bit) if s & bit else s)
+                else:  # E
+                    (a0 if s & bit else a1).add(s if s & bit else (s | bit))
+            if a0:
+                nxt.append(a0)
+            if a1:
+                nxt.append(a1)
+        branches = nxt
+    out = set()
+    for S in branches:
+        out |= S
+    return out
+
+
+@pytest.mark.parametrize("bc", ["obc0", "pbc"])
+@pytest.mark.parametrize("N", [3, 4, 5, 6])
+def test_single_cycle_has_no_interference(bc, N):
+    """R1 no-interference theorem: a single brick-wall cycle cannot cancel any
+    amplitude, so exact succ equals naive support propagation -- for EVERY rule.
+    The exact Z[1/sqrt2] arithmetic is therefore redundant for the transition
+    graph (it is kept for norm certification and Tier 1b/1d)."""
+    for r in range(256):
+        t = rules.wolfram_to_tuple(r)
+        for x in range(1 << N):
+            assert set(cycle.succ(x, N, t, bc)) == _naive_support_succ(x, N, t, bc)
+
+
+def test_repeated_hadamard_does_cancel():
+    """The guard is not vacuous: two H on the SAME qubit (which the brick-wall
+    never does) cancel exactly.  H.H|0> = |0>, so the support collapses to {0}
+    where naive propagation would keep {0,1}."""
+    t = ("V", "V", "V", "V")
+    amps, m = {0: (1, 0)}, 0
+    amps, m = cycle._apply_site_unitary(amps, m, 0, -1, -1, t)
+    assert sorted(amps) == [0, 1]                 # after one H: superposition
+    amps, m = cycle._apply_site_unitary(amps, m, 0, -1, -1, t)
+    assert sorted(amps) == [0]                    # after H.H: |1> cancelled

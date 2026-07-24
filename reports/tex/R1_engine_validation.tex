@@ -32,9 +32,13 @@ checks all pass: (i) the one-step support $\operatorname{succ}(x)$ agrees with a
 dense brick-wall unitary oracle on 3840 checks; (ii) the eight ground-truth
 regression items of the specification are reproduced exactly, including rule 150
 open-boundary sector sizes up to $N=17$; (iii) 35/35 sector-size cross-checks
-against the independent Julia \rt{HSF} code match exactly. We also report a
-physically instructive finding on the spin-flip (inversion) symmetry of rules
-201 and 108.
+against the independent Julia \rt{HSF} code match exactly. We also show that, for the one-cycle transition
+graph, the exact arithmetic is provably \emph{redundant} --- a single brick-wall
+cycle cannot produce interference, so naive support propagation gives the
+identical graph on all $258{,}048$ tested images --- yet is kept because it
+certifies the branch decomposition and is load-bearing downstream (Tier 1b/1d).
+Finally we report a physically instructive finding on the spin-flip (inversion)
+symmetry of rules 201 and 108.
 \end{abstract}
 
 \section{Model and conventions}
@@ -78,6 +82,65 @@ $2073$\,MB (stack-based Tarjan) to $45$\,MB at equal runtime, and matches the
 directed Tarjan result on all 16 unitary rules. An ergodic early-exit flags a
 rule "effectively ergodic at this $N$" when one sector exceeds a fraction
 $f_\mathrm{erg}$ of the space.
+
+\section{Is the exact arithmetic necessary? A one-cycle no-interference theorem}
+\label{sec:nointerf}
+The engine tracks exact \Zsqrt{} amplitudes and prunes any that cancel to
+\emph{exactly} zero. A cheaper engine would just propagate the reachable
+\emph{support}: treat each $\rt V$ as branching a site to both bit values,
+$\{x\}\to\{x\wedge\overline{2^i},\,x\vee2^i\}$, take unions, and never look at a
+sign. Since the naive support always contains the exact support, the only thing
+the amplitudes can buy is the \emph{deletion} of an edge $x\to y$ whose amplitude
+$\langle y|\Phi_C|x\rangle$ vanishes by destructive interference. For the 16
+unitary rules --- where the sector partition is the entire deliverable --- does
+this ever happen?
+
+\paragraph{Empirically, never.} Comparing $\operatorname{succ}(x)$ against the
+naive support propagation over every basis state, both boundary conventions and
+$N=3,\dots,8$: for the $16$ unitary rules the two agree on all $16{,}128$
+one-cycle images and the union--find sector partitions are identical; extending
+the sweep to all $256$ rules (per Kraus branch) gives $0$ mismatches on
+$258{,}048$ images. No edge is ever interference-cancelled within one cycle.
+
+\paragraph{Why --- a depth-1 argument.} A cycle is two half-layers, the even
+sublattice then the odd. Within a half-layer every gate acts on a distinct qubit
+of the sublattice being updated, and each gate's control reads only the
+\emph{complementary} sublattice, which that half-layer does not touch. Conditioned
+on the (definite) control background, the half-layer is thus a tensor product of
+single-qubit gates on disjoint qubits --- a depth-1 circuit --- and a product of
+single-qubit gates never makes two computational paths reconverge: each output
+configuration has a unique preimage. Concretely, cancellation on a basis state
+$y$ requires two source states differing in exactly the bit a $\rt V$ just acted
+on to be simultaneously present with equal or opposite amplitude; but before site
+$i$'s gate fires that bit is still definite (the input value in the even layer,
+the post-even value in the odd layer), so the partner is absent, and once site
+$i$ branches no later gate in the layer touches bit $i$. Hence
+$\operatorname{succ}(x)$ equals the naive support \emph{exactly}, for every rule
+and every $N$: for building the one-cycle transition graph, the \Zsqrt{} ring is
+provably redundant.
+
+\paragraph{The guard is not vacuous.} It is the once-per-site brick-wall
+structure, not the arithmetic, that removes interference. Touch a qubit twice in
+one step and it returns: $H\!\cdot\!H=\mathbb{1}$, so applying $\rt V$ to a fresh
+$|0\rangle$ and then $\rt V$ again yields exact support $\{0\}$ --- the
+$|1\rangle$ amplitude $(0,1)\!+\!(0,-1)$ cancels to $(0,0)$ and is pruned ---
+whereas the naive rule would report $\{0,1\}$. A deeper local circuit, a
+two-site gate, or a non-brick update order would all reintroduce cancellation.
+
+\paragraph{Why we keep it anyway.} Three reasons, none of them the transition
+graph. (i) \emph{Certification.} The exact amplitudes let the branch
+decomposition check itself: unitary branch norms evaluate to exactly $1$ and
+dissipative Kraus probabilities sum to exactly $1$ (as \rt{Fraction}s), so a bug
+in the branching is caught immediately --- a guarantee floating point cannot give.
+(ii) \emph{Downstream exactness.} Tier 1b/1d build the restricted superoperator
+and the pair graph from these same branches, and there the amplitude
+\emph{values} (not merely their support) are load-bearing: the C\'esaro rank and
+the peripheral spectrum are exact functions of the $\langle y|K_b|x\rangle$. (iii)
+\emph{Architecture-agnostic correctness.} The no-interference property is a
+theorem about depth-1 brick-wall layers, established \emph{post hoc}; the engine
+does not assume it. Keeping the ring makes the pipeline correct by construction
+rather than correct by a lucky architecture, and it would flag interference the
+moment the model changed.
 
 \section{Validation}
 
