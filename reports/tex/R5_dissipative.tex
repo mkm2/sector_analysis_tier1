@@ -37,10 +37,10 @@ in a way we can now census exactly: for $92$ of $240$ \rt{pbc} rules the
 channel's attractor is not spanned by computational-basis states at all, and
 every one of those rules contains a Hadamard, while all $80$ Hadamard-free
 dissipative rules are basis-spanned without exception. Second, dissipative
-growth is far from generic: $58$ of the \rt{pbc} series satisfy an \emph{exact}
-integer linear recurrence, so their growth bases are algebraic numbers ---
-$\varphi$, $\sqrt3$, the supergolden and plastic constants --- rather than
-fitted slopes.
+growth is far from generic: $94$ of the \rt{pbc} series ($123$ \rt{obc0}) satisfy
+an \emph{exact} integer linear recurrence, so their growth bases are algebraic
+numbers --- $\varphi$, $\sqrt3$, the supergolden and plastic constants --- rather
+than fitted slopes.
 \end{abstract}
 
 \section{Dissipative graph structure}
@@ -288,11 +288,28 @@ complete; no rule is ergodic). Two methodological points were forced by the data
 and are worth recording, since they are the difference between a result and an
 artifact.
 
-\paragraph{Parity.} Dissipative series oscillate between even and odd $N$ --- a
-\rt{pbc} chain of odd length cannot host the two N\'eel states --- so a joint fit
-is meaningless. We fit all $N$, even $N$, and odd $N$ separately and declare a
-\emph{parity split} when the split halves the rms $\ln$-residual; $43$ \rt{pbc}
-rules ($16$ \rt{obc0}) split.
+\paragraph{Commensurability, and not overfitting it.} Dissipative series oscillate
+with $N$ --- a \rt{pbc} chain of odd length cannot host the two N\'eel states, and
+some attractors are period-$3$ density waves that only fit a ring of the right
+length --- so a joint fit averages two or three different laws into a meaningless
+one. We therefore split the series by $N\bmod p$ for $p\in\{2,3,4\}$, but choosing
+the period is where overfitting lives: a larger $p$ has more parameters and always
+fits at least as well, so any residual-based rule drifts to $p=4$. We fix $p$ by
+BIC with a decisive Kass--Raftery margin ($\ge10$) and at least four points per
+class, \emph{or} by an exact integer recurrence holding on every residue class ---
+and only when the joint fit is actually failing. The criterion is calibrated
+against a null of smooth-exponential-plus-$25\%$-noise surrogates
+(\fn{scaling/overfit\_audit.py}): the naive ``smallest period that halves the
+residual'' splits $21\%$ of pure noise and plain argmin-BIC splits $33\%$, while
+this rule splits $3\%$, and the exact-recurrence route fired $0/4000$. On the deep
+dataset ($N=6\ldots17$) this yields $33$ \rt{pbc} parity ($p{=}2$) splits and $14$
+period-$3$ splits ($14$ and $14$ for \rt{obc0}); of the period-$3$ splits $12$
+\rt{pbc} ($10$ \rt{obc0}) are certified by an \emph{exact} recurrence on every
+residue class, not merely by BIC, so they are not fitting artifacts. No
+period-$4$ claim survives at $N\le17$ (it needs $N\ge21$ to be honest). The period fixes the growth
+\emph{class}, not the base --- a period-$p$ oscillation is itself an order-$p$
+recurrence, so the exact-base search below already caught these on the whole
+series.
 
 \paragraph{Rate model.} The unitary pipeline fits
 $\ln y = c + \alpha\ln N + \kappa N$, carrying the $\alpha\ln N$ term so that
@@ -305,24 +322,27 @@ $\ln y=c+\kappa N$, which cannot trade the rate against a power, and mark a
 series \emph{irregular} (no rate reported) if it exceeds the physical bound or
 keeps an rms residual above $0.35$ after the parity split.
 
-\paragraph{Results.} For \rt{pbc}: $\#\mathrm{att}$ is constant for $140$ rules,
-exponential for $72$, polynomial for $16$, irregular for $12$; $D_{\max}$ is
-constant for $109$, exponential for $68$, polynomial for $41$, irregular for
-$22$. \rt{obc0} is markedly tamer ($162$ constant, $54$ exponential, $22$
-polynomial, $2$ irregular for $\#\mathrm{att}$), the same open-vs-periodic
-asymmetry seen for the unitary rules. The largest rates are
+\paragraph{Results.} On the deep dataset ($N=6\ldots17$), for \rt{pbc}:
+$\#\mathrm{att}$ is constant for $146$ rules, exponential for $82$, polynomial for
+$8$, irregular for $4$; $D_{\max}$ is constant for $109$, exponential for $66$,
+polynomial for $45$, irregular for $20$. \rt{obc0} is markedly tamer ($162$
+constant, $56$ exponential, $22$ polynomial, $0$ irregular for $\#\mathrm{att}$;
+$149,79,10,2$ for $D_{\max}$), the same open-vs-periodic asymmetry seen for the
+unitary rules --- and the extra sizes resolve most of what the shallow sweep had
+called irregular into genuine period-$3$ classes. The largest rates are
 $\kappa\approx0.61$ for $\#\mathrm{att}$ (rule 76) and $\kappa\approx0.64$ for
-$D_{\max}$ (rule 67), both comfortably below $\ln2$.
+$D_{\max}$ (rule 61), both comfortably below $\ln2$.
 
-\begin{table}[h]\centering\small\input{tab_diss_scaling.tex}
-\caption{Growth laws for representative dissipative rules (pbc, $N=6\ldots13$).
+\begin{table}[h]\centering\footnotesize\setlength{\tabcolsep}{4pt}%
+\resizebox{\textwidth}{!}{\input{tab_diss_scaling.tex}}
+\caption{Growth laws for representative dissipative rules (pbc, $N=6\ldots17$).
 $^{\ast}$ marks a series whose even- and odd-$N$ subsequences obey different
 laws. Where an exact integer recurrence exists, the base is the named algebraic
 constant rather than a fitted slope.}
 \label{tab:scaling}\end{table}
 
 \subsection{Exact algebraic growth bases}
-For $58$ of the \rt{pbc} series (and $81$ \rt{obc0}) the integers themselves
+For $94$ of the \rt{pbc} series (and $123$ \rt{obc0}) the integers themselves
 satisfy an \emph{exact} linear recurrence $a(n)=\sum_i c_i\,a(n-i)$ with integer
 coefficients, solved over $\mathbb{Q}$ on the first equations and then
 \emph{verified against every remaining term}. For those the growth base is the
@@ -334,12 +354,17 @@ regression estimate. They cluster on a handful of constants
 \toprule
 base & constant & \rt{pbc} & \rt{obc0} \\
 \midrule
-$1.618034$ & golden $\varphi$                 & 26 & 33 \\
-$1.732051$ & $\sqrt3$                          & 10 & 16 \\
-$1.465571$ & supergolden $\psi$                & 10 & 15 \\
-$1.324718$ & plastic $\rho$                    &  8 & 13 \\
+$1.618034$ & golden $\varphi$                 & 28 & 37 \\
+$1.324718$ & plastic $\rho$                    & 18 & 18 \\
+$1.732051$ & $\sqrt3$                          & 12 & 20 \\
+$1.465571$ & supergolden $\psi$                & 16 & 16 \\
+$1.887208$ & $\sqrt{(3+\sqrt{17})/2}$          &  6 &  9 \\
+$1.259921$ & $2^{1/3}$                         &  6 &  6 \\
+$1.847759$ & $\sqrt{2+\sqrt2}=2\cos(\pi/8)$    &  2 &  8 \\
 $1.839287$ & tribonacci $\psi$                 &  2 &  2 \\
+$1.380278$ & root of $x^4=x^3+1$               &  2 &  2 \\
 $1.754878$ & root of $x^3=2x^2-x+1$            &  2 &  2 \\
+$1.414214$ & $\sqrt2$                          &  0 &  3 \\
 \bottomrule
 \end{tabular}
 \end{center}

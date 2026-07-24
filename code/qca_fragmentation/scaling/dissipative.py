@@ -436,10 +436,11 @@ def latex_table(rows: List[Dict], path: str, bc: str = "pbc",
             cls = r[f"{key}_growth"]
             s = cls
             if cls == "exponential":
-                exact, nm, b = (r[f"{key}_base_exact"], r[f"{key}_base_name"],
-                                r[f"{key}_base"])
+                # base number only; the named constant lives in the
+                # algebraic-bases table (avoids a very wide cell here).
+                exact, b = r[f"{key}_base_exact"], r[f"{key}_base"]
                 if exact:
-                    s += f" ({exact:.4f}" + (f", {nm}" if nm else "") + ")"
+                    s += f" ({exact:.4f})"
                 elif b:
                     s += f" ({b:.3f})"
             per = int(r[f"{key}_period"] or 1)
