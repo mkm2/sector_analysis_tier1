@@ -142,6 +142,53 @@ does not assume it. Keeping the ring makes the pipeline correct by construction
 rather than correct by a lucky architecture, and it would flag interference the
 moment the model changed.
 
+\section{What a sector is: reachable support, not long-time dynamics}
+\label{sec:meaning}
+It is important to state exactly what the sector partition does and does not
+certify, because it is easy to over-read. For a unitary rule the Floquet operator
+$U$ (the brick-wall circuit) is \emph{block-diagonal in the computational basis},
+$U=\bigoplus_i U_i$, and the transition graph computes precisely this
+decomposition: each sector $S_i$ spans a $U$-invariant coordinate subspace
+$\mathcal H_i=\operatorname{span}(S_i)$ of dimension $|S_i|$, and both $U$ and
+$U^\dagger$ preserve it ($x\in S_i,\ \langle y|U|x\rangle\neq0\Rightarrow y\in
+S_i$, and symmetrically), so $U_i:=U|_{\mathcal H_i}$ is a genuine
+$|S_i|$-dimensional unitary. The union--find over $\operatorname{succ}$ is exactly
+the coarsest such basis-aligned block-diagonalization --- Hilbert-space
+fragmentation in the literal sense: the $\mathcal H_i$ are the minimal invariant
+subspaces spanned by computational-basis states, i.e.\ the maximal set of
+configurations \emph{kinematically reachable} from a seed.
+
+This is a statement about the \emph{allowed} space, and nothing about the dynamics
+inside it. Three things the graph provably does not resolve:
+\begin{itemize}\itemsep2pt
+  \item \textbf{The Krylov dimension of a seed.}
+  $\dim\mathcal K(x)=\dim\operatorname{span}\{U^k|x\rangle\}_{k\ge0}\le|S_i|$,
+  with equality iff the eigenvalues of $U_i$ that $|x\rangle$ overlaps are
+  non-degenerate. The lattice symmetries (translation, reflection) generically
+  force degeneracies, so $|S_i|$ \emph{upper-bounds} --- need not equal --- the
+  orbit dimension of a given basis state.
+  \item \textbf{Ergodic vs.\ localized, scars, dark states.} Whether $U_i$
+  thermalizes or localizes is a spectral property (level-spacing statistics,
+  eigenvector structure) invisible to a support graph. A dark state that is a
+  single basis vector is seen --- it is a size-$1$ sector --- but a dark
+  \emph{superposition} confined within a larger sector is not.
+  \item \textbf{The long-time distribution}, which is exactly where the monitored
+  and unmonitored experiments (\S\ref{sec:nointerf}; R7) split even for unitary
+  rules. The \emph{monitored} chain $M_i=|U_i|^2$ is doubly stochastic and
+  irreducible on $S_i$, so its stationary distribution is \emph{uniform} on $S_i$
+  (Ces\`aro-averaged for periodic sectors): for the measured dynamics the sector
+  is the whole story, kinematics equal thermodynamics. The \emph{unmonitored}
+  evolution equilibrates instead to the diagonal ensemble in the eigenbasis of
+  $U_i$, $\overline\rho=\sum_\alpha|\langle\alpha|x\rangle|^2\,|\alpha\rangle\!
+  \langle\alpha|$, whose basis populations are uniform only if $U_i$ thermalizes;
+  localization, scars, or dark states make them non-uniform.
+\end{itemize}
+In one line: monitoring promotes the graph's reachable set to the actual
+long-time support (uniform on $S_i$); without monitoring the graph gives only the
+container, and whether it is filled ergodically or trapped is a spectral question
+--- level statistics --- which the fragmentation graph is silent on and which we
+do not address here.
+
 \section{Validation}
 
 \subsection{Dense brick-wall oracle}

@@ -81,6 +81,19 @@ share these Kraus operators:
   into populations, so $\Phi$ is \emph{not} a function of $M$.
 \end{itemize}
 
+\paragraph{The gap is purely inter-cycle.} By the one-cycle no-interference
+theorem (R1): starting from a basis state, a single brick-wall cycle cannot
+cancel any amplitude, so after one cycle the monitored and unmonitored
+\emph{populations} are identical (and so is the support) --- measuring at the end
+of cycle one changes nothing. The entire monitored/unmonitored gap is therefore a
+strictly multi-cycle effect: it first appears at cycle two, when a coherence
+created in cycle one either survives (unmonitored) and re-enters the next cycle's
+controls, or is dephased away (monitored). Monitoring is exactly the insertion of
+a computational-basis dephasing between consecutive cycles, i.e.\ the projection
+of the pair graph $\GG$ (\S3) onto its diagonal $M$ at every step; the off-diagonal
+structure of $\GG$ is the surviving inter-cycle coherence that this report
+charts.
+
 \paragraph{Erratum to the design notes.} An early design note asserted that
 population on monitored-transient states decays under $\Phi$. This is false in
 general. For rule $22$ ($\rt{IVVD}$) at $N=4$ the stationary states of $\Phi$
