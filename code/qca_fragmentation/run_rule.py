@@ -75,12 +75,21 @@ def main(argv=None):
     ap.add_argument("--node-budget", type=int, default=None,
                     help="abort a unit after exploring this many nodes")
     ap.add_argument("--tiers", default="1a")
+    ap.add_argument("--tier", default=None,
+                    help="'1d' dispatches to the pair-graph runner (pair_run)")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--no-ergodic-abort", action="store_true",
                     help="do the FULL decomposition even when one component "
                          "exceeds f_erg*2^N, so an ergodic-looking rule still "
                          "reports how many sectors it really has")
     args = ap.parse_args(argv)
+
+    if args.tier == "1d" or "1d" in args.tiers:
+        from .pair_run import run_pair_unit
+        for bc in parse_bc(args.bc):
+            for N in parse_N(args.N):
+                run_pair_unit(args.rule, N, bc, force=args.force)
+        return
 
     for bc in parse_bc(args.bc):
         for N in parse_N(args.N):

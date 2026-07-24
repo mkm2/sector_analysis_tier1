@@ -32,6 +32,18 @@ RESULTS_DIR = os.path.join(REPO_ROOT, "results")
 CHECKPOINTS_DIR = os.path.join(REPO_ROOT, "checkpoints")
 MANIFEST = os.path.join(CHECKPOINTS_DIR, "manifest.jsonl")
 
+# Tier 1d (pair graph) results live in a SEPARATE store keyed on the same units,
+# so the Tier-1a append-only records stay valid and are never force-recomputed.
+TIER1D_VERSION = "1d.1"
+PAIR_RESULTS_DIR = os.path.join(REPO_ROOT, "results_tier1d")
+PAIR_FIELDS = [
+    "rule", "bc", "N", "km", "n_recurrent_states", "cesaro_rank",
+    "pair_rec_size", "pair_offdiag", "pair_diag_extra", "fix_upper", "certified",
+    "bounded_only", "n_pair_nodes", "n_strong", "n_weak",
+    "weak_grades_coherence", "d_values_on_coherence", "runtime",
+    "tier1d_version",
+]
+
 # Schema field order (context Tier 1 sec.7).
 FIELDS = [
     "rule", "bc", "N", "n_scc", "n_recurrent", "sizes_recurrent", "sizes_scc",
@@ -131,6 +143,38 @@ def append_result(rec: dict) -> None:
     _ensure_dirs()
     ordered = {k: rec.get(k) for k in FIELDS}
     with open(results_path(rec["rule"], rec["bc"]), "a") as f:
+        f.write(json.dumps(ordered) + "\n")
+
+
+def pair_results_path(rule: int, bc: str) -> str:
+    return os.path.join(PAIR_RESULTS_DIR, f"{rule}_{bc}.jsonl")
+
+
+def load_pair_results(rule: int, bc: str) -> Dict[int, dict]:
+    path = pair_results_path(rule, bc)
+    out: Dict[int, dict] = {}
+    if not os.path.exists(path):
+        return out
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            out[rec["N"]] = rec
+    return out
+
+
+def has_pair_unit(rule: int, bc: str, N: int,
+                  *, tier1d_version: str = TIER1D_VERSION) -> bool:
+    rec = load_pair_results(rule, bc).get(N)
+    return rec is not None and rec.get("tier1d_version") == tier1d_version
+
+
+def append_pair_result(rec: dict) -> None:
+    os.makedirs(PAIR_RESULTS_DIR, exist_ok=True)
+    ordered = {k: rec.get(k) for k in PAIR_FIELDS}
+    with open(pair_results_path(rec["rule"], rec["bc"]), "a") as f:
         f.write(json.dumps(ordered) + "\n")
 
 

@@ -128,7 +128,7 @@ def _nullity(diff_rows, d):
 # --------------------------------------------------------------------------- #
 
 def analyze_charges(rule: int, N: int, bc: str, t: Tuple4, *, r: int = 2,
-                    node_budget: int = 4_000_000) -> ChargeResult:
+                    node_budget: int = 4_000_000, pair=None) -> ChargeResult:
     import time
     t0 = time.time()
     d = 2 * (1 << r)
@@ -177,8 +177,10 @@ def analyze_charges(rule: int, N: int, bc: str, t: Tuple4, *, r: int = 2,
     # on ALL off-diagonal pairs (task Sec.3, literal) over-counts vacuously when
     # coherences decay in one step (e.g. rule 0: no surviving off-diagonal edge
     # leaves the law unconstrained), so we restrict to P_rec's off-diagonal part.
-    from ..graph.pair_graph import analyze_pair
-    pair = analyze_pair(rule, N, bc, t, cross_sector=False, return_support=True)
+    if pair is None:
+        from ..graph.pair_graph import analyze_pair
+        pair = analyze_pair(rule, N, bc, t, cross_sector=False,
+                            return_support=True)
     poff = pair.offdiag_pairs or []
     poffset = set(poff)
     n_weak = 0
