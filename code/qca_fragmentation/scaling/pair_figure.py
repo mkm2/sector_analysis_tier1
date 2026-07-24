@@ -57,7 +57,7 @@ def fig_pair_sandwich(rows: List[Dict], bc: str, out: str) -> int:
         if ex is not None:
             ax.scatter(ex, y, s=42, marker="D", color=EXACT,
                        edgecolor="white", linewidth=0.5, zorder=4,
-                       label="$b_{\\mathrm{Fix}}$ (exact, $N\\le6$)"
+                       label="$b_{\\mathrm{Fix}}$ (exact, $N\\leq 6$)"
                        if y == ys[0] else None)
     ax.set_yticks(ys)
     ax.set_yticklabels([f"W{r['rule']} {r['tuple']}" for r in sel], fontsize=8)
@@ -98,10 +98,10 @@ def fig_certificate_coverage(bc: str, out: str) -> int:
     return len(Ns)
 
 
-def fig_coherence_parity(rows: List[Dict], bc: str, out: str) -> int:
-    pr = parity_resolution(rows)
-    even = {int(n): c for n, c in pr["even_N"].items()}
-    odd = {int(n): c for n, c in pr["odd_N"].items()}
+def fig_coherence_parity(bc: str, out: str) -> int:
+    pr = parity_resolution(bc)
+    even = {int(n): c for n, c in pr["exact_even"].items()}
+    odd = {int(n): c for n, c in pr["exact_odd"].items()}
     if not even and not odd:
         return 0
     fig, ax = plt.subplots(figsize=(6.0, 3.8))
@@ -109,16 +109,21 @@ def fig_coherence_parity(rows: List[Dict], bc: str, out: str) -> int:
     if even:
         xs = sorted(even)
         ax.plot(xs, [even[n] for n in xs], "-s", color=EXACT, lw=1.6, ms=6,
-                label="even $N$", zorder=3)
+                label="even $N$ (exact)", zorder=3)
     if odd:
         xs = sorted(odd)
         ax.plot(xs, [odd[n] for n in xs], "-^", color=UPPER, lw=1.6, ms=6,
-                label="odd $N$", zorder=3)
+                label="odd $N$ (exact)", zorder=3)
+    # the even-only Tier-1b dense census, for comparison
+    dense = {4: 84, 6: 60, 8: 72}
+    ax.plot(sorted(dense), [dense[n] for n in sorted(dense)], ":o",
+            color=LOWER, lw=1.2, ms=5, mfc="none",
+            label="Tier-1b dense census (even only)", zorder=2)
     ax.set_xlabel("chain length $N$")
-    ax.set_ylabel("# rules with protected coherence")
+    ax.set_ylabel("# rules with within-sector coherence")
     ax.set_title(f"Coherence census resolved by $N$-parity ({bc})",
                  fontsize=11, loc="left")
-    ax.legend(frameon=False, fontsize=8.5, loc="best")
+    ax.legend(frameon=False, fontsize=8, loc="best")
     fig.tight_layout()
     fig.savefig(out, bbox_inches="tight")
     fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
@@ -201,7 +206,7 @@ def main(argv=None):
     b = fig_certificate_coverage(args.bc,
                                  os.path.join(FIGURES_DIR,
                                               f"fig_certificate_coverage_{args.bc}.pdf"))
-    c = fig_coherence_parity(rows, args.bc,
+    c = fig_coherence_parity(args.bc,
                              os.path.join(FIGURES_DIR,
                                           f"fig_coherence_parity_{args.bc}.pdf"))
     d = fig_growth_certified(args.bc,

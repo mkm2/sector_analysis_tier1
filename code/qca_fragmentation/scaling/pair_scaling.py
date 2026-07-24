@@ -40,7 +40,8 @@ import numpy as np
 from .. import results_io
 from ..core import rules
 from ..quantum.weak_charges import WALL_HADAMARD_CORE
-from .fits import find_integer_recurrence, fit_pure_exponential
+from .dissipative import fit_with_period
+from .fits import find_integer_recurrence, find_recurrence_by_period
 
 FIGURES_DIR = os.path.join(results_io.REPO_ROOT, "figures")
 TEX_DIR = os.path.join(results_io.REPO_ROOT, "reports", "tex")
@@ -61,20 +62,44 @@ def load_pair_series(rule: int, bc: str) -> Dict:
     return out
 
 
+# The pair-graph bounds live in the DOUBLED space, so |P_rec| and the
+# within-sector dim Fix legitimately grow up to base 4 (not the base-2 ceiling of
+# single-space counts).  We therefore read the fit rate directly and accept any
+# finite base up to this ceiling, rather than through fit_with_period's
+# `bounded` gate (which is tuned for #attractors / D_max <= 2^N).
+_DOUBLED_CEILING = 4.3
+
+
 def _base_of(Ns, ys) -> Dict:
-    """Exact-recurrence base if one exists, else the two-parameter exp base."""
+    """Growth base of a bracket series with the Tier-1c machinery: a parity/period
+    split (the pair-graph bounds oscillate by N-parity, e.g. rule 22's |P_rec|),
+    an exact integer recurrence per residue class if one holds, else the
+    two-parameter exponential rate -- accepting doubled-space bases up to 4."""
     pairs = [(n, y) for n, y in zip(Ns, ys) if y is not None]
     if len(pairs) < 3:
-        return {"base": None, "kind": "n/a", "name": None}
+        return {"base": None, "kind": "n/a", "name": None, "period": 1}
     ns = [p[0] for p in pairs]
-    ys = [p[1] for p in pairs]
-    rec = find_integer_recurrence(ys)
-    if rec.get("ok") and rec["base"] is not None:
-        return {"base": rec["base"], "kind": "exact", "name": rec.get("name")}
-    fit = fit_pure_exponential(ns, ys)
-    if fit.get("ok") and fit.get("bounded"):
-        return {"base": float(np.exp(fit["kappa"])), "kind": "fit", "name": None}
-    return {"base": None, "kind": "irregular", "name": None}
+    yy = [p[1] for p in pairs]
+    f = fit_with_period(ns, yy)
+    period = f["period"]
+    rec = (find_recurrence_by_period(ns, yy, period=period) if period > 1
+           else find_integer_recurrence(yy))
+    if rec.get("ok") and rec.get("base") is not None:
+        return {"base": rec["base"], "kind": "exact", "name": rec.get("name"),
+                "period": period}
+    # raw exponential rate (per residue class if the series splits by parity)
+    if period > 1:
+        ks = [f[p + "_exp"]["kappa"] for p in ("even", "odd")
+              if f[p + "_exp"].get("ok")]
+        kappa = max(ks, key=abs) if ks else None
+    else:
+        fe = f["all_exp"]
+        kappa = fe["kappa"] if fe.get("ok") else None
+    if kappa is not None:
+        base = float(np.exp(kappa))
+        if 0 < base <= _DOUBLED_CEILING:
+            return {"base": base, "kind": "fit", "name": None, "period": period}
+    return {"base": None, "kind": "irregular", "name": None, "period": period}
 
 
 def summarize_pair_rule(rule: int, bc: str) -> Dict:
@@ -160,18 +185,46 @@ def certificate_coverage(bc: str = "pbc") -> Dict:
             for n, v in sorted(cov.items())}
 
 
-def parity_resolution(rows: List[Dict]) -> Dict:
-    """Count coherent rules (pair_offdiag > 0) per N, split by N parity."""
-    per_N = collections.defaultdict(int)
-    for row in rows:
-        for n, is_coh in row["coherent_by_N"].items():
-            if is_coh:
-                per_N[n] += 1
-    even = {n: c for n, c in sorted(per_N.items()) if n % 2 == 0}
-    odd = {n: c for n, c in sorted(per_N.items()) if n % 2 == 1}
-    return {"per_N": {str(n): c for n, c in sorted(per_N.items())},
-            "even_N": {str(n): c for n, c in even.items()},
-            "odd_N": {str(n): c for n, c in odd.items()}}
+def parity_resolution(bc: str = "pbc") -> Dict:
+    """Resolve the coherence-census non-monotonicity by N-parity.
+
+    Two indicators over all 240 dissipative rules:
+      * EXACT (N<=6): # rules with within-sector dim Fix > K_M, i.e. genuine
+        protected coherence beyond the classical pointer count.  This includes
+        the ODD N the even-only Tier-1b census could not reach.
+      * SUPPORT (all N): # rules whose off-diagonal P_rec is non-empty -- an
+        upper bound; it shows coherence support PERSISTS at every N (it does not
+        vanish and reappear), so the even-only census understates the picture.
+    """
+    exact = collections.defaultdict(int)
+    support = collections.defaultdict(int)
+    pdir = results_io.PAIR_RESULTS_DIR
+    files = os.listdir(pdir) if os.path.isdir(pdir) else []
+    for f in files:
+        if not f.endswith(f"_{bc}.jsonl"):
+            continue
+        for line in open(os.path.join(pdir, f)):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if r.get("bounded_only"):
+                continue
+            N = r["N"]
+            if (r.get("pair_offdiag") or 0) > 0:
+                support[N] += 1
+            cz, km = r.get("cesaro_rank"), r.get("km")
+            if cz is not None and km is not None and cz > km:
+                exact[N] += 1
+    return {
+        "exact_by_N": {str(n): exact[n] for n in sorted(exact)},
+        "exact_even": {str(n): exact[n] for n in sorted(exact) if n % 2 == 0},
+        "exact_odd": {str(n): exact[n] for n in sorted(exact) if n % 2 == 1},
+        "support_by_N": {str(n): support[n] for n in sorted(support)},
+    }
 
 
 def write_csv(rows: List[Dict], path: str):
@@ -231,11 +284,12 @@ def main(argv=None):
     write_csv(rows, os.path.join(FIGURES_DIR, "pair_sandwich.csv"))
     latex_table(rows, os.path.join(TEX_DIR, "tab_pair_sandwich.tex"), bc=args.bc)
 
+    par = parity_resolution(args.bc)
     doc = {
         "bc": args.bc,
         "n_rules": len(rows),
         "certificate_coverage": certificate_coverage(args.bc),
-        "parity_resolution": parity_resolution(rows),
+        "parity_resolution": par,
         "sandwich_verdicts": dict(collections.Counter(r["sandwich"] for r in rows)),
         "n_grading_weak_charge": sum(1 for r in rows if r["grades_coherence"]),
         "tier1d_version": results_io.TIER1D_VERSION,
@@ -247,9 +301,9 @@ def main(argv=None):
     print(f"{args.bc}: {len(rows)} coherent rules")
     print(f"  sandwich verdicts: {doc['sandwich_verdicts']}")
     print(f"  certificate coverage: {doc['certificate_coverage']}")
-    print(f"  coherent-by-N (offdiag>0): {doc['parity_resolution']['per_N']}")
-    print(f"    even N: {doc['parity_resolution']['even_N']}")
-    print(f"    odd  N: {doc['parity_resolution']['odd_N']}")
+    print(f"  exact within-sector coherent count (dimFix>K_M): {par['exact_by_N']}")
+    print(f"    even N: {par['exact_even']}   odd N: {par['exact_odd']}")
+    print(f"  coherence-support persists (offdiag>0): {par['support_by_N']}")
     print(f"  weak charge grades coherence: {doc['n_grading_weak_charge']} rules")
 
 

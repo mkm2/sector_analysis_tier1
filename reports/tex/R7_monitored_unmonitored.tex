@@ -279,14 +279,19 @@ $18,19,50,55,179$ & --- & $0$ & $0$ & no \\
 \end{center}
 The graded quantity is a domain-wall--like density: the weak charge partitions
 the off-diagonal support of $\Prec$ into $\Delta$-sectors, exactly the structure
-a monitored observer cannot see.
+a monitored observer cannot see. The effect is not confined to the wall core:
+$58$ of the $92$ coherent \rt{pbc} rules carry at least one weak charge that
+grades their protected coherence, with the wall-Hadamard core the cleanest
+(single charge, small symmetric $\Delta$-spectrum).
 
 \section{Results}
 \paragraph{Certificate coverage.} Figure~\ref{fig:cov} reports the fraction of
-dissipative units certified exact for the unmonitored channel at each $N$. The
+dissipative units certified exact for the unmonitored channel at each $N$. Of the
+$240$ \rt{pbc} rules, $62$--$80$ certify per size ($62,67,80,67,62,67$ at
+$N=4,\dots,9$; the peak at $N=6$ is a commensurability effect). The
 Hadamard-free rules with only fixed-point attractors certify at every $N$; the
-coherent core never certifies (correctly); the conservative middle is the
-combinatorial slack of Theorem~3.
+$92$ coherent-core rules never certify (correctly); the conservative middle is
+the combinatorial slack of Theorem~3.
 
 \begin{figure}[h]\centering
 \ifgraphic{../../figures/fig_certificate_coverage_pbc.png}{0.62\linewidth}
@@ -310,8 +315,16 @@ carry protected coherence (\rt{pbc}).}
 \paragraph{The coherent-core sandwich.} For each coherent rule the three series
 $K_M(N)\le\dim\Fix_{\text{within}}(N)\le|\Prec|(N)$ are fitted with the Tier-1c
 machinery (exact integer recurrence first, then the two-parameter exponential,
-period split active). Table~\ref{tab:sandwich} lists the bracketing bases and the
-per-rule verdict; Figure~\ref{fig:sandwich} draws the intervals.
+period split active); the pair-graph series live in the doubled space, so their
+bases run up to $4$, not the base-$2$ ceiling of single-space counts. All $92$
+coherent-core rules return an \emph{interval} verdict: the monitored lower base
+and the channel upper base genuinely differ (e.g.\ rule $22$: $[1.0,\,3.66]$ with
+the exact within-sector anchor at $2.44$), so no single graph number is tight ---
+the honest output is a growth window, and the combinatorial upper bound is loosest
+exactly where interference cancellation is strongest (rule $27$: $[1,\,3.06]$ for
+a one-dimensional stationary superposition). Table~\ref{tab:sandwich} lists the
+bracketing bases and the per-rule verdict; Figure~\ref{fig:sandwich} draws the
+intervals.
 
 \begin{table}[h]\centering
 \input{tab_pair_sandwich.tex}
@@ -330,13 +343,21 @@ within-sector fixed-point base marked inside it.}
 \label{fig:sandwich}
 \end{figure}
 
-\paragraph{Parity resolution of the census non-monotonicity (R5 open item ii).}
+\paragraph{The census non-monotonicity (R5 open item ii).}
 The Tier-1b coherence census ran only at even $N$ ($84,60,72$ at $N=4,6,8$) and
-looked non-monotonic. The pair graph detects protected coherence at \emph{every}
-$N$, including odd $N$, without the dense-$\rho$ ceiling. Figure~\ref{fig:parity}
-plots the count split by $N$-parity; the even and odd branches are individually
-smooth, so the apparent non-monotonicity is a parity interleaving, not a genuine
-turnover.
+looked non-monotonic. The pair graph adds two things the even-only dense probe
+could not. First, coherence \emph{support} (a non-empty off-diagonal $\Prec$)
+persists at \emph{every} $N$, including odd $N$: $178,173,160,173,178,169$ rules
+of $240$ carry it at $N=4,\dots,9$. So the apparent dip is not coherence
+vanishing and reappearing --- it is present throughout. Second, the \emph{exact}
+within-sector count ($\dim\Fix_{\text{within}}>K_M$, reachable exactly to $N=6$)
+is $104,76,58$ at $N=4,5,6$; the odd point $N=5$ sits between its even neighbours,
+so this exact quantity is monotone over the sizes we can certify, with no parity
+turnover. The specific dense-census upturn at $N=8$ lives in a different quantity
+(basis-non-spannedness) and at a size the exact within-sector probe cannot reach;
+what we can state rigorously is that it is not a disappearance of protected
+coherence. Figure~\ref{fig:parity} overlays the exact even/odd counts on the dense
+census.
 
 \begin{figure}[h]\centering
 \ifgraphic{../../figures/fig_coherence_parity_pbc.png}{0.62\linewidth}
