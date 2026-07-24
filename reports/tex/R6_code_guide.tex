@@ -542,6 +542,14 @@ All commands use \pf{\textasciitilde/pyenvs/main/bin/python} from \pf{code/}.
   \rt{python -m qca\_fragmentation.scaling.growth\_map}
 \item \textbf{Overfitting calibration:}\\
   \rt{python -m qca\_fragmentation.scaling.overfit\_audit}
+\item \textbf{Tier 1d --- pair graph, certificates, weak charges} (separate
+  \pf{results\_tier1d/} store, \rt{tier1d\_version 1d.1}; does \emph{not}
+  recompute Tier 1a):\\
+  \rt{python -m qca\_fragmentation.run\_rule --rule 22 --N 4-12 --bc pbc --tier 1d}\\
+  \rt{python -m qca\_fragmentation.pair\_sweep --which coherent --n-min 4 --n-max 12}\\
+  \rt{python -m qca\_fragmentation.quantum.weak\_charges --core}\\
+  \rt{python -m qca\_fragmentation.scaling.pair\_scaling --bc pbc}\qquad(sandwich table)\\
+  \rt{python -m qca\_fragmentation.scaling.pair\_figure --bc pbc}\qquad(coverage / sandwich / parity)
 \item \textbf{Tests:}\quad\rt{python -m pytest qca\_fragmentation/tests -q}
 \end{enumerate}
 Every unit is cached in \pf{results/} and logged in
