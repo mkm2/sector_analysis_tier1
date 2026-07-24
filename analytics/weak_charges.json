@@ -1,0 +1,104 @@
+{
+ "N": 6,
+ "bc": "pbc",
+ "engine_version": "1a.1",
+ "r": 3,
+ "rules": {
+  "146": {
+   "d_values": [
+    "-1",
+    "-2",
+    "0",
+    "1",
+    "2"
+   ],
+   "n_strong": 0,
+   "n_weak": 1,
+   "tuple": "DVVI",
+   "weak_grades_coherence": true
+  },
+  "151": {
+   "d_values": [
+    "-1",
+    "-2",
+    "0",
+    "1",
+    "2"
+   ],
+   "n_strong": 0,
+   "n_weak": 1,
+   "tuple": "EVVI",
+   "weak_grades_coherence": true
+  },
+  "178": {
+   "d_values": [
+    "-1",
+    "0",
+    "1"
+   ],
+   "n_strong": 0,
+   "n_weak": 1,
+   "tuple": "DVVE",
+   "weak_grades_coherence": true
+  },
+  "179": {
+   "d_values": [],
+   "n_strong": 0,
+   "n_weak": 0,
+   "tuple": "VVVE",
+   "weak_grades_coherence": null
+  },
+  "18": {
+   "d_values": [],
+   "n_strong": 0,
+   "n_weak": 0,
+   "tuple": "DVVD",
+   "weak_grades_coherence": null
+  },
+  "19": {
+   "d_values": [],
+   "n_strong": 0,
+   "n_weak": 0,
+   "tuple": "VVVD",
+   "weak_grades_coherence": null
+  },
+  "22": {
+   "d_values": [
+    "-1",
+    "-2",
+    "0",
+    "1",
+    "2"
+   ],
+   "n_strong": 0,
+   "n_weak": 1,
+   "tuple": "IVVD",
+   "weak_grades_coherence": true
+  },
+  "23": {
+   "d_values": [
+    "-1",
+    "0",
+    "1"
+   ],
+   "n_strong": 0,
+   "n_weak": 1,
+   "tuple": "EVVD",
+   "weak_grades_coherence": true
+  },
+  "50": {
+   "d_values": [],
+   "n_strong": 0,
+   "n_weak": 0,
+   "tuple": "DVVV",
+   "weak_grades_coherence": null
+  },
+  "55": {
+   "d_values": [],
+   "n_strong": 0,
+   "n_weak": 0,
+   "tuple": "EVVV",
+   "weak_grades_coherence": null
+  }
+ }
+}
