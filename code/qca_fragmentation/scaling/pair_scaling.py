@@ -141,7 +141,13 @@ def certificate_coverage(bc: str = "pbc") -> Dict:
         if not f.endswith(f"_{bc}.jsonl"):
             continue
         for line in open(os.path.join(pdir, f)):
-            r = json.loads(line)
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
             if r.get("bounded_only"):
                 continue
             c = r.get("certified")

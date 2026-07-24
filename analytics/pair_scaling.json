@@ -1,0 +1,37 @@
+{
+ "bc": "pbc",
+ "certificate_coverage": {
+  "4": {
+   "certified": 62,
+   "total": 240
+  },
+  "5": {
+   "certified": 67,
+   "total": 240
+  },
+  "6": {
+   "certified": 72,
+   "total": 102
+  }
+ },
+ "n_grading_weak_charge": 50,
+ "n_rules": 92,
+ "parity_resolution": {
+  "even_N": {
+   "4": 92,
+   "6": 20
+  },
+  "odd_N": {
+   "5": 92
+  },
+  "per_N": {
+   "4": 92,
+   "5": 92,
+   "6": 20
+  }
+ },
+ "sandwich_verdicts": {
+  "undetermined": 92
+ },
+ "tier1d_version": "1d.1"
+}

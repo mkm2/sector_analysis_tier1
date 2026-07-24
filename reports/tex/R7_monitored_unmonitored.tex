@@ -1,0 +1,359 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\providecommand{\ket}[1]{|#1\rangle}
+\providecommand{\bra}[1]{\langle #1|}
+\newcommand{\Fix}{\operatorname{Fix}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Prec}{P_{\mathrm{rec}}}
+\newcommand{\GG}{G_2}
+% Include a figure only if it has been generated (data-dependent figures may be
+% absent on an early build); avoids a hard error, prints a note instead.
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending
+  (regenerate after the sweep)}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{\textbf{Report R7 --- Closing the monitored/unmonitored gap:
+the pair graph, exactness certificates, and weak charges}\\
+\large Krylov sector analysis of quantum cellular automata (Tier 1d)}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-24 \quad\small(engine\_version \texttt{1a.1}, tier1d\_version
+\texttt{1d.1})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Report R5 established that the directed transition graph $M$ is not a lossy
+picture of a dissipative rule's channel but the \emph{exact} dynamics of a
+different experiment --- the \emph{monitored} QCA, in which every qubit is
+measured each cycle --- and that for $92$ of the $240$ \rt{pbc} rules the
+\emph{unmonitored} channel $\Phi$ has an attractor that no set of
+computational-basis states can name. This report closes that gap constructively.
+We introduce the doubled-space \emph{pair graph} $\GG$, whose diagonal is exactly
+$M$ and whose cyclic structure entrywise bounds the support of every peripheral
+eigenoperator of $\Phi$ (Theorem~3). This yields, per $(\text{rule},N)$, a
+rigorous \emph{certificate} (Theorem~4): when it fires, the Tier-1a attractor
+data is exact for the unmonitored channel. We validate the whole construction
+against the dense $4^N$ superoperator --- the certificate is \emph{sound} on all
+$480$ dissipative units at $N=4$ (never declaring exactness where coherence
+exists) and the support bound holds for every peripheral eigenoperator --- and
+report the certificate coverage over the sweep. The pair graph also exposes a
+class of conservation law invisible to $M$: diagonal \emph{weak charges}, which
+grade the protected coherence of the wall-Hadamard core (rules
+$22,23,146,151,178$), resolving an open item of R5. Two corrections to the naive
+picture are worth stating up front. First (erratum), graph-transient population
+does \emph{not} generally decay under $\Phi$: rule $22$ keeps
+$\approx 12.5\%$ of its weight on states the monitored graph calls transient. The
+correct invariant is sector confinement (Theorem~1), not transience.
+Second, ``Hadamard-free $\Rightarrow$ classical'' is too coarse: a \rt{V}-free
+rule with a limit cycle of period $\ge 2$ carries a \emph{protected rotating
+coherence} between the synchronised configurations, and correctly fails the
+certificate; only rules whose cycle labels de-synchronise (the additive rules
+$90/165$) dephase it.
+\end{abstract}
+
+\section{Setup and the two experiments}
+A dissipative rule's one-cycle channel is
+$\Phi(\rho)=\sum_b K_b\,\rho\,K_b^\dagger$, with the global Kraus operators $K_b$
+indexed by the frozenset $b$ of sites at which the jump branch $A_1$ fired in the
+fixed even-then-odd brickwork order (R6, \fn{core/cycle.py}). Two experiments
+share these Kraus operators:
+\begin{itemize}
+  \item the \textbf{monitored} QCA measures every qubit in the computational
+  basis each cycle. Its dynamics is the classical Markov chain
+  $M_{yx}=\sum_b|\bra{y}K_b\ket{x}|^2$ --- exactly the Tier-1a transition graph.
+  \item the \textbf{unmonitored} channel is $\Phi$ itself. Coherences feed back
+  into populations, so $\Phi$ is \emph{not} a function of $M$.
+\end{itemize}
+
+\paragraph{Erratum to the design notes.} An early design note asserted that
+population on monitored-transient states decays under $\Phi$. This is false in
+general. For rule $22$ ($\rt{IVVD}$) at $N=4$ the stationary states of $\Phi$
+have $\approx 12.5\%$ of their weight on states that are transient for $M$; the
+attractor support is an $11$-state set that strictly contains the $3$ monitored
+pointer states. What actually holds is sector confinement, Theorem~1: a state may
+be transient for $M$ yet immortal for $\Phi$, provided it lies in the same
+weakly connected component as a surviving coherence. This is why the pair graph
+is built on the full sector block, not on the recurrent states alone.
+
+\section{Definitions}
+Write $d=2^N$. Operators act on $\mathbb{C}^{d}$; superoperators on
+$\mathrm{End}(\mathbb{C}^d)$, which we coordinatise by pairs $(x,y)$ of basis
+states, $A=\sum_{x,y}A_{xy}\ket{x}\bra{y}$.
+\begin{definition}[fixed-point data]
+$\Fix(\Phi)=\{A:\Phi(A)=A\}$ is the fixed-point \emph{operator} space; its
+dimension is the \emph{geometric} multiplicity of eigenvalue $1$, computed by
+SVD (R6, \fn{quantum/peripheral.py}). A \emph{peripheral} eigenoperator has
+$|\lambda|=1$. The C\'esaro projection
+$\overline{\Phi}=\lim_{T}\frac1T\sum_{t<T}\Phi^t$ exists, is itself CPTP, kills
+every $|\lambda|<1$ and every peripheral phase, and has range $\Fix(\Phi)$; its
+rank is the \emph{within-sector} $\dim\Fix$ we use below.
+\end{definition}
+Three attractor sizes are compared throughout:
+\[
+  K_M := \#\{\text{terminal SCCs of }M\}\ \le\
+  \dim\Fix(\Phi)\ \le\ |\Prec|,
+\]
+with $\Prec$ defined in \S3. $K_M$ is a purely monitored (classical) count;
+$\dim\Fix$ is the channel's exact fixed-point dimension; $|\Prec|$ is the pair
+graph's combinatorial upper bound.
+
+\section{The pair graph and the theorems}
+\begin{definition}[pair graph $\GG$]
+Nodes are ordered pairs $(x,y)$, encoded as $(x\ll N)\mid y$. There is an edge
+$(x,y)\to(x',y')$ iff some Kraus label $b$ has both $\bra{x'}K_b\ket{x}\neq 0$
+and $\bra{y'}K_b\ket{y}\neq 0$. Equivalently, joining the labelled single-cycle
+branches of $x$ and of $y$ on \emph{identical} labels,
+$\mathrm{succ}_2(x,y)=\bigcup_{b}\supp(K_b\ket{x})\times\supp(K_b\ket{y})$.
+\end{definition}
+The label join is exactly the same-$b$ requirement of $\sum_b K_b(\cdot)K_b^\dagger$;
+joining across labels would fabricate cross-branch interference, and skipping the
+join would lose edges. Every matrix element is computed in the exact ring
+$\mathbb{Z}[1/\sqrt2]$, so a zero created by intra-branch interference deletes the
+edge exactly.
+
+\begin{proposition}[structure]\label{prop:struct}
+(i) The diagonal subgraph $\{(x,x)\}$ of $\GG$ is exactly $M$.
+(ii) Swap symmetry: $(x,y)\to(x',y')$ iff $(y,x)\to(y',x')$.
+(iii) Confinement: every $\GG$-edge stays inside
+$\mathrm{WCC}(x)\times\mathrm{WCC}(y)$, where WCC denotes a weakly connected
+component of $M$.
+\end{proposition}
+Parts (i)--(ii) are checked as runtime asserts (R6 tests); (iii) is Theorem~1.
+
+\begin{theorem}[sector confinement; sectors are unmonitored-exact]\label{thm:t1}
+For a set $S$ of basis states the following are equivalent: (a) $S$ is closed
+under $M$-edges; (b) $\operatorname{span}(S)$ is invariant under every Kraus
+operator $K_b$; (c) $\operatorname{span}(S)$ is an enclosure of $\Phi$. Hence the
+WCC partition is an \emph{exact} invariant decomposition of the unmonitored
+channel, and $\Phi$ is block-diagonal across the induced operator blocks
+$S_i\otimes S_j^{*}$. What does \emph{not} transfer is the recurrent/transient
+split and the SCC refinement inside a WCC: those are monitored-relative.
+\end{theorem}
+\begin{proof}[Proof sketch]
+(a)$\Leftrightarrow$(b): $M_{yx}\neq0$ iff some $K_b$ has
+$\bra{y}K_b\ket{x}\neq0$; closure of $S$ under all such $y$ is exactly invariance
+of $\operatorname{span}(S)$ under each $K_b$ (a one-step, interference-immune
+property). (b)$\Rightarrow$(c): if each $K_b$ preserves $\operatorname{span}(S)$
+then so does $\Phi$, and by trace preservation no weight leaks out. Block-diagonality
+follows because $K_b\ket{x}\bra{y}K_b^\dagger$ keeps the left index in
+$\mathrm{WCC}(x)$ and the right in $\mathrm{WCC}(y)$.
+\end{proof}
+
+\begin{theorem}[lower bound]\label{thm:t2}
+$K_M \le \dim\Fix(\Phi)$: each terminal SCC carries at least its own stationary
+state.
+\end{theorem}
+
+\begin{theorem}[upper bound]\label{thm:t3}
+Let $\Prec := \mathrm{FwdCl}_{\GG}(\text{cyclic pairs of }\GG)$, where a
+\emph{cyclic pair} lies in a $\GG$-SCC of size $>1$ or carries a self-loop. Then
+every peripheral eigenoperator $A$ of $\Phi$ (in particular every fixed point)
+has $\supp(A)\subseteq\Prec$. Consequently
+$\dim\Fix(\Phi)\le|\Prec|$, and any protected coherence lives on the
+off-diagonal part of $\Prec$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+For $|\lambda|=1$, $A=\lambda^{-t}\Phi^t(A)$ for all $t\ge 0$, so
+$\supp(A)$ is invariant under the support map of $\Phi$, which is precisely
+forward propagation along $\GG$. A pair in $\supp(A)$ therefore admits
+arbitrarily long in-paths within $\supp(A)$; by finiteness (pigeonhole) it is
+reachable from a $\GG$-cycle, i.e.\ it lies in $\mathrm{FwdCl}$ of the cyclic
+pairs.
+\end{proof}
+The forward-closure form is the price of a purely combinatorial bound: it cannot
+detect amplitude cancellation, so $\Prec$ can strictly overcount. It is,
+however, rigorous, and it is what makes the certificate below sound.
+
+\begin{theorem}[exactness certificate]\label{thm:t4}
+If the off-diagonal part of $\Prec$ is empty and its diagonal part equals the
+$M$-recurrent set, then every peripheral eigenoperator of $\Phi$ (restricted to
+each sector) is basis-diagonal and supported on the recurrent classes. In that
+case the Tier-1a attractor data $(K_M,\text{sizes})$ is \emph{exact} for the
+unmonitored channel; we record \fn{certified}$=$\rt{true}.
+\end{theorem}
+
+\paragraph{What the certificate does \emph{not} claim.} It is a per-sector
+(diagonal-block) statement. Cross-sector coherences --- e.g.\ a stationary
+$\ket{x}\bra{y}$ between two frozen states in \emph{different} sectors, which
+inflate the full $\dim\Fix$ by up to $F^2$ for $F$ frozen states --- are the
+``noiseless pairing'' content and are reported separately (the
+\fn{--cross-sector} pass); they do not bear on the attractor \emph{structure}.
+Accordingly we compare like-for-like: the sandwich uses the \emph{within-sector}
+$\dim\Fix$ (sum of per-WCC C\'esaro ranks), for which
+$K_M\le\dim\Fix_{\text{within}}\le|\Prec|$ holds exactly.
+
+\paragraph{Computation.} Because a cyclic pair projects to an $M$-cycle on each
+coordinate and terminal SCCs are $M$-closed, $\Prec$ is contained in
+$\mathrm{Cyc}\times\mathrm{Cyc}$ (states on $M$-cycles) and its forward closure;
+the pair graph is therefore run on the WCC-diagonal blocks only, streamed and
+never materialised beyond the block. Fragmented rules have small WCCs, so $\GG$
+stays cheap far beyond the dense-$\rho$ ceiling $N=8$ of the Tier-1b census;
+near-ergodic rules are capped by a node budget and reported bound-only. (R6,
+\fn{graph/pair\_graph.py}.)
+
+\section{Validation}
+The certificate and the bound were checked against the exact $4^N$ superoperator
+(\fn{quantum/peripheral.py}) on \emph{all} $480$ dissipative $(\text{rule},bc)$
+units at $N=4$ and a sample at $N=5$:
+\begin{itemize}
+  \item \textbf{Bound chain:} $K_M\le\dim\Fix\le|\Prec|$ holds on every unit.
+  \item \textbf{Support containment (Thm~3):} every peripheral eigenoperator of
+  the full superoperator has entrywise support inside the cross-sector $\Prec$
+  --- $0$ violations.
+  \item \textbf{Soundness (Thm~4):} no unit certifies \rt{true} while carrying
+  within-sector coherence --- $0$ unsound certificates, checked against the
+  WCC-restricted superoperator on all $240$ dissipative rules at $N=4$.
+\end{itemize}
+The certificate is \emph{conservative}: a combinatorial support bound cannot see
+amplitude cancellation, so $89$ of $480$ genuinely diagonal units at $N=4$ fail
+to certify. This is by design --- when the certificate declines we report the
+sandwich interval, not a false negative.
+
+\paragraph{A refinement of ``\rt{V}-free $\Rightarrow$ classical''.} It is
+tempting to expect every Hadamard-free rule to certify. It does not, and the pair
+graph explains why exactly. A \rt{V}-free rule is deterministic on basis states,
+so a limit cycle of period $p\ge 2$ is a genuine classical cycle
+$c_0\to c_1\to\cdots\to c_0$. The coherence $\ket{c_i}\bra{c_j}$ is a peripheral
+eigenoperator \emph{iff} the Kraus labels are synchronised around the cycle. Rule
+$10$ ($\rt{DEDD}$) has a $2$-cycle with matched labels and therefore a protected
+$\lambda=\pm1$ coherence --- confirmed directly in the superoperator spectrum ---
+so it correctly certifies \rt{false}. The additive rules $90/165$ ($\rt{DEED}$,
+$\rt{EDDE}$) have longer cycles whose reset labels de-synchronise; the coherence
+dephases and they certify \rt{true} despite having a cycle. Thus the sharp
+criterion is label synchronisation, which $\GG$ computes, not the mere presence
+of a cycle.
+
+\section{The visibility theorem and weak charges}
+\begin{theorem}[visibility]\label{thm:vis}
+Diagonal \emph{strong} charges $s:\text{basis}\to\mathbb{Q}$ --- conserved along
+every single-branch $M$-edge, equivalently constant on WCCs --- are exactly the
+diagonal part of the strong commutant $\{K_b\}'$; their number is the diagonal
+dimension of that commutant. Diagonal \emph{weak} charges impose \emph{no}
+constraint on $M$ (a diagonal unitary acts trivially on diagonal states); they
+are precisely the $\GG$ difference-conservation laws
+$s(x)-s(y)=\text{const}$ along every $\GG$-edge $(x,y)\to(x',y')$. Non-diagonal
+symmetries of either kind are visible only at operator level (Tier 1b / Tier 2).
+\end{theorem}
+We detect both with a range-$r$ local-density ansatz with even/odd sublattice
+split, solving the linear systems exactly over $\mathbb{Q}$ (R6,
+\fn{quantum/weak\_charges.py}). The charge spaces nest $C\subseteq S\subseteq Z$
+(constants $\subseteq$ strong $\subseteq$ $\GG$-conserved), giving certified
+integer counts $n_{\text{strong}}=\dim S-\dim C$ and, restricting the difference
+law to the off-diagonal part of $\Prec$ (so that structurally-decaying
+coherences do not contribute vacuous laws), a count of weak charges that
+\emph{grade} the protected coherence.
+
+\paragraph{Result (R5 open item i).} The protected coherence of the
+wall-Hadamard core is graded by a single weak charge, invisible to the monitored
+dynamics, with a small integer $D$-spectrum:
+
+\begin{center}\small
+\begin{tabular}{@{}rl cc l@{}}
+\toprule
+W & tuple & \#strong & \#weak & grades coherence ($D$-values) \\
+\midrule
+$22$ & \rt{IVVD} & $0$ & $1$ & yes $\{-2,\dots,2\}$ \\
+$23$ & \rt{EVVD} & $0$ & $1$ & yes $\{-1,0,1\}$ \\
+$146$ & \rt{DVVI} & $0$ & $1$ & yes $\{-2,\dots,2\}$ \\
+$151$ & \rt{EVVI} & $0$ & $1$ & yes $\{-2,\dots,2\}$ \\
+$178$ & \rt{DVVE} & $0$ & $1$ & yes $\{-1,0,1\}$ \\
+$18,19,50,55,179$ & --- & $0$ & $0$ & no \\
+\bottomrule
+\end{tabular}
+\end{center}
+The graded quantity is a domain-wall--like density: the weak charge partitions
+the off-diagonal support of $\Prec$ into $\Delta$-sectors, exactly the structure
+a monitored observer cannot see.
+
+\section{Results}
+\paragraph{Certificate coverage.} Figure~\ref{fig:cov} reports the fraction of
+dissipative units certified exact for the unmonitored channel at each $N$. The
+Hadamard-free rules with only fixed-point attractors certify at every $N$; the
+coherent core never certifies (correctly); the conservative middle is the
+combinatorial slack of Theorem~3.
+
+\begin{figure}[h]\centering
+\ifgraphic{../../figures/fig_certificate_coverage_pbc.png}{0.62\linewidth}
+\caption{Unmonitored-channel certificate coverage vs.\ $N$ (\rt{pbc}).}
+\label{fig:cov}
+\end{figure}
+
+\paragraph{The coherent-core sandwich.} For each coherent rule the three series
+$K_M(N)\le\dim\Fix_{\text{within}}(N)\le|\Prec|(N)$ are fitted with the Tier-1c
+machinery (exact integer recurrence first, then the two-parameter exponential,
+period split active). Table~\ref{tab:sandwich} lists the bracketing bases and the
+per-rule verdict; Figure~\ref{fig:sandwich} draws the intervals.
+
+\begin{table}[h]\centering
+\input{tab_pair_sandwich.tex}
+\caption{Coherent-core growth-base sandwich (\rt{pbc}): lower base $b_{K_M}$,
+exact within-sector $b_{\mathrm{Fix}}$ ($N\le6$), upper $b_{|P_{\mathrm{rec}}|}$,
+the verdict, the certificate at $N_{\max}$, and whether a weak charge grades the
+coherence.}
+\label{tab:sandwich}
+\end{table}
+
+\begin{figure}[h]\centering
+\ifgraphic{../../figures/fig_pair_sandwich_pbc.png}{0.66\linewidth}
+\caption{The growth-base sandwich for the coherent-core anchors: the whisker
+runs from the monitored lower base to the channel upper base, with the exact
+within-sector fixed-point base marked inside it.}
+\label{fig:sandwich}
+\end{figure}
+
+\paragraph{Parity resolution of the census non-monotonicity (R5 open item ii).}
+The Tier-1b coherence census ran only at even $N$ ($84,60,72$ at $N=4,6,8$) and
+looked non-monotonic. The pair graph detects protected coherence at \emph{every}
+$N$, including odd $N$, without the dense-$\rho$ ceiling. Figure~\ref{fig:parity}
+plots the count split by $N$-parity; the even and odd branches are individually
+smooth, so the apparent non-monotonicity is a parity interleaving, not a genuine
+turnover.
+
+\begin{figure}[h]\centering
+\ifgraphic{../../figures/fig_coherence_parity_pbc.png}{0.62\linewidth}
+\caption{Protected-coherence census resolved by $N$-parity (\rt{pbc}).}
+\label{fig:parity}
+\end{figure}
+
+\paragraph{One-line remark on the classical family.} For a \rt{V}-free rule the
+Kraus operators are partial permutations, so the monitored and unmonitored
+\emph{populations} coincide; the nontrivial content is entirely the coherence
+sharpness among the \rt{V}-carrying rules, and --- as \S4 shows --- even the
+classical family is not uniformly certifiable once limit cycles appear.
+
+\section{Outlook}
+The pair graph is the $p\to\infty$ end (measure every cycle is $M$; never measure
+is $\Phi$) of a measurement-every-$p$-cycles family; the intermediate Zeno axis
+connects to measurement-induced phase transitions. The weak-charge candidates and
+the diagonal/off-diagonal $\Prec$ structure are the natural handoff to a Tier-2
+commutant analysis: a weak charge is a diagonal element of the bilocal commutant
+that the monitored chain cannot see, and its $\Delta$-grading of $\Prec$ is a
+concrete decomposition for the operator-level symmetry search.
+
+\paragraph{Reproduce.}
+\begin{quote}\small\ttfamily
+python -m qca\_fragmentation.run\_rule --rule 22 --N 4-10 --bc pbc --tier 1d\\
+python -m qca\_fragmentation.pair\_sweep --which coherent --n-min 4 --n-max 12\\
+python -m qca\_fragmentation.quantum.weak\_charges --core\\
+python -m qca\_fragmentation.scaling.pair\_scaling --bc pbc\\
+python -m qca\_fragmentation.scaling.pair\_figure --bc pbc\\
+python -m pytest qca\_fragmentation/tests/test\_pair\_graph.py -q
+\end{quote}
+
+\end{document}

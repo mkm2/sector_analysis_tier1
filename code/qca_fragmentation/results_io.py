@@ -160,7 +160,10 @@ def load_pair_results(rule: int, bc: str) -> Dict[int, dict]:
             line = line.strip()
             if not line:
                 continue
-            rec = json.loads(line)
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue          # tolerate a partial final line (live append)
             out[rec["N"]] = rec
     return out
 
