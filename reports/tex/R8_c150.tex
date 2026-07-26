@@ -53,10 +53,11 @@ $\lfloor (N{+}1)/2\rfloor + 1$ and $D_{\max} = \max_{w\,\mathrm{even}}
 \binom{N+1}{w}$. Because the sector count is \emph{linear} in $N$, C150 is
 symmetry-resolved and not fragmented: it is the natural null model for the
 family. The exponential base of $D_{\max}$ is exactly $2$ with an $N^{-1/2}$
-prefactor, which supersedes the fitted $2.022$ of R2. We push the
-assumption-free engine to $N=22$ and the reduction to $N=32$ ---
-$4.29\times10^{9}$ basis states, $21$~GB, $815$~s --- and the closed form is
-exact at every $N$ computed.
+prefactor, which supersedes the fitted $2.022$ of R2. We push the reduction to
+$N=32$ --- $4.29\times10^{9}$ basis states, $21$~GB, $815$~s, the RAM ceiling ---
+and the assumption-free engine as far as a one-day budget reaches
+(see Table~\ref{tab:frontier} for which units have landed). The closed form is
+exact at every $N$ computed, by either route.
 (iii) \emph{What is left open.} The sector is the maximal reachable set, not the
 dynamics. $U$ has an exponentially large stationary space,
 $\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ and
@@ -296,8 +297,10 @@ project machine ($20$ cores, $31$~GB, jobs \fn{nice}d and run concurrently).
 \input{tab_c150_frontier.tex}
 \caption{C150 \rt{obc0}: exact sector data and the two numerical frontiers.
 \cmark{} means the computed size multiset equals the closed form
-\eqref{eq:closed} entry for entry; the time is that unit's wall clock.
-The closed-form columns are exact for every $N$, computed or not.}
+\eqref{eq:closed} entry for entry; the time is that unit's wall clock; ``---''
+means that route has not been run at that $N$ (the engine is a factor
+$\approx3$ per site, so its units above $N=20$ are hours to days each). The
+closed-form columns are exact for every $N$, computed or not.}
 \label{tab:frontier}
 \end{table}
 
