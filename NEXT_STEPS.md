@@ -1,7 +1,9 @@
 # Tier-1 — follow-up status
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
-diss N<=9 pbc. Reports R1/R2/R5/R6/R7 regenerated; full suite 197 tests pass.
+diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 332 tests
+pass.
 
 ## Done
 1. **R5 prose refreshed to the deep dataset.** Exact algebraic bases now
@@ -20,6 +22,16 @@ diss N<=9 pbc. Reports R1/R2/R5/R6/R7 regenerated; full suite 197 tests pass.
    in R5 are pre-existing unbreakable `\texttt{python -m ...}` command lines and
    the 12-rule wall-core set, unrelated to this table.)
 5. **`fig_transient_depth_{pbc,obc0}` verified present** (referenced by R5).
+6. **R8 — C150 obc0 (2026-07-26).** Flip reduction theorem for all 16 unitary
+   rules; wall/bond bijection -> hard-core hopping -> closed form
+   |S_w| = C(N+1,w) (w even), #sectors = floor((N+1)/2)+1, D_max base exactly 2
+   with an N^{-1/2} prefactor. Frontier: streamed engine N<=22, flip graph
+   N<=32 (4.29e9 states, 21 GB, 815 s). Quantum layer:
+   dim Fix(U_w) = C(ceil(N/2), w/2), dim Fix(U) = 2^{ceil(N/2)}, inner sectors
+   are never Krylov spaces, monitored uniform vs unmonitored d_eff 6.6-50%,
+   and C150 = free Hadamard wall walk + two diagonal sign defects (not free).
+   R2 corrected on two points (even-weight vs "lower half" of Pascal's row;
+   D_max parity at N = 1 mod 4).
 
 ## Held (per user, 2026-07-24)
 3. **Mark W19/W55 as capped at N=16** so a future sweep does not retry N=17.
@@ -28,3 +40,18 @@ diss N<=9 pbc. Reports R1/R2/R5/R6/R7 regenerated; full suite 197 tests pass.
    (Partial progress in Tier 1d: coherence *support* persists at every N incl.
    odd, ~170/240; exact within-sector count 104/76/58 at N=4/5/6. The dense
    even-N census upturn at N=8 is a distinct quantity out of exact reach.)
+
+## Open from R8 (C150)
+7. **Level statistics per wall shell.** Deliberately not computed (user
+   instruction). The spectra regenerate in seconds; excise the +1 eigenvalue
+   (multiplicity C(ceil(N/2), w/2)) first and split by reflection parity for
+   odd N.
+8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2).** Exact numerical law over 70
+   shells with the mechanism identified (Fix(U) = Fix(L_A) cap Fix(L_B); the
+   exponent is the number of even sites) but no proof.
+9. **The further exact multiplicities** (2,3,4,6,10,15) are not explained by
+   reflection, which is abelian: some further commutant is present.
+10. **C150 on the ring.** Kinematics solved; the quantum layer is obc0 only.
+    The 2-to-1 wall map gives the bond frame a Z2 gauge redundancy.
+11. **N=33 at the reduction frontier** needs a uint64 label array (68.7 GB), or
+    a two-pass compact relabelling to stay inside 32 GB.

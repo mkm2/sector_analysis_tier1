@@ -550,6 +550,14 @@ All commands use \pf{\textasciitilde/pyenvs/main/bin/python} from \pf{code/}.
   \rt{python -m qca\_fragmentation.quantum.weak\_charges --core}\\
   \rt{python -m qca\_fragmentation.scaling.pair\_scaling --bc pbc}\qquad(sandwich table)\\
   \rt{python -m qca\_fragmentation.scaling.pair\_figure --bc pbc}\qquad(coverage / sandwich / parity)
+\item \textbf{C150 (rule 150) --- closed form, flip-graph frontier, spectra}
+  (report R8; \pf{c150.py}, \pf{graph/flip\_graph.py},
+  \pf{quantum/rule150\_spectra.py}, \pf{scaling/c150\_report.py}; the frontier is
+  checkpointed to \rt{analytics/c150\_frontier.jsonl} and is rule-150 only):\\
+  \rt{python -m qca\_fragmentation.c150 --verify}\\
+  \rt{python -m qca\_fragmentation.c150 --frontier 21-32 --bc obc0}\\
+  \rt{python -m qca\_fragmentation.scaling.c150\_report --quantum}\\
+  \rt{python -m qca\_fragmentation.scaling.c150\_report --tables --figures}
 \item \textbf{Tests:}\quad\rt{python -m pytest qca\_fragmentation/tests -q}
 \end{enumerate}
 Every unit is cached in \pf{results/} and logged in
