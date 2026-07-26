@@ -1,0 +1,548 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\providecommand{\ket}[1]{|#1\rangle}
+\providecommand{\bra}[1]{\langle #1|}
+\newcommand{\Fix}{\operatorname{Fix}}
+\newcommand{\cmark}{\ensuremath{\checkmark}}
+\newcommand{\xmark}{\ensuremath{\times}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending
+  (regenerate after the sweep)}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{\textbf{Report R8 --- C150 at open boundaries: an exactly solved unitary
+QCA, and exactly what it leaves open}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-26 \quad\small(engine\_version \texttt{1a.1})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+C150 --- the quantum elementary cellular automaton with Wolfram number $150$,
+local symbol table $(\rt{I},\rt{V},\rt{V},\rt{I})$, written \rt{W150} elsewhere
+in this series --- is the member of the $16$-rule unitary family whose sector
+structure we can solve in closed form at open boundaries. We do so here, and
+then measure precisely how much of the dynamics that solution does \emph{not}
+determine. Three results. (i) \emph{Reduction.} For any unitary rule the sector
+partition equals the connected components of the single-flip graph
+$x \sim x\oplus 2^i$ over the sites at which the Hadamard fires; the brick-wall
+ordering drops out. Verified against the streamed engine on all $16$ unitary
+rules, both boundary conventions, $N=3\ldots12$ ($320$ units, no mismatch).
+(ii) \emph{Solution.} In the bond variables $b_j = x_j \oplus x_{j+1}$ the map is
+a bijection onto the even-weight strings of length $N+1$ and the elementary move
+is a hard-core \emph{hop} of one domain wall. Hence the conserved charge is the
+open Ising domain-wall number $Q=\sum_j (1-Z_jZ_{j+1})/2$, the sectors are its
+eigenspaces, $|S_w| = \binom{N+1}{w}$ for even $w$, the sector count is
+$\lfloor (N{+}1)/2\rfloor + 1$ and $D_{\max} = \max_{w\,\mathrm{even}}
+\binom{N+1}{w}$. Because the sector count is \emph{linear} in $N$, C150 is
+symmetry-resolved and not fragmented: it is the natural null model for the
+family. The exponential base of $D_{\max}$ is exactly $2$ with an $N^{-1/2}$
+prefactor, which supersedes the fitted $2.022$ of R2. We push the
+assumption-free engine to $N=22$ and the reduction to $N=32$ ---
+$4.29\times10^{9}$ basis states, $21$~GB, $815$~s --- and the closed form is
+exact at every $N$ computed.
+(iii) \emph{What is left open.} The sector is the maximal reachable set, not the
+dynamics. $U$ has an exponentially large stationary space,
+$\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ and
+$\dim\Fix(U)=2^{\lceil N/2\rceil}$ (an exact law, verified two independent
+ways), almost all of it \emph{dark superpositions} that no basis state names. The
+spectrum of $U_w$ is degenerate for \emph{every} shell with $|S_w|>N+1$ and
+nondegenerate for the extremal ones, so outside those extremes
+$\dim\mathcal{K}(x) < |S_w|$ without exception: an inner sector is never the
+Krylov space of one of its basis states. Under monitoring the sector \emph{is}
+filled uniformly (provably); without monitoring the diagonal ensemble occupies
+between $6.6\%$ and $50\%$ of it. Finally, in the bond representation C150 is a
+free-fermion Hadamard wall walk dressed by exactly two diagonal signs --- a
+maximal nearest-neighbour wall interaction and a Jordan--Wigner string on the
+coin --- and removing either one alone leaves the many-body spectrum
+non-additive while removing both makes it additive to $4\times10^{-15}$. C150 is
+therefore exactly charge-resolved but genuinely interacting inside each sector.
+\end{abstract}
+
+\tableofcontents
+
+\section{Why this rule, and a naming note}
+
+Throughout this series rules are named by Wolfram number with a \rt{W} prefix
+(\rt{W150}); the present report follows the user-facing shorthand \emph{C150} for
+the same object. The encoding is the standard one of Tier 1: the Wolfram number
+is read as a $4$-tuple of local symbols indexed by the control pattern
+$(x_{i-1},x_{i+1})$, with $\rt{I}$ the identity and $\rt{V}$ the Hadamard, so
+\begin{equation}
+  150 \;\longmapsto\; (\rt{I},\rt{V},\rt{V},\rt{I}),
+  \qquad\text{i.e.}\qquad
+  \text{Hadamard fires at site } i \iff x_{i-1}\oplus x_{i+1} = 1 .
+  \label{eq:rule}
+\end{equation}
+The firing condition is exactly the update of the \emph{classical} additive
+elementary rule $90$; C150 is the automaton that applies a Hadamard wherever ECA
+$90$ would write a one. One cycle is the brick-wall product of a layer on the
+even sites followed by a layer on the odd sites, controls always read from the
+current bitmask. Boundaries: \rt{obc0} fixes $x_{-1}=x_N=0$, which is the case
+treated here; the ring \rt{pbc} appears only for contrast in
+\S\ref{sec:closed}.
+
+C150 is singled out for three reasons. It is one of the two rules
+($150$ and $105$) whose sector sizes R2 identified as binomials, so a closed form
+was plausible; it is the rule whose \rt{obc0} sector sizes are used as a
+regression fixture against the external HSF oracle in R1; and its fitted growth
+exponent ($2.022$) sat awkwardly above the informational ceiling $2$, which
+suggested that the fit was seeing a prefactor rather than a base. All three are
+settled below.
+
+\section{Reduction: the sector partition of a unitary rule is a flip graph}
+\label{sec:flip}
+
+\begin{theorem}[flip reduction]\label{thm:flip}
+Let the rule be unitary (symbols in $\{\rt{I},\rt{V}\}$) and let
+$s_i(x) = t[2x_{i-1}+x_{i+1}]$ be the symbol fired at site $i$ when the controls
+read $x$. Then the sector partition --- the weakly connected components of the
+one-cycle transition graph, which for a unitary rule coincide with its strongly
+connected components --- equals the connected components of the undirected graph
+\begin{equation}
+  F:\quad x \;\sim\; x \oplus 2^i \qquad\text{for every } i
+  \text{ with } s_i(x) = \rt{V}.
+  \label{eq:flip}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+A cycle is two depth-$1$ half-layers. By the no-interference theorem of R1, each
+half-layer is --- conditioned on the frozen complementary sublattice --- a
+product of single-qubit gates acting on disjoint qubits, so the image of a basis
+state $x$ under one half-layer is exactly the \emph{subcube} spanned by the sites
+whose symbol is $\rt{V}$, with the complementary sublattice held fixed. Two
+consequences. First, $x$ lies in its own half-layer image, because
+$\bra{b}\rt{I}\ket{b}=1$ and $\bra{b}H\ket{b}=\pm1/\sqrt2$ are both nonzero;
+hence the composite image $\Phi(x)$ contains both half-layer images $A(x)$ and
+$B(x)$. Second, inside a half-layer image the frozen sublattice --- and therefore
+the $\rt{V}/\rt{I}$ pattern itself --- does not change, so the subcube is
+connected by single flips which are themselves edges of $F$. By the first point
+every $F$-edge is realised by a composite path; by the second, every composite
+edge $x\to z$ (with $z\in B(y)$, $y\in A(x)$) is realised by the $F$-path
+$x\sim y \sim z$. The two graphs have the same components.
+\end{proof}
+
+Two remarks. The reduction is \emph{layer-agnostic}: the brick-wall ordering
+disappears, because the controls of site $i$ are read off $x$ itself in the
+half-layer in which $i$ is frozen. The sector partition of a unitary QECA is
+therefore a property of the local symbol table alone --- not of the circuit
+schedule. And the cost collapses from $O(2^N|\mathrm{succ}|)$, with
+$|\mathrm{succ}|$ growing exponentially for the Hadamard-rich rules, to
+$O(N2^N)$ with a tiny constant; \S\ref{sec:frontier} uses this.
+
+\paragraph{Validation.} Theorem~\ref{thm:flip} is checked against the streamed
+engine (\fn{graph.scc.analyze}, which knows nothing about it) for all $16$
+unitary rules, both boundary conventions and $N=3\ldots12$: $320$ units, full
+size multisets compared, no mismatch, for both the pure-python union-find and the
+vectorised label-propagation implementation. See
+\fn{tests/test\_flip\_graph.py}.
+
+\section{Solution: walls, and the Ising charge}
+\label{sec:walls}
+
+Introduce the bond (domain-wall) variables. For \rt{obc0} there are $N+1$ bonds,
+\begin{equation}
+  b_j = x_j \oplus x_{j+1}, \quad j = 0,\dots,N,
+  \qquad x_{-1} = x_N = 0 ,
+\end{equation}
+with the index convention of the code ($b_0 = x_0$, $b_N = x_{N-1}$).
+
+\begin{proposition}[bond bijection]\label{prop:bij}
+$x \mapsto b$ is a bijection from $\{0,1\}^N$ onto the even-weight strings of
+length $N+1$; the inverse is the prefix XOR $x_j = \bigoplus_{k\le j} b_k$. On
+the ring the same map is exactly $2$-to-$1$ onto the even-weight strings of
+length $N$, the two preimages being $x$ and its global spin flip.
+\end{proposition}
+Both statements are verified exhaustively for $N = 2\ldots12$ (obc0) and
+$N=3\ldots12$ (pbc).
+
+Now translate the flip move \eqref{eq:flip}. Flipping $x_i$ toggles exactly the
+two bonds $b_i$ and $b_{i+1}$, and by \eqref{eq:rule} the flip is allowed iff
+$x_{i-1}\neq x_{i+1}$, i.e.\ iff $b_i \neq b_{i+1}$. So the elementary move is
+\begin{equation}
+  (b_i, b_{i+1}) = (1,0) \;\longleftrightarrow\; (0,1) :
+  \qquad\text{a \emph{hard-core hop} of one domain wall.}
+  \label{eq:hop}
+\end{equation}
+Creation and annihilation of walls is forbidden --- the configuration
+$b_i = b_{i+1}$ is precisely where the symbol is $\rt{I}$. Therefore:
+
+\begin{corollary}[conserved charge]\label{cor:charge}
+The wall number $w=\sum_j b_j$ is conserved exactly, i.e.\ $[U,Q]=0$ for the
+strictly $2$-local diagonal operator
+\begin{equation}
+  Q \;=\; \sum_{j=0}^{N} \frac{1 - Z_jZ_{j+1}}{2},
+  \qquad Z_{-1} = Z_{N} = +1 ,
+\end{equation}
+the open Ising domain-wall number with boundary fields. ($Q$ is diagonal, so
+conservation at the level of supports already gives the operator identity;
+support-level conservation is verified for every $x$, $N=3\ldots12$, both
+boundary conventions, with zero violations.)
+\end{corollary}
+
+\begin{corollary}[connectivity]\label{cor:conn}
+Each wall shell is one sector. Hard-core hopping on a segment of $N+1$ sites is
+connected on every fixed-occupancy shell (bubble the walls to the leftmost packed
+configuration), and \eqref{eq:hop} is exactly that dynamics.
+\end{corollary}
+
+\section{Closed form, and the growth law}
+\label{sec:closed}
+
+Combining Proposition~\ref{prop:bij} with Corollaries~\ref{cor:charge}
+and~\ref{cor:conn}:
+\begin{equation}
+  \boxed{\;
+  |S_w| = \binom{N+1}{w}\ \ (w \text{ even}), \qquad
+  \#\text{sectors} = \Big\lfloor \frac{N+1}{2}\Big\rfloor + 1, \qquad
+  D_{\max} = \max_{w\ \mathrm{even}} \binom{N+1}{w}. \;}
+  \label{eq:closed}
+\end{equation}
+The frozen sectors are the singletons $w=0$ (all-zero) and, when $N$ is odd,
+$w=N+1$ (the alternating configuration); for even $N$ there is only one. The
+parity bookkeeping in $D_{\max}$ is not cosmetic: for $N\equiv 1 \pmod 4$ the
+central binomial sits at odd $w$ and is \emph{not} a sector size, so
+$D_{\max}$ is the near-central one (e.g.\ $N=17$: $\binom{18}{8}=43758$, not
+$\binom{18}{9}$).
+
+\paragraph{Ring, for contrast.} On the ring the wall map is $2$-to-$1$, so a
+shell with $0<w<N$ lifts to one sector of size $2\binom{N}{w}$, while the frozen
+shells $w=0$ and (for even $N$) $w=N$ each split into \emph{two} singletons --- no
+hop is available, and the two spin preimages are disconnected. Hence
+$\#\text{sectors} = N/2+3$ for even $N$ and $(N+3)/2$ for odd $N$. Both closed
+forms reproduce the stored Tier-1a data at every $N=6\ldots20$, in both boundary
+conventions, size multiset for size multiset.
+
+\paragraph{C150 is not fragmented.} Equation~\eqref{eq:closed} has a sector count
+that is \emph{linear} in $N$ and sector sizes that are full eigenspaces of the
+single charge $Q$. There is no Krylov structure beyond the $U(1)$ symmetry: C150
+is \emph{symmetry-resolved}, not fragmented. This is worth stating plainly
+because C150 is the rule most often quoted from this family, and it is exactly
+the wrong example for fragmentation. The fragmented members of the family look
+nothing like it --- \rt{W204} has $2^N$ frozen singletons, and the wall families
+of \rt{W51}/\rt{W201} carry exponentially many sectors. C150 is the family's null
+model.
+
+\paragraph{The growth law: base exactly $2$, prefactor $N^{-1/2}$.}
+Since $\sum_{w\,\mathrm{even}}\binom{N+1}{w} = 2^N$ and the maximum is (near-)
+central,
+\begin{equation}
+  \frac{D_{\max}}{2^N} \;=\; 2\sqrt{\frac{2}{\pi (N+1)}}\,\bigl(1+O(N^{-1})\bigr)
+  \;\longrightarrow\; 0 ,
+  \label{eq:asym}
+\end{equation}
+so $D_{\max}$ grows as $2^N N^{-1/2}$: the exponential base is \emph{exactly} $2$
+and the sub-exponential correction is a square root. The approach is not smooth
+but a sawtooth (Figure~\ref{fig:frontier}, right), which is the parity
+bookkeeping above: for $N\equiv1 \pmod 4$ the true central binomial is at odd $w$
+and $D_{\max}$ has to settle for the neighbour, which costs a factor
+$1-O(N^{-1})$ and produces the dips at $N=5,9,13,\ldots$. A pure-exponential fit
+sees this sawtooth on top of the $N^{-1/2}$ decay, which is exactly the
+configuration that pushes an unconstrained base slightly above the true one. The
+value $2.022$ reported
+for C150/\rt{obc0} in R2's pure-exponential fit is the finite-size shadow of that
+prefactor, not a base above the informational ceiling; R2's companion observation
+that $150/105$ carry $\alpha=-\tfrac12$ is the same statement seen from the fit
+side, and \eqref{eq:asym} now supplies it exactly. Figure~\ref{fig:frontier}
+(right) overlays the exact ratio on \eqref{eq:asym}.
+
+\section{Numerical frontier}
+\label{sec:frontier}
+
+Two frontiers are reported, deliberately kept separate.
+
+\begin{itemize}
+\item The \textbf{assumption-free frontier}: the streamed engine
+  (\fn{graph.scc.sectors\_union\_find} over \fn{core.cycle.succ}), which
+  propagates exact $\mathbb{Z}[1/\sqrt2]$ amplitudes and uses no result of this
+  report. Its cost grows by a factor $\approx 3$ per site because the one-cycle
+  support itself grows exponentially, so it is the binding runtime constraint:
+  $N=20$ already takes $65$ minutes.
+\item The \textbf{reduction frontier}: Theorem~\ref{thm:flip} implemented as
+  vectorised label propagation on the flip graph, with the label array
+  ($\mathtt{uint32}$, $4$~bytes per basis state) the only object of size $2^N$ ---
+  pointer jumping is done in place and in chunks, and the size histogram is
+  harvested chunkwise, so nothing else of that size is ever allocated. This is
+  RAM-bound rather than time-bound, and it reaches $N=32$: $2^{32} =
+  4\,294\,967\,296$ basis states, $17$ sectors,
+  $D_{\max} = 1\,166\,803\,110$, in $815$~s at a peak of $21.0$~GB. That is the
+  ceiling twice over --- $N=32$ is the largest index a $\mathtt{uint32}$ label can
+  hold, and $N=33$ would need a $64$-bit label array of $68.7$~GB.
+\end{itemize}
+
+Both agree with each other and with \eqref{eq:closed} at every $N$ computed.
+Table~\ref{tab:frontier} lists the units; runtimes are wall-clock on the
+project machine ($20$ cores, $31$~GB, jobs \fn{nice}d and run concurrently).
+
+\begin{table}[htbp]
+\centering\footnotesize
+\input{tab_c150_frontier.tex}
+\caption{C150 \rt{obc0}: exact sector data and the two numerical frontiers.
+\cmark{} means the computed size multiset equals the closed form
+\eqref{eq:closed} entry for entry; the time is that unit's wall clock.
+The closed-form columns are exact for every $N$, computed or not.}
+\label{tab:frontier}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_c150_frontier.pdf}{\textwidth}
+\caption{Left: the exact sector structure \eqref{eq:closed} with the two
+computed frontiers marked. Right: $D_{\max}/2^N$ against the asymptotic
+$2\sqrt{2/\pi(N+1)}$ of \eqref{eq:asym} --- the base is $2$ and the decay is the
+$N^{-1/2}$ prefactor that a pure-exponential fit misreads as $2.022$.}
+\label{fig:frontier}
+\end{figure}
+
+\section{What the sector does \emph{not} determine}
+\label{sec:open}
+
+A sector is the minimal $U$-invariant subspace spanned by basis states: the
+\emph{maximal kinematically reachable} set from any of its members, and nothing
+more (R1, \S``What a sector is''). For C150 we can now quantify the gap exactly,
+because the shells are small enough to diagonalise. The dataset is every shell of
+every $N=4\ldots24$ with $|S_w|\le3000$: $70$ shells, the largest of dimension
+$2380$ ($N=16$, $w=4$). All numbers below come from $U_w$ built column by column
+from the engine's exact amplitudes and verified orthogonal to $10^{-9}$. The
+eigenvalue clustering tolerance is $10^{-9}$, and it has margin in both
+directions: across the whole dataset the degeneracies of $U_w$ are exact
+(largest gap treated as a degeneracy $8.8\times10^{-15}$, five orders below the
+tolerance) while the smallest gap treated as \emph{distinct} is
+$4.8\times10^{-6}$, more than three orders above it.
+
+\paragraph{An exponentially large stationary space.} $U$ does not merely fail to
+be ergodic inside a sector; it has a huge kernel of $U-\mathbb{1}$:
+\begin{equation}
+  \boxed{\;\dim\Fix(U_w) \;=\; \binom{\lceil N/2\rceil}{w/2},
+  \qquad
+  \dim\Fix(U) \;=\; 2^{\lceil N/2\rceil} \;=\; 2^{\#\{\text{even sites}\}} . \;}
+  \label{eq:fix}
+\end{equation}
+The shell law is verified over the whole dataset --- every shell of every
+$N=4\ldots24$ with $|S_w|\le3000$, $70$ shells, no mismatch; the total is
+verified for $N=3\ldots12$ by two
+independent routes, the multiplicity of the eigenvalue $+1$ and
+$\dim\ker(U-\mathbb{1})$ by rank. The mechanism is visible in the half-layer
+structure: writing $U = L_BL_A$ with $L_A,L_B$ the (Hermitian, involutive)
+half-layers, one finds \emph{numerically for $N=3\ldots11$} that
+\begin{equation}
+  \Fix(U) \;=\; \Fix(L_A)\cap\Fix(L_B),
+\end{equation}
+i.e.\ a state stationary under the cycle is already stationary under each
+half-layer separately, and each half-layer is a product of commuting single-qubit
+involutions ($H$ or $\mathbb{1}$ per site of its sublattice), each of which
+contributes a one-dimensional local $+1$ eigenspace. The counting exponent
+$\lceil N/2\rceil$ is the number of even sites, i.e.\ the width of the first
+half-layer. Only the $w=0$ (and, for odd $N$, $w=N+1$) members of $\Fix(U)$ are
+basis states; \emph{all the rest are dark superpositions}, invisible to any
+computational-basis graph.
+
+\paragraph{Consequence: an inner sector is never a Krylov space.} For a basis
+state $\ket{x}$, $\dim\mathcal{K}(x)$ equals the number of distinct eigenvalues of
+$U_w$ that $\ket{x}$ overlaps, so any degeneracy bounds it strictly below
+$|S_w|$. Over the whole dataset the dividing line is sharp and depends only on
+the sector dimension:
+\begin{equation}
+\begin{aligned}
+  \text{spectrum of } U_w \text{ nondegenerate}
+  \;&\iff\; |S_w| \le N+1 \\
+  \;&\iff\; w \in \{0,\,N+1\} \ \text{ or }\ (N \text{ even and } w = N),
+\end{aligned}
+\end{equation}
+i.e.\ exactly the extremal shells --- the two frozen singletons and, for even
+$N$, the top shell of dimension $N+1$, where \eqref{eq:fix} gives
+$\dim\Fix(U_w)=1$ and no further multiplicity appears. For every one of the $59$
+\emph{inner} shells ($|S_w|>N+1$) the spectrum is degenerate and
+\begin{equation}
+  \dim\mathcal{K}(x) \;<\; |S_w|,
+  \qquad \frac{\dim\mathcal{K}(x)}{|S_w|} \in [0.395,\,0.963],
+\end{equation}
+the fraction decreasing with sector size (Table~\ref{tab:spectral},
+Figure~\ref{fig:quantum}). This is the sharp form, for this rule, of the general
+caveat in R1: the graph gives $\dim\mathcal{K}(x)\le|S_w|$, and away from the
+extremal shells the inequality is always strict. For odd $N$ the reflection $P$
+commutes with $U$ exactly ($[P,U]=0$ to machine zero, $30$ of the $70$ shells)
+and reflection-symmetric seeds lose roughly half their Krylov space again
+($N=7$, $w=2$: $13$ instead of $25$) --- the symmetry-forced degeneracy
+anticipated in R1, here measured. For even $N$ the brick-wall order maps the
+sublattices into each other and reflection acts instead as a time reversal,
+$PUP = U^{-1}$ exactly (the other $40$ shells).
+
+\paragraph{Monitored versus unmonitored, made numerical.} Under monitoring the
+sector \emph{is} filled uniformly, provably: $M_w = |U_w|^2$ is doubly
+stochastic, irreducible on $S_w$ (Corollary~\ref{cor:conn}) and aperiodic
+(by the R1 no-interference theorem $\bra{x}U\ket{x}\neq0$ for every $x$, so every
+node carries a self-loop), hence $M_w^t \to$ uniform on $S_w$. Without
+monitoring the long-time state is the diagonal ensemble
+$\bar\rho = \sum_\lambda P_\lambda\ket{x}\bra{x}P_\lambda$, and it is far from
+uniform: over the $59$ inner shells its effective dimension
+$d_{\mathrm{eff}} = 1/\operatorname{tr}\bar\rho^2$ occupies between $6.6\%$ and
+$50\%$ of the sector --- never more than half --- and the most-occupied basis
+state carries $2.0$ to $12.5$ times the uniform weight
+(Table~\ref{tab:spectral}). So for C150 the two experiments genuinely disagree
+about the long-time state \emph{inside} a sector, even though they agree exactly
+about which sector that state lives in, and (by R1) about populations after a
+single cycle.
+
+\begin{table}[htbp]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\input{tab_c150_spectral.tex}
+\caption{Wall shells of C150 \rt{obc0}. $\#\mathrm{spec}$ is the number of
+distinct eigenvalues of $U_w$; $\dim\Fix$ its $+1$ multiplicity, beside the
+closed form \eqref{eq:fix}; $\dim\mathcal{K}/|S_w|$ the largest Krylov fraction
+over the sampled seeds; $d_{\mathrm{eff}}/|S_w|$ the smallest diagonal-ensemble
+fraction; $\max p\cdot|S_w|$ the peak long-time population in units of the
+uniform value ($1$ would be uniform, which is what monitoring gives exactly).}
+\label{tab:spectral}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_c150_quantum.pdf}{\textwidth}
+\caption{Left: the Krylov and diagonal-ensemble fractions of a sector against
+sector dimension; the dashed line is the monitored answer, which is exactly
+uniform. Filled markers are inner shells; open markers the extremal shells
+$|S_w|\le N+1$ --- the only ones
+with a nondegenerate spectrum, and hence the only ones a basis state's Krylov
+space fills. Right: the stationary space
+$\dim\Fix(U) = 2^{\lceil N/2\rceil}$, whose members other than the frozen basis
+states are dark superpositions.}
+\label{fig:quantum}
+\end{figure}
+
+\section{C150 is charge-resolved but interacting}
+\label{sec:free}
+
+The wall picture invites the guess that C150 is a free-fermion circuit. It is
+not, and the obstruction is exactly two signs.
+
+Write the cycle on the $N+1$ bond modes. The gate at site $i$ touches bonds $i$
+and $i+1$ only; it is the identity when both carry the same occupation, and on
+the one-wall subspace --- basis ordered (wall at bond $i$, wall at bond $i+1$) ---
+it is
+\begin{equation}
+  M(c) \;=\; \frac{1}{\sqrt2}
+  \begin{pmatrix} -(-1)^c & 1 \\ 1 & (-1)^c \end{pmatrix},
+  \qquad \det M(c) = -1 ,
+  \label{eq:coin}
+\end{equation}
+where $c = x_{i-1} = \bigoplus_{k<i} b_k$ is the parity of the walls strictly to
+the left of bond $i$ --- a Jordan--Wigner string. This bond-space circuit
+reproduces the engine's $U$ under the bijection of Proposition~\ref{prop:bij} to
+$1.1\times10^{-16}$ (Table~\ref{tab:freeness}, second column), so
+\eqref{eq:coin} \emph{is} C150: a hard-core quantum walk of domain walls with a
+Hadamard coin.
+
+Two features of \eqref{eq:coin} spoil gaussianity. A number-conserving Gaussian
+two-mode gate with single-particle block $u$ must act on the doubly occupied
+state by $\det u$; here $\det M = -1$ while the gate acts by $+1$, which is a
+maximal nearest-neighbour interaction $\exp(i\pi n_i n_{i+1})$ between walls. And
+the $(-1)^c$ string multiplies the \emph{density-difference} part of the coin,
+not the hop, so it is not absorbed by the Jordan--Wigner transform. The test is
+sharp: a number-conserving Gaussian circuit acts on the $w$-particle sector as
+the $w$-th antisymmetric power of its single-particle block, so its eigenphases
+are subset sums of the one-particle phases. Table~\ref{tab:freeness} reports the
+largest failure of that additivity over $w=2\ldots5$ for the four sign variants.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\input{tab_c150_freeness.tex}
+\caption{Additivity defect: the largest $|\arg(\lambda/\lambda')|$ in radians
+between the $w$-wall spectrum and the $w$-fold products of the one-wall
+eigenvalues, maximised over $w=2\ldots5$ (compared as points on the unit circle,
+so the branch cut cannot masquerade as a defect). Column 2 is the bond
+representation checked against the engine. C150 (column 3) and each of the two
+single-defect models (columns 4, 5) are non-additive at $0.43$--$1.87$~rad;
+removing \emph{both} defects gives the Gaussian reference (column 6), additive to
+$4\times10^{-15}$.}
+\label{tab:freeness}
+\end{table}
+
+The conclusion is a clean separation of the two questions. The
+\emph{fragmentation} of C150 is entirely a $U(1)$ symmetry and is solved in
+closed form; the \emph{dynamics within a sector} is that of interacting hard-core
+walls, and the interaction is not a perturbation --- it is maximal. That is the
+honest reason a sector's spectral properties do not follow from
+\eqref{eq:closed}, and why \eqref{eq:fix} had to be measured rather than read off
+the graph.
+
+\section{Open items}
+
+\begin{enumerate}
+\item \textbf{Level statistics.} Deliberately not computed here. The spectra of
+  every shell in Table~\ref{tab:spectral} are reproducible in seconds from
+  \fn{quantum.rule150\_spectra}, so a level-spacing analysis --- sector by
+  sector, and separated by reflection parity for odd $N$ --- is immediately
+  available; \S\ref{sec:free} predicts it will \emph{not} look free, and
+  \eqref{eq:fix} says the $+1$ eigenvalue must be excised first.
+\item \textbf{A derivation of \eqref{eq:fix}.} The law
+  $\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ and the identity
+  $\Fix(U)=\Fix(L_A)\cap\Fix(L_B)$ are exact numerical facts here, with the
+  half-layer mechanism identified but not turned into a proof. The natural route
+  is the local $+1$ eigenvector of each single-gate involution, together with the
+  count of even sites; the $w$-resolved binomial suggests the dark states are
+  labelled by choosing $w/2$ of the $\lceil N/2\rceil$ even sites.
+\item \textbf{The further exact multiplicities.} Beyond the $+1$ eigenvalue the
+  spectrum carries exact multiplicities $2,3,4,6,10,15$ (e.g.\ $N=8$, $w=4$:
+  $\{1{:}48,\,2{:}24,\,3{:}8,\,6{:}1\}$). These are not explained by reflection,
+  which is abelian; some further commutant is present.
+\item \textbf{The ring.} \S\ref{sec:closed} solves \rt{pbc} kinematically, but
+  the quantum layer of \S\ref{sec:open}--\S\ref{sec:free} is done for \rt{obc0}
+  only. On the ring the wall map is $2$-to-$1$, so the bond representation
+  acquires a $\mathbb{Z}_2$ gauge redundancy and \eqref{eq:coin} needs a flux
+  sector; that is the next natural step.
+\item \textbf{Higher $N$ at the assumption-free frontier.} The streamed engine
+  costs a factor $\approx3$ per site, so $N=23$ is a $\approx30$-hour unit and
+  sits outside the one-day budget used here. The reduction frontier is instead
+  bounded by the label array: $N=33$ needs $\mathtt{uint64}$ and $68.7$~GB, so
+  the next step there is a machine with more memory, or a compact relabelling
+  (the components are few, so a two-pass scheme with a byte-wide label after the
+  first sweep would halve the requirement).
+\end{enumerate}
+
+\section{Reproduce}
+
+\begin{verbatim}
+# closed forms, wall bijection, charge conservation, engine cross-check
+python -m qca_fragmentation.c150 --verify
+
+# assumption-free frontier (one unit; N=22 takes ~10 h)
+python -m qca_fragmentation.run_rule --rule 150 --N 21-22 --bc obc0
+
+# reduction frontier (checkpointed to analytics/c150_frontier.jsonl)
+python -m qca_fragmentation.c150 --frontier 21-31 --bc obc0
+
+# sector spectra, Krylov dimensions, Fix(U), freeness test
+python -m qca_fragmentation.scaling.c150_report --quantum
+python -m qca_fragmentation.scaling.c150_report --tables --figures
+
+# tests (126 of them)
+cd code/qca_fragmentation/tests
+python -m pytest test_flip_graph.py test_c150.py -q
+\end{verbatim}
+
+\begin{sloppypar}
+Data: \fn{results/150\_obc0.jsonl} and \fn{results/150\_pbc.jsonl} (Tier 1a),
+\fn{analytics/c150\_frontier.jsonl} (reduction frontier, one JSON line per
+$(N,\rt{bc})$ with the full size multiset and the closed-form check),
+\fn{analytics/c150\_quantum.json} (spectral portraits, $\Fix(U)$, freeness).
+\end{sloppypar}
+
+\end{document}

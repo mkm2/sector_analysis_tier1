@@ -1,0 +1,3720 @@
+{
+ "sectors": [
+  {
+   "N": 4,
+   "w": 2,
+   "dim": 10,
+   "n_distinct": 9,
+   "mult_hist": {
+    "1": 8,
+    "2": 1
+   },
+   "largest_multiplicity": 2,
+   "mult_plus_one": 2,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    5,
+    9
+   ],
+   "dim_krylov": [
+    9,
+    9,
+    9
+   ],
+   "dim_krylov_over_dim": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "krylov_deficit": 1,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    5.649205802796704,
+    6.413963803800606,
+    4.996652391782176
+   ],
+   "d_eff_over_dim": [
+    0.5649205802796704,
+    0.6413963803800606,
+    0.4996652391782176
+   ],
+   "max_pop_over_uniform": [
+    1.7522540465730672,
+    1.5459666936493415,
+    1.9980423006956438
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.16534640721556682,
+   "runtime": 0.0009365081787109375,
+   "fix_closed_form": 2,
+   "fix_matches": true
+  },
+  {
+   "N": 4,
+   "w": 4,
+   "dim": 5,
+   "n_distinct": 5,
+   "mult_hist": {
+    "1": 5
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    2,
+    4
+   ],
+   "dim_krylov": [
+    5,
+    5,
+    5
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    4.288210783073855,
+    4.288210783073853,
+    4.390894407173281
+   ],
+   "d_eff_over_dim": [
+    0.857642156614771,
+    0.8576421566147706,
+    0.8781788814346563
+   ],
+   "max_pop_over_uniform": [
+    1.1659874602563094,
+    1.1659874602563094,
+    1.138720164126846
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.5879007626540204,
+   "runtime": 0.00039649009704589844,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 5,
+   "w": 2,
+   "dim": 15,
+   "n_distinct": 13,
+   "mult_hist": {
+    "1": 12,
+    "3": 1
+   },
+   "largest_multiplicity": 3,
+   "mult_plus_one": 3,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    7,
+    14
+   ],
+   "dim_krylov": [
+    13,
+    13,
+    7
+   ],
+   "dim_krylov_over_dim": [
+    0.8666666666666667,
+    0.8666666666666667,
+    0.4666666666666667
+   ],
+   "krylov_deficit": 2,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    5.994691253804636,
+    10.569697407781005,
+    5.29462687347428
+   ],
+   "d_eff_over_dim": [
+    0.3996460835869758,
+    0.704646493852067,
+    0.3529751248982853
+   ],
+   "max_pop_over_uniform": [
+    2.2223175189343722,
+    1.3814308582553305,
+    2.3877844245906528
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.15616510535261885,
+   "runtime": 0.0007867813110351562,
+   "fix_closed_form": 3,
+   "fix_matches": true
+  },
+  {
+   "N": 5,
+   "w": 4,
+   "dim": 15,
+   "n_distinct": 13,
+   "mult_hist": {
+    "1": 12,
+    "3": 1
+   },
+   "largest_multiplicity": 3,
+   "mult_plus_one": 3,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    7,
+    14
+   ],
+   "dim_krylov": [
+    13,
+    13,
+    13
+   ],
+   "dim_krylov_over_dim": [
+    0.8666666666666667,
+    0.8666666666666667,
+    0.8666666666666667
+   ],
+   "krylov_deficit": 2,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    7.039922176485662,
+    10.447418118663826,
+    6.972372659738068
+   ],
+   "d_eff_over_dim": [
+    0.46932814509904414,
+    0.696494541244255,
+    0.46482484398253787
+   ],
+   "max_pop_over_uniform": [
+    2.1038030460309045,
+    1.4323504591091771,
+    2.06766215740589
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.15616510535261874,
+   "runtime": 0.0007441043853759766,
+   "fix_closed_form": 3,
+   "fix_matches": true
+  },
+  {
+   "N": 6,
+   "w": 2,
+   "dim": 21,
+   "n_distinct": 19,
+   "mult_hist": {
+    "1": 18,
+    "3": 1
+   },
+   "largest_multiplicity": 3,
+   "mult_plus_one": 3,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    10,
+    20
+   ],
+   "dim_krylov": [
+    19,
+    19,
+    19
+   ],
+   "dim_krylov_over_dim": [
+    0.9047619047619048,
+    0.9047619047619048,
+    0.9047619047619048
+   ],
+   "krylov_deficit": 2,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    9.377962795556108,
+    9.62553320672548,
+    9.122375021119455
+   ],
+   "d_eff_over_dim": [
+    0.44656965693124323,
+    0.4583587241297848,
+    0.43439881052949786
+   ],
+   "max_pop_over_uniform": [
+    2.238901943858723,
+    2.1813784021399187,
+    2.302016578799647
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.06197180876877817,
+   "runtime": 0.0011582374572753906,
+   "fix_closed_form": 3,
+   "fix_matches": true
+  },
+  {
+   "N": 6,
+   "w": 4,
+   "dim": 35,
+   "n_distinct": 27,
+   "mult_hist": {
+    "1": 20,
+    "2": 6,
+    "3": 1
+   },
+   "largest_multiplicity": 3,
+   "mult_plus_one": 3,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    17,
+    34
+   ],
+   "dim_krylov": [
+    27,
+    27,
+    27
+   ],
+   "dim_krylov_over_dim": [
+    0.7714285714285715,
+    0.7714285714285715,
+    0.7714285714285715
+   ],
+   "krylov_deficit": 8,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    13.214189480480831,
+    15.26125238795878,
+    15.519765750917305
+   ],
+   "d_eff_over_dim": [
+    0.3775482708708809,
+    0.43603578251310804,
+    0.44342187859763726
+   ],
+   "max_pop_over_uniform": [
+    2.631570566707155,
+    2.2571020330625977,
+    2.2281823841771855
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 2.220446049250313e-16,
+   "distinct_gap_min": 0.0619718087687775,
+   "runtime": 0.0021228790283203125,
+   "fix_closed_form": 3,
+   "fix_matches": true
+  },
+  {
+   "N": 6,
+   "w": 6,
+   "dim": 7,
+   "n_distinct": 7,
+   "mult_hist": {
+    "1": 7
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    3,
+    6
+   ],
+   "dim_krylov": [
+    7,
+    7,
+    7
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    5.766732255263448,
+    5.766732255263445,
+    5.892016443446789
+   ],
+   "d_eff_over_dim": [
+    0.823818893609064,
+    0.8238188936090636,
+    0.8417166347781128
+   ],
+   "max_pop_over_uniform": [
+    1.2138590262467839,
+    1.2138590262467837,
+    1.1880482797677074
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.3638130961442301,
+   "runtime": 0.0004322528839111328,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 7,
+   "w": 2,
+   "dim": 28,
+   "n_distinct": 25,
+   "mult_hist": {
+    "1": 24,
+    "4": 1
+   },
+   "largest_multiplicity": 4,
+   "mult_plus_one": 4,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    14,
+    27
+   ],
+   "dim_krylov": [
+    25,
+    25,
+    13
+   ],
+   "dim_krylov_over_dim": [
+    0.8928571428571429,
+    0.8928571428571429,
+    0.4642857142857143
+   ],
+   "krylov_deficit": 3,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    11.456667507348582,
+    14.796876827534014,
+    7.607387902558118
+   ],
+   "d_eff_over_dim": [
+    0.4091666966910208,
+    0.5284598866976433,
+    0.2716924250913614
+   ],
+   "max_pop_over_uniform": [
+    2.425165623154742,
+    1.8230871785458878,
+    3.3175259133489092
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.06607087821986929,
+   "runtime": 0.0015501976013183594,
+   "fix_closed_form": 4,
+   "fix_matches": true
+  },
+  {
+   "N": 7,
+   "w": 4,
+   "dim": 70,
+   "n_distinct": 41,
+   "mult_hist": {
+    "1": 16,
+    "2": 24,
+    "6": 1
+   },
+   "largest_multiplicity": 6,
+   "mult_plus_one": 6,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    35,
+    69
+   ],
+   "dim_krylov": [
+    41,
+    19,
+    39
+   ],
+   "dim_krylov_over_dim": [
+    0.5857142857142857,
+    0.2714285714285714,
+    0.5571428571428572
+   ],
+   "krylov_deficit": 29,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    16.413374738865407,
+    12.167417612357577,
+    25.1414556570226
+   ],
+   "d_eff_over_dim": [
+    0.23447678198379154,
+    0.17382025160510825,
+    0.35916365224318003
+   ],
+   "max_pop_over_uniform": [
+    4.244788686055775,
+    4.956023754236076,
+    2.6933448352343317
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 1.1102230246251565e-15,
+   "distinct_gap_min": 0.018942696183809504,
+   "runtime": 0.007246732711791992,
+   "fix_closed_form": 6,
+   "fix_matches": true
+  },
+  {
+   "N": 7,
+   "w": 6,
+   "dim": 28,
+   "n_distinct": 25,
+   "mult_hist": {
+    "1": 24,
+    "4": 1
+   },
+   "largest_multiplicity": 4,
+   "mult_plus_one": 4,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    14,
+    27
+   ],
+   "dim_krylov": [
+    25,
+    25,
+    25
+   ],
+   "dim_krylov_over_dim": [
+    0.8928571428571429,
+    0.8928571428571429,
+    0.8928571428571429
+   ],
+   "krylov_deficit": 3,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    10.304057070868778,
+    18.090449260952163,
+    14.989815726494486
+   ],
+   "d_eff_over_dim": [
+    0.36800203824531347,
+    0.6460874736054344,
+    0.5353505616605173
+   ],
+   "max_pop_over_uniform": [
+    2.581197112950032,
+    1.5325077684387733,
+    1.795662607046924
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.06607087821986901,
+   "runtime": 0.0027823448181152344,
+   "fix_closed_form": 4,
+   "fix_matches": true
+  },
+  {
+   "N": 8,
+   "w": 2,
+   "dim": 36,
+   "n_distinct": 33,
+   "mult_hist": {
+    "1": 32,
+    "4": 1
+   },
+   "largest_multiplicity": 4,
+   "mult_plus_one": 4,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    18,
+    35
+   ],
+   "dim_krylov": [
+    33,
+    33,
+    33
+   ],
+   "dim_krylov_over_dim": [
+    0.9166666666666666,
+    0.9166666666666666,
+    0.9166666666666666
+   ],
+   "krylov_deficit": 3,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    13.961877489437,
+    15.232567386472152,
+    14.09137557363093
+   ],
+   "d_eff_over_dim": [
+    0.3878299302621389,
+    0.42312687184644865,
+    0.39142709926752584
+   ],
+   "max_pop_over_uniform": [
+    2.571306212202093,
+    2.3311506012991026,
+    2.528895998726028
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.029297906512563476,
+   "runtime": 0.0032346248626708984,
+   "fix_closed_form": 4,
+   "fix_matches": true
+  },
+  {
+   "N": 8,
+   "w": 4,
+   "dim": 126,
+   "n_distinct": 81,
+   "mult_hist": {
+    "1": 48,
+    "2": 24,
+    "3": 8,
+    "6": 1
+   },
+   "largest_multiplicity": 6,
+   "mult_plus_one": 6,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    63,
+    125
+   ],
+   "dim_krylov": [
+    81,
+    81,
+    81
+   ],
+   "dim_krylov_over_dim": [
+    0.6428571428571429,
+    0.6428571428571429,
+    0.6428571428571429
+   ],
+   "krylov_deficit": 45,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    27.915797144556922,
+    36.53760058311126,
+    40.13798404450772
+   ],
+   "d_eff_over_dim": [
+    0.22155394559172162,
+    0.2899809570088195,
+    0.31855542892466443
+   ],
+   "max_pop_over_uniform": [
+    4.464135153522068,
+    3.2177386228660296,
+    3.0339027728801025
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 1.5543122344752192e-15,
+   "distinct_gap_min": 0.025225113211438166,
+   "runtime": 0.02817249298095703,
+   "fix_closed_form": 6,
+   "fix_matches": true
+  },
+  {
+   "N": 8,
+   "w": 6,
+   "dim": 84,
+   "n_distinct": 65,
+   "mult_hist": {
+    "1": 56,
+    "3": 8,
+    "4": 1
+   },
+   "largest_multiplicity": 4,
+   "mult_plus_one": 4,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    42,
+    83
+   ],
+   "dim_krylov": [
+    65,
+    65,
+    65
+   ],
+   "dim_krylov_over_dim": [
+    0.7738095238095238,
+    0.7738095238095238,
+    0.7738095238095238
+   ],
+   "krylov_deficit": 19,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    24.49133234473013,
+    27.305548325536385,
+    29.907793191497905
+   ],
+   "d_eff_over_dim": [
+    0.2915634802944063,
+    0.32506605149448076,
+    0.35604515704164175
+   ],
+   "max_pop_over_uniform": [
+    3.4245772801362158,
+    3.0109312724568134,
+    2.786847836454916
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 7.771561172376096e-16,
+   "distinct_gap_min": 0.025225113211438055,
+   "runtime": 0.016011714935302734,
+   "fix_closed_form": 4,
+   "fix_matches": true
+  },
+  {
+   "N": 8,
+   "w": 8,
+   "dim": 9,
+   "n_distinct": 9,
+   "mult_hist": {
+    "1": 9
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    4,
+    8
+   ],
+   "dim_krylov": [
+    9,
+    9,
+    9
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    7.244604376714345,
+    7.244604376714331,
+    7.370772072785104
+   ],
+   "d_eff_over_dim": [
+    0.8049560418571494,
+    0.8049560418571479,
+    0.8189746747539004
+   ],
+   "max_pop_over_uniform": [
+    1.242303862572243,
+    1.2423038625722445,
+    1.2210389781594881
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.24666081400569184,
+   "runtime": 0.0009832382202148438,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 9,
+   "w": 2,
+   "dim": 45,
+   "n_distinct": 41,
+   "mult_hist": {
+    "1": 40,
+    "5": 1
+   },
+   "largest_multiplicity": 5,
+   "mult_plus_one": 5,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    22,
+    44
+   ],
+   "dim_krylov": [
+    41,
+    41,
+    21
+   ],
+   "dim_krylov_over_dim": [
+    0.9111111111111111,
+    0.9111111111111111,
+    0.4666666666666667
+   ],
+   "krylov_deficit": 4,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    16.799020060023256,
+    26.950858715200994,
+    10.47897174200216
+   ],
+   "d_eff_over_dim": [
+    0.3733115568894057,
+    0.598907971448911,
+    0.23286603871115913
+   ],
+   "max_pop_over_uniform": [
+    2.67666383315142,
+    1.6694843021269339,
+    4.2208848301955255
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.033483417326691245,
+   "runtime": 0.00549769401550293,
+   "fix_closed_form": 5,
+   "fix_matches": true
+  },
+  {
+   "N": 9,
+   "w": 4,
+   "dim": 210,
+   "n_distinct": 121,
+   "mult_hist": {
+    "1": 80,
+    "3": 40,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    105,
+    209
+   ],
+   "dim_krylov": [
+    121,
+    121,
+    111
+   ],
+   "dim_krylov_over_dim": [
+    0.5761904761904761,
+    0.5761904761904761,
+    0.5285714285714286
+   ],
+   "krylov_deficit": 89,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    36.85893196154619,
+    65.44897457862007,
+    46.62958731164157
+   ],
+   "d_eff_over_dim": [
+    0.17551872362641044,
+    0.3116617837077146,
+    0.22204565386495986
+   ],
+   "max_pop_over_uniform": [
+    5.615894887532333,
+    2.9827244472911447,
+    4.154429368083846
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 2.6645352591003757e-15,
+   "distinct_gap_min": 0.0021542792926450005,
+   "runtime": 0.09793829917907715,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 9,
+   "w": 6,
+   "dim": 210,
+   "n_distinct": 121,
+   "mult_hist": {
+    "1": 80,
+    "3": 40,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    105,
+    209
+   ],
+   "dim_krylov": [
+    121,
+    111,
+    121
+   ],
+   "dim_krylov_over_dim": [
+    0.5761904761904761,
+    0.5285714285714286,
+    0.5761904761904761
+   ],
+   "krylov_deficit": 89,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    37.382527829358814,
+    50.074024550246435,
+    48.83534600375281
+   ],
+   "d_eff_over_dim": [
+    0.17801203728266102,
+    0.23844773595355445,
+    0.23254926668453718
+   ],
+   "max_pop_over_uniform": [
+    5.594012839868285,
+    4.111215839269367,
+    4.124278631827935
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 3.552713678800501e-15,
+   "distinct_gap_min": 0.0021542792926451115,
+   "runtime": 0.11143255233764648,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 9,
+   "w": 8,
+   "dim": 45,
+   "n_distinct": 41,
+   "mult_hist": {
+    "1": 40,
+    "5": 1
+   },
+   "largest_multiplicity": 5,
+   "mult_plus_one": 5,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    22,
+    44
+   ],
+   "dim_krylov": [
+    41,
+    41,
+    41
+   ],
+   "dim_krylov_over_dim": [
+    0.9111111111111111,
+    0.9111111111111111,
+    0.9111111111111111
+   ],
+   "krylov_deficit": 4,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    16.777318660518237,
+    15.38809401769173,
+    14.823575331768838
+   ],
+   "d_eff_over_dim": [
+    0.37282930356707195,
+    0.341957644837594,
+    0.3294127851504186
+   ],
+   "max_pop_over_uniform": [
+    2.679299399553264,
+    2.830428277427615,
+    2.9253087808445986
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.03348341732669141,
+   "runtime": 0.005941629409790039,
+   "fix_closed_form": 5,
+   "fix_matches": true
+  },
+  {
+   "N": 10,
+   "w": 2,
+   "dim": 55,
+   "n_distinct": 51,
+   "mult_hist": {
+    "1": 50,
+    "5": 1
+   },
+   "largest_multiplicity": 5,
+   "mult_plus_one": 5,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    27,
+    54
+   ],
+   "dim_krylov": [
+    51,
+    51,
+    51
+   ],
+   "dim_krylov_over_dim": [
+    0.9272727272727272,
+    0.9272727272727272,
+    0.9272727272727272
+   ],
+   "krylov_deficit": 4,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    19.73201070002373,
+    22.451709219424863,
+    20.795632637611934
+   ],
+   "d_eff_over_dim": [
+    0.35876383090952235,
+    0.4082128948986339,
+    0.3781024115929443
+   ],
+   "max_pop_over_uniform": [
+    2.782315580306428,
+    2.424454294901422,
+    2.6395448416093865
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.016068350501980577,
+   "runtime": 0.008484125137329102,
+   "fix_closed_form": 5,
+   "fix_matches": true
+  },
+  {
+   "N": 10,
+   "w": 4,
+   "dim": 330,
+   "n_distinct": 211,
+   "mult_hist": {
+    "1": 160,
+    "3": 40,
+    "4": 10,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    165,
+    329
+   ],
+   "dim_krylov": [
+    211,
+    211,
+    211
+   ],
+   "dim_krylov_over_dim": [
+    0.6393939393939394,
+    0.6393939393939394,
+    0.6393939393939394
+   ],
+   "krylov_deficit": 119,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    51.536568595987326,
+    94.20757445299574,
+    78.62087467737929
+   ],
+   "d_eff_over_dim": [
+    0.15617141998784037,
+    0.2854774983424113,
+    0.23824507477993725
+   ],
+   "max_pop_over_uniform": [
+    6.329221519706205,
+    3.4930505067199085,
+    4.0728016023149465
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 4.3298697960381105e-15,
+   "distinct_gap_min": 0.004627918644170226,
+   "runtime": 0.2780914306640625,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 10,
+   "w": 6,
+   "dim": 462,
+   "n_distinct": 243,
+   "mult_hist": {
+    "1": 112,
+    "2": 80,
+    "3": 40,
+    "6": 10,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    231,
+    461
+   ],
+   "dim_krylov": [
+    243,
+    243,
+    243
+   ],
+   "dim_krylov_over_dim": [
+    0.525974025974026,
+    0.525974025974026,
+    0.525974025974026
+   ],
+   "krylov_deficit": 219,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    63.30027936804709,
+    110.54451724888062,
+    93.50322526797576
+   ],
+   "d_eff_over_dim": [
+    0.13701359170572963,
+    0.23927384685904896,
+    0.20238793348046702
+   ],
+   "max_pop_over_uniform": [
+    7.174965352108694,
+    4.058712716842505,
+    4.730829782119166
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 4.884981308350689e-15,
+   "distinct_gap_min": 0.004627918644166673,
+   "runtime": 0.518312931060791,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 10,
+   "w": 8,
+   "dim": 165,
+   "n_distinct": 131,
+   "mult_hist": {
+    "1": 120,
+    "4": 10,
+    "5": 1
+   },
+   "largest_multiplicity": 5,
+   "mult_plus_one": 5,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    82,
+    164
+   ],
+   "dim_krylov": [
+    131,
+    131,
+    131
+   ],
+   "dim_krylov_over_dim": [
+    0.793939393939394,
+    0.793939393939394,
+    0.793939393939394
+   ],
+   "krylov_deficit": 34,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    39.693623409535924,
+    80.01295894891129,
+    51.90331020240026
+   ],
+   "d_eff_over_dim": [
+    0.24056741460324801,
+    0.4849270239327957,
+    0.3145655163781834
+   ],
+   "max_pop_over_uniform": [
+    4.121316841719247,
+    2.044068579307553,
+    3.1260623324396333
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 8.326672684688674e-16,
+   "distinct_gap_min": 0.005052361021377849,
+   "runtime": 0.06021475791931152,
+   "fix_closed_form": 5,
+   "fix_matches": true
+  },
+  {
+   "N": 10,
+   "w": 10,
+   "dim": 11,
+   "n_distinct": 11,
+   "mult_hist": {
+    "1": 11
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    5,
+    10
+   ],
+   "dim_krylov": [
+    11,
+    11,
+    11
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    8.722371960707617,
+    8.722371960707616,
+    8.848657909919874
+   ],
+   "d_eff_over_dim": [
+    0.7929429055188743,
+    0.7929429055188741,
+    0.8044234463563522
+   ],
+   "max_pop_over_uniform": [
+    1.2611248464927436,
+    1.2611248464927436,
+    1.2431263714770064
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.17790236796245207,
+   "runtime": 0.0014030933380126953,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 11,
+   "w": 2,
+   "dim": 66,
+   "n_distinct": 61,
+   "mult_hist": {
+    "1": 60,
+    "6": 1
+   },
+   "largest_multiplicity": 6,
+   "mult_plus_one": 6,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    33,
+    65
+   ],
+   "dim_krylov": [
+    61,
+    61,
+    31
+   ],
+   "dim_krylov_over_dim": [
+    0.9242424242424242,
+    0.9242424242424242,
+    0.4696969696969697
+   ],
+   "krylov_deficit": 5,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    22.880166646189572,
+    35.370062534946626,
+    13.467210422860965
+   ],
+   "d_eff_over_dim": [
+    0.3466691916089329,
+    0.5359100384082822,
+    0.20404864277062068
+   ],
+   "max_pop_over_uniform": [
+    2.8753451301820663,
+    1.7978522117062696,
+    4.694381928777752
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.008252236148671543,
+   "runtime": 0.011123180389404297,
+   "fix_closed_form": 6,
+   "fix_matches": true
+  },
+  {
+   "N": 11,
+   "w": 4,
+   "dim": 495,
+   "n_distinct": 301,
+   "mult_hist": {
+    "1": 240,
+    "4": 60,
+    "15": 1
+   },
+   "largest_multiplicity": 15,
+   "mult_plus_one": 15,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    247,
+    494
+   ],
+   "dim_krylov": [
+    301,
+    271,
+    271
+   ],
+   "dim_krylov_over_dim": [
+    0.6080808080808081,
+    0.5474747474747474,
+    0.5474747474747474
+   ],
+   "krylov_deficit": 194,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    67.6450350530979,
+    127.68586280021378,
+    69.82524955748661
+   ],
+   "d_eff_over_dim": [
+    0.13665663647090484,
+    0.25795123798022984,
+    0.14106111021714468
+   ],
+   "max_pop_over_uniform": [
+    7.153907658618046,
+    3.5772700658351644,
+    6.311653927980029
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 4.884981308350689e-15,
+   "distinct_gap_min": 0.0006771590993157606,
+   "runtime": 0.5397684574127197,
+   "fix_closed_form": 15,
+   "fix_matches": true
+  },
+  {
+   "N": 11,
+   "w": 6,
+   "dim": 924,
+   "n_distinct": 365,
+   "mult_hist": {
+    "1": 64,
+    "2": 240,
+    "6": 60,
+    "20": 1
+   },
+   "largest_multiplicity": 20,
+   "mult_plus_one": 20,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    462,
+    923
+   ],
+   "dim_krylov": [
+    365,
+    321,
+    363
+   ],
+   "dim_krylov_over_dim": [
+    0.395021645021645,
+    0.3474025974025974,
+    0.39285714285714285
+   ],
+   "krylov_deficit": 559,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    76.51424925797612,
+    60.644055420871155,
+    131.0146378073538
+   ],
+   "d_eff_over_dim": [
+    0.08280762906707372,
+    0.06563209461133242,
+    0.14179073355774222
+   ],
+   "max_pop_over_uniform": [
+    11.814454135868884,
+    11.717968116176678,
+    6.401037579560336
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 8.770761894538737e-15,
+   "distinct_gap_min": 0.00023356725484013907,
+   "runtime": 2.571622133255005,
+   "fix_closed_form": 20,
+   "fix_matches": true
+  },
+  {
+   "N": 11,
+   "w": 8,
+   "dim": 495,
+   "n_distinct": 301,
+   "mult_hist": {
+    "1": 240,
+    "4": 60,
+    "15": 1
+   },
+   "largest_multiplicity": 15,
+   "mult_plus_one": 15,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    247,
+    494
+   ],
+   "dim_krylov": [
+    301,
+    301,
+    301
+   ],
+   "dim_krylov_over_dim": [
+    0.6080808080808081,
+    0.6080808080808081,
+    0.6080808080808081
+   ],
+   "krylov_deficit": 194,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    68.33240965884065,
+    127.5279767625586,
+    91.05617027932053
+   ],
+   "d_eff_over_dim": [
+    0.1380452720380619,
+    0.2576322762879972,
+    0.18395185915014248
+   ],
+   "max_pop_over_uniform": [
+    7.102291706218663,
+    3.714249695940884,
+    5.133362207873607
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 3.552713678800501e-15,
+   "distinct_gap_min": 0.000677159099317648,
+   "runtime": 0.6756625175476074,
+   "fix_closed_form": 15,
+   "fix_matches": true
+  },
+  {
+   "N": 11,
+   "w": 10,
+   "dim": 66,
+   "n_distinct": 61,
+   "mult_hist": {
+    "1": 60,
+    "6": 1
+   },
+   "largest_multiplicity": 6,
+   "mult_plus_one": 6,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    33,
+    65
+   ],
+   "dim_krylov": [
+    61,
+    61,
+    61
+   ],
+   "dim_krylov_over_dim": [
+    0.9242424242424242,
+    0.9242424242424242,
+    0.9242424242424242
+   ],
+   "krylov_deficit": 5,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    25.16214566660751,
+    26.35502220937761,
+    24.702469738127586
+   ],
+   "d_eff_over_dim": [
+    0.381244631312235,
+    0.39931851832390314,
+    0.3742798445170846
+   ],
+   "max_pop_over_uniform": [
+    2.6161419660642857,
+    2.4884554448634413,
+    2.6535522936697533
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.008252236148671321,
+   "runtime": 0.024129867553710938,
+   "fix_closed_form": 6,
+   "fix_matches": true
+  },
+  {
+   "N": 12,
+   "w": 2,
+   "dim": 78,
+   "n_distinct": 73,
+   "mult_hist": {
+    "1": 72,
+    "6": 1
+   },
+   "largest_multiplicity": 6,
+   "mult_plus_one": 6,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    39,
+    77
+   ],
+   "dim_krylov": [
+    73,
+    73,
+    73
+   ],
+   "dim_krylov_over_dim": [
+    0.9358974358974359,
+    0.9358974358974359,
+    0.9358974358974359
+   ],
+   "krylov_deficit": 5,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    26.278673614822623,
+    44.15963837527673,
+    28.380487167424587
+   ],
+   "d_eff_over_dim": [
+    0.3369060719849054,
+    0.5661492099394453,
+    0.3638523995823665
+   ],
+   "max_pop_over_uniform": [
+    2.9604627416008165,
+    1.7547707168652555,
+    2.7323708644503943
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.008122022909082038,
+   "runtime": 0.02830672264099121,
+   "fix_closed_form": 6,
+   "fix_matches": true
+  },
+  {
+   "N": 12,
+   "w": 4,
+   "dim": 715,
+   "n_distinct": 473,
+   "mult_hist": {
+    "1": 400,
+    "4": 60,
+    "5": 12,
+    "15": 1
+   },
+   "largest_multiplicity": 15,
+   "mult_plus_one": 15,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    357,
+    714
+   ],
+   "dim_krylov": [
+    473,
+    473,
+    473
+   ],
+   "dim_krylov_over_dim": [
+    0.6615384615384615,
+    0.6615384615384615,
+    0.6615384615384615
+   ],
+   "krylov_deficit": 242,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    87.63812887162717,
+    169.21565222019024,
+    139.87986683848342
+   ],
+   "d_eff_over_dim": [
+    0.12257080961066738,
+    0.23666524786040594,
+    0.19563617739648032
+   ],
+   "max_pop_over_uniform": [
+    8.07297949906244,
+    4.051846400186447,
+    5.02890518161699
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 7.105427357601002e-15,
+   "distinct_gap_min": 0.0009016805100872105,
+   "runtime": 1.3088078498840332,
+   "fix_closed_form": 15,
+   "fix_matches": true
+  },
+  {
+   "N": 12,
+   "w": 6,
+   "dim": 1716,
+   "n_distinct": 729,
+   "mult_hist": {
+    "1": 256,
+    "2": 240,
+    "3": 160,
+    "6": 60,
+    "10": 12,
+    "20": 1
+   },
+   "largest_multiplicity": 20,
+   "mult_plus_one": 20,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    858,
+    1715
+   ],
+   "dim_krylov": [
+    727,
+    729,
+    729
+   ],
+   "dim_krylov_over_dim": [
+    0.42365967365967366,
+    0.42482517482517484,
+    0.42482517482517484
+   ],
+   "krylov_deficit": 987,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    135.83346373959824,
+    234.67823437197725,
+    238.26354924212728
+   ],
+   "d_eff_over_dim": [
+    0.07915703015128103,
+    0.13675887783914759,
+    0.13884822216907183
+   ],
+   "max_pop_over_uniform": [
+    12.494806739788082,
+    7.017771510412726,
+    6.98463946099125
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 7.549516567451064e-15,
+   "distinct_gap_min": 0.0005818508989645643,
+   "runtime": 9.114752292633057,
+   "fix_closed_form": 20,
+   "fix_matches": true
+  },
+  {
+   "N": 12,
+   "w": 8,
+   "dim": 1287,
+   "n_distinct": 665,
+   "mult_hist": {
+    "1": 432,
+    "3": 160,
+    "4": 60,
+    "10": 12,
+    "15": 1
+   },
+   "largest_multiplicity": 15,
+   "mult_plus_one": 15,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    643,
+    1286
+   ],
+   "dim_krylov": [
+    665,
+    665,
+    665
+   ],
+   "dim_krylov_over_dim": [
+    0.5167055167055167,
+    0.5167055167055167,
+    0.5167055167055167
+   ],
+   "krylov_deficit": 622,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    123.0440368352507,
+    318.73334371947,
+    185.0927731212672
+   ],
+   "d_eff_over_dim": [
+    0.09560531222630202,
+    0.2476560557260839,
+    0.14381722853245313
+   ],
+   "max_pop_over_uniform": [
+    10.151921390990838,
+    3.9258467370625563,
+    6.599206207478631
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 8.770761894538737e-15,
+   "distinct_gap_min": 0.0005818508989675619,
+   "runtime": 6.5025475025177,
+   "fix_closed_form": 15,
+   "fix_matches": true
+  },
+  {
+   "N": 12,
+   "w": 10,
+   "dim": 286,
+   "n_distinct": 233,
+   "mult_hist": {
+    "1": 220,
+    "5": 12,
+    "6": 1
+   },
+   "largest_multiplicity": 6,
+   "mult_plus_one": 6,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    143,
+    285
+   ],
+   "dim_krylov": [
+    233,
+    233,
+    233
+   ],
+   "dim_krylov_over_dim": [
+    0.8146853146853147,
+    0.8146853146853147,
+    0.8146853146853147
+   ],
+   "krylov_deficit": 53,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    62.3396711745881,
+    94.97252571922044,
+    79.31432405914371
+   ],
+   "d_eff_over_dim": [
+    0.21797087823282552,
+    0.3320717682490225,
+    0.2773228113956074
+   ],
+   "max_pop_over_uniform": [
+    4.577377053614701,
+    2.9578244724780274,
+    3.51141305393914
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 1.1102230246251565e-15,
+   "distinct_gap_min": 0.0016598413446095583,
+   "runtime": 0.22190189361572266,
+   "fix_closed_form": 6,
+   "fix_matches": true
+  },
+  {
+   "N": 12,
+   "w": 12,
+   "dim": 13,
+   "n_distinct": 13,
+   "mult_hist": {
+    "1": 13
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    6,
+    12
+   ],
+   "dim_krylov": [
+    13,
+    13,
+    13
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    10.200089020916655,
+    10.20008902091669,
+    10.326442683241345
+   ],
+   "d_eff_over_dim": [
+    0.7846222323782043,
+    0.7846222323782069,
+    0.7943417448647188
+   ],
+   "max_pop_over_uniform": [
+    1.2744986806822738,
+    1.2744986806822716,
+    1.2589040000287404
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.13418964547752132,
+   "runtime": 0.0018177032470703125,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 13,
+   "w": 2,
+   "dim": 91,
+   "n_distinct": 85,
+   "mult_hist": {
+    "1": 84,
+    "7": 1
+   },
+   "largest_multiplicity": 7,
+   "mult_plus_one": 7,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    45,
+    90
+   ],
+   "dim_krylov": [
+    85,
+    85,
+    43
+   ],
+   "dim_krylov_over_dim": [
+    0.9340659340659341,
+    0.9340659340659341,
+    0.4725274725274725
+   ],
+   "krylov_deficit": 6,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    29.69640524883724,
+    34.708009830091825,
+    10.307630767784062
+   ],
+   "d_eff_over_dim": [
+    0.32633412361359604,
+    0.3814067014295805,
+    0.11327066777784683
+   ],
+   "max_pop_over_uniform": [
+    3.052869750211731,
+    2.495644633105215,
+    7.466475655944759
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.001511006370348733,
+   "runtime": 0.019980192184448242,
+   "fix_closed_form": 7,
+   "fix_matches": true
+  },
+  {
+   "N": 13,
+   "w": 4,
+   "dim": 1001,
+   "n_distinct": 645,
+   "mult_hist": {
+    "1": 560,
+    "5": 84,
+    "21": 1
+   },
+   "largest_multiplicity": 21,
+   "mult_plus_one": 21,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    500,
+    1000
+   ],
+   "dim_krylov": [
+    645,
+    645,
+    575
+   ],
+   "dim_krylov_over_dim": [
+    0.6443556443556444,
+    0.6443556443556444,
+    0.5744255744255744
+   ],
+   "krylov_deficit": 356,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    113.46870140154924,
+    156.84437071197854,
+    94.63821674015064
+   ],
+   "d_eff_over_dim": [
+    0.11335534605549374,
+    0.1566876830289496,
+    0.09454367306708356
+   ],
+   "max_pop_over_uniform": [
+    8.782296893920734,
+    5.979607204019355,
+    9.282970505585693
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 3.9968028886505635e-15,
+   "distinct_gap_min": 0.0008177659575434593,
+   "runtime": 2.8317604064941406,
+   "fix_closed_form": 21,
+   "fix_matches": true
+  },
+  {
+   "N": 13,
+   "w": 10,
+   "dim": 1001,
+   "n_distinct": 645,
+   "mult_hist": {
+    "1": 560,
+    "5": 84,
+    "21": 1
+   },
+   "largest_multiplicity": 21,
+   "mult_plus_one": 21,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    500,
+    1000
+   ],
+   "dim_krylov": [
+    645,
+    645,
+    645
+   ],
+   "dim_krylov_over_dim": [
+    0.6443556443556444,
+    0.6443556443556444,
+    0.6443556443556444
+   ],
+   "krylov_deficit": 356,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    111.86720972321142,
+    196.24051408776603,
+    160.71145947867345
+   ],
+   "d_eff_over_dim": [
+    0.11175545426894247,
+    0.1960444696181479,
+    0.16055090857010335
+   ],
+   "max_pop_over_uniform": [
+    8.851841373392633,
+    4.907677787783994,
+    5.930230846834808
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 3.9968028886505635e-15,
+   "distinct_gap_min": 0.0008177659575465679,
+   "runtime": 2.953876495361328,
+   "fix_closed_form": 21,
+   "fix_matches": true
+  },
+  {
+   "N": 13,
+   "w": 12,
+   "dim": 91,
+   "n_distinct": 85,
+   "mult_hist": {
+    "1": 84,
+    "7": 1
+   },
+   "largest_multiplicity": 7,
+   "mult_plus_one": 7,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    45,
+    90
+   ],
+   "dim_krylov": [
+    85,
+    85,
+    85
+   ],
+   "dim_krylov_over_dim": [
+    0.9340659340659341,
+    0.9340659340659341,
+    0.9340659340659341
+   ],
+   "krylov_deficit": 6,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    25.863094794348164,
+    30.728304440102978,
+    33.05204541371398
+   ],
+   "d_eff_over_dim": [
+    0.2842098329049249,
+    0.3376736751659668,
+    0.3632092902605932
+   ],
+   "max_pop_over_uniform": [
+    3.3842477263628963,
+    2.9230118413656894,
+    2.676444968905097
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0015110063703491772,
+   "runtime": 0.020409584045410156,
+   "fix_closed_form": 7,
+   "fix_matches": true
+  },
+  {
+   "N": 14,
+   "w": 2,
+   "dim": 105,
+   "n_distinct": 99,
+   "mult_hist": {
+    "1": 98,
+    "7": 1
+   },
+   "largest_multiplicity": 7,
+   "mult_plus_one": 7,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    52,
+    104
+   ],
+   "dim_krylov": [
+    99,
+    99,
+    99
+   ],
+   "dim_krylov_over_dim": [
+    0.9428571428571428,
+    0.9428571428571428,
+    0.9428571428571428
+   ],
+   "krylov_deficit": 6,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    33.23086859700746,
+    57.65772167081433,
+    37.24357796220516
+   ],
+   "d_eff_over_dim": [
+    0.31648446282864245,
+    0.5491211587696603,
+    0.35470074249719197
+   ],
+   "max_pop_over_uniform": [
+    3.1320903421362725,
+    1.8010784506460382,
+    2.7902715422255566
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.005375833673999519,
+   "runtime": 0.025777339935302734,
+   "fix_closed_form": 7,
+   "fix_matches": true
+  },
+  {
+   "N": 14,
+   "w": 4,
+   "dim": 1365,
+   "n_distinct": 939,
+   "mult_hist": {
+    "1": 840,
+    "5": 84,
+    "6": 14,
+    "21": 1
+   },
+   "largest_multiplicity": 21,
+   "mult_plus_one": 21,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    682,
+    1364
+   ],
+   "dim_krylov": [
+    939,
+    939,
+    939
+   ],
+   "dim_krylov_over_dim": [
+    0.6879120879120879,
+    0.6879120879120879,
+    0.6879120879120879
+   ],
+   "krylov_deficit": 426,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    144.46079148600145,
+    484.12102305478743,
+    232.7212091951527
+   ],
+   "d_eff_over_dim": [
+    0.10583208167472634,
+    0.3546674161573534,
+    0.17049172834809723
+   ],
+   "max_pop_over_uniform": [
+    9.365465624549119,
+    2.797773995090475,
+    5.71773338461098
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 6.439293542825908e-15,
+   "distinct_gap_min": 0.00038624807561271624,
+   "runtime": 4.8900158405303955,
+   "fix_closed_form": 21,
+   "fix_matches": true
+  },
+  {
+   "N": 14,
+   "w": 12,
+   "dim": 455,
+   "n_distinct": 379,
+   "mult_hist": {
+    "1": 364,
+    "6": 14,
+    "7": 1
+   },
+   "largest_multiplicity": 7,
+   "mult_plus_one": 7,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    227,
+    454
+   ],
+   "dim_krylov": [
+    379,
+    379,
+    379
+   ],
+   "dim_krylov_over_dim": [
+    0.832967032967033,
+    0.832967032967033,
+    0.832967032967033
+   ],
+   "krylov_deficit": 76,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    91.30401172515083,
+    122.94965073901291,
+    114.97528716019234
+   ],
+   "d_eff_over_dim": [
+    0.20066815763769413,
+    0.2702190126132152,
+    0.25269293881360955
+   ],
+   "max_pop_over_uniform": [
+    4.975450457766173,
+    3.555837288828559,
+    3.845835607253103
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 6.661338147750939e-16,
+   "distinct_gap_min": 0.0005466245288233695,
+   "runtime": 0.4709136486053467,
+   "fix_closed_form": 7,
+   "fix_matches": true
+  },
+  {
+   "N": 14,
+   "w": 14,
+   "dim": 15,
+   "n_distinct": 15,
+   "mult_hist": {
+    "1": 15
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    7,
+    14
+   ],
+   "dim_krylov": [
+    15,
+    15,
+    15
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    11.677774862605085,
+    11.677774862605082,
+    11.804178791916256
+   ],
+   "d_eff_over_dim": [
+    0.7785183241736724,
+    0.7785183241736722,
+    0.7869452527944171
+   ],
+   "max_pop_over_uniform": [
+    1.284491281642484,
+    1.2844912816424847,
+    1.270736428549552
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.10472075512175771,
+   "runtime": 0.002054929733276367,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 15,
+   "w": 2,
+   "dim": 120,
+   "n_distinct": 113,
+   "mult_hist": {
+    "1": 112,
+    "8": 1
+   },
+   "largest_multiplicity": 8,
+   "mult_plus_one": 8,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    60,
+    119
+   ],
+   "dim_krylov": [
+    113,
+    113,
+    57
+   ],
+   "dim_krylov_over_dim": [
+    0.9416666666666667,
+    0.9416666666666667,
+    0.475
+   ],
+   "krylov_deficit": 7,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    38.43547450434359,
+    61.35062680309928,
+    27.57696375365054
+   ],
+   "d_eff_over_dim": [
+    0.3202956208695299,
+    0.5112552233591606,
+    0.22980803128042115
+   ],
+   "max_pop_over_uniform": [
+    3.121599758492998,
+    1.9499863078868485,
+    4.07326041044521
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0012156425912955293,
+   "runtime": 0.03742527961730957,
+   "fix_closed_form": 8,
+   "fix_matches": true
+  },
+  {
+   "N": 15,
+   "w": 4,
+   "dim": 1820,
+   "n_distinct": 1233,
+   "mult_hist": {
+    "1": 1120,
+    "6": 112,
+    "28": 1
+   },
+   "largest_multiplicity": 28,
+   "mult_plus_one": 28,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    910,
+    1819
+   ],
+   "dim_krylov": [
+    1231,
+    1093,
+    1093
+   ],
+   "dim_krylov_over_dim": [
+    0.6763736263736264,
+    0.6005494505494505,
+    0.6005494505494505
+   ],
+   "krylov_deficit": 589,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    177.84011134860432,
+    259.63863326753545,
+    195.4982869129299
+   ],
+   "d_eff_over_dim": [
+    0.09771434689483754,
+    0.14265858970743706,
+    0.1074166411609505
+   ],
+   "max_pop_over_uniform": [
+    10.050474407908814,
+    6.559666426545071,
+    9.024499620314087
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 5.773159728050814e-15,
+   "distinct_gap_min": 6.798337329083637e-06,
+   "runtime": 9.82187819480896,
+   "fix_closed_form": 28,
+   "fix_matches": true
+  },
+  {
+   "N": 15,
+   "w": 12,
+   "dim": 1820,
+   "n_distinct": 1233,
+   "mult_hist": {
+    "1": 1120,
+    "6": 112,
+    "28": 1
+   },
+   "largest_multiplicity": 28,
+   "mult_plus_one": 28,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    910,
+    1819
+   ],
+   "dim_krylov": [
+    1231,
+    1093,
+    1233
+   ],
+   "dim_krylov_over_dim": [
+    0.6763736263736264,
+    0.6005494505494505,
+    0.6774725274725275
+   ],
+   "krylov_deficit": 587,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    178.14435658629736,
+    345.9714810115661,
+    232.83188311906883
+   ],
+   "d_eff_over_dim": [
+    0.0978815146078557,
+    0.19009422033602533,
+    0.12792960610937848
+   ],
+   "max_pop_over_uniform": [
+    10.052229227982593,
+    5.063719856896125,
+    7.210097689616878
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 6.328271240363392e-15,
+   "distinct_gap_min": 6.798337326641146e-06,
+   "runtime": 10.940141439437866,
+   "fix_closed_form": 28,
+   "fix_matches": true
+  },
+  {
+   "N": 15,
+   "w": 14,
+   "dim": 120,
+   "n_distinct": 113,
+   "mult_hist": {
+    "1": 112,
+    "8": 1
+   },
+   "largest_multiplicity": 8,
+   "mult_plus_one": 8,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    60,
+    119
+   ],
+   "dim_krylov": [
+    113,
+    113,
+    113
+   ],
+   "dim_krylov_over_dim": [
+    0.9416666666666667,
+    0.9416666666666667,
+    0.9416666666666667
+   ],
+   "krylov_deficit": 7,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    38.46885490731016,
+    49.3818647413835,
+    48.03284212681079
+   ],
+   "d_eff_over_dim": [
+    0.3205737908942513,
+    0.4115155395115292,
+    0.4002736843900899
+   ],
+   "max_pop_over_uniform": [
+    3.1193837667526227,
+    2.2889486248888584,
+    2.4050231707434357
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0012156425912953073,
+   "runtime": 0.06531691551208496,
+   "fix_closed_form": 8,
+   "fix_matches": true
+  },
+  {
+   "N": 16,
+   "w": 2,
+   "dim": 136,
+   "n_distinct": 129,
+   "mult_hist": {
+    "1": 128,
+    "8": 1
+   },
+   "largest_multiplicity": 8,
+   "mult_plus_one": 8,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    68,
+    135
+   ],
+   "dim_krylov": [
+    129,
+    129,
+    129
+   ],
+   "dim_krylov_over_dim": [
+    0.9485294117647058,
+    0.9485294117647058,
+    0.9485294117647058
+   ],
+   "krylov_deficit": 7,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    42.491977287744454,
+    65.00091243458736,
+    47.21473156067746
+   ],
+   "d_eff_over_dim": [
+    0.31244100946870923,
+    0.4779478855484365,
+    0.3471671438285107
+   ],
+   "max_pop_over_uniform": [
+    3.1965921138918096,
+    2.014761052542503,
+    2.8649772846232313
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.002902970837830976,
+   "runtime": 0.09297299385070801,
+   "fix_closed_form": 8,
+   "fix_matches": true
+  },
+  {
+   "N": 16,
+   "w": 4,
+   "dim": 2380,
+   "n_distinct": 1697,
+   "mult_hist": {
+    "1": 1568,
+    "6": 112,
+    "7": 16,
+    "28": 1
+   },
+   "largest_multiplicity": 28,
+   "mult_plus_one": 28,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    1190,
+    2379
+   ],
+   "dim_krylov": [
+    1695,
+    1697,
+    1697
+   ],
+   "dim_krylov_over_dim": [
+    0.7121848739495799,
+    0.7130252100840336,
+    0.7130252100840336
+   ],
+   "krylov_deficit": 683,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    220.45110075069516,
+    458.2871408345869,
+    375.47172782274055
+   ],
+   "d_eff_over_dim": [
+    0.09262651292046015,
+    0.19255762219940628,
+    0.15776123017762209
+   ],
+   "max_pop_over_uniform": [
+    10.746604333633885,
+    4.967116498848737,
+    6.124958709142526
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 6.772360450213455e-15,
+   "distinct_gap_min": 1.3002187932986686e-05,
+   "runtime": 17.865149974822998,
+   "fix_closed_form": 28,
+   "fix_matches": true
+  },
+  {
+   "N": 16,
+   "w": 14,
+   "dim": 680,
+   "n_distinct": 577,
+   "mult_hist": {
+    "1": 560,
+    "7": 16,
+    "8": 1
+   },
+   "largest_multiplicity": 8,
+   "mult_plus_one": 8,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    340,
+    679
+   ],
+   "dim_krylov": [
+    577,
+    577,
+    577
+   ],
+   "dim_krylov_over_dim": [
+    0.8485294117647059,
+    0.8485294117647059,
+    0.8485294117647059
+   ],
+   "krylov_deficit": 103,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    129.9904026781261,
+    292.8449261602041,
+    160.9138798379
+   ],
+   "d_eff_over_dim": [
+    0.19116235687959718,
+    0.4306543031767708,
+    0.23663805858514705
+   ],
+   "max_pop_over_uniform": [
+    5.084038393384669,
+    2.302905610616808,
+    4.0703667515144675
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 2.886579864025407e-15,
+   "distinct_gap_min": 0.000172343686045906,
+   "runtime": 1.629734992980957,
+   "fix_closed_form": 8,
+   "fix_matches": true
+  },
+  {
+   "N": 16,
+   "w": 16,
+   "dim": 17,
+   "n_distinct": 17,
+   "mult_hist": {
+    "1": 17
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    8,
+    16
+   ],
+   "dim_krylov": [
+    17,
+    17,
+    17
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    13.15543990601385,
+    13.155439906013822,
+    13.28188295420319
+   ],
+   "d_eff_over_dim": [
+    0.7738494062361089,
+    0.7738494062361072,
+    0.7812872326001877
+   ],
+   "max_pop_over_uniform": [
+    1.292241089728115,
+    1.2922410897281162,
+    1.279939001014926
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.08393871826314636,
+   "runtime": 0.0022666454315185547,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 17,
+   "w": 2,
+   "dim": 153,
+   "n_distinct": 145,
+   "mult_hist": {
+    "1": 144,
+    "9": 1
+   },
+   "largest_multiplicity": 9,
+   "mult_plus_one": 9,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    76,
+    152
+   ],
+   "dim_krylov": [
+    145,
+    145,
+    73
+   ],
+   "dim_krylov_over_dim": [
+    0.9477124183006536,
+    0.9477124183006536,
+    0.477124183006536
+   ],
+   "krylov_deficit": 8,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    47.59201551886307,
+    61.123075898010164,
+    32.02128543245772
+   ],
+   "d_eff_over_dim": [
+    0.31105892495988935,
+    0.3994972280915697,
+    0.20928944727096546
+   ],
+   "max_pop_over_uniform": [
+    3.214034575210019,
+    2.451454657634701,
+    4.485087515377762
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.00561528830581326,
+   "runtime": 0.11099505424499512,
+   "fix_closed_form": 9,
+   "fix_matches": true
+  },
+  {
+   "N": 17,
+   "w": 16,
+   "dim": 153,
+   "n_distinct": 145,
+   "mult_hist": {
+    "1": 144,
+    "9": 1
+   },
+   "largest_multiplicity": 9,
+   "mult_plus_one": 9,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    76,
+    152
+   ],
+   "dim_krylov": [
+    145,
+    145,
+    145
+   ],
+   "dim_krylov_over_dim": [
+    0.9477124183006536,
+    0.9477124183006536,
+    0.9477124183006536
+   ],
+   "krylov_deficit": 8,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    47.64675673995743,
+    81.63604246117832,
+    42.325142073585354
+   ],
+   "d_eff_over_dim": [
+    0.31141671071867605,
+    0.5335689049750217,
+    0.2766349155136298
+   ],
+   "max_pop_over_uniform": [
+    3.211025881841211,
+    1.8741616098160887,
+    3.524969831099929
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 1.1102230246251573e-16,
+   "distinct_gap_min": 0.00561528830581387,
+   "runtime": 0.10589361190795898,
+   "fix_closed_form": 9,
+   "fix_matches": true
+  },
+  {
+   "N": 18,
+   "w": 2,
+   "dim": 171,
+   "n_distinct": 163,
+   "mult_hist": {
+    "1": 162,
+    "9": 1
+   },
+   "largest_multiplicity": 9,
+   "mult_plus_one": 9,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    85,
+    170
+   ],
+   "dim_krylov": [
+    163,
+    163,
+    163
+   ],
+   "dim_krylov_over_dim": [
+    0.9532163742690059,
+    0.9532163742690059,
+    0.9532163742690059
+   ],
+   "krylov_deficit": 8,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    51.71454896531119,
+    59.856318158699175,
+    58.374277871501334
+   ],
+   "d_eff_over_dim": [
+    0.30242426295503616,
+    0.3500369482964864,
+    0.3413700460321715
+   ],
+   "max_pop_over_uniform": [
+    3.2922571437269483,
+    2.8194430858349335,
+    2.910699406730564
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0012649608532142587,
+   "runtime": 0.13167881965637207,
+   "fix_closed_form": 9,
+   "fix_matches": true
+  },
+  {
+   "N": 18,
+   "w": 16,
+   "dim": 969,
+   "n_distinct": 835,
+   "mult_hist": {
+    "1": 816,
+    "8": 18,
+    "9": 1
+   },
+   "largest_multiplicity": 9,
+   "mult_plus_one": 9,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    484,
+    968
+   ],
+   "dim_krylov": [
+    835,
+    835,
+    835
+   ],
+   "dim_krylov_over_dim": [
+    0.8617131062951496,
+    0.8617131062951496,
+    0.8617131062951496
+   ],
+   "krylov_deficit": 134,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    172.4082221701436,
+    274.8557104038748,
+    213.63824620257256
+   ],
+   "d_eff_over_dim": [
+    0.17792386188869308,
+    0.2836488239462072,
+    0.2204729062978045
+   ],
+   "max_pop_over_uniform": [
+    5.575209864452648,
+    3.3815451452988636,
+    4.358480589912921
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 1.887379141862766e-15,
+   "distinct_gap_min": 0.0002457031430629364,
+   "runtime": 2.334444761276245,
+   "fix_closed_form": 9,
+   "fix_matches": true
+  },
+  {
+   "N": 18,
+   "w": 18,
+   "dim": 19,
+   "n_distinct": 19,
+   "mult_hist": {
+    "1": 19
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    9,
+    18
+   ],
+   "dim_krylov": [
+    19,
+    19,
+    19
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    14.633090391379167,
+    14.63309039137914,
+    14.759564760992038
+   ],
+   "d_eff_over_dim": [
+    0.7701626521778508,
+    0.7701626521778495,
+    0.7768191979469494
+   ],
+   "max_pop_over_uniform": [
+    1.2984270233985291,
+    1.2984270233985304,
+    1.287300832217971
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.06874891190168575,
+   "runtime": 0.002612590789794922,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 19,
+   "w": 2,
+   "dim": 190,
+   "n_distinct": 181,
+   "mult_hist": {
+    "1": 180,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    95,
+    189
+   ],
+   "dim_krylov": [
+    181,
+    181,
+    91
+   ],
+   "dim_krylov_over_dim": [
+    0.9526315789473684,
+    0.9526315789473684,
+    0.4789473684210526
+   ],
+   "krylov_deficit": 9,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    57.80905283291695,
+    64.02000181718627,
+    30.49705491199863
+   ],
+   "d_eff_over_dim": [
+    0.30425817280482603,
+    0.33694737798519087,
+    0.1605108153263086
+   ],
+   "max_pop_over_uniform": [
+    3.2864855668030346,
+    2.8948066157788754,
+    5.988947449028504
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0027974974245025264,
+   "runtime": 0.1372535228729248,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 19,
+   "w": 18,
+   "dim": 190,
+   "n_distinct": 181,
+   "mult_hist": {
+    "1": 180,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    95,
+    189
+   ],
+   "dim_krylov": [
+    181,
+    181,
+    181
+   ],
+   "dim_krylov_over_dim": [
+    0.9526315789473684,
+    0.9526315789473684,
+    0.9526315789473684
+   ],
+   "krylov_deficit": 9,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    56.775068113693784,
+    99.64405681370472,
+    54.681445508864044
+   ],
+   "d_eff_over_dim": [
+    0.2988161479668094,
+    0.5244424042826564,
+    0.28779708162560025
+   ],
+   "max_pop_over_uniform": [
+    3.3375372719972995,
+    1.9059003970693296,
+    3.427134396081001
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0027974974245040807,
+   "runtime": 0.1484205722808838,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 20,
+   "w": 2,
+   "dim": 210,
+   "n_distinct": 201,
+   "mult_hist": {
+    "1": 200,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    105,
+    209
+   ],
+   "dim_krylov": [
+    201,
+    201,
+    201
+   ],
+   "dim_krylov_over_dim": [
+    0.9571428571428572,
+    0.9571428571428572,
+    0.9571428571428572
+   ],
+   "krylov_deficit": 9,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    55.500818902863266,
+    69.61707298391842,
+    70.67561573001464
+   ],
+   "d_eff_over_dim": [
+    0.2642896138231584,
+    0.33150987135199245,
+    0.3365505510953078
+   ],
+   "max_pop_over_uniform": [
+    3.7016945427321692,
+    2.9141123944992797,
+    2.9490479040060236
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0012878116336666467,
+   "runtime": 0.12646985054016113,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 20,
+   "w": 18,
+   "dim": 1330,
+   "n_distinct": 1161,
+   "mult_hist": {
+    "1": 1140,
+    "9": 20,
+    "10": 1
+   },
+   "largest_multiplicity": 10,
+   "mult_plus_one": 10,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    665,
+    1329
+   ],
+   "dim_krylov": [
+    1161,
+    1161,
+    1161
+   ],
+   "dim_krylov_over_dim": [
+    0.8729323308270677,
+    0.8729323308270677,
+    0.8729323308270677
+   ],
+   "krylov_deficit": 169,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    227.97438548021665,
+    260.8201516544194,
+    278.4231260621689
+   ],
+   "d_eff_over_dim": [
+    0.17140931239114035,
+    0.196105377183774,
+    0.20934069628734503
+   ],
+   "max_pop_over_uniform": [
+    5.826911029010216,
+    4.969977060169574,
+    4.696909710640565
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 1.5543122344752192e-15,
+   "distinct_gap_min": 6.968813380864303e-05,
+   "runtime": 4.508643627166748,
+   "fix_closed_form": 10,
+   "fix_matches": true
+  },
+  {
+   "N": 20,
+   "w": 20,
+   "dim": 21,
+   "n_distinct": 21,
+   "mult_hist": {
+    "1": 21
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    10,
+    20
+   ],
+   "dim_krylov": [
+    21,
+    21,
+    21
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    16.11073028914187,
+    16.110730289141795,
+    16.237230303348287
+   ],
+   "d_eff_over_dim": [
+    0.7671776328162795,
+    0.7671776328162759,
+    0.7732014430165851
+   ],
+   "max_pop_over_uniform": [
+    1.303479086491403,
+    1.3034790864914059,
+    1.2933240218727229
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.057318252413232296,
+   "runtime": 0.003233671188354492,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 21,
+   "w": 2,
+   "dim": 231,
+   "n_distinct": 221,
+   "mult_hist": {
+    "1": 220,
+    "11": 1
+   },
+   "largest_multiplicity": 11,
+   "mult_plus_one": 11,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    115,
+    230
+   ],
+   "dim_krylov": [
+    221,
+    221,
+    111
+   ],
+   "dim_krylov_over_dim": [
+    0.9567099567099567,
+    0.9567099567099567,
+    0.4805194805194805
+   ],
+   "krylov_deficit": 10,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    68.6458890287832,
+    91.66467877680785,
+    31.2015915591831
+   ],
+   "d_eff_over_dim": [
+    0.29716835077395326,
+    0.3968167912415924,
+    0.13507182493152858
+   ],
+   "max_pop_over_uniform": [
+    3.3605575536120993,
+    2.433143765238126,
+    6.7626997009003045
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0007266787250461704,
+   "runtime": 0.1164543628692627,
+   "fix_closed_form": 11,
+   "fix_matches": true
+  },
+  {
+   "N": 21,
+   "w": 20,
+   "dim": 231,
+   "n_distinct": 221,
+   "mult_hist": {
+    "1": 220,
+    "11": 1
+   },
+   "largest_multiplicity": 11,
+   "mult_plus_one": 11,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    115,
+    230
+   ],
+   "dim_krylov": [
+    221,
+    221,
+    221
+   ],
+   "dim_krylov_over_dim": [
+    0.9567099567099567,
+    0.9567099567099567,
+    0.9567099567099567
+   ],
+   "krylov_deficit": 10,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    68.94967192808848,
+    119.08184878939288,
+    59.29275741997967
+   ],
+   "d_eff_over_dim": [
+    0.2984834282601233,
+    0.5155058389151207,
+    0.25667860354969557
+   ],
+   "max_pop_over_uniform": [
+    3.35001623993069,
+    1.9251978451352254,
+    3.732359433998487
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.0007266787250455042,
+   "runtime": 0.12223696708679199,
+   "fix_closed_form": 11,
+   "fix_matches": true
+  },
+  {
+   "N": 22,
+   "w": 2,
+   "dim": 253,
+   "n_distinct": 243,
+   "mult_hist": {
+    "1": 242,
+    "11": 1
+   },
+   "largest_multiplicity": 11,
+   "mult_plus_one": 11,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    126,
+    252
+   ],
+   "dim_krylov": [
+    243,
+    243,
+    243
+   ],
+   "dim_krylov_over_dim": [
+    0.9604743083003953,
+    0.9604743083003953,
+    0.9604743083003953
+   ],
+   "krylov_deficit": 10,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    74.92021544001211,
+    97.55805326348292,
+    84.62491959079043
+   ],
+   "d_eff_over_dim": [
+    0.2961273337549886,
+    0.38560495361060443,
+    0.3344858481849424
+   ],
+   "max_pop_over_uniform": [
+    3.3768180027111248,
+    2.468528855395512,
+    2.9584729633741103
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 7.6095251960728305e-06,
+   "runtime": 0.1353142261505127,
+   "fix_closed_form": 11,
+   "fix_matches": true
+  },
+  {
+   "N": 22,
+   "w": 20,
+   "dim": 1771,
+   "n_distinct": 1563,
+   "mult_hist": {
+    "1": 1540,
+    "10": 22,
+    "11": 1
+   },
+   "largest_multiplicity": 11,
+   "mult_plus_one": 11,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    885,
+    1770
+   ],
+   "dim_krylov": [
+    1561,
+    1563,
+    1563
+   ],
+   "dim_krylov_over_dim": [
+    0.8814229249011858,
+    0.8825522303783173,
+    0.8825522303783173
+   ],
+   "krylov_deficit": 208,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    251.84873292152798,
+    392.0848273748485,
+    327.99866909998474
+   ],
+   "d_eff_over_dim": [
+    0.142207076748463,
+    0.2213917715273001,
+    0.18520534675323813
+   ],
+   "max_pop_over_uniform": [
+    6.624871678910233,
+    4.377021696805235,
+    5.161732831413445
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 2.7755575615628914e-15,
+   "distinct_gap_min": 7.6095251912988715e-06,
+   "runtime": 7.6806440353393555,
+   "fix_closed_form": 11,
+   "fix_matches": true
+  },
+  {
+   "N": 22,
+   "w": 22,
+   "dim": 23,
+   "n_distinct": 23,
+   "mult_hist": {
+    "1": 23
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    11,
+    22
+   ],
+   "dim_krylov": [
+    23,
+    23,
+    23
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    17.588362246174807,
+    17.588362246174857,
+    17.71488364333225
+   ],
+   "d_eff_over_dim": [
+    0.7647114020076003,
+    0.7647114020076025,
+    0.7702123323187935
+   ],
+   "max_pop_over_uniform": [
+    1.3076828688243658,
+    1.3076828688243634,
+    1.2983432724186748
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.048505698898031246,
+   "runtime": 0.003414630889892578,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  },
+  {
+   "N": 23,
+   "w": 2,
+   "dim": 276,
+   "n_distinct": 265,
+   "mult_hist": {
+    "1": 264,
+    "12": 1
+   },
+   "largest_multiplicity": 12,
+   "mult_plus_one": 12,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    138,
+    275
+   ],
+   "dim_krylov": [
+    265,
+    265,
+    133
+   ],
+   "dim_krylov_over_dim": [
+    0.9601449275362319,
+    0.9601449275362319,
+    0.48188405797101447
+   ],
+   "krylov_deficit": 11,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    80.54007596001944,
+    83.63451680784637,
+    34.21414440443829
+   ],
+   "d_eff_over_dim": [
+    0.2918118694203603,
+    0.30302361162263175,
+    0.12396429132042858
+   ],
+   "max_pop_over_uniform": [
+    3.4240874795114165,
+    3.215682741923367,
+    7.671427471507985
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 4.834807512982264e-06,
+   "runtime": 0.15561604499816895,
+   "fix_closed_form": 12,
+   "fix_matches": true
+  },
+  {
+   "N": 23,
+   "w": 22,
+   "dim": 276,
+   "n_distinct": 265,
+   "mult_hist": {
+    "1": 264,
+    "12": 1
+   },
+   "largest_multiplicity": 12,
+   "mult_plus_one": 12,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    138,
+    275
+   ],
+   "dim_krylov": [
+    265,
+    265,
+    265
+   ],
+   "dim_krylov_over_dim": [
+    0.9601449275362319,
+    0.9601449275362319,
+    0.9601449275362319
+   ],
+   "krylov_deficit": 11,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    81.13314186980502,
+    141.62440183616872,
+    94.872339910214
+   ],
+   "d_eff_over_dim": [
+    0.2939606589485689,
+    0.5131318907107563,
+    0.343740361993529
+   ],
+   "max_pop_over_uniform": [
+    3.401792480417898,
+    1.9436742100037931,
+    2.8638871313947587
+   ],
+   "reflection": "commutes",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 4.834807512454908e-06,
+   "runtime": 0.21207022666931152,
+   "fix_closed_form": 12,
+   "fix_matches": true
+  },
+  {
+   "N": 24,
+   "w": 2,
+   "dim": 300,
+   "n_distinct": 289,
+   "mult_hist": {
+    "1": 288,
+    "12": 1
+   },
+   "largest_multiplicity": 12,
+   "mult_plus_one": 12,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    150,
+    299
+   ],
+   "dim_krylov": [
+    289,
+    289,
+    289
+   ],
+   "dim_krylov_over_dim": [
+    0.9633333333333334,
+    0.9633333333333334,
+    0.9633333333333334
+   ],
+   "krylov_deficit": 11,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    87.5810971836016,
+    86.20037595690147,
+    99.09823947619583
+   ],
+   "d_eff_over_dim": [
+    0.29193699061200534,
+    0.28733458652300486,
+    0.33032746492065274
+   ],
+   "max_pop_over_uniform": [
+    3.4253901458287124,
+    3.2598191277630075,
+    3.0091124677641505
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.000615795366360139,
+   "runtime": 0.22623682022094727,
+   "fix_closed_form": 12,
+   "fix_matches": true
+  },
+  {
+   "N": 24,
+   "w": 22,
+   "dim": 2300,
+   "n_distinct": 2049,
+   "mult_hist": {
+    "1": 2024,
+    "11": 24,
+    "12": 1
+   },
+   "largest_multiplicity": 12,
+   "mult_plus_one": 12,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    1150,
+    2299
+   ],
+   "dim_krylov": [
+    2047,
+    2049,
+    2049
+   ],
+   "dim_krylov_over_dim": [
+    0.89,
+    0.8908695652173914,
+    0.8908695652173914
+   ],
+   "krylov_deficit": 251,
+   "sector_is_a_krylov_space": false,
+   "d_eff": [
+    368.383962363592,
+    561.0323957522969,
+    445.4027389360431
+   ],
+   "d_eff_over_dim": [
+    0.16016694015808347,
+    0.24392712858795518,
+    0.19365336475480133
+   ],
+   "max_pop_over_uniform": [
+    6.228286802926957,
+    3.9678116278844966,
+    5.059914397906097
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 2.886579864025407e-15,
+   "distinct_gap_min": 5.315568288755124e-06,
+   "runtime": 16.281917572021484,
+   "fix_closed_form": 12,
+   "fix_matches": true
+  },
+  {
+   "N": 24,
+   "w": 24,
+   "dim": 25,
+   "n_distinct": 25,
+   "mult_hist": {
+    "1": 25
+   },
+   "largest_multiplicity": 1,
+   "mult_plus_one": 1,
+   "mult_minus_one": 0,
+   "seeds": [
+    0,
+    12,
+    24
+   ],
+   "dim_krylov": [
+    25,
+    25,
+    25
+   ],
+   "dim_krylov_over_dim": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "krylov_deficit": 0,
+   "sector_is_a_krylov_space": true,
+   "d_eff": [
+    19.065988094905734,
+    19.0659880949056,
+    19.192527594224384
+   ],
+   "d_eff_over_dim": [
+    0.7626395237962293,
+    0.7626395237962239,
+    0.7677011037689754
+   ],
+   "max_pop_over_uniform": [
+    1.3112354773094534,
+    1.3112354773094577,
+    1.302590285581942
+   ],
+   "reflection": "conjugates U to U^-1",
+   "degenerate_gap_max": 0.0,
+   "distinct_gap_min": 0.04157136983722398,
+   "runtime": 0.008285760879516602,
+   "fix_closed_form": 1,
+   "fix_matches": true
+  }
+ ],
+ "freeness": [
+  {
+   "N": 5,
+   "bond_vs_engine": 1.1102230246251565e-16,
+   "rule150": 1.870666286910736,
+   "no_string": 1.1007423341235603,
+   "det_phase_only": 1.339509861051919,
+   "gaussian_ref": 8.868492775207848e-16
+  },
+  {
+   "N": 6,
+   "bond_vs_engine": 1.1102230246251565e-16,
+   "rule150": 1.1567482685459671,
+   "no_string": 0.869428086917699,
+   "det_phase_only": 0.869428086917699,
+   "gaussian_ref": 1.3766687430345331e-15
+  },
+  {
+   "N": 7,
+   "bond_vs_engine": 1.1102230246251565e-16,
+   "rule150": 1.0620126446181022,
+   "no_string": 0.6080746253502368,
+   "det_phase_only": 0.5258885288947247,
+   "gaussian_ref": 1.364333352957434e-15
+  },
+  {
+   "N": 8,
+   "bond_vs_engine": 1.1102230246251565e-16,
+   "rule150": 0.7307256314500366,
+   "no_string": 0.6883836233927765,
+   "det_phase_only": 0.515380231884671,
+   "gaussian_ref": 3.007160018618245e-15
+  },
+  {
+   "N": 9,
+   "bond_vs_engine": 1.1102230246251565e-16,
+   "rule150": 0.5491333137694572,
+   "no_string": 0.6041736656850322,
+   "det_phase_only": 0.42693648934259787,
+   "gaussian_ref": 3.6873555079223455e-15
+  }
+ ],
+ "fix_full": [
+  {
+   "N": 3,
+   "dim_fix": 4,
+   "closed_form": 4,
+   "n_even_sites": 2,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 4,
+   "dim_fix": 4,
+   "closed_form": 4,
+   "n_even_sites": 2,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 5,
+   "dim_fix": 8,
+   "closed_form": 8,
+   "n_even_sites": 3,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 6,
+   "dim_fix": 8,
+   "closed_form": 8,
+   "n_even_sites": 3,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 7,
+   "dim_fix": 16,
+   "closed_form": 16,
+   "n_even_sites": 4,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 8,
+   "dim_fix": 16,
+   "closed_form": 16,
+   "n_even_sites": 4,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 9,
+   "dim_fix": 32,
+   "closed_form": 32,
+   "n_even_sites": 5,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 10,
+   "dim_fix": 32,
+   "closed_form": 32,
+   "n_even_sites": 5,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 11,
+   "dim_fix": 64,
+   "closed_form": 64,
+   "n_even_sites": 6,
+   "fix_is_halflayer_intersection": true
+  },
+  {
+   "N": 12,
+   "dim_fix": 64,
+   "closed_form": 64,
+   "n_even_sites": 6,
+   "fix_is_halflayer_intersection": true
+  }
+ ],
+ "dim_cap": 3000,
+ "generated": "2026-07-26T23:39:00"
+}
