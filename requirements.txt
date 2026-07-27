@@ -13,3 +13,7 @@ numpy
 scipy
 matplotlib
 pytest
+
+# Slide deck builder (reports/slides). Optional: only needed for
+# qca_fragmentation.scaling.c150_slides; its test skips if absent.
+python-pptx
