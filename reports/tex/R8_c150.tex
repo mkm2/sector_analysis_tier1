@@ -53,11 +53,12 @@ $\lfloor (N{+}1)/2\rfloor + 1$ and $D_{\max} = \max_{w\,\mathrm{even}}
 \binom{N+1}{w}$. Because the sector count is \emph{linear} in $N$, C150 is
 symmetry-resolved and not fragmented: it is the natural null model for the
 family. The exponential base of $D_{\max}$ is exactly $2$ with an $N^{-1/2}$
-prefactor, which supersedes the fitted $2.022$ of R2. We push the reduction to
-$N=32$ --- $4.29\times10^{9}$ basis states, $21$~GB, $815$~s, the RAM ceiling ---
-and the assumption-free engine as far as a one-day budget reaches
-(see Table~\ref{tab:frontier} for which units have landed). The closed form is
-exact at every $N$ computed, by either route.
+prefactor, which supersedes the fitted $2.022$ of R2. We push the
+assumption-free engine to $N=22$ ($10.2$~hours for that unit alone) and the
+reduction to $N=32$ --- $4.29\times10^{9}$ basis states, $21$~GB, $815$~s, the
+RAM ceiling. Where the two overlap the reduction is $10^{5}$ times faster and
+gives the identical size multiset, and the closed form is exact at every $N$
+either route reaches.
 (iii) \emph{What is left open.} The sector is the maximal reachable set, not the
 dynamics. $U$ has an exponentially large stationary space,
 $\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ and
@@ -290,7 +291,13 @@ Two frontiers are reported, deliberately kept separate.
 
 Both agree with each other and with \eqref{eq:closed} at every $N$ computed.
 Table~\ref{tab:frontier} lists the units; runtimes are wall-clock on the
-project machine ($20$ cores, $31$~GB, jobs \fn{nice}d and run concurrently).
+project machine ($20$ cores, $31$~GB, jobs \fn{nice}d and run concurrently). The
+two routes overlap at $N=21$ and $N=22$, where they return the identical size
+multiset and the reduction is faster by $4.0\times10^{4}$ and
+$1.0\times10^{5}$ respectively ($13\,018$~s versus $0.32$~s, $36\,728$~s versus
+$0.37$~s). That ratio is the price of streaming the full one-cycle support
+instead of a spanning set of edges, and it is what makes the difference between
+$N=22$ and $N=32$.
 
 \begin{table}[htbp]
 \centering\footnotesize
@@ -512,8 +519,10 @@ the graph.
   acquires a $\mathbb{Z}_2$ gauge redundancy and \eqref{eq:coin} needs a flux
   sector; that is the next natural step.
 \item \textbf{Higher $N$ at the assumption-free frontier.} The streamed engine
-  costs a factor $\approx3$ per site, so $N=23$ is a $\approx30$-hour unit and
-  sits outside the one-day budget used here. The reduction frontier is instead
+  costs a factor $\approx2.8$ per site ($N=20$: $1.1$~h; $N=21$: $3.6$~h;
+  $N=22$: $10.2$~h), so $N=23$ is a $\approx30$-hour unit --- launched, but
+  outside the one-day budget of this report, and not needed for the closed form.
+  The reduction frontier is instead
   bounded by the label array: $N=33$ needs $\mathtt{uint64}$ and $68.7$~GB, so
   the next step there is a machine with more memory, or a compact relabelling
   (the components are few, so a two-pass scheme with a byte-wide label after the
