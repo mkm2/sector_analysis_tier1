@@ -16,6 +16,9 @@
 \newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
   {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending
   (regenerate after the sweep)}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending (regenerate after the sweep)}}}}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -69,12 +72,39 @@ nondegenerate for the extremal ones, so outside those extremes
 $\dim\mathcal{K}(x) < |S_w|$ without exception: an inner sector is never the
 Krylov space of one of its basis states. Under monitoring the sector \emph{is}
 filled uniformly (provably); without monitoring the diagonal ensemble occupies
-between $6.6\%$ and $50\%$ of it. Finally, in the bond representation C150 is a
+between $6.6\%$ and $50\%$ of it.
+(iv) \emph{Interacting, but not chaotic.} In the bond representation C150 is a
 free-fermion Hadamard wall walk dressed by exactly two diagonal signs --- a
 maximal nearest-neighbour wall interaction and a Jordan--Wigner string on the
 coin --- and removing either one alone leaves the many-body spectrum
-non-additive while removing both makes it additive to $4\times10^{-15}$. C150 is
-therefore exactly charge-resolved but genuinely interacting inside each sector.
+non-additive while removing both makes it additive to $4\times10^{-15}$: C150 is
+genuinely interacting. It is nevertheless \emph{not} a random-matrix system, and
+the reason is a hard count rather than a statistic. The number of distinct
+eigenvalues of the one-cycle operator on the full $2^N$ space is exactly
+$3^{m}$ for even $N$ and $(3^{m}+(-1)^m)/2$ for odd $N$, with
+$m=\lceil N/2\rceil$ the number of even sites --- verified for $N=4\ldots13$ and
+then out of sample at $N=14$, where the law predicts $2187$ and the
+$16\,384$-dimensional diagonalisation returns $2187$. The distinct fraction
+therefore decays as $(\sqrt3/2)^N = 0.866^N$, and no chaotic Floquet operator has
+an exponentially degenerate spectrum with a closed-form count. There is more
+structure still: for each $N$ a \emph{single} universal set $\Theta_N$ of that
+size carries every shell's spectrum as a subset, and the largest shell --- the
+one realising $D_{\max}$ --- realises \emph{all} of $\Theta_N$ while the small
+shells realise as little as $1.8\%$. So the spectral problem is ``find $3^m$
+angles and decide which shell takes which'', and that is not a random point
+process of any kind: not $\beta=2$ (excluded by time reversal), not $\beta=1$
+(excluded by the degeneracy law), and not Poisson either. The spacing statistics
+agree: measured against COE, Haar $O(D)$, CUE and Poisson references
+generated through the identical pipeline, the dilute shells sit at Poisson (as
+few-body shells must) and at half filling the reflection-resolved
+$\langle\tilde r\rangle$ falls from $0.60/0.55$ at $N=11$ to $0.37$ at $N=15$ and
+$0.35$ at $N=16$ --- down to Poisson and past it, not up toward an RMT value ---
+and neither superposition nor near-degeneracy can account for going below
+Poisson, which is the point. $\beta=2$ (GUE/CUE) is excluded on symmetry grounds in any case:
+$U$ is real orthogonal, so complex conjugation is a time reversal. The structural
+source of all of this is that $U=L_BL_A$ is a product of two commuting-gate
+\emph{involutions}, which also explains the $\pm\theta$ pairing and the fixed
+space above.
 \end{abstract}
 
 \tableofcontents
@@ -493,26 +523,265 @@ honest reason a sector's spectral properties do not follow from
 \eqref{eq:closed}, and why \eqref{eq:fix} had to be measured rather than read off
 the graph.
 
+\section{Level statistics: interacting, but not chaotic}
+\label{sec:levels}
+
+\subsection{Why the comparison is not to GUE}
+
+Two exact structures fix the symmetry class before any number is computed.
+
+\emph{U is real orthogonal.} Every amplitude lies in $\mathbb{Z}[1/\sqrt2]$, so
+complex conjugation $K$ is an antiunitary symmetry, $KUK = U$ with $K^2 = 1$.
+That is time-reversal invariance: the $\beta=2$ ensembles (GUE, CUE) are excluded
+on symmetry grounds, and the candidates are the $\beta=1$ family. It also means
+the spectrum is closed under conjugation, so eigenvalues come in mirror pairs
+$e^{\pm i\theta}$ together with real eigenvalues $\pm1$. That mirror is a
+kinematic constraint, not a spectral correlation, so every statistic below is
+computed on the \emph{independent} half of the spectrum, $\theta\in(0,\pi)$, with
+$\pm1$ removed.
+
+\emph{U is a product of two involutions.} Each half-layer is a product of
+commuting single-site gates, and each such gate is a real symmetric involution
+--- on the doubly and doubly-un-occupied bond pairs it is the identity, and on
+the one-wall subspace $M(c)^2 = \mathbb{1}$ because $\operatorname{tr}M(c) = 0$
+and $\det M(c) = -1$ in \eqref{eq:coin}. So
+\begin{equation}
+  U = L_BL_A, \qquad L_A = L_A^{\mathsf T} = L_A^{-1},
+  \quad L_B = L_B^{\mathsf T} = L_B^{-1},
+  \qquad L_AUL_A = U^{-1},
+  \label{eq:invol}
+\end{equation}
+all verified to $10^{-15}$ for $N=3\ldots10$. This is a dihedral
+structure: on the $2$-dimensional irreps of the algebra generated by $L_A$ and
+$L_B$, $U$ acts as a rotation by some angle $\theta$; on the $1$-dimensional ones
+$U = L_BL_A = \pm1$. It also \emph{explains} \eqref{eq:fix}, which \S\ref{sec:open}
+could only report: $U\psi = \psi$ forces $L_A\psi = L_B\psi$, so
+\begin{equation}
+  \Fix(U) = \bigl[\Fix(L_A)\cap\Fix(L_B)\bigr] \oplus
+            \bigl[\Fix(-L_A)\cap\Fix(-L_B)\bigr],
+\end{equation}
+and the second summand is \emph{empty} for every $N=3\ldots11$, which is why
+$\Fix(U)$ is exactly the intersection of the two half-layer fixed spaces.
+
+\subsection{Pipeline and references}
+
+Each exact degeneracy is collapsed to one level: a spacing statistic run over a
+degenerate spectrum measures the degeneracies. The primary statistic is the
+spacing-ratio average $\langle\tilde r\rangle$ with
+$\tilde r_i = \min(r_i, 1/r_i)$, $r_i = s_i/s_{i-1}$, which needs no unfolding
+and so cannot be biased by a bad unfolding of a Floquet spectrum; the unfolded
+spacing distribution $P(s)$ (local moving-average unfolding) is reported beside
+it. Reference ensembles are \emph{generated} and pushed through the identical
+pipeline rather than quoted from surmise constants, so the half-circle
+restriction and the degeneracy collapse affect data and reference equally:
+Poisson, COE ($U = W^{\mathsf T}W$, $W$ Haar CUE), Haar $O(D)$ --- the ensemble
+that shares C150's conjugate-pairing constraint --- CUE, and superpositions of
+$m$ independent Haar-$O$ spectra, which is what \emph{unresolved} symmetry blocks
+look like.
+
+Two further exact facts organise the data. For odd $N$ the reflection $P$
+commutes with $U$, so the shell is a superposition of two parity blocks and must
+be analysed inside each; superposition can only push a repulsion measure
+\emph{down} toward Poisson, so unresolved blocks bias $\langle\tilde r\rangle$
+low and never high. And for odd $N$ the shells $w$ and $N+1-w$ have
+\emph{identical} spectra (verified to $1.2\times10^{-14}$; both weights are even
+because $N+1$ is even), so they are counted once. Finally, filling matters: a
+shell with fixed $w$ and growing $N$ is $w$ hard-core walls on $N+1$ bonds, i.e.\
+a \emph{few-body} problem, which must approach Poisson however chaotic the dense
+model is. Only $\nu = w/(N+1)$ near $\tfrac12$ can speak to many-body chaos.
+
+\subsection{The decisive fact: the spectrum is exponentially degenerate}
+
+Before the spacings, count the levels. The number of \emph{distinct} eigenvalues
+of $U$ on the whole $2^N$ space is not generic --- it is exactly
+\begin{equation}
+  \boxed{\;\#\{\text{distinct eigenvalues}\} \;=\;
+  \begin{cases}
+    3^{m}, & N \text{ even},\\[2pt]
+    \bigl(3^{m} + (-1)^{m}\bigr)/2, & N \text{ odd},
+  \end{cases}
+  \qquad m = \#\{\text{even sites}\} = \lceil N/2\rceil . \;}
+  \label{eq:distinct}
+\end{equation}
+Verified for $N=4\ldots13$ (Table~\ref{tab:distinct}) and then \emph{out of
+sample} at $N=14$: the law was written down from $N\le13$, it predicts
+$3^7 = 2187$, and the $16\,384$-dimensional diagonalisation returns exactly
+$2187$. So the distinct spectrum grows like
+$(\sqrt3)^{\,N}$ while the Hilbert space grows like $2^N$: the distinct fraction
+decays as $(\sqrt3/2)^N = 0.866^N$, and by $N=14$ only $2187$ of $16\,384$
+eigenvalues are distinct.
+
+\paragraph{The count does not depend on a tolerance.} A degeneracy count is only
+as good as the threshold that defines it, so it is worth recording that here
+there is no threshold to choose. At $N=12$ the $4095$ consecutive phase gaps
+split into $3367$ below $10^{-12}$ and $728$ above $10^{-4}$, with
+\emph{nothing at all} in between --- five empty decades separating the
+degeneracies from the distinct levels. Accordingly the count is unchanged for
+every tolerance from $10^{-13}$ to $10^{-5}$, eight orders of magnitude, at
+$N=8,9,10,11,12$ alike. Equation~\eqref{eq:distinct} is a property of the
+operator, not of the numerics.
+
+This settles the question posed in \S\ref{sec:free} more sharply than any
+spacing statistic could, and it settles it the other way. \emph{No chaotic
+Floquet operator has an exponentially degenerate spectrum obeying a closed-form
+count.} C150 is therefore not in the COE class, nor in any random-matrix class:
+it is an exactly structured operator. Combined with \S\ref{sec:free}, the
+characterisation is that C150 is \emph{interacting but not chaotic} --- and there
+is no contradiction, because interacting and integrable are perfectly
+compatible (every Bethe-ansatz-solvable model is both). The base $3$ per even
+site is the natural counting for the dihedral structure \eqref{eq:invol}: each
+single-site gate is an involution with a $3$-dimensional $+1$ eigenspace and a
+$1$-dimensional $-1$ eigenspace on the bond pair it touches.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\iftable{tab_c150_distinct.tex}
+\caption{The distinct-eigenvalue count of the full-space operator against
+\eqref{eq:distinct}. The last column is $\#$distinct$/2^N$, which decays as
+$0.866^N$.}
+\label{tab:distinct}
+\end{table}
+
+\paragraph{Erratum to \S\ref{sec:free}.} The outlook of the previous version of
+this report predicted that the level statistics ``will not look free''. Read as
+``will look chaotic'' that prediction is wrong, and \eqref{eq:distinct} is why:
+non-gaussianity of the gate rules out a \emph{free-fermion} description, but it
+does not imply random-matrix behaviour, and here it does not produce it.
+
+\subsection{And the spacings agree}
+
+Table~\ref{tab:levels} and Figure~\ref{fig:levels} give
+$\langle\tilde r\rangle$ shell by shell against the generated references. The
+reading is consistent with \eqref{eq:distinct} rather than with any RMT class:
+the dilute shells sit at Poisson, as they must, and the shells at half filling
+drift \emph{downward} with $N$ --- the opposite of the flow toward an RMT value
+that a chaotic system shows. The cleanest sequence is exact half filling,
+$\nu = w/(N+1) = \tfrac12$, with reflection resolved:
+\begin{equation}
+  N = 11,\ w = 6:\ \langle\tilde r\rangle = 0.597,\,0.550 ;
+  \qquad
+  N = 15,\ w = 8:\ \langle\tilde r\rangle = 0.366,\,0.375 ,
+\end{equation}
+i.e.\ from between COE and Haar-$O$ down to \emph{at} Poisson
+($0.384\pm0.017$ from our own generation) as $N$ grows, while the degeneracy
+fraction of the same blocks rises from $0.61$ to $0.75$ --- exactly what
+\eqref{eq:distinct} demands, since the distinct fraction decays as $0.866^N$. The
+largest shell we can diagonalise, $N=16$, $w=8$ ($|S_w| = 24\,310$, $\nu=0.47$,
+$3278$ ratios), goes further still: $\langle\tilde r\rangle = 0.347$, i.e.\
+\emph{below} Poisson. That is worth being careful about, because it rules out the
+two easy explanations rather than supporting them. It is not a superposition
+effect: superposing independent spectra approaches Poisson \emph{from above}
+($2\times$Haar-$O$ gives $0.418$, $3\times$ gives $0.396$) and cannot go below.
+Nor is it unresolved near-degeneracy: among the distinct levels of every shell
+checked there is \emph{not one} gap below a hundredth of the median gap
+(Table~\ref{tab:universal}). The correct reading is \S\ref{sec:universal}: the
+level set is not a random point process of any kind, so it is not obliged to
+match Poisson either. Two controls at comparable dimension --- the
+largest sector of \rt{W54} ($0.426$, $0.433$) and of \rt{W57} ($0.525$, $0.527$)
+at $N=10,12$, through the identical pipeline --- confirm that the pipeline
+separates rules rather than saturating.
+
+The one caveat worth stating: because the shells retain a large \emph{unresolved}
+commutant even after reflection is taken out (the degeneracy fraction column),
+each measured $\langle\tilde r\rangle$ is a lower bound on the repulsion of a
+single irreducible block. That caveat cannot rescue chaos, though ---
+\eqref{eq:distinct} is an exact count, not a bound, and an exponentially
+degenerate spectrum is incompatible with RMT statistics whatever the blocks turn
+out to be. Identifying the commutant that \eqref{eq:distinct} implies is the
+natural next step and is the sharpened form of open item~\ref{it:commutant}.
+
+\subsection{One universal spectrum, and why no ensemble fits}
+\label{sec:universal}
+
+The degeneracy law has a structural counterpart that explains the whole picture.
+For each $N$ there is a single \emph{universal} set $\Theta_N$ of
+$3^{m}$ (resp.\ $(3^m+(-1)^m)/2$) angles such that
+
+\begin{itemize}
+\item every wall shell's spectrum is a \emph{subset} of $\Theta_N$ --- verified to
+  $10^{-9}$ for every shell of $N=8,10,12$; and
+\item the \emph{largest} shell, the one realising $D_{\max}$, realises
+  \emph{all} of $\Theta_N$ ($100\%$ coverage at $N=8$, $w=4$; $N=10$, $w=6$;
+  $N=12$, $w=6$), while the small shells realise as little as $1.8\%$.
+\end{itemize}
+
+So the spectral problem of C150 is not ``diagonalise $2^N$ states'' but ``find
+$3^{m}$ angles, then decide which shell picks which of them with what
+multiplicity''. A level set generated by a closed-form alphabet of that kind is
+not a random point process, and this is the precise sense in which \emph{no}
+standard ensemble applies: $\beta=2$ (GUE, CUE) is excluded by time reversal;
+$\beta=1$ (COE, Haar-$O$) is excluded by the exponential degeneracy and the
+closed-form count; and Poisson is excluded too, since a Poisson process does not
+put its points on a fixed $3^m$-element alphabet, and at the largest accessible
+shell the observed $\langle\tilde r\rangle$ sits below the Poisson value with no
+near-degeneracies available to explain it away. C150 is spectrally
+\emph{structured}, not random --- which is exactly what one expects of an
+exactly solvable automaton, and exactly what the closed-form sector solution of
+\S\ref{sec:closed} should have led us to expect inside the sectors too.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\iftable{tab_c150_universal.tex}
+\caption{One universal spectrum per $N$. Every shell's distinct spectrum is a
+subset of $\Theta_N$ (whose size is \eqref{eq:distinct}), the largest shell
+covers all of it, and among the distinct levels of a shell there is no gap below
+a hundredth of the median gap --- so the sub-Poisson $\langle\tilde r\rangle$ of
+the biggest shells is a property of the structured alphabet, not of unresolved
+near-degeneracies.}
+\label{tab:universal}
+\end{table}
+
+\begin{table}[htbp]
+\centering\scriptsize\setlength{\tabcolsep}{4pt}
+\iftable{tab_c150_levels.tex}
+\caption{Spacing-ratio statistic. References are generated and pushed through the
+same pipeline (half circle, degeneracies collapsed). ``deg.\ frac.'' is the
+fraction of the block's levels removed as exact degeneracies --- a measure of how
+much commutant is still unresolved, and of how far $\langle\tilde r\rangle$ is
+biased low. $\nu = w/(N+1)$ is the wall filling; only $\nu\approx\tfrac12$ is a
+many-body question.}
+\label{tab:levels}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_c150_levels.pdf}{\textwidth}
+\caption{Left: $\langle\tilde r\rangle$ per symmetry block against block
+dimension, with the generated reference ensembles as bands ($\pm1\sigma$ over the
+samples). Right: the unfolded spacing distribution, C150 pooled against the same
+references.}
+\label{fig:levels}
+\end{figure}
+
 \section{Open items}
 
 \begin{enumerate}
-\item \textbf{Level statistics.} Deliberately not computed here. The spectra of
-  every shell in Table~\ref{tab:spectral} are reproducible in seconds from
-  \fn{quantum.rule150\_spectra}, so a level-spacing analysis --- sector by
-  sector, and separated by reflection parity for odd $N$ --- is immediately
-  available; \S\ref{sec:free} predicts it will \emph{not} look free, and
-  \eqref{eq:fix} says the $+1$ eigenvalue must be excised first.
-\item \textbf{A derivation of \eqref{eq:fix}.} The law
-  $\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ and the identity
-  $\Fix(U)=\Fix(L_A)\cap\Fix(L_B)$ are exact numerical facts here, with the
-  half-layer mechanism identified but not turned into a proof. The natural route
-  is the local $+1$ eigenvector of each single-gate involution, together with the
-  count of even sites; the $w$-resolved binomial suggests the dark states are
-  labelled by choosing $w/2$ of the $\lceil N/2\rceil$ even sites.
-\item \textbf{The further exact multiplicities.} Beyond the $+1$ eigenvalue the
+\item \textbf{A $w$-resolved version of \eqref{eq:distinct}, and a proof.} The
+  full-space count is exact and now out-of-sample tested, but it is not derived,
+  and the per-shell count is not yet in closed form. The base $3$ per even site
+  points at the dihedral structure \eqref{eq:invol} as the route.
+\item \textbf{A derivation of \eqref{eq:fix}.} The identity
+  $\Fix(U)=\Fix(L_A)\cap\Fix(L_B)$ is now \emph{explained} by the two-involution
+  structure \eqref{eq:invol} together with the numerical emptiness of the
+  $(-1,-1)$ dihedral sector, which is the one remaining gap. The $w$-resolved law
+  $\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ is still only observed; the
+  binomial suggests the dark states are labelled by choosing $w/2$ of the
+  $\lceil N/2\rceil$ even sites.
+\item \label{it:commutant}\textbf{The commutant.} Beyond the $+1$ eigenvalue the
   spectrum carries exact multiplicities $2,3,4,6,10,15$ (e.g.\ $N=8$, $w=4$:
-  $\{1{:}48,\,2{:}24,\,3{:}8,\,6{:}1\}$). These are not explained by reflection,
-  which is abelian; some further commutant is present.
+  $\{1{:}48,\,2{:}24,\,3{:}8,\,6{:}1\}$), not explained by reflection, which is
+  abelian. Equation~\eqref{eq:distinct} now says how much commutant there must
+  be: with only $3^{\lceil N/2\rceil}$ distinct eigenvalues on $2^N$ states, the
+  commutant dimension $\sum_\lambda m_\lambda^2$ is exponentially large.
+  Identifying its generators would prove \eqref{eq:distinct} and turn the
+  block-resolved statistics of \S\ref{sec:levels} from a lower bound into an
+  exact result.
+\item \textbf{Level statistics for the partner shells.} For odd $N$ the shells
+  $w$ and $N+1-w$ have identical spectra to $1.2\times10^{-14}$, but the natural
+  candidate intertwiner --- the bond particle-hole map, which in spin variables
+  is $x\mapsto x\oplus A$ with $A$ the alternating mask --- does \emph{not}
+  commute with $U$ (checked for $N=3\ldots9$). The intertwiner that does is
+  unidentified.
 \item \textbf{The ring.} \S\ref{sec:closed} solves \rt{pbc} kinematically, but
   the quantum layer of \S\ref{sec:open}--\S\ref{sec:free} is done for \rt{obc0}
   only. On the ring the wall map is $2$-to-$1$, so the bond representation
@@ -543,6 +812,10 @@ python -m qca_fragmentation.c150 --frontier 21-31 --bc obc0
 
 # sector spectra, Krylov dimensions, Fix(U), freeness test
 python -m qca_fragmentation.scaling.c150_report --quantum
+
+# level statistics: references, shells, controls, distinct-eigenvalue law
+python -m qca_fragmentation.quantum.rule150_levels --run
+
 python -m qca_fragmentation.scaling.c150_report --tables --figures
 
 # tests (126 of them)
@@ -554,7 +827,10 @@ python -m pytest test_flip_graph.py test_c150.py -q
 Data: \fn{results/150\_obc0.jsonl} and \fn{results/150\_pbc.jsonl} (Tier 1a),
 \fn{analytics/c150\_frontier.jsonl} (reduction frontier, one JSON line per
 $(N,\rt{bc})$ with the full size multiset and the closed-form check),
-\fn{analytics/c150\_quantum.json} (spectral portraits, $\Fix(U)$, freeness).
+\fn{analytics/c150\_quantum.json} (spectral portraits, $\Fix(U)$, freeness),
+\fn{analytics/c150\_levels.json} (reference ensembles with their pooled spacing
+samples, per-block $\langle\tilde r\rangle$ and KS distances, controls, and the
+distinct-eigenvalue table).
 \end{sloppypar}
 
 \end{document}

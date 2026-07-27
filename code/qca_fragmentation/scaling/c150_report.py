@@ -174,11 +174,110 @@ def tab_freeness(data: dict) -> str:
     )
 
 
+REF_LABEL = {
+    "poisson": "Poisson",
+    "coe": "COE ($\\beta=1$)",
+    "orth": "Haar $O(D)$",
+    "cue": "CUE ($\\beta=2$)",
+    "orth_x2": "$2\\times$Haar $O$",
+    "orth_x3": "$3\\times$Haar $O$",
+}
+
+
+def _levels_data() -> Optional[dict]:
+    from ..quantum.rule150_levels import LEVELS_PATH
+    if not os.path.exists(LEVELS_PATH):
+        return None
+    with open(LEVELS_PATH) as f:
+        return json.load(f)
+
+
+def tab_distinct(lv: dict) -> str:
+    """The distinct-eigenvalue count against its closed form."""
+    rows = []
+    for r in lv.get("distinct", []):
+        m = ceil(r["N"] / 2)
+        form = (f"$3^{{{m}}}$" if r["N"] % 2 == 0
+                else f"$(3^{{{m}}}{'+1' if m % 2 == 0 else '-1'})/2$")
+        mark = r"\cmark" if r["matches"] else r"\xmark"
+        rows.append(f"{r['N']} & ${_fmt(r['dim'])}$ & ${_fmt(r['n_distinct'])}$ & "
+                    f"{form} & ${_fmt(r['closed_form'])}$ & "
+                    f"${r['distinct_fraction']:.4f}$ & {mark} \\\\")
+    body = "\n".join(rows)
+    return ("\\begin{tabular}{rrrlrrc}\n\\hline\n"
+            "$N$ & $2^N$ & $\\#$distinct & closed form & value & fraction & "
+            "\\\\\n\\hline\n" f"{body}\n" "\\hline\n\\end{tabular}\n")
+
+
+def tab_universal(lv: dict) -> str:
+    """One universal spectrum per N; per-shell coverage of it."""
+    rows = []
+    for r in lv.get("universal", []):
+        cov = ", ".join(f"$w{{=}}{s['w']}$: ${100*s['coverage']:.1f}\\%$"
+                        for s in r["shells"] if s["dim"] >= 8)
+        m_sub = r"\cmark" if r["all_shells_are_subsets"] else r"\xmark"
+        m_cov = r"\cmark" if r["largest_shell_covers_all"] else r"\xmark"
+        rows.append(
+            f"{r['N']} & ${_fmt(r['universal_size'])}$ & "
+            f"{m_sub} & "
+            f"${r['largest_shell_w']}$ & "
+            f"{m_cov} & "
+            f"${r['min_gap_over_median']:.3f}$ \\\\")
+        rows.append(f"\\multicolumn{{6}}{{l}}{{\\quad\\scriptsize coverage: "
+                    f"{cov}}} \\\\")
+    body = "\n".join(rows)
+    return ("\\begin{tabular}{rrcccr}\n\\hline\n"
+            "$N$ & $|\\Theta_N|$ & all shells $\\subseteq\\Theta_N$ & "
+            "largest $w$ & covers all & $\\min\\text{gap}/\\text{median}$ \\\\\n"
+            "\\hline\n" f"{body}\n" "\\hline\n\\end{tabular}\n")
+
+
+def tab_levels(lv: dict) -> str:
+    """Reference ensembles, then the C150 blocks, then the controls."""
+    rows = ["\\multicolumn{6}{l}{\\itshape reference ensembles, identical "
+            "pipeline ($D=%d$, %d samples each)}\\\\"
+            % (lv["references"]["orth"]["D"],
+               lv["references"]["orth"]["n_samples"])]
+    for k in ("poisson", "orth_x3", "orth_x2", "coe", "orth", "cue"):
+        r = lv["references"][k]
+        rows.append(f"\\quad {REF_LABEL[k]} & --- & --- & --- & "
+                    f"${r['r_tilde_mean']:.4f} \\pm {r['r_tilde_std']:.4f}$ & --- \\\\")
+    rows.append("\\hline")
+    rows.append("\\multicolumn{6}{l}{\\itshape C150 \\rt{obc0} wall shells}\\\\")
+    sh = sorted(lv["shells"], key=lambda r: (r["N"], r["w"], r["block"]))
+    for r in sh:
+        rows.append(
+            f"\\quad $N={r['N']}$, $w={r['w']}$ & {r['block'].replace('=','{=}')} & "
+            f"${_fmt(r['block_dim'])}$ & ${r['degenerate_fraction']:.2f}$ & "
+            f"${r['r_tilde']:.4f}$ & ${r['n_ratios']}$ \\\\")
+    if lv.get("controls"):
+        rows.append("\\hline")
+        rows.append("\\multicolumn{6}{l}{\\itshape control: other unitary rules, "
+                    "largest sector, small $N$}\\\\")
+        for r in lv["controls"]:
+            rows.append(
+                f"\\quad \\rt{{W{r['rule']}}}, $N={r['N']}$ & --- & "
+                f"${_fmt(r['block_dim'])}$ & ${r['degenerate_fraction']:.2f}$ & "
+                f"${r['r_tilde']:.4f}$ & ${r['n_ratios']}$ \\\\")
+    body = "\n".join(rows)
+    return ("\\begin{tabular}{llrrrr}\n\\hline\n"
+            "case & block & dim & deg.\\ frac. & $\\langle\\tilde r\\rangle$ & "
+            "$n$ \\\\\n\\hline\n" f"{body}\n" "\\hline\n\\end{tabular}\n")
+
+
 def write_tables(data: dict) -> None:
     os.makedirs(TEXDIR, exist_ok=True)
-    for name, txt in (("tab_c150_frontier", tab_frontier()),
-                      ("tab_c150_spectral", tab_spectral(data)),
-                      ("tab_c150_freeness", tab_freeness(data))):
+    tables = [("tab_c150_frontier", tab_frontier()),
+              ("tab_c150_spectral", tab_spectral(data)),
+              ("tab_c150_freeness", tab_freeness(data))]
+    lv = _levels_data()
+    if lv:
+        tables.append(("tab_c150_levels", tab_levels(lv)))
+        if lv.get("distinct"):
+            tables.append(("tab_c150_distinct", tab_distinct(lv)))
+        if lv.get("universal"):
+            tables.append(("tab_c150_universal", tab_universal(lv)))
+    for name, txt in tables:
         path = os.path.join(TEXDIR, f"{name}.tex")
         with open(path, "w") as f:
             f.write(txt)
@@ -191,6 +290,7 @@ def figures(data: dict) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    import numpy as np
 
     os.makedirs(FIGDIR, exist_ok=True)
     eng = load_results(150, "obc0")
@@ -276,6 +376,74 @@ def figures(data: dict) -> None:
         fig.savefig(os.path.join(FIGDIR, f"fig_c150_quantum.{ext}"), dpi=150)
     plt.close(fig)
     print("wrote figures/fig_c150_frontier.*, figures/fig_c150_quantum.*")
+
+    # --- figure 3: level statistics -----------------------------------------
+    lv = _levels_data()
+    if not lv:
+        print("no analytics/c150_levels.json -- skipping the level figure")
+        return
+    refs = lv["references"]
+    fig, ax = plt.subplots(1, 2, figsize=(9.2, 3.4))
+
+    # short plain-text names: the LaTeX of REF_LABEL is for the table, not for
+    # matplotlib (a bare \times would be rendered literally).
+    short = {"poisson": "Poisson", "orth_x3": r"$3\times$Haar $O$",
+             "orth_x2": r"$2\times$Haar $O$", "coe": r"COE $\beta{=}1$",
+             "orth": r"Haar $O(D)$", "cue": r"CUE $\beta{=}2$"}
+    band = (("poisson", "0.55", "-", 0.006), ("orth_x2", "C4", "-.", 0.006),
+            ("coe", "C2", "--", 0.006), ("orth", "C1", ":", -0.016),
+            ("cue", "C5", "-", 0.006))
+    xs = [1, 1e4]
+    for k, col, ls, dy in band:
+        m, s = refs[k]["r_tilde_mean"], refs[k]["r_tilde_std"]
+        ax[0].fill_between(xs, m - s, m + s, color=col, alpha=0.16, lw=0)
+        ax[0].plot(xs, [m, m], ls, color=col, lw=1)
+        ax[0].text(1.15, m + dy, short[k], fontsize=6, color=col)
+    for rows, mk, col, lab in (
+            ([r for r in lv["shells"] if r["N"] % 2 == 0], "o", "C0",
+             "even $N$ (no parity block)"),
+            ([r for r in lv["shells"] if r["N"] % 2 == 1], "^", "C3",
+             "odd $N$, parity-resolved")):
+        if rows:
+            ax[0].semilogx([r["block_dim"] for r in rows],
+                           [r["r_tilde"] for r in rows], mk, ms=4.5,
+                           color=col, label=lab)
+    if lv.get("controls"):
+        ax[0].semilogx([r["block_dim"] for r in lv["controls"]],
+                       [r["r_tilde"] for r in lv["controls"]], "s", ms=4.5,
+                       mfc="none", mec="k", label="control: other rules")
+    ax[0].set_xlim(1.1, 1e4)
+    ax[0].set_ylim(0.30, 0.66)
+    ax[0].set_xlabel("block dimension")
+    ax[0].set_ylabel(r"$\langle\tilde r\rangle$")
+    ax[0].legend(fontsize=6.5, loc="lower right")
+    ax[0].set_title("spacing-ratio statistic against generated references",
+                    fontsize=9)
+
+    # pooled P(s): the degeneracy-free / best-resolved C150 blocks
+    pool = [s for r in lv["shells"] if r["N"] % 2 == 1 for s in r["spacings"]]
+    pool_e = [s for r in lv["shells"] if r["N"] % 2 == 0 for s in r["spacings"]]
+    bins = np.linspace(0, 3.5, 36)
+    if pool_e:
+        ax[1].hist(pool_e, bins=bins, density=True, histtype="step",
+                   color="C0", lw=1.6, label="C150, even $N$")
+    if pool:
+        ax[1].hist(pool, bins=bins, density=True, histtype="step",
+                   color="C3", lw=1.6, label="C150, odd $N$ resolved")
+    for k, col, ls in (("poisson", "0.55", "-"), ("coe", "C2", "--"),
+                       ("orth", "C1", ":"), ("cue", "C5", "-.")):
+        h, e = np.histogram(refs[k]["spacings"], bins=bins, density=True)
+        ax[1].plot(0.5 * (e[1:] + e[:-1]), h, ls, color=col, lw=1.2,
+                   label=REF_LABEL[k])
+    ax[1].set_xlabel("unfolded spacing $s$")
+    ax[1].set_ylabel("$P(s)$")
+    ax[1].legend(fontsize=6.5)
+    ax[1].set_title("unfolded spacing distribution", fontsize=9)
+    fig.tight_layout()
+    for ext in ("pdf", "png"):
+        fig.savefig(os.path.join(FIGDIR, f"fig_c150_levels.{ext}"), dpi=150)
+    plt.close(fig)
+    print("wrote figures/fig_c150_levels.*")
 
 
 def main(argv=None):

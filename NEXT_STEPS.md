@@ -41,16 +41,29 @@ pass.
    odd, ~170/240; exact within-sector count 104/76/58 at N=4/5/6. The dense
    even-N census upturn at N=8 is a distinct quantity out of exact reach.)
 
+7. **Level statistics — DONE (2026-07-27, R8 §7).** C150 is interacting but not
+   chaotic. Decisive: #distinct eigenvalues of U on 2^N states = 3^m (N even) /
+   (3^m + (-1)^m)/2 (N odd), m = ceil(N/2) = #even sites; verified N=4..13 and
+   out of sample at N=14. Distinct fraction decays as 0.866^N. Spacing
+   statistics agree (dilute shells Poisson as few-body shells must; half-filled
+   drift down with N). beta=2 (GUE/CUE) excluded on symmetry grounds since U is
+   real orthogonal. Structural source: U = L_B L_A is a product of two real
+   symmetric involutions, which also explains Fix(U) = Fix(L_A) cap Fix(L_B).
+   This corrected an over-reaching forward-looking sentence in R8 §5.
+
 ## Open from R8 (C150)
-7. **Level statistics per wall shell.** Deliberately not computed (user
-   instruction). The spectra regenerate in seconds; excise the +1 eigenvalue
-   (multiplicity C(ceil(N/2), w/2)) first and split by reflection parity for
-   odd N.
-8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2).** Exact numerical law over 70
-   shells with the mechanism identified (Fix(U) = Fix(L_A) cap Fix(L_B); the
-   exponent is the number of even sites) but no proof.
-9. **The further exact multiplicities** (2,3,4,6,10,15) are not explained by
-   reflection, which is abelian: some further commutant is present.
+8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the
+   3^m distinct-eigenvalue law. The full-space law is exact and out-of-sample
+   tested but not derived; Fix(U) = Fix(L_A) cap Fix(L_B) is now explained by the
+   two-involution structure modulo the (numerically empty) (-1,-1) sector.
+9. **Identify the commutant.** The 3^m law forces an exponentially large
+   commutant (sum of m_lambda^2). Its generators would prove the law and turn
+   the block-resolved spacing statistics from a lower bound into an exact result.
+   The exact multiplicities (2,3,4,6,10,15) are not explained by reflection,
+   which is abelian.
+9b. **The partner-shell intertwiner.** For odd N the shells w and N+1-w have
+   identical spectra (1.2e-14), but the bond particle-hole map (x -> x XOR
+   alternating mask) does NOT commute with U (checked N=3..9). Unidentified.
 10. **C150 on the ring.** Kinematics solved; the quantum layer is obc0 only.
     The 2-to-1 wall map gives the bond frame a Z2 gauge redundancy.
 11. **N=33 at the reduction frontier** needs a uint64 label array (68.7 GB), or
