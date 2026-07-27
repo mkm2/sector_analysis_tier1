@@ -837,6 +837,136 @@ entropy is in any case sub-thermal throughout, $0.50$--$0.61$ of $\ln 2\cdot
 \lfloor N/2\rfloor$, which is the direction the rest of \S\ref{sec:levels} would
 lead one to expect.
 
+\section{Area law versus volume law: what the sector decides}
+\label{sec:ent}
+
+Figure~3a of \fn{QCA\_Circuits} starts C150 from three product states --- a
+single excitation $\ket{0\ldots010\ldots0}$, the N\'eel state
+$\ket{0101\ldots}$, and the pair state $\ket{001100\ldots}$ --- and finds that
+the same rule supports both area-law and volume-law growth. The natural
+objection is that the sectors are binomially large, $|S_w|=\binom{N+1}{w}$, so
+any state ought to have room to become volume-law entangled. That objection has
+a clean resolution, and it is a sector statement --- but not one about
+$|S_w|$.
+
+\subsection{The three states are in three very different sectors}
+
+Translating each into wall language (\S\ref{sec:walls}):
+\begin{center}\footnotesize
+\begin{tabular}{llrl}
+\hline
+state & configuration & $w$ & $|S_w| = \binom{N+1}{w}$ \\
+\hline
+single excitation & $0\ldots010\ldots0$ & $2$ & $\tfrac12 N(N{+}1)$, \emph{polynomial} \\
+N\'eel & $0101\ldots$ & $N$ ($N$ even) & $N+1$, \emph{linear} \\
+pair & $001100\ldots$ & $\approx N/2$ & $\binom{N+1}{N/2}$, \emph{exponential} \\
+\hline
+\end{tabular}
+\end{center}
+The premise fails because $\binom{N+1}{w}$ is exponentially large \emph{only}
+near $w=(N{+}1)/2$; at both ends of the binomial row it is small. The N\'eel
+state is the striking case: it looks like the most excited product state in the
+chain, and in wall language it is a \textbf{one-hole} state --- a wall on every
+bond but one. Walls are hard core (\S\ref{sec:walls}), so nothing can move
+except at that single hole: the N\'eel state is \emph{jammed}, its sector has
+dimension $N+1$, and $S\le\ln(N{+}1)$ for all time. The single excitation is the
+mirror case, only two walls in an otherwise empty bond lattice --- a few-body
+problem. Only the pair state sits at finite wall density, where the walls are
+mobile and the sector is exponentially large.
+
+\subsection{The exact kinematic ceiling}
+
+The sharp bound is not $\ln|S_w|$ but the bipartite Schmidt rank. Cut between
+sites $c-1$ and $c$. Because the bond map is a prefix XOR, $x_A$ (sites
+$0..c{-}1$) determines the $c$ bonds $b_0\ldots b_{c-1}$ and $x_B$ determines the
+$N-c$ bonds $b_{c+1}\ldots b_N$, with the cut bond $b_c$ shared:
+$w = w_A + b_c + w_B$. Hence only those $x_A$ occur whose internal wall count
+lies in an admissible window, and
+\begin{equation}
+  \operatorname{rank} \;\le\;
+  \min\Bigl(\,|S_w|,\;
+  \sum_{k=\max(0,\,w-1-(N-c))}^{\min(w,c)}\!\!\binom{c}{k},\;
+  \sum_{k=\max(0,\,w-1-c)}^{\min(w,\,N-c)}\!\!\binom{N-c}{k}\Bigr),
+  \qquad S(t)\le\ln(\cdot)\ \ \forall t.
+  \label{eq:entbound}
+\end{equation}
+The \emph{lower} limits are not decoration: the right side can absorb only so
+many walls, and dropping them over-counts badly at high filling --- it is exactly
+what would make the N\'eel state look unconstrained. Equation~\eqref{eq:entbound}
+is not merely a bound but an identity for the rank ceiling: it equals the size of
+the compressed Schmidt matrix, checked against the actual dimensions for every
+$w$ at $N=6\ldots14$ with no mismatch.
+
+Evaluated on the three states (at $N=26$, half-chain cut): the single excitation
+gets $\ln 92 = 4.52$, the N\'eel state $\ln 14 = 2.64$, and the pair state
+$\ln 8191 = 9.011$ --- which is $\lfloor N/2\rfloor\ln 2 = 9.011$ exactly, i.e.\
+no kinematic constraint at all. The ceiling grows like $\ln N$ for the first two
+and like $N$ for the third: \textbf{the sector alone already predicts area law,
+area law, volume law}, which is what Fig.~3a shows.
+
+\subsection{What the dynamics adds, and where the sector is not enough}
+
+Measured plateaus (time average over $t\in[100,200]$) confirm and sharpen this:
+\begin{center}\footnotesize
+\begin{tabular}{lrrrrrrrr}
+\hline
+$N$ & $10$ & $14$ & $18$ & $22$ & $26$ & $30$ & $34$ & $38$ \\
+\hline
+single, $S_{\mathrm{plateau}}$ & $1.00$ & $1.11$ & $1.17$ & $1.19$ & $1.23$ & $1.23$ & $1.24$ & $1.24$\\
+N\'eel, $S_{\mathrm{plateau}}$ & $0.53$ & $0.57$ & $0.59$ & $0.59$ & $0.58$ & $0.59$ & $0.58$ & $0.58$\\
+\hline
+\end{tabular}
+\end{center}
+Both are \emph{constant} in $N$ --- strict area law, in fact flatter than their
+own $\ln N$ ceilings. The pair state instead grows, $1.29, 1.59, 2.12, 2.45$ at
+$N=8,10,12,14$, and since its ceiling \emph{is} the volume-law value the growth
+is linear in $N$ with a reduced coefficient.
+
+That reduction is the dynamical part. Scanning all shells
+(Fig.~\ref{fig:ent}, right) gives an entanglement \emph{dome}: $S_{\rm plateau}$
+peaks at half filling and falls to zero at both ends, while the \emph{fraction}
+of the ceiling that is realised stays roughly flat, $0.21$--$0.52$ across every
+$w$. So the shape of the dome is the ceiling's shape --- the sector's shape ---
+and the dynamics only supplies an $O(1)$ fill factor of about a half, which is
+the same sub-thermal fraction seen in the \rt{HSF} entropies (\S\ref{sec:hsf})
+and is what one expects from the exponentially degenerate spectrum of
+\S\ref{sec:levels}: the state never explores its shell ergodically.
+
+\paragraph{So: is the sector enough?} For Fig.~3a, yes; in general, no.
+\begin{itemize}
+\item \textbf{For the growth type and its $N$-scaling: yes} --- via
+  \eqref{eq:entbound}, not via $|S_w|$. Knowing $w$ fixes the ceiling exactly,
+  and the ceiling already separates $\ln N$ from $N$.
+\item \textbf{For product initial states, the sector nearly fixes the value
+  too.} Six random basis states of the $N=14$, $w=6$ shell give plateaus
+  $2.26$--$2.39$, a spread of about $\pm3\%$; at $N=12$, $1.84$--$2.13$. Since
+  Fig.~3a uses product states, its three curves are determined by three
+  numbers $w$.
+\item \textbf{Over all states of a shell: no.} The stationary states of the same
+  shell --- $\dim\Fix(U_w)=\binom{\lceil N/2\rceil}{w/2}$ of them, $35$ at
+  $N=14$, $w=6$ --- have $S(t)$ \emph{constant in time} to $10^{-15}$, at a
+  value \emph{above} the product-state plateau ($3.47$--$3.62$ against $2.41$).
+  Inside one volume-law-capable sector there is therefore a $35$-dimensional
+  family with exactly zero entanglement growth, and no sector label
+  distinguishes it. That is the same dark-state space as \S\ref{sec:open}, seen
+  dynamically.
+\end{itemize}
+The one-sentence version: \emph{the sector fixes the ceiling and hence the law;
+the dynamics fixes the prefactor; and only non-product states inside a sector can
+violate the sector's expectation, by not moving at all.}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_c150_entanglement.pdf}{\textwidth}
+\caption{Left: $S_\psi(t)$ for the three Fig.~3a states at $N=14$, with the
+kinematic ceilings \eqref{eq:entbound} as dashed lines. Middle: the plateau
+against $N$ --- single excitation and N\'eel are flat (area law), the pair state
+grows (volume law); the dotted line is $\lfloor N/2\rfloor\ln2$. Right: the
+entanglement dome, $S_{\rm plateau}$ and its ceiling against wall filling
+$\nu=w/(N{+}1)$, with the realised fraction of the ceiling roughly flat.}
+\label{fig:ent}
+\end{figure}
+
 \section{Open items}
 
 \begin{enumerate}

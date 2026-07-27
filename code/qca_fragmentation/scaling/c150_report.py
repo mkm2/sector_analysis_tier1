@@ -496,6 +496,78 @@ def main(argv=None):
             write_tables(data)
         if args.figures:
             figures(data)
+            figure_entanglement()
+
+
+
+
+# --- entanglement figure (R8 sec.9) -----------------------------------------
+
+ENT_PATH = os.path.join(ANALYTICS, "c150_entanglement.json")
+
+
+def figure_entanglement() -> None:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    if not os.path.exists(ENT_PATH):
+        print("no analytics/c150_entanglement.json -- skipping")
+        return
+    with open(ENT_PATH) as f:
+        d = json.load(f)
+    from ..quantum.rule150_entanglement import kinematic_ceiling, volume_law_value
+
+    lab = {"single": "single excitation", "neel": "Néel", "pair": "pair"}
+    col = {"single": "C0", "neel": "C3", "pair": "C2"}
+    fig, ax = plt.subplots(1, 3, figsize=(12.4, 3.5))
+
+    # (a) traces at N=14
+    for key, rec in d["traces"].items():
+        name, Ns = key.rsplit("_N", 1)
+        S = np.array(rec["S"])
+        ax[0].plot(np.arange(S.size), S, "-", color=col[name], lw=1.5,
+                   label=f"{lab[name]} ($w={rec['w']}$)")
+        ax[0].axhline(kinematic_ceiling(int(Ns), rec["w"]), color=col[name],
+                      ls="--", lw=0.9)
+    ax[0].set_xlabel("cycles $t$")
+    ax[0].set_ylabel(r"$S_\psi(t)$")
+    ax[0].set_title(r"$N=14$; dashed = kinematic ceiling", fontsize=9)
+    ax[0].legend(fontsize=7, loc="lower right")
+
+    # (b) plateau vs N
+    for name in ("single", "neel", "pair"):
+        rows = [r for r in d["scaling"] if r["state"] == name]
+        ax[1].plot([r["N"] for r in rows], [r["s_plateau"] for r in rows],
+                   "o-", ms=4, color=col[name], label=lab[name])
+        ax[1].plot([r["N"] for r in rows], [r["ceiling"] for r in rows],
+                   ":", lw=1, color=col[name])
+    Ns = np.arange(8, 40)
+    ax[1].plot(Ns, [volume_law_value(int(n)) for n in Ns], "k--", lw=1,
+               label=r"$\lfloor N/2\rfloor\ln 2$")
+    ax[1].set_xlabel("$N$")
+    ax[1].set_ylabel(r"$S_{\rm plateau}$")
+    ax[1].set_title("area law vs volume law (dotted = ceiling)", fontsize=9)
+    ax[1].legend(fontsize=7, loc="upper left")
+
+    # (c) the dome
+    for Ns_, mk in (("12", "s"), ("14", "o")):
+        rows = [r for r in d["dome"][Ns_] if not r["frozen"]]
+        nu = [r["filling"] for r in rows]
+        ax[2].plot(nu, [r["s_plateau"] for r in rows], mk + "-", ms=4,
+                   color="C0", label=f"$S_{{\\rm plateau}}$, $N={Ns_}$")
+        ax[2].plot(nu, [r["ceiling"] for r in rows], mk + ":", ms=3,
+                   color="C1", label=f"ceiling, $N={Ns_}$")
+    ax[2].set_xlabel(r"wall filling $\nu = w/(N{+}1)$")
+    ax[2].set_ylabel("entropy")
+    ax[2].set_title("the entanglement dome", fontsize=9)
+    ax[2].legend(fontsize=7)
+    fig.tight_layout()
+    for ext in ("pdf", "png"):
+        fig.savefig(os.path.join(FIGDIR, f"fig_c150_entanglement.{ext}"), dpi=150)
+    plt.close(fig)
+    print("wrote figures/fig_c150_entanglement.*")
 
 
 if __name__ == "__main__":

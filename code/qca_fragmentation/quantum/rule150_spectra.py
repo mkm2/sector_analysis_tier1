@@ -615,3 +615,40 @@ def eigenspace_ee_spread(N: int, w: int, *, tol: float = CLUSTER_TOL,
         "n_degenerate_clusters_tested": len(deg),
         "n_nondegenerate_clusters_tested": len(nondeg),
     }
+
+
+def schmidt_index(N: int, states: List[int], cut: Optional[int] = None):
+    """
+    Compressed Schmidt layout for a state supported on `states`.
+
+    A basis state x factorises as |x_A>|x_B> with x_A the low `cut` bits.  Only
+    the x_A and x_B values that actually occur in the sector matter, so the
+    Schmidt matrix can be built at size (#distinct x_B) x (#distinct x_A)
+    instead of 2^(N-cut) x 2^cut.  Those two counts ARE the kinematic
+    entanglement bound of R8 sec.9 -- for the wall-number-w shell they equal
+    sum_{k<=min(w,c)} C(c,k).
+
+    Returns (rows, cols, n_b, n_a) for use with entropy_from_amplitudes.
+    """
+    cut = N // 2 if cut is None else cut
+    mask = (1 << cut) - 1
+    xa = [s & mask for s in states]
+    xb = [s >> cut for s in states]
+    ua = {v: i for i, v in enumerate(sorted(set(xa)))}
+    ub = {v: i for i, v in enumerate(sorted(set(xb)))}
+    rows = np.array([ub[b] for b in xb], dtype=np.int64)
+    cols = np.array([ua[a] for a in xa], dtype=np.int64)
+    return rows, cols, len(ub), len(ua)
+
+
+def entropy_from_amplitudes(v: np.ndarray, rows, cols, n_b: int, n_a: int) -> float:
+    """Half-chain entropy of a sector-supported state, via the compressed
+    Schmidt matrix.  Each basis state has a unique (x_A, x_B), so the scatter
+    below has no collisions."""
+    M = np.zeros((n_b, n_a), dtype=v.dtype)
+    M[rows, cols] = v
+    s = np.linalg.svd(M, compute_uv=False)
+    p = np.abs(s) ** 2
+    p = p[p > 1e-24]
+    p = p / p.sum()
+    return float(-np.sum(p * np.log(p)))

@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 381 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 403 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -61,6 +61,22 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
    in a within-sector degenerate eigenspace (multiplicity up to 35), where the
    per-eigenstate entanglement entropy is basis dependent (spread up to 0.27
    nats; exactly 0 on simple eigenvalues).
+
+13. **Fig. 3a area-law vs volume-law — RESOLVED (2026-07-27, R8 §9).** The
+   three initial states are in three very differently sized sectors, not one:
+   single excitation w=2 (|S_w| = C(N+1,2), POLYNOMIAL), Neel w=N (|S_w| = N+1,
+   LINEAR -- it is a ONE-HOLE state in wall language, hard-core jammed), pair
+   w~N/2 (exponential).  The premise "sectors are binomially large" only holds
+   near w=(N+1)/2.  Exact ceiling is NOT ln|S_w| but the bipartite Schmidt rank
+   min(|S_w|, sum_{k=max(0,w-1-(N-c))}^{min(w,c)} C(c,k), same for the other
+   side) -- the lower limit matters at high filling and is exactly what makes
+   Neel constrained.  Verified == the compressed Schmidt dimension for all
+   N=6..14, all w.  Measured: single 1.00->1.24 and Neel 0.53->0.58 FLAT to
+   N=38 (area law); pair grows, ceiling = volume-law value exactly.  The dome:
+   S_plateau peaks at nu=1/2, realised fraction of the ceiling roughly flat
+   (0.21-0.52).  Sector IS enough for the type and (for product states) the
+   value to +-3%; NOT enough over all states -- dark states of the same shell
+   have S(t) constant to 1e-15 at a HIGHER value than the product plateau.
 
 ## Open from R8 (C150)
 8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the
