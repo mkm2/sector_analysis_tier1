@@ -2,8 +2,8 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 332 tests
-pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 381 tests pass.
+R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
 1. **R5 prose refreshed to the deep dataset.** Exact algebraic bases now
@@ -51,6 +51,17 @@ pass.
    symmetric involutions, which also explains Fix(U) = Fix(L_A) cap Fix(L_B).
    This corrected an over-reaching forward-looking sentence in R8 §5.
 
+10. **HSF cross-check — DONE (2026-07-27, R8 §8).** HSF rule 6 = Wolfram 150
+   (same operator: same symbol table, obc0 boundaries, even-then-odd layers;
+   only a bit-reversal of the basis and theta = -angle(lambda) differ). All
+   claims reproduce on the independent Julia eigendata for N=8..14: sector sizes
+   C(N+1,w), dim Fix = C(ceil(N/2), w/2), #distinct = 3^m INCLUDING the
+   out-of-sample N=14 = 2187, the universal-set property, and <r~>.
+   Caveat raised for their entropy column: 43%->74% of stored eigenstates lie
+   in a within-sector degenerate eigenspace (multiplicity up to 35), where the
+   per-eigenstate entanglement entropy is basis dependent (spread up to 0.27
+   nats; exactly 0 on simple eigenvalues).
+
 ## Open from R8 (C150)
 8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the
    3^m distinct-eigenvalue law. The full-space law is exact and out-of-sample
@@ -61,10 +72,10 @@ pass.
    the block-resolved spacing statistics from a lower bound into an exact result.
    The exact multiplicities (2,3,4,6,10,15) are not explained by reflection,
    which is abelian.
-9b. **The partner-shell intertwiner.** For odd N the shells w and N+1-w have
+10. **The partner-shell intertwiner.** For odd N the shells w and N+1-w have
    identical spectra (1.2e-14), but the bond particle-hole map (x -> x XOR
    alternating mask) does NOT commute with U (checked N=3..9). Unidentified.
-10. **C150 on the ring.** Kinematics solved; the quantum layer is obc0 only.
+11. **C150 on the ring.** Kinematics solved; the quantum layer is obc0 only.
     The 2-to-1 wall map gives the bond frame a Z2 gauge redundancy.
-11. **N=33 at the reduction frontier** needs a uint64 label array (68.7 GB), or
+12. **N=33 at the reduction frontier** needs a uint64 label array (68.7 GB), or
     a two-pass compact relabelling to stay inside 32 GB.

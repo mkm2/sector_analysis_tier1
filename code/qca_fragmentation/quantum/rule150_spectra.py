@@ -556,3 +556,62 @@ def universal_spectrum_check(N: int, tol: float = CLUSTER_TOL) -> dict:
             next(r["coverage"] for r in rows if r["w"] == d_max_w) == 1.0,
         "shells": rows,
     }
+
+
+# --- entanglement entropy, and when it is well defined -----------------------
+
+def half_chain_entropy(vec_full: np.ndarray, N: int) -> float:
+    """von Neumann entropy of the half-chain cut, sites 0..N//2-1 versus the
+    rest.  vec_full is a normalised amplitude vector on the full 2^N space."""
+    NA = N // 2
+    NB = N - NA
+    M = vec_full.reshape(2 ** NB, 2 ** NA)
+    s = np.linalg.svd(M, compute_uv=False)
+    p = s ** 2
+    p = p[p > 1e-24]
+    return float(-np.sum(p * np.log(p)))
+
+
+def eigenspace_ee_spread(N: int, w: int, *, tol: float = CLUSTER_TOL,
+                         max_clusters: int = 6, seed: int = 0) -> dict:
+    """
+    Show that the per-eigenstate entanglement entropy is NOT well defined on a
+    degenerate eigenvalue: take two orthonormal bases of the same eigenspace
+    (one from the eigensolver, one rotated by a random orthogonal matrix) and
+    compare the entropies.  On a nondegenerate eigenvalue the two agree.
+
+    This matters for the HSF eigendata, where 43%-74% of the stored entropies
+    belong to states in a degenerate eigenspace (R8 sec.8).
+    """
+    U, states = sector_unitary(N, w)
+    ev, evec, cl = _clusters(U, tol)
+    D = 1 << N
+    rng = np.random.default_rng(seed)
+
+    def entropies(B):
+        out = []
+        for k in range(B.shape[1]):
+            f = np.zeros(D)
+            f[states] = B[:, k]
+            f /= np.linalg.norm(f)
+            out.append(half_chain_entropy(f, N))
+        return np.array(out)
+
+    deg, nondeg = [], []
+    for lo, hi in cl:
+        m = hi - lo
+        V = np.real(evec[:, lo:hi])
+        Q, _ = np.linalg.qr(V)
+        R, _ = np.linalg.qr(rng.standard_normal((m, m)))
+        e1, e2 = entropies(Q), entropies(Q @ R)
+        spread = float(np.abs(np.sort(e1) - np.sort(e2)).max())
+        (deg if m > 1 else nondeg).append(spread)
+        if len(deg) >= max_clusters and len(nondeg) >= max_clusters:
+            break
+    return {
+        "N": N, "w": w,
+        "max_spread_degenerate": max(deg) if deg else 0.0,
+        "max_spread_nondegenerate": max(nondeg) if nondeg else 0.0,
+        "n_degenerate_clusters_tested": len(deg),
+        "n_nondegenerate_clusters_tested": len(nondeg),
+    }

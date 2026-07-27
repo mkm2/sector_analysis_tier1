@@ -753,6 +753,90 @@ references.}
 \label{fig:levels}
 \end{figure}
 
+\section{Cross-check against the \texttt{HSF} eigendata}
+\label{sec:hsf}
+
+Everything above was produced by one code base. The project also contains a
+pre-existing, independent Julia implementation (\fn{HSF/}) with stored
+eigendata, which lets the central claims be tested against numbers this report
+did not produce.
+
+\paragraph{The two codes build the same operator.} \rt{HSF} numbers the sixteen
+unitary rules $0\ldots15$ by the bits $(r_{11}r_{10}r_{01}r_{00})$ with $1=H$,
+so \rt{HSF} rule $6$ is Wolfram $150$. Reading \fn{HSF/src/model.jl}:
+$\texttt{binary\_coefficients}(6) = \texttt{"0110"}$ gives
+$(1,1)\mapsto\mathbb{1}$, $(1,0)\mapsto H$, $(0,1)\mapsto H$,
+$(0,0)\mapsto\mathbb{1}$, i.e.\ our $(\rt{I},\rt{V},\rt{V},\rt{I})$; the two
+boundary gates take the missing neighbour from the $c_3/c_4$ and $c_2/c_4$
+branches, i.e.\ read it as $0$, which is our \rt{obc0}; and
+$\texttt{U\_full} = \texttt{U\_even}\cdot\texttt{U\_odd}$ with
+\texttt{U\_odd} collecting Julia sites $1,3,5,\ldots$ (zero-based $0,2,4,\ldots$,
+our \emph{even} sublattice) applies the even sublattice first, as we do. Two
+conventions differ and neither can affect a spectrum: \rt{HSF} puts qubit $1$ in
+the most significant tensor factor where we put site $0$ in the least
+significant bit (a bit reversal, i.e.\ a permutation similarity), and it stores
+$\theta = -\arg\lambda$ where we use $+\arg\lambda$. The second is moot because
+the spectrum is closed under conjugation --- verified directly, the two
+multisets agree to $10^{-15}$.
+
+The stored files are flat arrays (\rt{sector\_id}, \rt{theta}, \rt{entropy}),
+one row per eigenstate of \emph{every} Krylov sector, for $N=8\ldots14$. Note
+that \rt{HSF} finds its sectors from $|U_{yx}|>10^{-10}$ on the assembled sparse
+matrix, so the agreement below also re-confirms the R1 finding that no
+one-cycle amplitude cancels.
+
+\paragraph{Result: every claim survives.} Table~\ref{tab:hsf} reports the
+comparison. On all seven lengths, with no free parameters:
+\begin{itemize}
+\item the sector sizes equal $\binom{N+1}{w}$ for even $w$ (\S\ref{sec:closed});
+\item $\dim\Fix(U_w)$, read off as the number of stored $\theta=0$ per sector,
+  equals $\binom{\lceil N/2\rceil}{w/2}$ (\S\ref{sec:open});
+\item the number of distinct quasienergies equals \eqref{eq:distinct}
+  \emph{exactly} --- $81, 121, 243, 365, 729, 1093, 2187$ for
+  $N=8\ldots14$. The last of these is the value \eqref{eq:distinct} predicted out
+  of sample, here reproduced by a different language, a different sparse
+  assembly, a different basis ordering and a different sign convention;
+\item every sector's spectrum is a subset of the universal set $\Theta_N$ and the
+  largest sector realises all of it (\S\ref{sec:universal}), with the smallest
+  sectors realising as little as a few percent;
+\item the spacing-ratio statistic computed from \emph{their} quasienergies with
+  our pipeline reproduces our own per-shell values (e.g.\ $N=10$: $0.5797$;
+  $N=12$: $0.5393$; $N=13$: $0.3674$) --- and it must, since pooling all sectors
+  gives the same distinct set as the largest sector alone.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering\footnotesize
+\iftable{tab_c150_hsf.tex}
+\caption{C150 against the independent \rt{HSF} Julia eigendata,
+$N=8\ldots14$, gate $H$, \rt{HSF} rule $6$ = Wolfram $150$. ``deg.\ states'' is
+the fraction of stored eigenstates lying in a \emph{within-sector} degenerate
+eigenspace, and ``max mult'' the largest such multiplicity.}
+\label{tab:hsf}
+\end{table}
+
+\paragraph{A caveat this raises for the stored entanglement entropies.} The same
+degeneracy that makes C150 non-chaotic has a practical consequence for the
+\rt{entropy} column. \rt{HSF} diagonalises each sector block and records the
+half-chain entropy of each returned eigenvector; but on a degenerate eigenvalue
+the eigensolver returns an \emph{arbitrary} orthonormal basis of the eigenspace,
+and the entanglement entropy is not constant on that basis. Rotating within a
+single eigenspace changes the stored entropies by up to $0.27$~nats at $N=8,10$,
+while on nondegenerate eigenvalues the same test gives a spread of exactly $0$
+(\fn{quantum.rule150\_spectra.eigenspace\_ee\_spread}). This is not a defect of
+the \rt{HSF} code, which does exactly what it says --- it is a property of the
+spectrum, and for this rule it is the \emph{typical} case rather than an edge
+case: the fraction of stored eigenstates sitting in a degenerate eigenspace rises
+from $0.43$ at $N=8$ to $0.74$ at $N=14$, with multiplicities up to $35$
+(Table~\ref{tab:hsf}). For rule $6$ with the $H$ gate, per-eigenstate
+entanglement entropies are therefore only well defined on the nondegenerate
+minority; a basis-independent replacement (for instance the eigenspace-averaged
+purity, or restricting the statistics to simple eigenvalues) would be needed
+before reading the $N=13$ entropy histograms as physical. The mean stored
+entropy is in any case sub-thermal throughout, $0.50$--$0.61$ of $\ln 2\cdot
+\lfloor N/2\rfloor$, which is the direction the rest of \S\ref{sec:levels} would
+lead one to expect.
+
 \section{Open items}
 
 \begin{enumerate}

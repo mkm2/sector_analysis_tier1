@@ -232,6 +232,35 @@ def tab_universal(lv: dict) -> str:
             "\\hline\n" f"{body}\n" "\\hline\n\\end{tabular}\n")
 
 
+HSF_PATH = os.path.join(ANALYTICS, "c150_hsf_compare.json")
+
+
+def tab_hsf() -> Optional[str]:
+    """C150 against the independent HSF Julia eigendata."""
+    if not os.path.exists(HSF_PATH):
+        return None
+    with open(HSF_PATH) as f:
+        rows = json.load(f)
+    out = []
+    for r in rows:
+        ok = (r["sizes_match_closed_form"] and r["distinct_match"]
+              and r["dim_fix_matches"] and r["all_sectors_subset_of_universal"]
+              and r["largest_sector_coverage"] == 1.0)
+        mark = r"\cmark" if ok else r"\xmark"
+        out.append(
+            f"{r['N']} & ${_fmt(r['n_states'])}$ & ${r['n_sectors']}$ & "
+            f"${_fmt(r['n_distinct'])}$ & ${_fmt(r['distinct_closed_form'])}$ & "
+            f"${r['min_sector_coverage']*100:.1f}\\%$ & "
+            f"${r['frac_states_in_degenerate_eigenspace']:.2f}$ & "
+            f"${r['max_within_sector_multiplicity']}$ & "
+            f"${r['r_tilde']:.4f}$ & {mark} \\\\")
+    body = "\n".join(out)
+    return ("\\begin{tabular}{rrrrrrrrrc}\n\\hline\n"
+            "$N$ & states & sectors & $\\#$distinct & \\eqref{eq:distinct} & "
+            "min cover & deg.\\ states & max mult & $\\langle\\tilde r\\rangle$ & "
+            "all checks \\\\\n\\hline\n" f"{body}\n" "\\hline\n\\end{tabular}\n")
+
+
 def tab_levels(lv: dict) -> str:
     """Reference ensembles, then the C150 blocks, then the controls."""
     rows = ["\\multicolumn{6}{l}{\\itshape reference ensembles, identical "
@@ -277,6 +306,9 @@ def write_tables(data: dict) -> None:
             tables.append(("tab_c150_distinct", tab_distinct(lv)))
         if lv.get("universal"):
             tables.append(("tab_c150_universal", tab_universal(lv)))
+    hsf = tab_hsf()
+    if hsf:
+        tables.append(("tab_c150_hsf", hsf))
     for name, txt in tables:
         path = os.path.join(TEXDIR, f"{name}.tex")
         with open(path, "w") as f:
