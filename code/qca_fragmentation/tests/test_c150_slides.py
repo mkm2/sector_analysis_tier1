@@ -11,11 +11,11 @@ from qca_fragmentation.scaling import c150_slides as sl
 
 def test_deck_builds_and_is_well_formed(tmp_path):
     out = str(tmp_path / "deck.pptx")
-    sl.build(out)
+    sl.build(out, force=True)
     assert os.path.exists(out)
 
     prs = pptx.Presentation(out)
-    assert len(prs.slides) >= 18
+    assert len(prs.slides) == sl.N_SLIDES >= 18
     assert round(prs.slide_width / prs.slide_height, 2) == 1.78      # 16:9
 
     # every slide carries a title and speaker notes
@@ -43,7 +43,7 @@ def test_frontier_table_matches_the_closed_form(tmp_path):
     from qca_fragmentation import c150
 
     out = str(tmp_path / "deck.pptx")
-    sl.build(out)
+    sl.build(out, force=True)
     prs = pptx.Presentation(out)
     tbl = next(sh.table for s in prs.slides for sh in s.shapes
                if sh.has_table and sh.table.cell(0, 0).text == "N")

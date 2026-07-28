@@ -28,6 +28,7 @@ SLIDEDIR = os.path.join(REPO_ROOT, "reports", "slides")
 OUT = os.path.join(SLIDEDIR, "C150_discussion.pptx")
 
 TITLE_PT = 26          # the stock 44 pt wraps on a 16:9 slide; edit freely
+N_SLIDES = 21          # what build() produces; see the overwrite guard there
 
 
 def _load(name: str) -> Optional[dict]:
@@ -184,7 +185,26 @@ def _table(prs, title: str, header: Sequence[str], rows: Sequence[Sequence],
 
 # --- the deck ----------------------------------------------------------------
 
-def build(out: str = OUT) -> str:
+def build(out: str = OUT, *, force: bool = False) -> str:
+    """
+    Rebuild the deck.  REFUSES to overwrite a deck that already has more slides
+    than this script produces: slides appended by hand (or by another agent --
+    the Tier-2 chapter, slides 22-29, lives only in the .pptx) would be silently
+    destroyed.  Pass force=True / --force once those slides are either folded
+    into this script or saved elsewhere.
+    """
+    if os.path.exists(out) and not force:
+        try:
+            from pptx import Presentation as _P
+            existing = len(_P(out).slides)
+        except Exception:
+            existing = 0
+        if existing > N_SLIDES:
+            raise SystemExit(
+                f"refusing to overwrite {out}: it has {existing} slides but this "
+                f"script builds {N_SLIDES}. Slides {N_SLIDES + 1}-{existing} were "
+                f"added outside the script and would be lost. Re-run with --force "
+                f"if that is what you want.")
     prs = _new_deck()
     lv = _load("c150_levels.json")
     hsf = _load("c150_hsf_compare.json")
@@ -548,8 +568,10 @@ def build(out: str = OUT) -> str:
 def main(argv=None):
     ap = argparse.ArgumentParser(description="C150 discussion deck")
     ap.add_argument("--out", default=OUT)
+    ap.add_argument("--force", action="store_true",
+                    help="overwrite even if the deck has extra slides")
     args = ap.parse_args(argv)
-    p = build(args.out)
+    p = build(args.out, force=args.force)
     print("wrote", p)
 
 
