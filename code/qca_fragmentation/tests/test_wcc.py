@@ -1,0 +1,276 @@
+"""
+Tier 1e: weakly connected components as the sector-level observable.
+
+Ground-truth regression targets from the task spec sec.6, plus the hard
+assertions A1-A4 of sec.2.  Everything here runs at small N so the suite stays
+fast; the reference series that need large N are checked against their closed
+forms, which are themselves verified against the computed values where both are
+affordable.
+"""
+
+from math import comb
+
+import pytest
+
+from qca_fragmentation import results_io
+from qca_fragmentation.core import rules
+from qca_fragmentation.graph import scc, wcc
+from qca_fragmentation.scaling.fits import find_integer_recurrence
+
+PHI = (1 + 5 ** 0.5) / 2
+PLASTIC = 1.324717957244746
+
+
+# --- A1: the sum rule, which is what makes WCC a sector axis at all ----------
+
+@pytest.mark.parametrize("rule", [0, 22, 28, 51, 90, 105, 108, 150, 156, 201,
+                                  204, 232])
+@pytest.mark.parametrize("bc", ["obc0", "pbc"])
+def test_sum_rule(rule, bc):
+    r = wcc.weak_components(rule, 8, bc)
+    assert sum(r.sizes_wcc) == 2 ** 8
+    assert r.n_wcc == len(r.sizes_wcc)
+    assert r.d_max_wcc == max(r.sizes_wcc)
+    assert r.n_frozen == sum(1 for s in r.sizes_wcc if s == 1)
+
+
+def test_components_are_never_aborted_by_default():
+    """weak_components must finish the pass, or A1 and the hyperbola anchors
+    would both be unavailable for the ergodic rules."""
+    r = wcc.weak_components(51, 8, "obc0")
+    assert not r.aborted
+    assert r.ergodic                      # classification, not truncation
+    assert r.n_wcc == 1 and r.d_max_wcc == 256
+
+
+# --- the anchors of the exclusion curve (task sec.4 V2) ----------------------
+
+@pytest.mark.parametrize("N", [6, 8, 10])
+def test_rule_204_is_all_singletons(N):
+    """204 = IIII: nothing ever moves.  a = 2, b = 1."""
+    r = wcc.weak_components(204, N, "obc0")
+    assert r.n_wcc == 2 ** N
+    assert r.d_max_wcc == 1
+    assert r.n_frozen == 2 ** N
+
+
+@pytest.mark.parametrize("N", [6, 8, 10])
+def test_rule_51_is_one_sector(N):
+    """51 = VVVV: a Hadamard everywhere, one sector.  a = 1, b = 2."""
+    r = wcc.weak_components(51, N, "obc0")
+    assert r.n_wcc == 1
+    assert r.d_max_wcc == 2 ** N
+
+
+# --- rule 150 obc0: the exact reference series -------------------------------
+
+_R150_NSEC = [5, 6, 6, 7, 7, 8, 8, 9, 9, 10]          # N = 8..17
+_R150_DMAX = [126, 210, 462, 924, 1716, 3003, 6435, 12870, 24310, 43758]
+
+
+def _r150_closed_form(N):
+    sizes = [comb(N + 1, w) for w in range(0, N + 2, 2)]
+    return len(sizes), max(sizes)
+
+
+def test_rule_150_reference_series_closed_form():
+    """The closed form of R8 sec.4 reproduces the task's reference series."""
+    for i, N in enumerate(range(8, 18)):
+        n, d = _r150_closed_form(N)
+        assert n == _R150_NSEC[i], (N, n)
+        assert d == _R150_DMAX[i], (N, d)
+
+
+@pytest.mark.parametrize("N", range(8, 14))
+def test_rule_150_computed_matches_reference(N):
+    """And the streamed union-find reproduces it where it is affordable."""
+    r = wcc.weak_components(150, N, "obc0")
+    assert r.n_wcc == _R150_NSEC[N - 8]
+    assert r.d_max_wcc == _R150_DMAX[N - 8]
+    assert r.sizes_wcc == sorted(
+        (comb(N + 1, w) for w in range(0, N + 2, 2)), reverse=True)
+
+
+# --- rule 156 pbc: Lucas ------------------------------------------------------
+
+def _lucas(n):
+    a, b = 2, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+
+
+@pytest.mark.parametrize("N", range(6, 13))
+def test_rule_156_pbc_is_lucas_plus_one(N):
+    r = wcc.weak_components(156, N, "pbc")
+    assert r.n_wcc == _lucas(N) + 1
+
+
+def test_rule_156_pbc_dmax_base_is_4_to_the_fifth():
+    """b -> 4^(1/5) = 1.31951 for the largest sector."""
+    ys = [wcc.weak_components(156, N, "pbc").d_max_wcc for N in range(6, 15)]
+    ratios = [ys[i + 1] / ys[i] for i in range(len(ys) - 1)]
+    assert 4 ** 0.2 - 0.12 < sum(ratios[-4:]) / 4 < 4 ** 0.2 + 0.12, ys
+
+
+# --- rule 22 pbc: the whole point of the tier --------------------------------
+
+@pytest.mark.parametrize("N", [6, 8, 10, 12])
+def test_rule_22_pbc_sectors_partition_while_attractors_do_not(N):
+    """
+    3 monitored attractors, all of size 1, covering 3 of 2^N states; the WCCs
+    cover everything.  transient_fraction -> 1.
+    """
+    r = wcc.weak_components(22, N, "pbc")
+    assert sum(r.sizes_wcc) == 2 ** N
+    assert r.n_wcc == 2                       # few sectors, one of them huge
+    rec = results_io.load_results(22, "pbc").get(N)
+    if rec and not rec.get("ergodic_flag"):
+        assert rec["n_recurrent"] == 3
+        assert results_io.sizes_from_record(rec, "sizes_recurrent") == [1, 1, 1]
+        tf = 1 - 3 / 2 ** N
+        assert tf > 0.95
+        assert tf > 1 - 10.0 / 2 ** N         # -> 1
+
+
+def test_rule_22_transient_fraction_increases_with_N():
+    tf = []
+    for N in (6, 8, 10, 12):
+        rec = results_io.load_results(22, "pbc").get(N)
+        if not rec or rec.get("ergodic_flag"):
+            continue
+        sizes = results_io.sizes_from_record(rec, "sizes_recurrent")
+        tf.append(1 - sum(sizes) / 2 ** N)
+    assert len(tf) >= 3
+    assert all(tf[i] < tf[i + 1] for i in range(len(tf) - 1)), tf
+
+
+# --- rule 28: the wall-transparency prediction, and its failure --------------
+
+def test_rule_28_sector_count_follows_the_plastic_number_not_phi():
+    """
+    Task sec.6 predicts a_wcc >= phi for rule 28 = (IIVD), inheriting the 01
+    wall grammar of rule 156.  It does NOT hold: the obc0 sector count obeys the
+    EXACT recurrence a_n = a_{n-1} + a_{n-2} - a_{n-4}, whose characteristic
+    polynomial factors as (x-1)(x^3-x-1), giving the plastic number
+    rho = 1.32472 -- well below phi = 1.61803.  This test pins the violation so
+    it cannot be quietly lost; see R9 for the discussion.
+    """
+    ys = [wcc.weak_components(28, N, "obc0").n_wcc for N in range(6, 15)]
+    assert ys == [11, 15, 20, 27, 36, 48, 64, 85, 113]
+    rec = find_integer_recurrence(ys)
+    assert rec["ok"]
+    assert rec["coeffs"] == [1, 1, 0, -1]
+    assert rec["base"] == pytest.approx(PLASTIC, abs=1e-9)
+    assert rec["base"] < PHI - 0.25          # the violation, quantified
+
+
+# --- A2/A3/A4 against the archived Tier-1a records ---------------------------
+
+@pytest.mark.parametrize("rule", [60, 102, 105, 108, 150, 156, 198, 201, 204])
+def test_A2_unitary_wcc_equals_the_sector_partition(rule):
+    """
+    Doubly stochastic => weak, strong and forward-closure partitions agree.
+
+    The parametrisation lists Wolfram numbers that are unitary IN THIS ENCODING
+    (rules.UNITARY_RULES), i.e. whose symbol tuple uses only I and V.  Note the
+    Wolfram number is not the classical ECA rule: W90 is the tuple DEED and is
+    dissipative, so A2 must not be applied to it.
+    """
+    assert rule in rules.UNITARY_RULES
+    recs = results_io.load_results(rule, "obc0")
+    checked = 0
+    for N in (8, 9, 10):
+        rec = recs.get(N)
+        if not rec or rec.get("ergodic_flag"):
+            continue
+        r = wcc.weak_components(rule, N, "obc0")
+        out = wcc.check_against_scc(r, rec, unitary=True)
+        assert out["a2"] is True
+        checked += 1
+    assert checked >= 1
+
+
+def test_A2_does_not_apply_to_a_dissipative_rule_with_a_unitary_looking_number():
+    """W90 = DEED: n_wcc and n_recurrent may agree while the SIZES differ wildly,
+    because most of the space is transient.  This is the P1 problem the tier
+    exists to fix, not a violation."""
+    assert 90 not in rules.UNITARY_RULES
+    r = wcc.weak_components(90, 8, "obc0")
+    rec = results_io.load_results(90, "obc0").get(8)
+    assert r.sizes_wcc == [112, 112, 16, 16]
+    assert results_io.sizes_from_record(rec, "sizes_recurrent") == [7, 7, 1, 1]
+    assert sum(r.sizes_wcc) == 256                     # sectors partition
+    assert sum([7, 7, 1, 1]) == 16                     # attractors do not
+    wcc.check_against_scc(r, rec)                      # A3/A4 still hold
+
+
+@pytest.mark.parametrize("rule", [22, 28, 76, 108, 156, 201, 232])
+def test_A3_A4_against_archive(rule):
+    recs = results_io.load_results(rule, "obc0")
+    for N in (8, 10):
+        rec = recs.get(N)
+        if not rec or rec.get("ergodic_flag"):
+            continue
+        r = wcc.weak_components(rule, N, "obc0")
+        out = wcc.check_against_scc(r, rec)
+        assert out["a3"] is True             # n_wcc <= n_scc
+        assert out["a4"] is True             # every WCC holds >=1 terminal SCC
+
+
+def test_A4_is_not_symmetric():
+    """n_recurrent can exceed n_wcc by a lot -- that is the whole point, and
+    it is why the task forbids asserting the reverse inequality."""
+    rec = results_io.load_results(22, "pbc").get(10)
+    if rec and not rec.get("ergodic_flag"):
+        r = wcc.weak_components(22, 10, "pbc")
+        assert rec["n_recurrent"] > r.n_wcc
+
+
+# --- the shared code path (task sec.2) ---------------------------------------
+
+def test_scc_sectors_union_find_delegates_to_wcc():
+    N, rule = 9, 150
+    t = rules.wolfram_to_tuple(rule)
+    sizes, erg, mx = scc.sectors_union_find(N, scc._make_succ(rule, N, "obc0", t),
+                                            detect_ergodic=False)
+    r = wcc.weak_components(rule, N, "obc0")
+    assert sizes == r.sizes_wcc
+    assert mx == r.d_max_wcc
+
+
+def test_edges_are_symmetrised():
+    """union(x, y) for every y in succ(x): a rule whose successor relation is
+    strictly one-way must still land in ONE component."""
+    seen = {0: [1], 1: [2], 2: [2], 3: [3]}       # 0->1->2 chain, 3 isolated
+
+    def succ(x):
+        return seen[x]
+
+    sizes, erg, mx = wcc.union_find_components(2, succ, detect_ergodic=False)
+    assert sorted(sizes, reverse=True) == [3, 1]
+
+
+# --- record schema ------------------------------------------------------------
+
+def test_wcc_record_roundtrip_and_derived_fields():
+    r = wcc.weak_components(150, 10, "obc0")
+    scc_rec = results_io.load_results(150, "obc0").get(10)
+    rec = results_io.record_from_wcc_result(r, scc_rec)
+    assert set(results_io.WCC_FIELDS) >= set(rec)
+    assert rec["n_wcc"] == 6 and rec["d_max_wcc"] == 462
+    assert rec["d_max_ratio"] == pytest.approx(462 / 1024)
+    assert results_io.sizes_from_wcc_record(rec) == r.sizes_wcc
+    if scc_rec and not scc_rec.get("ergodic_flag"):
+        assert rec["transient_fraction"] == pytest.approx(0.0)
+        assert rec["att_per_sector"] == pytest.approx(1.0)
+
+
+def test_size_histogram_reconstructs_a_truncated_multiset():
+    """rule 204 at N=12 has 4096 singleton sectors, twice the 2048 cap."""
+    r = wcc.weak_components(204, 12, "obc0")
+    rec = results_io.record_from_wcc_result(r, None)
+    assert rec["wcc_truncated"] is True
+    assert len(rec["sizes_wcc"]) == 2048
+    full = results_io.sizes_from_wcc_record(rec)
+    assert len(full) == 4096 and sum(full) == 4096

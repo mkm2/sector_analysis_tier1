@@ -76,13 +76,22 @@ def main(argv=None):
                     help="abort a unit after exploring this many nodes")
     ap.add_argument("--tiers", default="1a")
     ap.add_argument("--tier", default=None,
-                    help="'1d' dispatches to the pair-graph runner (pair_run)")
+                    help="'1d' dispatches to the pair-graph runner (pair_run); "
+                         "'wcc' (or '1e') to the Tier-1e sector runner")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--no-ergodic-abort", action="store_true",
                     help="do the FULL decomposition even when one component "
                          "exceeds f_erg*2^N, so an ergodic-looking rule still "
                          "reports how many sectors it really has")
     args = ap.parse_args(argv)
+
+    if args.tier in ("wcc", "1e") or "1e" in args.tiers:
+        from .wcc_sweep import run_wcc_unit
+        for bc in parse_bc(args.bc):
+            for N in parse_N(args.N):
+                run_wcc_unit(args.rule, N, bc, f_erg=args.f_erg,
+                             force=args.force)
+        return
 
     if args.tier == "1d" or "1d" in args.tiers:
         from .pair_run import run_pair_unit

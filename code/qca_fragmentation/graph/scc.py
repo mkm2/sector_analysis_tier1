@@ -161,38 +161,15 @@ def sectors_union_find(
 
     Returns (sizes_desc, ergodic, max_size).  Early-exits when a component
     exceeds f_erg*2^N (returns (None, True, size)).
+
+    The implementation now lives in graph/wcc.py: for a unitary rule the sector
+    partition IS the weak-component partition, so Tier 1a and Tier 1e share one
+    code path (task 1e sec.2).  `node_budget` is accepted for signature
+    compatibility and ignored -- union-find has no DFS stack to bound.
     """
-    total = 1 << N
-    parent = array("q", range(total))
-    size = array("q", [1]) * total
-    erg_thresh = int(f_erg * total)
-    max_size = 1
-
-    def find(a: int) -> int:
-        root = a
-        while parent[root] != root:
-            root = parent[root]
-        while parent[a] != root:
-            parent[a], a = root, parent[a]
-        return root
-
-    for x in range(total):
-        rx = find(x)
-        for y in succ_fn(x):
-            ry = find(y)
-            if rx != ry:
-                if size[rx] < size[ry]:
-                    rx, ry = ry, rx
-                parent[ry] = rx
-                size[rx] += size[ry]
-                if size[rx] > max_size:
-                    max_size = size[rx]
-        if detect_ergodic and max_size > erg_thresh:
-            return None, True, max_size
-
-    sizes = [size[r] for r in range(total) if parent[r] == r]
-    sizes.sort(reverse=True)
-    return sizes, False, max_size
+    from .wcc import union_find_components
+    return union_find_components(N, succ_fn, f_erg=f_erg,
+                                 detect_ergodic=detect_ergodic)
 
 
 def _condensation(
