@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 403 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 419 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -77,6 +77,44 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
    (0.21-0.52).  Sector IS enough for the type and (for product states) the
    value to +-3%; NOT enough over all states -- dark states of the same shell
    have S(t) constant to 1e-15 at a HIGHER value than the product plateau.
+
+14. **Full computational-basis census — DONE (2026-07-29, R8 §10).** N=11 obc0,
+   all 2^11 = 2048 basis states to t=4000, clustered by sector.
+   **Global average S = 1.6612 nats** (median 1.6710, sd 0.2292, range
+   [0, 1.9681]); volume law 5 ln2 = 3.4657, so 48% of it. Per sector
+   (w: mean +- sd): 0 -> 0, 2 -> 0.9802 +- 0.0368, 4 -> 1.6057 +- 0.0768,
+   6 -> 1.8216 +- 0.0930, and w <-> 12-w identical to every digit (partner-shell
+   symmetry now seen in entanglement, not just spectra -> constrains the
+   unknown intertwiner, R8 open item 4). w=0 and w=12 are frozen singletons:
+   at odd N the Neel state is exactly stationary, S(t) == 0.
+   - **eta^2 = 0.870**: the sector explains 87% of the variance of the
+     saturation entropy over the whole Hilbert space. The residual 13% is real,
+     not noise (split-half correlation 0.9986/0.9988, noise 0.0024/0.0028
+     against spreads 0.0768/0.0930 -- 30x above the floor).
+   - **No random state predicts it.** Haar on 2^N: 3.2098 (Page 3.2160), off by
+     1.93x. Haar within the shell, size-weighted: 2.8248, still off by 70%.
+     Random phases on the exact spectrum of the exact initial state (diagonal
+     ensemble / maximal dephasing): 1.454/2.640/3.055 for w=2/4/6 vs measured
+     0.980/1.606/1.822 -- barely better than plain Haar. Cause: the w=6 shell
+     has 182 distinct positive phases but they are integer combinations of only
+     m=6 fundamentals, so the orbit fills a 6-torus, not a 182-torus. Control:
+     coherent phases alpha=theta*t through the same code reproduce the measured
+     time average to 4 decimals (1.3901 vs 1.3901, N=9 w=4).
+   - **Why the first-moment route is empty.** The computational basis is an
+     exact 1-design, so E_x[rho_A(t)] = I/d_A at EVERY t (verified to 1e-17).
+     Every linear observable therefore has basis average = Haar average =
+     Tr(O)/2^N exactly, and does not move under the dynamics at all. Concavity
+     only gives E[S] <= ln d_A = 3.4657, true even at t=0 where every S is 0,
+     while E[S] runs 0 -> 0.208 -> 1.424 -> 1.752 at t=0,1,7,33.
+   - **Haar cannot give the intra-cluster spread either**, and errs in both
+     directions: measured/Haar sd = 0.0368/0.0888 (w=2, over-predicts 2.4x) but
+     0.0930/0.0225 (w=6, under-predicts 4.1x). Haar's spread shrinks with D by
+     concentration; the measured one grows.
+   - **No plateau exists** (C150 is not chaotic): S(t) is quasi-periodic on the
+     6-torus forever, <sd_t(S)> ~ 0.35. "Saturation" = infinite-time average;
+     the cumulative mean needs t ~ 800 to stabilise and a naive t in [200,400]
+     window is 2% low. Cap BLAS threads to 4 -- the default oversubscribes and
+     costs a factor 2.
 
 ## Open from R8 (C150)
 8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the

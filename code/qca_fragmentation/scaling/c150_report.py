@@ -294,11 +294,44 @@ def tab_levels(lv: dict) -> str:
             "$n$ \\\\\n\\hline\n" f"{body}\n" "\\hline\n\\end{tabular}\n")
 
 
+def _census_data() -> Optional[dict]:
+    from ..quantum.rule150_basis_census import CENSUS_PATH
+    if not os.path.exists(CENSUS_PATH):
+        return None
+    with open(CENSUS_PATH) as f:
+        return json.load(f)
+
+
+def tab_census(cs: dict) -> str:
+    """Per-sector saturation statistics over the whole computational basis."""
+    deph = {d["w"]: d["mean"] for d in cs.get("dephasing", [])}
+    rows = []
+    for s in cs["shells"]:
+        dp = f"${deph[s['w']]:.3f}$" if s["w"] in deph else "---"
+        rows.append(
+            f"${s['w']}$ & ${s['size']}$ & ${s['mean']:.4f}$ & "
+            f"${s['std']:.4f}$ & ${s['min']:.3f}$ & ${s['max']:.3f}$ & "
+            f"${s['ceiling']:.3f}$ & ${s['frac_of_ceiling']:.3f}$ & "
+            f"${s['haar_shell']['mean']:.3f}$ & {dp} \\\\")
+    g = cs["global"]
+    body = "\n".join(rows)
+    tot = (f"\\hline\nall & ${cs['n_states']}$ & $\\mathbf{{{g['mean']:.4f}}}$ &"
+           f" ${g['std']:.4f}$ & ${g['min']:.3f}$ & ${g['max']:.3f}$ & "
+           f"--- & --- & ${cs['haar_sector_weighted']:.3f}$ & --- \\\\")
+    return ("\\begin{tabular}{rrrrrrrrrr}\n\\hline\n"
+            "$w$ & $|S_w|$ & $\\overline{S}$ & $\\sigma_w$ & min & max & "
+            "ceiling & frac & Haar$_w$ & deph. \\\\\n\\hline\n"
+            f"{body}\n{tot}\n" "\\hline\n\\end{tabular}\n")
+
+
 def write_tables(data: dict) -> None:
     os.makedirs(TEXDIR, exist_ok=True)
     tables = [("tab_c150_frontier", tab_frontier()),
               ("tab_c150_spectral", tab_spectral(data)),
               ("tab_c150_freeness", tab_freeness(data))]
+    cs = _census_data()
+    if cs:
+        tables.append(("tab_c150_census", tab_census(cs)))
     lv = _levels_data()
     if lv:
         tables.append(("tab_c150_levels", tab_levels(lv)))
@@ -497,6 +530,7 @@ def main(argv=None):
         if args.figures:
             figures(data)
             figure_entanglement()
+            figure_census()
 
 
 
@@ -568,6 +602,85 @@ def figure_entanglement() -> None:
         fig.savefig(os.path.join(FIGDIR, f"fig_c150_entanglement.{ext}"), dpi=150)
     plt.close(fig)
     print("wrote figures/fig_c150_entanglement.*")
+
+
+# --- census figure (R8 sec.10) -----------------------------------------------
+
+def figure_census() -> None:
+    """The full-basis census: where the 2^N saturation values actually sit,
+    against every random-state prediction."""
+    cs = _census_data()
+    if cs is None:
+        print("no analytics/c150_basis_census.json -- skipping census figure")
+        return
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    os.makedirs(FIGDIR, exist_ok=True)
+    N, g = cs["N"], cs["global"]
+    w = np.array(cs["raw"]["w"])
+    S = np.array(cs["raw"]["S_sat"])
+    fig, ax = plt.subplots(1, 3, figsize=(13.0, 3.7))
+
+    # (a) histogram, coloured by sector
+    ws = sorted(set(w.tolist()))
+    bins = np.linspace(0, max(S.max(), cs["haar_full"]["mean_real"]) * 1.05, 90)
+    ax[0].hist([S[w == v] for v in ws], bins=bins, stacked=True,
+               label=[f"$w={v}$" for v in ws], lw=0)
+    for x, c, lab in ((g["mean"], "k", "measured mean"),
+                      (cs["haar_sector_weighted"], "C3", "Haar (sector)"),
+                      (cs["haar_full"]["mean_real"], "C1", "Haar (full)"),
+                      (cs["haar_full"]["volume_law"], "C2", r"$\ln 2^{N/2}$")):
+        ax[0].axvline(x, color=c, ls="--", lw=1.2, label=lab)
+    ax[0].set_xlabel(r"$\overline{S}$ (time average)")
+    ax[0].set_ylabel("# basis states")
+    ax[0].set_title(f"all $2^{{{N}}}$ basis states, clustered by sector",
+                    fontsize=9)
+    ax[0].legend(fontsize=6, ncol=2)
+
+    # (b) per-sector mean +- sd against the references
+    sh = cs["shells"]
+    xw = [s["w"] for s in sh]
+    ax[1].errorbar(xw, [s["mean"] for s in sh], yerr=[s["std"] for s in sh],
+                   fmt="o-", ms=5, capsize=3, color="C0",
+                   label=r"measured $\pm\sigma_w$")
+    ax[1].plot(xw, [s["haar_shell"]["mean"] for s in sh], "s--", ms=4,
+               color="C3", label="Haar on $S_w$")
+    ax[1].plot(xw, [s["ceiling"] for s in sh], ":", color="C7",
+               label="kinematic ceiling")
+    deph = cs.get("dephasing", [])
+    if deph:
+        ax[1].plot([d["w"] for d in deph], [d["mean"] for d in deph], "^-.",
+                   ms=5, color="C4", label="random phases")
+    ax[1].set_xlabel("wall number $w$")
+    ax[1].set_ylabel("entropy")
+    ax[1].set_title("every random-state model overshoots", fontsize=9)
+    ax[1].legend(fontsize=7)
+
+    # (c) the spread: measured vs Haar, per sector
+    big = [s for s in sh if s["size"] > 1]
+    xb = np.arange(len(big))
+    ax[2].bar(xb - 0.2, [s["std"] for s in big], 0.4, label=r"measured $\sigma_w$")
+    ax[2].bar(xb + 0.2, [s["haar_shell"]["std"] for s in big], 0.4,
+              label=r"Haar $\sigma_w$")
+    ax[2].set_xticks(xb)
+    ax[2].set_xticklabels([f"$w{{=}}{s['w']}$\n$D{{=}}{s['size']}$" for s in big],
+                          fontsize=7)
+    ax[2].set_ylabel(r"s.d. of $\overline{S}$ within the sector")
+    ax[2].set_title(r"intra-cluster spread: Haar gets it wrong "
+                    r"in both directions", fontsize=9)
+    top = max(max(s["std"] for s in big),
+              max(s["haar_shell"]["std"] for s in big))
+    ax[2].set_ylim(0, top * 1.28)          # headroom so the legend clears
+    ax[2].legend(fontsize=7, loc="upper center", ncol=2)
+
+    fig.tight_layout()
+    for ext in ("pdf", "png"):
+        fig.savefig(os.path.join(FIGDIR, f"fig_c150_census.{ext}"), dpi=150)
+    plt.close(fig)
+    print("wrote figures/fig_c150_census.*")
 
 
 if __name__ == "__main__":

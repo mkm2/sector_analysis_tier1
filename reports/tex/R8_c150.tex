@@ -967,6 +967,207 @@ $\nu=w/(N{+}1)$, with the realised fraction of the ceiling roughly flat.}
 \label{fig:ent}
 \end{figure}
 
+\section{The whole computational basis at once, and why no random state
+predicts it}
+\label{sec:census}
+
+\S\ref{sec:ent} took three initial states. This section takes \emph{all} of
+them: $N=11$, \rt{obc0}, the half-chain cut between sites $4$ and $5$, and every
+one of the $2^{11}=2048$ computational basis states evolved to $t=4000$. Each is
+a product state, so $S(0)=0$ for all $2048$; each lies in exactly one shell, of
+sizes $1,66,495,924,495,66,1$ (the even-weight entries of Pascal's row $12$,
+\S\ref{sec:closed}). Since the dynamics is block diagonal, the trajectories of
+\emph{all} $|S_w|$ basis states of a shell are the columns of $U_w^t$, so one
+matrix power per time step delivers the entire shell --- the census costs
+$309$~s, not $2048$ separate runs.
+
+\subsection{There is no plateau: what ``saturation'' has to mean here}
+
+For a chaotic Floquet circuit one evolves to a short time, sees $S(t)$ flatten,
+and reads off the plateau. C150 does not do that, and \S\ref{sec:levels} says
+why: with only $3^{\lceil N/2\rceil}$ distinct eigenvalues, and every phase an
+integer combination $\theta=\sum_i\varepsilon_i\varphi_i$ of $m=\lceil
+N/2\rceil=6$ fundamentals, the orbit is quasi-periodic on a $6$-torus. It never
+relaxes; it keeps wandering, with $\langle\sigma_t(S)\rangle\approx0.35$ in the
+largest shell forever.
+
+So ``saturation value'' can only mean the \emph{infinite-time average}, and it
+must be measured with a window long enough for a $6$-frequency quasi-periodic
+average to converge. It converges slowly: the cumulative mean of the $w=6$ shell
+reads $1.740$, $1.802$, $1.785$, $1.820$, $1.819$, $1.821$ at horizons
+$t\le100,200,400,800,1600,4000$. A short $t\in[200,400]$ window --- the kind one
+would use for a chaotic circuit --- returns $1.784$, low by $2\%$. All numbers
+below use $t\in[200,4000]$, where the eight non-overlapping block means scatter
+by only $0.013$.
+
+\subsection{The census}
+
+\begin{center}
+\iftable{tab_c150_census.tex}
+\end{center}
+
+\noindent Reading it:
+
+\begin{itemize}
+\item \textbf{The global average is
+  $\overline{S}=1.6612$} (median $1.6710$, s.d.\ $0.2292$, range
+  $[0,1.9681]$), against a volume law of $5\ln2=3.4657$. The basis average is
+  $48\%$ of the volume law.
+\item \textbf{Two shells are frozen.} $w=0$ is $|0\cdots0\rangle$ and $w=12$ is
+  the N\'eel state $|10101010101\rangle$ --- at odd $N$ with \rt{obc0} every one
+  of the $12$ bonds carries a wall, the hard-core walls have no hole to move
+  into, and $S(t)\equiv0$ exactly, forever. That is stronger than the area law
+  of \S\ref{sec:ent}: at $N=11$ the N\'eel state is not slow, it is
+  \emph{stationary}.
+\item \textbf{The partner shells are indistinguishable.} $w$ and $12-w$ agree to
+  every digit shown --- means, s.d.s, extrema. \S\ref{sec:levels} found the
+  partner shells spectrally identical at odd $N$ ($1.2\times10^{-14}$); the
+  census shows the agreement extends to the entanglement across the cut. The
+  unidentified intertwiner of open item~\ref{it:partner} therefore commutes with
+  the half-chain cut as well as with $U$, which is a sharp extra constraint on
+  what it can be.
+\item \textbf{The realised fraction of the ceiling rises with the shell}
+  ($0.354$, $0.468$, $0.526$), consistent with the dome of \S\ref{sec:ent}.
+\end{itemize}
+
+\subsection{How much does the sector fix?}
+
+Cluster the $2048$ values by $w$ and split the variance the usual one-way way,
+$\sigma^2_{\rm tot}=\sigma^2_{\rm within}+\sigma^2_{\rm between}$:
+\begin{equation}
+\sigma^2_{\rm within}=0.0068,\qquad
+\sigma^2_{\rm between}=0.0457,\qquad
+\eta^2=\frac{\sigma^2_{\rm between}}{\sigma^2_{\rm tot}}=0.870 .
+\label{eq:eta}
+\end{equation}
+Knowing nothing but the wall number accounts for $87\%$ of the variance of the
+saturation entropy across the whole Hilbert space. The residual $13\%$ is real
+and not a measurement artifact: averaging each state over two \emph{disjoint}
+halves of the window gives half-to-half correlation $0.9986$ ($w=4$) and
+$0.9988$ ($w=6$), with an implied noise level of $0.0024$ and $0.0028$ against
+spreads of $0.0768$ and $0.0930$. The intra-cluster spread is a genuine,
+reproducible property of each individual basis state, some $30\times$ above the
+noise floor.
+
+This sharpens \S\ref{sec:ent}: the sector fixes the growth \emph{type} exactly,
+the value to about $\pm5\%$, and no more.
+
+\subsection{Could a random state have told us instead?}
+
+Three reference ensembles, in increasing order of how much they know. All are
+computed through the same entropy code as the census.
+
+\begin{enumerate}
+\item \textbf{Haar on the full $2^N$ space} --- knows nothing. Real states give
+  $3.2098\pm0.0134$; Page's formula for complex states gives
+  $\sum_{k=d_B+1}^{d_Ad_B}k^{-1}-(d_A-1)/2d_B=3.2160$ at $(d_A,d_B)=(32,64)$.
+  Measured: $1.6612$. \textbf{Wrong by a factor $1.93$.}
+\item \textbf{Haar within the shell $S_w$}, weighted by shell size --- knows the
+  sector, and therefore knows everything \S\ref{sec:ent} established. Gives
+  $2.8248$. Still \textbf{wrong by $70\%$}, and per shell it overshoots by
+  $0.50$, $1.11$, $1.32$ nats.
+\item \textbf{Random phases on the exact spectrum} --- the sharpest random-state
+  model there is. Keep the exact initial basis state and the exact eigenspace
+  decomposition, and replace only the coherent phases $\theta_\lambda t$ by
+  independent uniform ones. This is what a diagonal-ensemble or ``maximal
+  dephasing'' argument predicts, and it is exact whenever the eigenphases are
+  rationally independent. It gives $1.454$, $2.640$, $3.055$ for $w=2,4,6$
+  against measured $0.980$, $1.606$, $1.822$: \textbf{still wrong by $50$--$70\%$,
+  and barely closer than plain Haar} ($3.055$ vs $3.138$ at $w=6$).
+\end{enumerate}
+
+Item 3 is the informative failure, and it is a direct corollary of
+\eqref{eq:distinct}. The $w=6$ shell carries $182$ distinct positive
+eigenphases --- exactly the $(3^6+1)/2=365$ distinct values of the full space,
+minus $\theta=0$, halved, so the largest shell again realises the whole
+universal spectrum $\Theta_N$ of \S\ref{sec:universal}. But those $182$ phases
+are built from only $m=6$ independent fundamentals. The dephasing model lets
+$182$ phases wander independently; the true dynamics moves them on a
+$6$-dimensional torus. Filling a $182$-torus instead of a $6$-torus is precisely
+the overestimate.
+
+The control confirms the frame is exact rather than the model being
+mis-implemented: feeding the \emph{coherent} phases $\alpha_\theta=\theta t$
+through the identical machinery reproduces the directly measured time average to
+four decimals ($1.3901$ against $1.3901$, at $N=9$, $w=4$). Only the
+independence assumption is wrong.
+
+\subsection{Why the first-moment argument cannot help, ever}
+
+There is a reason to expect a random state to work, and it is worth stating
+because it is exactly right and exactly useless. The computational basis is an
+\textbf{exact $1$-design}: $\mathbb{E}_x|x\rangle\langle x|=\mathbb{1}/2^N$.
+Unitary evolution preserves that, so at \emph{every} time
+\begin{equation}
+\mathbb{E}_x\big[\rho_A(t)\big]
+ = \operatorname{Tr}_B U^t\frac{\mathbb{1}}{2^N}U^{-t}
+ = \frac{\mathbb{1}_A}{d_A},
+\label{eq:design}
+\end{equation}
+verified here to machine precision ($0$, $2.7\times10^{-19}$,
+$6.9\times10^{-18}$, $4.9\times10^{-17}$ at $t=0,1,7,33$). Two consequences:
+
+\begin{itemize}
+\item \textbf{For any linear observable the question is trivial and the answer is
+  static.} The basis average of $\langle O\rangle$ equals the Haar average
+  equals $\operatorname{Tr}O/2^N$, exactly, and does not move under the dynamics
+  at all. Had the quantity of interest been an observable, no simulation would
+  have been needed.
+\item \textbf{For $S$ the same input yields nothing.} $S$ is concave, so
+  \eqref{eq:design} gives $\mathbb{E}_x[S]\le S(\mathbb{E}_x[\rho_A])=\ln
+  d_A=3.4657$ --- a bound that is true at every time, including $t=0$ where all
+  $2048$ entropies are exactly $0$. Meanwhile $\mathbb{E}_x[S]$ runs
+  $0\to0.208\to1.424\to1.752$ over the same $t=0,1,7,33$. The first moment of
+  $\rho$ is constant while the answer moves across most of its range.
+\end{itemize}
+
+So the answer to ``is $S$ not an observable the obstruction?'' is: that is the
+right diagnosis but not quite the right mechanism. Non-linearity is not fatal by
+itself --- Page's formula computes $\mathbb{E}_{\rm Haar}[S]$ exactly, nonlinear
+or not. What is fatal is that $S$ is sensitive to \emph{all} moments of the
+ensemble, and the computational basis matches Haar only at the first. It then
+takes two further pieces of physics, neither visible to any random-state model,
+to close the gap: the block structure ($3.21\to2.82$) and the non-ergodicity of
+a spectrum with $3^m$ distinct eigenvalues on $2^N$ states ($2.82\to1.66$).
+
+\paragraph{And the spread is worse than the mean.} Even granting a fitted
+offset, the random-state route cannot deliver the intra-cluster variance, which
+is the second half of the question. Concentration of measure makes Haar's own
+spread shrink with the shell dimension, and the measured spread does not:
+
+\begin{center}
+\begin{tabular}{rrrr}
+\hline
+$w$ & $|S_w|$ & measured $\sigma_w$ & Haar $\sigma_w$ \\
+\hline
+$2$ & $66$ & $0.0368$ & $0.0888$ \\
+$4$ & $495$ & $0.0768$ & $0.0299$ \\
+$6$ & $924$ & $0.0930$ & $0.0225$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent Haar is wrong in \emph{both directions}: it over-predicts the spread
+by $2.4\times$ in the small shell and under-predicts it by $4.1\times$ in the
+large one. In the Haar model the intra-cluster variance is a finite-size
+artifact that vanishes as $D\to\infty$; here it grows with $D$, because the
+basis states of one shell are systematically inequivalent --- they differ in how
+their wall configuration sits relative to the cut. No random-state ensemble,
+Haar or dephased, contains that information.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_c150_census.pdf}{\textwidth}
+\caption{The $N=11$ census. Left: the distribution of the $2048$ saturation
+values, stacked by shell, with the measured mean and the three random-state
+predictions. The sector labels are visible as separated lobes --- that
+separation is \eqref{eq:eta}. Middle: per-shell mean $\pm\sigma_w$ against the
+kinematic ceiling and the two random-state references; every random-state model
+lies above the data at every $w$. Right: the intra-cluster spread against Haar's
+own, showing that Haar errs in opposite directions for small and large shells.}
+\label{fig:census}
+\end{figure}
+
 \section{Open items}
 
 \begin{enumerate}
@@ -990,12 +1191,16 @@ $\nu=w/(N{+}1)$, with the realised fraction of the ceiling roughly flat.}
   Identifying its generators would prove \eqref{eq:distinct} and turn the
   block-resolved statistics of \S\ref{sec:levels} from a lower bound into an
   exact result.
-\item \textbf{Level statistics for the partner shells.} For odd $N$ the shells
-  $w$ and $N+1-w$ have identical spectra to $1.2\times10^{-14}$, but the natural
-  candidate intertwiner --- the bond particle-hole map, which in spin variables
-  is $x\mapsto x\oplus A$ with $A$ the alternating mask --- does \emph{not}
-  commute with $U$ (checked for $N=3\ldots9$). The intertwiner that does is
-  unidentified.
+\item \label{it:partner}\textbf{Level statistics for the partner shells.} For
+  odd $N$ the shells $w$ and $N+1-w$ have identical spectra to
+  $1.2\times10^{-14}$, but the natural candidate intertwiner --- the bond
+  particle-hole map, which in spin variables is $x\mapsto x\oplus A$ with $A$ the
+  alternating mask --- does \emph{not} commute with $U$ (checked for
+  $N=3\ldots9$). The intertwiner that does is unidentified. \S\ref{sec:census}
+  adds a constraint that should narrow the search considerably: the partner
+  shells agree not only spectrally but in their entire half-chain entanglement
+  census --- mean, spread and extrema, to every digit --- so whatever the
+  intertwiner is, it commutes with the bipartition as well as with $U$.
 \item \textbf{The ring.} \S\ref{sec:closed} solves \rt{pbc} kinematically, but
   the quantum layer of \S\ref{sec:open}--\S\ref{sec:free} is done for \rt{obc0}
   only. On the ring the wall map is $2$-to-$1$, so the bond representation
@@ -1030,6 +1235,12 @@ python -m qca_fragmentation.scaling.c150_report --quantum
 # level statistics: references, shells, controls, distinct-eigenvalue law
 python -m qca_fragmentation.quantum.rule150_levels --run
 
+# full computational-basis entanglement census + random-state references
+# (N=11: all 2048 states to t=4000; ~25 min.  Cap the BLAS threads --
+#  the default oversubscribes and costs a factor 2.)
+OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 \
+  python -m qca_fragmentation.quantum.rule150_basis_census --run
+
 python -m qca_fragmentation.scaling.c150_report --tables --figures
 
 # tests (126 of them)
@@ -1044,7 +1255,11 @@ $(N,\rt{bc})$ with the full size multiset and the closed-form check),
 \fn{analytics/c150\_quantum.json} (spectral portraits, $\Fix(U)$, freeness),
 \fn{analytics/c150\_levels.json} (reference ensembles with their pooled spacing
 samples, per-block $\langle\tilde r\rangle$ and KS distances, controls, and the
-distinct-eigenvalue table).
+distinct-eigenvalue table),
+\fn{analytics/c150\_basis\_census.json} (the per-state saturation values for all
+$2^{11}$ basis states with their shell labels, the per-shell and global
+statistics, the three random-state references, and the convergence, split-half
+and $1$-design diagnostics).
 \end{sloppypar}
 
 \end{document}
