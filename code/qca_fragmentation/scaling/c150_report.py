@@ -634,6 +634,15 @@ def figure_census() -> None:
                       (cs["haar_full"]["mean_real"], "C1", "Haar (full)"),
                       (cs["haar_full"]["volume_law"], "C2", r"$\ln 2^{N/2}$")):
         ax[0].axvline(x, color=c, ls="--", lw=1.2, label=lab)
+    # mark the R = P o (xor A) fixed points -- the isolated high spike
+    sp = cs.get("spike") or {}
+    if sp.get("n_fixed"):
+        ax[0].axvspan(sp["fixed_min"] - 0.004, sp["fixed_max"] + 0.004,
+                      color="k", alpha=0.10, zorder=0)
+        ax[0].annotate(f"$Px=x\\oplus A$\n({sp['n_fixed']} states)",
+                       xy=(sp["fixed_mean"], 0), xytext=(1.30, 150),
+                       fontsize=6, ha="center",
+                       arrowprops=dict(arrowstyle="->", lw=0.8))
     ax[0].set_xlabel(r"$\overline{S}$ (time average)")
     ax[0].set_ylabel("# basis states")
     ax[0].set_title(f"all $2^{{{N}}}$ basis states, clustered by sector",

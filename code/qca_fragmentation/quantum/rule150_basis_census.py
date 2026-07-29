@@ -386,6 +386,89 @@ def census(N: int = N_DEFAULT, *, t_max: int = T_MAX, burn: int = BURN,
     return out
 
 
+# --- the structure inside a shell: two exact involutions ---------------------
+
+def alternating_mask(N: int) -> int:
+    """The even-site mask A.  In bond variables x -> x^A complements EVERY bond,
+    so it maps the shell w to the shell N+1-w."""
+    return sum(1 << i for i in range(0, N, 2))
+
+
+def reflect(x: int, N: int) -> int:
+    """Spatial reflection P: site i -> N-1-i."""
+    return int(format(x, f"0{N}b")[::-1], 2)
+
+
+def mirror_complement_fixed(N: int) -> List[int]:
+    """
+    The basis states fixed by R = P o (xor A) -- reflection followed by the wall
+    complement.
+
+    In bond variables the condition is simply
+
+        b_{N-j} = 1 xor b_j   for every j,
+
+    i.e. each mirror pair of bonds carries exactly one wall.  With N+1 bonds
+    that forces w = (N+1)/2 exactly, so R has fixed points only in the
+    self-partner shell, and only when (N+1)/2 is even, i.e. N = 3 (mod 4).
+    Counting them on the two sublattices -- odd sites must be a palindrome, even
+    sites an anti-palindrome -- gives 4^{(N+1)/4}.
+
+    These states carry the highest entanglement in their shell, by a margin that
+    separates them from the rest of the shell with an empty gap (see census()).
+    """
+    A = alternating_mask(N)
+    return [x for x in range(1 << N) if reflect(x, N) == (x ^ A)]
+
+
+def mirror_complement_count(N: int) -> int:
+    """Closed form for len(mirror_complement_fixed(N))."""
+    return 4 ** ((N + 1) // 4) if N % 4 == 3 else 0
+
+
+def spike_separation(N: int, *, t_max: int = T_MAX, burn: int = BURN,
+                     cut: Optional[int] = None) -> dict:
+    """
+    Measure the gap: saturation entropy on the R-fixed states against the rest
+    of the same shell.  Returns None-ish (empty) when N is not 3 mod 4.
+    """
+    if N % 4 != 3:
+        return {"N": N, "w": None, "n_fixed": 0, "separated": False}
+    w = (N + 1) // 2
+    tr, states = shell_basis_traces(N, w, t_max=t_max, cut=cut)
+    sat = tr[:, burn:].mean(axis=1)
+    A = alternating_mask(N)
+    fx = np.array([reflect(int(x), N) == (int(x) ^ A) for x in states])
+    return {"N": N, "w": w, "n_fixed": int(fx.sum()),
+            "n_rest": int((~fx).sum()),
+            "fixed_min": float(sat[fx].min()), "fixed_max": float(sat[fx].max()),
+            "fixed_mean": float(sat[fx].mean()),
+            "rest_min": float(sat[~fx].min()), "rest_max": float(sat[~fx].max()),
+            "rest_mean": float(sat[~fx].mean()),
+            "gap": float(sat[fx].min() - sat[~fx].max()),
+            "separated": bool(sat[fx].min() > sat[~fx].max())}
+
+
+def complement_symmetry_check(N: int, cs: dict) -> dict:
+    """
+    x -> x^A is an EXACT symmetry of the saturation entropy, even though it does
+    not commute with U (R8 open item 4).  It maps the shell w to N+1-w, which is
+    why the partner shells have identical censuses and why every value in the
+    self-partner shell is exactly twice degenerate.
+    """
+    A = alternating_mask(N)
+    w = np.array(cs["raw"]["w"])
+    S = np.array(cs["raw"]["S_sat"])
+    worst = 0.0
+    for ww in range(0, N + 2, 2):
+        src, dst = rs.sector_states(N, ww), rs.sector_states(N, N + 1 - ww)
+        idx = {x: k for k, x in enumerate(dst)}
+        s_src, s_dst = S[w == ww], S[w == (N + 1 - ww)]
+        for k, x in enumerate(src):
+            worst = max(worst, abs(s_src[k] - s_dst[idx[x ^ A]]))
+    return {"max_abs_deviation": float(worst)}
+
+
 def split_half_check(N: int = N_DEFAULT, w: int = 6, *, t_max: int = T_MAX,
                      burn: int = BURN, cut: Optional[int] = None) -> dict:
     """
@@ -505,6 +588,9 @@ def run(*, force: bool = False, N: int = N_DEFAULT) -> dict:
     out["dephasing"] = [dephasing_reference(N, w) for w in (2, 4, 6)]
     print("  1-design check:", flush=True)
     out["one_design"] = one_design_check(N)
+    print("  shell substructure:", flush=True)
+    out["spike"] = spike_separation(N)
+    out["complement_symmetry"] = complement_symmetry_check(N, out)
     out["cut_alt"] = None
     if N % 2 == 1:                       # odd N: the other half-chain cut
         alt = census(N, cut=N - N // 2, n_haar=1000, verbose=False)

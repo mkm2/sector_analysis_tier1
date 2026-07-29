@@ -8,6 +8,7 @@ from math import comb, log
 import numpy as np
 import pytest
 
+from qca_fragmentation import c150
 from qca_fragmentation.quantum import rule150_basis_census as bc
 from qca_fragmentation.quantum import rule150_entanglement as re
 from qca_fragmentation.quantum import rule150_spectra as rs
@@ -145,6 +146,49 @@ def test_haar_shell_mean_exceeds_the_measured_saturation():
     s = [x for x in d["shells"] if x["w"] == w][0]
     assert s["haar_shell"]["mean"] > s["mean"]
     assert s["mean"] <= s["ceiling"] + 1e-9
+
+
+# --- the substructure inside a shell ------------------------------------------
+
+@pytest.mark.parametrize("N", [3, 7, 9, 11, 13, 15, 19])
+def test_mirror_complement_count(N):
+    """R = P o (xor A) has fixed points only when N = 3 mod 4, and then
+    exactly 4^{(N+1)/4} of them."""
+    fx = bc.mirror_complement_fixed(N)
+    assert len(fx) == bc.mirror_complement_count(N)
+    assert (len(fx) > 0) == (N % 4 == 3)
+
+
+@pytest.mark.parametrize("N", [3, 7, 11, 15])
+def test_mirror_complement_forces_the_middle_shell(N):
+    """In bond variables the condition is b_{N-j} = 1 xor b_j, so each mirror
+    pair of bonds holds exactly one wall and w = (N+1)/2 follows."""
+    for x in bc.mirror_complement_fixed(N):
+        b = c150.wall_string(x, N, "obc0")
+        for j in range(N + 1):
+            assert ((b >> j) & 1) ^ ((b >> (N - j)) & 1) == 1
+        assert c150.wall_number(x, N, "obc0") == (N + 1) // 2
+
+
+def test_mirror_complement_states_top_their_shell_with_a_gap():
+    """At N=7 the 16 R-fixed states sit above the whole rest of the w=4 shell,
+    separated by an empty gap -- the isolated spike of R8 sec.10."""
+    d = bc.spike_separation(7, t_max=600, burn=100)
+    assert d["n_fixed"] == 16 and d["w"] == 4
+    assert d["separated"]
+    assert d["gap"] > 0.02
+
+
+def test_no_spike_when_N_is_1_mod_4():
+    assert bc.spike_separation(9)["n_fixed"] == 0
+
+
+def test_wall_complement_is_an_exact_entropy_symmetry():
+    """x -> x^A maps shell w to N+1-w and preserves the saturation entropy
+    exactly, which is why the partner shells have identical censuses."""
+    N = 7
+    cs = bc.census(N, t_max=300, burn=100, n_haar=50, verbose=False)
+    assert bc.complement_symmetry_check(N, cs)["max_abs_deviation"] < 1e-12
 
 
 def test_haar_full_is_close_to_page():

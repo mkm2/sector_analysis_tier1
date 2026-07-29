@@ -1030,6 +1030,81 @@ by only $0.013$.
   ($0.354$, $0.468$, $0.526$), consistent with the dome of \S\ref{sec:ent}.
 \end{itemize}
 
+\subsection{Inside one shell: two exact involutions, and an isolated spike}
+\label{sec:spike}
+
+The $w=6$ histogram in Fig.~\ref{fig:census} is visibly \emph{bimodal}: a broad
+bulk over $[1.75,1.92]$ and a narrow, well-separated spike at $[1.950,1.968]$,
+with an empty gap between. Both features have exact explanations, and neither is
+about the sector label.
+
+\paragraph{The wall complement, and why every value is doubly degenerate.}
+Let $A$ be the even-site mask, $A=\sum_{i\ \rm even}2^i$. In bond variables
+$x\mapsto x\oplus A$ complements \emph{every} bond $b_j\mapsto1\oplus b_j$, so it
+maps the shell $w$ to the shell $N+1-w$. It is an \textbf{exact symmetry of the
+saturation entropy}: over all $2048$ states,
+\begin{equation}
+\big|\,\overline{S}(x)-\overline{S}(x\oplus A)\,\big|
+ \;=\;0.0\times10^{0}\quad\text{(to machine precision).}
+\label{eq:compsym}
+\end{equation}
+This is why the partner shells of the census table agree to every digit, and why
+in the self-partner shell $w=(N+1)/2=6$ --- where $x\oplus A$ acts \emph{within}
+the shell --- all $924$ values come in $462$ exactly degenerate pairs.
+
+The point worth flagging: this is the very map of open item~\ref{it:partner},
+the bond particle-hole map, which does \emph{not} commute with $U$ (checked
+$N=3\ldots9$). So it is not a symmetry of the dynamics, yet it is an exact
+symmetry of the time-averaged entanglement. Whatever the missing intertwiner is,
+it must reproduce $\oplus A$ at the level of the diagonal ensemble.
+
+\paragraph{The spike: fixed points of $R=P\circ(\oplus A)$.} Compose the wall
+complement with the spatial reflection $P$. The states fixed by $R$ satisfy
+$Px=x\oplus A$, which in bond variables reads simply
+\begin{equation}
+b_{N-j}\;=\;1\oplus b_j\qquad\text{for every }j,
+\label{eq:mirrorcomp}
+\end{equation}
+that is, \emph{each mirror pair of bonds carries exactly one wall}. With $N+1$
+bonds in $(N+1)/2$ mirror pairs, \eqref{eq:mirrorcomp} forces $w=(N+1)/2$
+automatically --- $R$ can only have fixed points in the self-partner shell, and
+only when $(N+1)/2$ is even, i.e.\ when $N\equiv3\pmod4$. Counting on the two
+sublattices (the odd sites must form a palindrome, the even sites an
+anti-palindrome) gives
+\begin{equation}
+\#\{x:Px=x\oplus A\}=
+\begin{cases}4^{(N+1)/4}, & N\equiv3\pmod 4,\\[2pt] 0,&\text{otherwise,}\end{cases}
+\label{eq:mirrorcount}
+\end{equation}
+verified for $N=3,7,9,11,13,15,19,23$ ($4,16,0,64,0,256,1024,4096$).
+
+At $N=11$ that is $64$ states, and \textbf{they are exactly the spike}: the set
+of $64$ largest $\overline{S}$ in the shell coincides with the fixed-point set of
+$R$, with
+\[
+\overline{S}\in[1.9501,1.9681]\ \text{on the }64,\qquad
+\overline{S}\in[1.2762,1.9185]\ \text{on the other }860,
+\]
+a clean gap of $0.0316$ --- against a typical level spacing of $5\times10^{-4}$
+inside the spike. The mechanism is out-of-sample confirmed at $N=7$, where
+\eqref{eq:mirrorcount} predicts $16$ states in the $w=4$ shell and they again top
+the shell with an empty gap ($0.045$); and at $N=9$ and $N=13$, where
+$(N+1)/2$ is odd, the spike is predicted to be absent and is.
+
+So the second peak is a \emph{parity effect in $N$}, invisible in the sector
+label: it exists only for $N\equiv3\pmod4$, only in the middle shell, and it
+consists of the wall configurations that are maximally balanced about the cut in
+the strong sense \eqref{eq:mirrorcomp} --- exactly one wall in each mirror pair
+of bonds, hence complementary wall content in the two halves.
+
+\paragraph{And the low tail.} The other tail, down to $\overline{S}=1.2762$,
+is largely the $20$ states that are genuinely reflection symmetric, $Px=x$.
+Those lie in a single reflection sector, so they populate only $71$ of the
+shell's $183$ distinct eigenphases --- a quantum Krylov dimension $39\%$ of the
+generic one --- and they equilibrate to a visibly lower entropy
+(mean $1.674$). Note $20=\binom{6}{3}=\dim\Fix(U_w)$, which is suggestive but is
+a different subspace; the coincidence is not explained here.
+
 \subsection{How much does the sector fix?}
 
 Cluster the $2048$ values by $w$ and split the variance the usual one-way way,
@@ -1161,7 +1236,9 @@ Haar or dephased, contains that information.
 \caption{The $N=11$ census. Left: the distribution of the $2048$ saturation
 values, stacked by shell, with the measured mean and the three random-state
 predictions. The sector labels are visible as separated lobes --- that
-separation is \eqref{eq:eta}. Middle: per-shell mean $\pm\sigma_w$ against the
+separation is \eqref{eq:eta}. The $w=6$ shell is itself bimodal: the shaded band
+is the isolated spike of $64$ states fixed by $R=P\circ(\oplus A)$
+(\S\ref{sec:spike}). Middle: per-shell mean $\pm\sigma_w$ against the
 kinematic ceiling and the two random-state references; every random-state model
 lies above the data at every $w$. Right: the intra-cluster spread against Haar's
 own, showing that Haar errs in opposite directions for small and large shells.}

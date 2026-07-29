@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 419 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 433 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -110,6 +110,28 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      directions: measured/Haar sd = 0.0368/0.0888 (w=2, over-predicts 2.4x) but
      0.0930/0.0225 (w=6, under-predicts 4.1x). Haar's spread shrinks with D by
      concentration; the measured one grows.
+   - **Substructure inside a shell (asked 2026-07-29): the w=6 histogram is
+     bimodal.** Two exact involutions explain it.
+     (a) x -> x^A (A = even-site mask) complements EVERY bond, so it maps shell
+     w to shell N+1-w and preserves S **exactly** (max deviation 0.0e+00 over
+     all 2048 states). That is why partner shells agree to every digit and why
+     all 924 values of the self-partner shell come in 462 exact pairs. Note
+     this is the bond particle-hole map of R8 open item 4, which does NOT
+     commute with U -- not a symmetry of the dynamics, but an exact symmetry of
+     the time-averaged entanglement.
+     (b) The isolated high spike = the fixed points of **R = P o (xor A)**.
+     In bond variables the condition is b_{N-j} = 1 xor b_j (each mirror pair
+     of bonds carries exactly one wall), which forces w = (N+1)/2 and therefore
+     exists only for **N = 3 mod 4**; count **4^((N+1)/4)** (verified N=3..23:
+     4,16,0,64,0,256,1024,4096). At N=11 that is exactly the 64 top states,
+     [1.9501,1.9681] vs [1.2762,1.9185] for the other 860 -- gap 0.0316 against
+     a 5e-4 spacing inside the spike. Out of sample: N=7 gives 16 states with
+     gap 0.045; N=9 and N=13 have none, as predicted.
+     (c) The low tail is largely the 20 genuinely reflection-symmetric states
+     (Px = x): confined to one reflection sector they populate only 71 of the
+     shell's 183 distinct eigenphases (Krylov dim 39% of generic) and sit at
+     mean 1.674. 20 = C(6,3) = dim Fix(U_w) is so far an unexplained numerical
+     coincidence.
    - **No plateau exists** (C150 is not chaotic): S(t) is quasi-periodic on the
      6-torus forever, <sd_t(S)> ~ 0.35. "Saturation" = infinite-time average;
      the cumulative mean needs t ~ 800 to stabilise and a naive t in [200,400]
