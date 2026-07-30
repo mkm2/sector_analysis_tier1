@@ -51,104 +51,149 @@ def _style(ax):
         ax.spines[s].set_visible(False)
 
 
-def _hyperbola(ax, lo=1.0, hi=2.05, shade_below=False, label=True):
-    a = np.linspace(max(lo, 1.0), hi, 400)
-    b = 2.0 / a
-    ax.plot(a, b, color="k", lw=1.2, ls="-", zorder=2,
-            label=r"$ab=2$ (exclusion)" if label else None)
-    if shade_below:
-        ax.fill_between(a, 0, b, color="#cccccc", alpha=0.35, zorder=0)
+def _hyperbola(ax, lo=0.96, hi=2.06):
+    """The exclusion boundary, as a light dotted line -- a reference, not a
+    decoration.  No shading: it competes with the scatter it is meant to frame."""
+    a = np.linspace(max(lo, 0.5), hi, 400)
+    ax.plot(a, 2.0 / a, color="#444444", lw=1.0, ls=":", zorder=2)
 
 
-def _jitter(rule, s=0.005):
-    return (((rule * 37) % 7 - 3) * s, ((rule * 53) % 7 - 3) * s)
+# Quantum rules (those containing a Hadamard V) are the ones of interest; the
+# V-free rules are a classical baseline and are drawn back so they frame rather
+# than crowd.  "mixed" = V + reset, "unitary" = V only, "classical" = V-free.
+_EMPH = {
+    "unitary":   dict(color="#1f4e9c", z=6, alpha=0.95, edge=1.3),
+    "mixed":     dict(color="#c62828", z=5, alpha=0.85, edge=1.1),
+    "classical": dict(color="#9bbf9b", z=3, alpha=0.55, edge=0.7),
+}
+_FAMLABEL = {"unitary": "unitary (V only), 16",
+             "mixed": "V + reset, 160",
+             "classical": "V-free baseline, 80"}
 
 
-# --- F1 -----------------------------------------------------------------------
+def _cells(pts, xkey, ykey):
+    """Aggregate coincident points: {(x, y, family): count}.  Essential here --
+    73% of the sector map sits in a single cell, so one marker per rule hides
+    the entire distribution."""
+    from collections import Counter
+    c = Counter()
+    for x, y, fam in pts:
+        if x is None or y is None:
+            continue
+        c[(round(x, 3), round(y, 3), fam)] += 1
+    return c
+
+
+#: Families sharing a cell are nudged apart so none is hidden under another --
+#: without this the 144 V+reset rules at (1,2) sit exactly under 33 V-free ones.
+_FAM_DX = {"unitary": 0.0, "mixed": 0.019, "classical": -0.019}
+
+
+def _scatter_cells(ax, cells, *, base=26.0, per=15.0, annotate_above=12):
+    """Marker area grows with the number of rules stacked in the cell.  All
+    markers are drawn before any label, so a count is never buried."""
+    labels = []
+    for fam in ("classical", "mixed", "unitary"):          # draw order = z order
+        st = _EMPH[fam]
+        dx = _FAM_DX[fam]
+        for (x, y, f), n in cells.items():
+            if f != fam:
+                continue
+            r = base + per * np.sqrt(n)
+            ax.scatter(x + dx, y, s=r, marker="o", facecolor=st["color"],
+                       edgecolor="white", linewidth=st["edge"],
+                       alpha=st["alpha"], zorder=st["z"])
+            if n >= annotate_above:
+                labels.append((x + dx, y, n, st["color"], r))
+    for x, y, n, col, r in labels:
+        inside = r > 110
+        ax.annotate(f"{n}", (x, y), fontsize=6.8, ha="center",
+                    va="center" if inside else "bottom",
+                    xytext=(0, 0) if inside else (0, 7),
+                    textcoords="offset points",
+                    color="white" if inside else col,
+                    fontweight="bold", zorder=20)
+
+
+def _panel(ax, cells, title, xlabel, ylabel):
+    _style(ax)
+    _hyperbola(ax)
+    _scatter_cells(ax, cells)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title, fontsize=10)
+    ax.set_xlim(0.90, 2.12)
+    ax.set_ylim(0.88, 2.14)
+
+
+# --- F1 + F2: the two maps on identical axes ----------------------------------
 
 def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
+    """
+    Sector map and monitored-attractor map side by side, same axes, so the
+    contrast is the figure rather than a claim about two figures.
+    """
     d = data or sectors.load(bc) or sectors.build(bc)
-    # irregular series have no base and cannot be placed in this plane; they are
-    # counted in the title rather than plotted at a fictitious coordinate
-    pts = [p for p in d["points"]
-           if p["n_wcc"]["base"] is not None
-           and p["d_max_wcc"]["base"] is not None]
-    n_irr = len(d["points"]) - len(pts)
-    fig, axes = plt.subplots(1, 2, figsize=(12.4, 5.2),
-                             gridspec_kw={"width_ratios": [1.35, 1]})
-    ax = axes[0]
-    _style(ax)
-    _hyperbola(ax, shade_below=True)
-    for p in pts:
-        a, b = p["n_wcc"], p["d_max_wcc"]
-        jx, jy = _jitter(p["rule"])
-        c = FAMILY_COLOUR[p["family"]]
-        filled = a["exact"] and b["exact"]
-        ax.scatter(a["base"] + jx, b["base"] + jy, s=38, marker="o",
-                   facecolor=c if filled else "none", edgecolor=c,
-                   linewidth=1.0, alpha=0.85 if filled else 0.7, zorder=3)
-    for r, lab in ((204, "204"), (51, "51"), (150, "150"), (156, "156")):
-        p = next((x for x in pts if x["rule"] == r), None)
-        if p:
-            ax.annotate(lab, (p["n_wcc"]["base"], p["d_max_wcc"]["base"]),
-                        textcoords="offset points", xytext=(5, 4), fontsize=7.5,
-                        color=TEXT)
-    ax.set_xlabel(r"base $a$ of $\#$sectors ($n_{\rm wcc}\sim a^N$)")
-    ax.set_ylabel(r"base $b$ of $D_{\max}$ ($\sim b^N$)")
-    ax.set_title(f"F1  sector map, {len(pts)} rules ({bc}) — "
-                 f"exact for BOTH experiments"
-                 + (f"; {n_irr} irregular omitted" if n_irr else ""),
-                 fontsize=10)
-    hs = [plt.Line2D([], [], marker="o", ls="", color=FAMILY_COLOUR[k],
-                     label=FAMILY_LABEL[k]) for k in FAMILY_COLOUR]
-    hs.append(plt.Line2D([], [], color="k", lw=1.2, label=r"$ab=2$"))
-    hs.append(plt.Line2D([], [], marker="o", ls="", color="k",
-                         markerfacecolor="none", label="fitted base"))
-    ax.legend(handles=hs, fontsize=7, loc="upper right")
+    fam = {p["rule"]: p["family"] for p in d["points"]}
 
-    # marginal: the alpha panels
-    ax2 = axes[1]
-    _style(ax2)
-    for p in pts:
-        c = FAMILY_COLOUR[p["family"]]
-        ax2.scatter(p["n_wcc"]["alpha"], p["d_max_wcc"]["alpha"], s=26,
-                    facecolor=c, edgecolor="none", alpha=0.6, zorder=3)
-    ax2.set_xlim(-2.2, 2.2)
-    ax2.set_ylim(-3.2, 5.2)
-    ax2.axhline(-0.5, color=MUTED, ls=":", lw=0.8)
-    ax2.annotate(r"$\alpha=-1/2$ (binomial)", (0.02, -0.5), fontsize=7,
-                 color=TEXT, textcoords="offset points", xytext=(0, 4))
-    ax2.set_xlabel(r"$\alpha_{\#{\rm sec}}$")
-    ax2.set_ylabel(r"$\alpha_{D_{\max}}$")
-    ax2.set_title("sub-leading powers", fontsize=10)
-    fig.tight_layout()
+    sec = _cells([(p["n_wcc"]["base"], p["d_max_wcc"]["base"], p["family"])
+                  for p in d["points"]], None, None)
+    att = _cells([(x["a_att"], x["b_att"], fam.get(x["rule"], "mixed"))
+                  for x in d["attractor_deficits"]], None, None)
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.2, 5.3), sharex=True, sharey=True)
+    _panel(axes[0], sec,
+           f"sectors (WCC) — exact for BOTH experiments",
+           r"base $a$ of $\#$sectors", r"base $b$ of $D_{\max}$")
+    _panel(axes[1], att,
+           "monitored attractors (terminal SCC)",
+           r"base $a_{\rm att}$ of $\#$attractors",
+           r"base $b_{\rm att}$ of $D_{\max}^{\rm att}$")
+
+    # 51 and 150 sit at exactly the same point, so the labels are staggered
+    for r, lab, off in ((204, "204", (-24, 6)), (51, "51", (14, 12)),
+                        (150, "150", (14, -14)), (156, "156", (12, 4))):
+        p = next((x for x in d["points"] if x["rule"] == r), None)
+        if p and p["n_wcc"]["base"] is not None:
+            axes[0].annotate(lab, (p["n_wcc"]["base"], p["d_max_wcc"]["base"]),
+                             textcoords="offset points", xytext=off,
+                             fontsize=7.5, color=TEXT, zorder=21,
+                             arrowprops=dict(arrowstyle="-", lw=0.5,
+                                             color="#888888"))
+
+    hs = [plt.Line2D([], [], marker="o", ls="", markersize=7,
+                     markerfacecolor=_EMPH[k]["color"], markeredgecolor="white",
+                     label=_FAMLABEL[k]) for k in ("unitary", "mixed", "classical")]
+    hs.append(plt.Line2D([], [], color="#444444", lw=1.0, ls=":",
+                         label=r"$ab=2$ (excluded below, left panel only)"))
+    axes[0].legend(handles=hs, fontsize=7.5, loc="lower left", framealpha=0.95)
+    fig.suptitle("Marker area grows with the number of rules stacked in a cell; "
+                 "the count is printed inside crowded cells.  "
+                 f"({bc})", fontsize=9, x=0.01, ha="left", color=TEXT)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
     for p_ in (out, out.replace(".pdf", ".png")):
         fig.savefig(p_, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", out)
 
-
-# --- F2 -----------------------------------------------------------------------
 
 def fig_monitored_map(bc: str, out: str, data: Optional[Dict] = None):
+    """The attractor map alone, for the rules that carry a Hadamard."""
     d = data or sectors.load(bc) or sectors.build(bc)
-    defs = d["attractor_deficits"]
-    fig, ax = plt.subplots(figsize=(6.8, 5.6))
-    _style(ax)
-    _hyperbola(ax, shade_below=True)
     fam = {p["rule"]: p["family"] for p in d["points"]}
-    for x in defs:
-        c = FAMILY_COLOUR.get(fam.get(x["rule"], "mixed"), "#777777")
-        jx, jy = _jitter(x["rule"])
-        ax.scatter(x["a_att"] + jx, x["b_att"] + jy, s=34, facecolor="none",
-                   edgecolor=c, linewidth=0.9, alpha=0.75, zorder=3)
-    below = sum(1 for x in defs if x["deficit"] > 0)
-    ax.set_xlabel(r"base $a_{\rm att}$ of $\#$terminal SCCs")
-    ax.set_ylabel(r"base $b_{\rm att}$ of $D_{\max}^{\rm att}$")
-    ax.set_title(f"F2  MONITORED attractor map ({bc})\n"
-                 f"{below}/{len(defs)} rules lie in the shaded region — "
-                 r"allowed, because terminal SCCs do not partition",
-                 fontsize=9.5)
+    quantum = [(x["a_att"], x["b_att"], fam.get(x["rule"], "mixed"))
+               for x in d["attractor_deficits"]
+               if fam.get(x["rule"]) in ("unitary", "mixed")]
+    fig, ax = plt.subplots(figsize=(6.6, 5.4))
+    _panel(ax, _cells(quantum, None, None),
+           f"monitored attractor map, quantum rules only ({bc})",
+           r"base $a_{\rm att}$ of $\#$attractors",
+           r"base $b_{\rm att}$ of $D_{\max}^{\rm att}$")
+    below = sum(1 for x in d["attractor_deficits"] if x["deficit"] > 0)
+    ax.annotate(f"{below}/{len(d['attractor_deficits'])} rules lie below "
+                r"$ab=2$ — allowed:" "\n" r"terminal SCCs do not partition",
+                (0.97, 0.03), xycoords="axes fraction", ha="right", va="bottom",
+                fontsize=7.5, color=TEXT)
     fig.tight_layout()
     for p_ in (out, out.replace(".pdf", ".png")):
         fig.savefig(p_, dpi=150, bbox_inches="tight")
@@ -156,45 +201,69 @@ def fig_monitored_map(bc: str, out: str, data: Optional[Dict] = None):
     print("wrote", out)
 
 
-# --- F3 -----------------------------------------------------------------------
+# --- F3: the displacement between the two maps --------------------------------
 
 def fig_sector_vs_attractor(bc: str, out: str, data: Optional[Dict] = None):
+    """
+    One arrow per rule, from its position in the sector map to its position in
+    the attractor map.  This is the difference between the two scatters, drawn
+    as a difference rather than left for the eye to compute.
+    """
+    from collections import Counter
     d = data or sectors.load(bc) or sectors.build(bc)
-    pts = [p for p in d["points"] if p["att_per_sector_at_Nmax"]
-           and p["n_wcc"]["base"] is not None]
-    fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.8))
+    pts = {p["rule"]: p for p in d["points"]}
+    moves: Counter = Counter()
+    for x in d["attractor_deficits"]:
+        p = pts.get(x["rule"])
+        if not p or p["n_wcc"]["base"] is None:
+            continue
+        moves[(round(p["n_wcc"]["base"], 3), round(p["d_max_wcc"]["base"], 3),
+               round(x["a_att"], 3), round(x["b_att"], 3), p["family"])] += 1
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.2, 5.1))
     ax = axes[0]
     _style(ax)
-    vals = np.array([p["att_per_sector_at_Nmax"] for p in pts])
-    cols = [FAMILY_COLOUR[p["family"]] for p in pts]
-    xs = np.array([p["n_wcc"]["base"] for p in pts])
-    sc = ax.scatter(xs, vals, c=cols, s=34, alpha=0.75, zorder=3)
-    ax.set_yscale("log")
-    ax.axhline(1.0, color=MUTED, ls="--", lw=0.8)
-    ax.annotate("one attractor per sector", (1.0, 1.0), fontsize=7,
-                textcoords="offset points", xytext=(2, 4), color=TEXT)
-    ax.set_xlabel(r"base $a$ of $\#$sectors")
-    ax.set_ylabel(r"$n_{\rm recurrent}/n_{\rm wcc}$ at $N_{\max}$")
-    ax.set_title("F3  monitored attractors per enclosure", fontsize=10)
+    _hyperbola(ax)
+    for (x0, y0, x1, y1, f), n in sorted(moves.items(), key=lambda kv: kv[1]):
+        st = _EMPH[f]
+        if abs(x1 - x0) < 1e-6 and abs(y1 - y0) < 1e-6:
+            ax.scatter(x0, y0, s=26 + 13 * np.sqrt(n), facecolor=st["color"],
+                       edgecolor="white", lw=0.8, alpha=st["alpha"],
+                       zorder=st["z"])
+            continue
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle="-|>", color=st["color"],
+                                    lw=0.6 + 0.9 * np.sqrt(n), alpha=0.7,
+                                    shrinkA=1.5, shrinkB=1.5),
+                    zorder=st["z"])
+    ax.set_xlabel(r"base $a$"), ax.set_ylabel(r"base $b$")
+    ax.set_title("sector $\\rightarrow$ monitored attractor, per rule",
+                 fontsize=10)
+    ax.set_xlim(0.90, 2.12)
+    ax.set_ylim(0.88, 2.14)
 
+    # right: how far each family moves
     ax = axes[1]
     _style(ax)
-    tf = [p["transient_fraction_at_Nmax"] for p in pts
-          if p["transient_fraction_at_Nmax"] is not None]
-    cols2 = [FAMILY_COLOUR[p["family"]] for p in pts
-             if p["transient_fraction_at_Nmax"] is not None]
-    ax.scatter([p["d_max_ratio_at_Nmax"] for p in pts
-                if p["transient_fraction_at_Nmax"] is not None],
-               tf, c=cols2, s=34, alpha=0.75, zorder=3)
-    ax.set_xlabel(r"$D_{\max}^{\rm wcc}/2^N$ at $N_{\max}$")
-    ax.set_ylabel("transient fraction (MONITORED)")
-    ax.set_title("how much of the space the attractors miss", fontsize=10)
+    for f in ("unitary", "mixed", "classical"):
+        vals = [x["deficit"] for x in d["attractor_deficits"]
+                if pts.get(x["rule"], {}).get("family") == f]
+        if not vals:
+            continue
+        ax.hist(vals, bins=np.linspace(-1.0, 1.05, 42), histtype="stepfilled",
+                color=_EMPH[f]["color"], alpha=0.55 if f != "classical" else 0.35,
+                label=f"{_FAMLABEL[f]}  (median {np.median(vals):+.2f})",
+                zorder=_EMPH[f]["z"])
+    ax.axvline(0.0, color="#444444", ls=":", lw=1.0)
+    ax.set_xlabel(r"deficit $2-a_{\rm att}b_{\rm att}$")
+    ax.set_ylabel("rules")
+    ax.set_title("transient dominance, by family", fontsize=10)
+    ax.legend(fontsize=7.5)
     fig.tight_layout()
     for p_ in (out, out.replace(".pdf", ".png")):
         fig.savefig(p_, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", out)
-
 
 # --- F4 -----------------------------------------------------------------------
 

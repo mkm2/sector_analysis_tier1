@@ -370,37 +370,95 @@ is taken from theory.
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/fig_sector_map_obc0.pdf}{\textwidth}
-\caption{\textbf{F1, sector map (both experiments).} Base $a$ of the sector
-count against base $b$ of the largest sector, all $256$ rules, \rt{obc0}. The
-solid curve is $ab=2$ and the shaded region below it is excluded by
-\eqref{eq:hyper}. Filled markers are exact bases (integer recurrence or
-analytic), hollow are fitted. Right panel: the sub-leading powers, with
-$\alpha=-1/2$ marking the binomial rules. These numbers are exact for the
-monitored \emph{and} the unmonitored dynamics.}
+\caption{\textbf{F1, the two maps on identical axes.} Left: the sector (WCC)
+plane, base $a$ of the sector count against base $b$ of the largest sector ---
+\emph{exact for both experiments}. Right: the same plane for terminal SCCs ---
+\emph{monitored only}. The dotted line is $ab=2$; it excludes the region below it
+in the left panel and is only a reference in the right one. Marker area grows
+with the number of rules stacked in a cell and the count is printed inside
+crowded cells, without which the distribution is invisible: $73\%$ of the sector
+map lies in one cell. Colour is by family, with the quantum rules (those carrying
+a Hadamard) drawn forward and the V-free rules held back as a baseline. The nine
+unitary rules land at \emph{identical} coordinates in both panels, which is
+assertion A2 made visible.}
 \label{fig:f1}
 \end{figure}
 
 \section{Sectors against monitored attractors}
 \label{sec:contrast}
 
+\subsection{The sector axis is uninformative for the V+reset rules}
+\label{sec:pileup}
+
+The left panel of Fig.~\ref{fig:f1} has a blunt message: \textbf{$186$ of $256$
+rules sit at exactly $(a,b)=(1,2)$} --- one sector, of size $2^N$. Broken down by
+family:
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+family & rules & at $(1,2)$ & elsewhere \\
+\midrule
+unitary (V only) & $16$ & $9$ & $7$ \\
+V + reset & $160$ & $\mathbf{144}$ & $16$ \\
+V-free baseline & $80$ & $33$ & $45$ \\
+\midrule
+all & $256$ & $186$ ($73\%$) & $70$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent So $90\%$ of the rules that combine a Hadamard with a reset have
+\emph{no sector structure at all}: the reset connects the whole basis into a
+single enclosure. That is a real result rather than a plotting problem, and it
+has a corollary for how this tier should be used. For those $144$ rules the
+sector axis says nothing, and everything interesting is in the monitored map,
+where the same rules spread over the whole column $a_\att\approx1$ from
+$b_\att=1.0$ up to $1.89$ (right panel of Fig.~\ref{fig:f1}). The V-free
+baseline behaves the other way round: it is the family that populates the
+\emph{sector} plane, and it collapses almost completely in the attractor plane.
+
+Quantitatively, with the deficit $2-a_\att b_\att$ of V4:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+family & rules & median deficit \\
+\midrule
+unitary (V only) & $9$ & $-0.135$ \\
+V + reset & $152$ & $+0.534$ \\
+V-free baseline & $78$ & $+0.909$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The unitary median is negative because those rules sit \emph{on or
+above} the curve in both planes --- for a unitary rule the two planes are the same
+plane. The V-free median of $+0.909$ says $a_\att b_\att\approx1$: their
+attractors are $O(1)$ fixed points and essentially the entire space is transient.
+The V+reset family sits between the two.
+
 \begin{figure}[htbp]
 \centering
-\ifgraphic{../../figures/fig_monitored_map_obc0.pdf}{\textwidth}
-\caption{\textbf{F2, monitored attractor map (MONITORED only).} The same plane
-for terminal SCCs. The hyperbola is drawn only as a reference and the region
-below it is shaded to make the contrast with Fig.~\ref{fig:f1} explicit: rules
-may and do sit there, because terminal SCCs do not partition the basis. The
-deficit $2-a_\att b_\att$ is an observable, not a failure.}
+\ifgraphic{../../figures/fig_monitored_map_obc0.pdf}{0.66\textwidth}
+\caption{\textbf{F2, the monitored attractor map for the quantum rules alone}
+(unitary and V+reset; the V-free baseline is dropped here). MONITORED
+quantities throughout. This is where the V+reset family has structure: in the
+sector plane all $144$ of them collapse onto $(1,2)$.}
 \label{fig:f2}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/fig_sector_vs_attractor_obc0.pdf}{\textwidth}
-\caption{\textbf{F3, monitored structure inside one enclosure.} Left:
-$n_{\rm recurrent}/n_\wcc$ at the largest $N$ reached, against the sector base.
-Right: the monitored transient fraction against $D_{\max}^\wcc/2^N$. The
-attractor counts are monitored; the sector quantities are not.}
+\caption{\textbf{F3, the difference between the two scatters, drawn as a
+difference.} Left: one arrow per rule, from its position in the sector plane to
+its position in the monitored-attractor plane; arrow width grows with the number
+of rules making the same move, and a dot means the rule does not move at all
+(which is what every unitary rule does, by A2). Right: the distribution of the
+deficit $2-a_\att b_\att$ by family. The V-free baseline piles up at $+1$ --- its
+attractors are $O(1)$ fixed points --- while the unitary rules sit at $0$ or
+below.}
 \label{fig:f3}
 \end{figure}
 
@@ -566,6 +624,9 @@ discriminate:
   shared by six dissipative rules and broken by exactly two, \rt{IDDI} and
   \rt{IEEI}. A grammar that produces the domain-wall counting should say why the
   same-reset-type pair is the one that breaks it.
+\item \textbf{Which V+reset rules escape the collapse} (\S\ref{sec:pileup}).
+  Only $16$ of $160$ keep any sector structure; a grammar should predict that
+  list, and it is a short one.
 \end{enumerate}
 
 \section{Open items}

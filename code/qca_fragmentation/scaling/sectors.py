@@ -415,27 +415,43 @@ def hyperbola_check(pt: Dict, tol: float = 0.0) -> Dict:
             "on_curve": bool(abs(prod - 2.0) < 1e-6)}
 
 
-def attractor_deficit(rule: int, bc: str) -> Optional[Dict]:
+def attractor_deficit(rule: int, bc: str,
+                      n_cap: Optional[int] = None) -> Optional[Dict]:
     """
     V4: the monitored-attractor map has NO hyperbola constraint.  Report the
     deficit 2 - a_att*b_att as an observable measuring transient dominance.
     Assert nothing.
+
+    The descriptors are built with the SAME convention as the sector ones
+    (series_descriptor: exact recurrence > analytic > two-parameter fit, never
+    the biased M2 rate of R2 sec.3).  Using growth_map's conventions here
+    instead would make the two maps incomparable and would throw away a free
+    visual check -- A2 says WCC and terminal SCC coincide for a unitary rule, so
+    those 16 points must land in the same place in both panels.  For that reason
+    a unitary rule also inherits the SECTOR analytic overrides (its two series
+    are the same series); a dissipative rule must not.
     """
-    from .growth_map import _dissipative_descriptor, _series_descriptor
     from .dissipative import load_series as load_att_series
-    t = rules.wolfram_to_tuple(rule)
     try:
-        if rules.is_unitary(t):
-            s = load_att_series(rule, bc)
-            if len(s["N"]) < 3:
-                return None
-            a = _series_descriptor(s["N"], s["n_recurrent"])
-            b = _series_descriptor(s["N"], s["d_max"])
-        else:
-            d = _dissipative_descriptor(rule, bc)
-            a, b = d["n_recurrent"], d["d_max"]
+        s = load_att_series(rule, bc)
     except Exception:
         return None
+    if not s or len(s.get("N") or []) < 3:
+        return None
+    # Same N window as the sector series, or the bases are fitted on different
+    # domains and the A2 check fails for a bookkeeping reason (W60/W102 differed
+    # by 0.014 purely because the Tier-1a series runs past the sector cap).
+    if n_cap is not None:
+        keep = [i for i, N in enumerate(s["N"]) if N <= n_cap]
+        if len(keep) < 3:
+            return None
+        s = {k: [v[i] for i in keep] for k, v in s.items()
+             if isinstance(v, list) and len(v) == len(s["N"])}
+    unitary = rules.is_unitary(rules.wolfram_to_tuple(rule))
+    ka = "n_wcc" if unitary else "n_recurrent"
+    kb = "d_max_wcc" if unitary else "d_max"
+    a = series_descriptor(rule, bc, ka, s["N"], s["n_recurrent"])
+    b = series_descriptor(rule, bc, kb, s["N"], s["d_max"])
     if not a or not b or a.get("base") is None or b.get("base") is None:
         return None
     prod = a["base"] * b["base"]
@@ -454,7 +470,7 @@ def build(bc: str = "obc0", n_cap: Optional[int] = UNIFORM_N_CAP) -> Dict:
         fh = finite_hyperbola(rule, bc, n_cap)
         if fh:
             finite.append(fh)
-        d = attractor_deficit(rule, bc)
+        d = attractor_deficit(rule, bc, n_cap)
         if d:
             deficits.append(d)
     tally: Dict[str, int] = {}

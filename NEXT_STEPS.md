@@ -183,6 +183,20 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      ENGINE_VERSION was NOT bumped (that would invalidate ~6000 Tier-1a records
      and force a full recompute, which the same section forbids) -- the version
      lives on the new tier as TIER1E_VERSION="1e.1".
+   - **The V+reset family has NO sector structure.** 186 of 256 rules sit at
+     exactly (a,b)=(1,2) -- one sector of size 2^N -- including **144 of the 160
+     V+reset rules (90%)**: the reset connects the whole basis into a single
+     enclosure. So for those rules the sector axis says nothing and all the
+     structure is in the MONITORED map, where they spread over the column
+     a_att~1 from b_att=1.0 to 1.89. The V-free baseline is the reverse: it
+     populates the sector plane and collapses in the attractor plane. Median
+     deficit 2-a_att*b_att: unitary -0.135, V+reset +0.534, V-free +0.909
+     (the last means a_att*b_att~1, i.e. O(1) fixed points and an almost
+     entirely transient space). Figures now aggregate coincident points with
+     marker area + printed counts -- one marker per rule hid all of this.
+   - Both map panels use ONE rate convention, so the 9 unitary rules land at
+     identical coordinates in both -- assertion A2 made visual. This needed the
+     attractor series capped to the same N window as the sector series.
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 
