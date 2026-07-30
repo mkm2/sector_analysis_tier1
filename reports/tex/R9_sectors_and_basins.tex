@@ -10,6 +10,7 @@
 \newcommand{\fn}[1]{\texttt{#1}}
 \newcommand{\cmark}{\ensuremath{\checkmark}}
 \newcommand{\xmark}{\ensuremath{\times}}
+\providecommand{\ket}[1]{|#1\rangle}
 \newcommand{\wcc}{\mathrm{wcc}}
 \newcommand{\att}{\mathrm{att}}
 \newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
@@ -465,6 +466,85 @@ below.}
 \begin{center}
 \iftable{tab_r9_transient_obc0.tex}
 \end{center}
+
+\section{Clustering the dissipative rules by their coherent correspondent}
+\label{sec:coherent}
+
+Every V+reset rule has a \emph{coherent part}. A symbol-table entry says what
+happens at a site for one neighbour pattern: \rt{I} does nothing, \rt{V} applies
+the Hadamard, \rt{D} resets to $\ket0$, \rt{E} resets to $\ket1$. Switching the
+dissipation off means the reset entries stop acting,
+\begin{equation}
+\rt{D},\ \rt{E}\;\longmapsto\;\rt{I},
+\label{eq:coherentpart}
+\end{equation}
+which leaves only \rt{I} and \rt{V} --- always one of the sixteen unitary rules.
+So \eqref{eq:coherentpart} assigns each dissipative rule a unitary
+\emph{correspondent}, and the assignment partitions the rule space exactly: a
+unitary parent with $v$ Hadamard entries has
+\begin{equation}
+3^{4-v}-1
+\end{equation}
+V+reset children, each non-\rt{V} entry independently becoming \rt{I}, \rt{D} or
+\rt{E}, minus the all-\rt{I} case which is the parent itself. Summing over the
+fifteen unitary rules with $v\ge1$ gives $4\cdot26+6\cdot8+4\cdot2+0=160$, the
+whole V+reset family, in $14$ non-empty clusters
+($\rt{VVVV}$ has no \rt{I} to spoil, so it has no children). This is verified
+against the rule tables rather than assumed.
+
+\subsection{What adding dissipation does}
+
+\begin{center}
+\iftable{tab_r9_dissip_obc0.tex}
+\end{center}
+
+\noindent The table splits the fourteen clusters cleanly in two.
+
+\begin{itemize}
+\item \textbf{Eight parents already sit at $(1,2)$} --- one sector holding the
+  whole space --- so there is nothing for a reset to destroy, and all $40$ of
+  their children stay exactly where the parent is.
+\item \textbf{Six parents have genuine sector structure}, and they hold $120$
+  children between them. \emph{Not one of the $120$ keeps its parent's
+  position.} $104$ collapse all the way to $(1,2)$; the remaining $16$ move to
+  some intermediate point but never stay.
+\end{itemize}
+
+\noindent That is the sharpest statement this tier produces about dissipation:
+\textbf{adding any reset to a rule that has sector structure destroys that
+structure, without exception over the $120$ cases available}. It also explains
+the pile-up of \S\ref{sec:pileup} arithmetically --- the $144$ V+reset rules at
+$(1,2)$ are exactly the $104$ that collapsed plus the $40$ that were never
+anywhere else.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_dissip_sector_obc0.pdf}{\textwidth}
+\caption{\textbf{F6, the move in the SECTOR plane, clustered by coherent
+correspondent.} One panel per unitary rule: the star is the coherent rule
+(all resets switched off, \eqref{eq:coherentpart}), the dots are its V+reset
+children, and each arrow is the move that turning the resets on produces. Dot
+area and arrow width grow with the number of children making the same move.
+Top row and the two leftmost middle panels: parents with sector structure, every
+arrow pointing away and up-left towards $(1,2)$. Remaining panels: parents
+already at $(1,2)$, where the children coincide with the parent and no arrow is
+drawn. These coordinates are exact for both experiments.}
+\label{fig:f6}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_dissip_attractor_obc0.pdf}{\textwidth}
+\caption{\textbf{F7, the same clusters in the MONITORED attractor plane.} Here
+the moves are large for every cluster, including the eight whose sector
+coordinates do not move at all --- which is the point of keeping both planes:
+dissipation is invisible on the sector axis for those rules and plainly visible
+on the attractor axis. Six panels have no star: those parents
+($54$, $57$, $99$, $147$, $153$, $195$) are ergodic at \rt{obc0}, so Tier 1a
+never produced an attractor descriptor for them and the cluster has no origin to
+draw from. Monitored quantities throughout.}
+\label{fig:f7}
+\end{figure}
 
 \section{Rule 150's wall charge survives six dissipative rules}
 \label{sec:r150family}

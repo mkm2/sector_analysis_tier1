@@ -408,6 +408,9 @@ def main(argv=None):
     fig_sector_vs_attractor(bc, os.path.join(
         FIGURES_DIR, f"fig_sector_vs_attractor_{bc}.pdf"), d)
     fig_basins(bc, os.path.join(FIGURES_DIR, f"fig_basins_{bc}.pdf"))
+    for plane in ("sector", "attractor"):
+        fig_dissipation_clusters(bc, os.path.join(
+            FIGURES_DIR, f"fig_dissip_{plane}_{bc}.pdf"), plane=plane, data=d)
     st = fig_validation(bc, os.path.join(FIGURES_DIR,
                                          f"fig_validation_{bc}.pdf"), d)
     with open(os.path.join(sectors.ANALYTICS,
@@ -419,3 +422,121 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+
+
+# --- F6: clustering the dissipative rules by their coherent correspondent -----
+
+def _plane_points(d: Dict, plane: str):
+    """{rule: (a, b)} in the requested plane."""
+    if plane == "sector":
+        return {p["rule"]: (p["n_wcc"]["base"], p["d_max_wcc"]["base"])
+                for p in d["points"]
+                if p["n_wcc"]["base"] is not None
+                and p["d_max_wcc"]["base"] is not None}
+    return {x["rule"]: (x["a_att"], x["b_att"]) for x in d["attractor_deficits"]}
+
+
+def dissipation_clusters(d: Dict, plane: str):
+    """
+    [(parent, parent_xy, [(child, child_xy), ...]), ...] ordered by cluster size.
+
+    The parent is the coherent correspondent (rules.coherent_part): every reset
+    switched off.  Note the parent is unitary, so by A2 its sector and attractor
+    coordinates are the same point -- the two planes differ only in where the
+    CHILDREN land, which is exactly what these panels show.
+    """
+    xy = _plane_points(d, plane)
+    fam = {p["rule"]: p["family"] for p in d["points"]}
+    out = []
+    for parent in sorted(rules.UNITARY_RULES):
+        allkids = [c for c in rules.dissipative_children(parent)
+                   if fam.get(c) == "mixed"]
+        kids = [(c, xy[c]) for c in allkids if c in xy]
+        if not allkids:
+            continue
+        # A parent with no coordinate in this plane is kept, with pxy=None: six
+        # unitary rules are ergodic at obc0 and Tier 1a never produced an
+        # attractor descriptor for them, so the cluster exists but has no
+        # origin to draw arrows from.  Dropping it would silently lose 6 of 14.
+        out.append((parent, xy.get(parent), kids, len(allkids)))
+    return sorted(out, key=lambda t: (-len(t[2]), t[0]))
+
+
+def fig_dissipation_clusters(bc: str, out: str, plane: str = "attractor",
+                             data: Optional[Dict] = None):
+    """
+    One panel per unitary rule: where its dissipative descendants go when the
+    resets are switched on.  Star = the coherent rule, dots = its V+reset
+    children, arrows = the move that adding dissipation produces.
+    """
+    d = data or sectors.load(bc) or sectors.build(bc)
+    cl = dissipation_clusters(d, plane)
+    ncol = 5
+    nrow = int(np.ceil(len(cl) / ncol))
+    fig, axes = plt.subplots(nrow, ncol, figsize=(3.05 * ncol, 3.15 * nrow),
+                             sharex=True, sharey=True)
+    axes = np.atleast_1d(axes).ravel()
+    lab = ("sectors (WCC)" if plane == "sector"
+           else "monitored attractors (terminal SCC)")
+    for ax, (parent, pxy, kids, n_all) in zip(axes, cl):
+        _style(ax)
+        _hyperbola(ax)
+        from collections import Counter
+        cells = Counter(( round(x, 3), round(y, 3)) for _, (x, y) in kids)
+        for (x, y), n in cells.items():
+            if pxy is None:
+                continue
+            if abs(x - pxy[0]) > 1e-6 or abs(y - pxy[1]) > 1e-6:
+                ax.annotate("", xy=(x, y), xytext=pxy,
+                            arrowprops=dict(arrowstyle="-|>", color="#c62828",
+                                            lw=0.5 + 0.55 * np.sqrt(n),
+                                            alpha=0.55, shrinkA=6, shrinkB=3),
+                            zorder=4)
+        for (x, y), n in cells.items():
+            ax.scatter(x, y, s=22 + 16 * np.sqrt(n), facecolor="#c62828",
+                       edgecolor="white", lw=0.8, alpha=0.9, zorder=5)
+            if n >= 4:
+                ax.annotate(f"{n}", (x, y), fontsize=6.2, ha="center",
+                            va="center", color="white", fontweight="bold",
+                            zorder=6)
+        if pxy is not None:
+            ax.scatter(*pxy, s=200, marker="*", facecolor="#1f4e9c",
+                       edgecolor="white", lw=1.0, zorder=7)
+            stay = sum(n for (x, y), n in cells.items()
+                       if abs(x - pxy[0]) < 1e-6 and abs(y - pxy[1]) < 1e-6)
+            note = f"{stay} stay put"
+        else:
+            ax.annotate("parent ergodic:\nno descriptor", (0.5, 0.93),
+                        xycoords="axes fraction", ha="center", va="top",
+                        fontsize=6.8, color="#777777")
+            note = "no origin"
+        tup = "".join(rules.wolfram_to_tuple(parent))
+        shown = f"{len(kids)}" if len(kids) == n_all else f"{len(kids)}/{n_all}"
+        ax.set_title(f"W{parent}  {tup}   ({shown} children, {note})",
+                     fontsize=8.5)
+        ax.set_xlim(0.90, 2.12)
+        ax.set_ylim(0.88, 2.14)
+        ax.tick_params(labelsize=7)
+    for ax in axes[len(cl):]:
+        ax.axis("off")
+    for ax in axes[:len(cl)]:
+        ax.set_xlabel(r"base $a$", fontsize=8)
+        ax.set_ylabel(r"base $b$", fontsize=8)
+    hs = [plt.Line2D([], [], marker="*", ls="", markersize=12,
+                     markerfacecolor="#1f4e9c", markeredgecolor="white",
+                     label="coherent rule (resets off)"),
+          plt.Line2D([], [], marker="o", ls="", markersize=7,
+                     markerfacecolor="#c62828", markeredgecolor="white",
+                     label="its V+reset children"),
+          plt.Line2D([], [], color="#444444", lw=1.0, ls=":", label=r"$ab=2$")]
+    fig.legend(handles=hs, fontsize=8, loc="lower right", ncol=3,
+               bbox_to_anchor=(0.99, 0.005))
+    fig.suptitle(f"F6  where dissipation takes a rule, in the {lab} plane "
+                 f"({bc}).  Clusters are the 160 V+reset rules grouped by "
+                 f"coherent correspondent (D, E $\\to$ I).",
+                 fontsize=9.5, x=0.01, ha="left", color=TEXT)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.955))
+    for p_ in (out, out.replace(".pdf", ".png")):
+        fig.savefig(p_, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)

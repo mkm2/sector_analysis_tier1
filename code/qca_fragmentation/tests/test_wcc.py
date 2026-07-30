@@ -399,3 +399,63 @@ def test_size_histogram_reconstructs_a_truncated_multiset():
     assert len(rec["sizes_wcc"]) == 2048
     full = results_io.sizes_from_wcc_record(rec)
     assert len(full) == 4096 and sum(full) == 4096
+
+
+# --- coherent correspondent of a dissipative rule (R9 sec.6) -----------------
+
+def test_coherent_part_switches_resets_off():
+    assert rules.coherent_part(("I", "V", "D", "E")) == ("I", "V", "I", "I")
+    assert rules.coherent_parent(134) == 198          # IVDI -> IVII
+    assert rules.coherent_parent(148) == 156          # IDVI -> IIVI
+    for r in range(256):
+        t = rules.coherent_part(rules.wolfram_to_tuple(r))
+        assert set(t) <= {"I", "V"}
+        assert rules.is_unitary(t)
+
+
+def test_clusters_partition_the_v_plus_reset_family():
+    """A parent with v Hadamards has exactly 3^(4-v)-1 children, and the 14
+    non-empty clusters cover all 160 V+reset rules exactly once."""
+    mixed = [r for r in range(256)
+             if not rules.is_unitary(rules.wolfram_to_tuple(r))
+             and "V" in rules.wolfram_to_tuple(r)]
+    assert len(mixed) == 160
+    seen, nonempty = [], 0
+    for p in rules.UNITARY_RULES:
+        kids = rules.dissipative_children(p)
+        v = sum(1 for s in rules.wolfram_to_tuple(p) if s == "V")
+        assert len(kids) == (3 ** (4 - v) - 1 if v >= 1 else 0), (p, v)
+        if kids:
+            nonempty += 1
+        seen.extend(kids)
+    assert nonempty == 14
+    assert sorted(seen) == sorted(mixed)              # a partition, exactly
+    assert rules.dissipative_children(51) == []       # VVVV has no I to spoil
+
+
+def test_dissipation_destroys_sector_structure_without_exception():
+    """
+    R9 sec.6: of the six parents with non-trivial sector structure, not one of
+    their 120 children keeps the parent's position in the sector plane.
+    """
+    from qca_fragmentation.scaling import sectors
+    from qca_fragmentation.scaling.sector_figure import _plane_points
+    d = sectors.load("obc0")
+    if d is None:
+        pytest.skip("sector map not built")
+    xy = _plane_points(d, "sector")
+    n_kids = n_keep = 0
+    for p in rules.UNITARY_RULES:
+        if p not in xy:
+            continue
+        pa, pb = xy[p]
+        if abs(pa - 1) < 1e-6 and abs(pb - 2) < 1e-6:
+            continue                                  # nothing to destroy
+        for c in rules.dissipative_children(p):
+            if c not in xy:
+                continue
+            n_kids += 1
+            if abs(xy[c][0] - pa) < 1e-6 and abs(xy[c][1] - pb) < 1e-6:
+                n_keep += 1
+    assert n_kids >= 100
+    assert n_keep == 0, f"{n_keep} of {n_kids} children kept their parent's point"

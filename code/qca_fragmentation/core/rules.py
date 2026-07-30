@@ -171,6 +171,39 @@ def unitary_reflection_reps():
     return reflection_pairs(UNITARY_RULES)
 
 
+def coherent_part(t: Tuple4) -> Tuple4:
+    """
+    The coherent part of a rule: switch every reset off.
+
+    A symbol table entry says what happens at a site for one neighbour pattern:
+    I does nothing, V applies the Hadamard, D resets to |0>, E resets to |1>.
+    Removing the dissipation means the reset entries stop acting, i.e. D, E -> I,
+    while the Hadamards are untouched.  The result contains only I and V, so it
+    is always one of the 16 unitary rules -- the "coherent correspondent" of the
+    dissipative rule.
+
+    The map partitions the 160 V+reset rules into 14 clusters: a unitary parent
+    with v Hadamard entries has 3^(4-v) - 1 dissipative children (each non-V
+    entry independently becomes I, D or E, minus the all-I case, which is the
+    parent).  VVVV has none, and IIII is nobody's parent because a child must
+    keep at least one V.
+    """
+    return tuple("I" if s in ("D", "E") else s for s in t)
+
+
+def coherent_parent(rule: int) -> int:
+    """Wolfram number of coherent_part()."""
+    return tuple_to_wolfram(coherent_part(wolfram_to_tuple(rule)))
+
+
+def dissipative_children(rule: int):
+    """The V+reset rules whose coherent part is this unitary rule."""
+    return [r for r in range(256)
+            if r != rule and coherent_parent(r) == rule
+            and has_V(wolfram_to_tuple(r))
+            and channel_kraus_symbols(wolfram_to_tuple(r))]
+
+
 def channel_kraus_symbols(t: Tuple4):
     """
     Whether the rule needs a second Kraus branch (has any D or E).  Unitary

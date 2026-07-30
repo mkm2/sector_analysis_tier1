@@ -258,6 +258,7 @@ def write_all(bc: str = "obc0") -> None:
         (f"tab_r9_transient_{bc}", tab_transient(bc, d)),
         (f"tab_r9_validation_{bc}", tab_validation(bc)),
         (f"tab_r9_basins_{bc}", tab_basin_recompute(bc)),
+        (f"tab_r9_dissip_{bc}", tab_dissipation_clusters(bc, d)),
     ]
     for name, txt in tables:
         p = os.path.join(TEXDIR, f"{name}.tex")
@@ -273,6 +274,48 @@ def main(argv=None):
     a = ap.parse_args(argv)
     write_all(a.bc)
 
+
+
+
+def tab_dissipation_clusters(bc: str, d: Dict) -> str:
+    """
+    The 160 V+reset rules grouped by coherent correspondent (D, E -> I), and
+    what adding the reset does to their position in the sector plane.
+    """
+    from .sector_figure import _plane_points
+    xy = _plane_points(d, "sector")
+    rows, tot = [], dict(k=0, c=0, s=0)
+    recs = []
+    for p in sorted(rules.UNITARY_RULES):
+        kids = [c for c in rules.dissipative_children(p) if c in xy]
+        if not kids or p not in xy:
+            continue
+        pa, pb = xy[p]
+        n12 = sum(1 for c in kids
+                  if abs(xy[c][0] - 1) < 1e-6 and abs(xy[c][1] - 2) < 1e-6)
+        st = sum(1 for c in kids
+                 if abs(xy[c][0] - pa) < 1e-6 and abs(xy[c][1] - pb) < 1e-6)
+        trivial = abs(pa - 1) < 1e-6 and abs(pb - 2) < 1e-6
+        recs.append((p, pa, pb, len(kids), n12, st, trivial))
+        tot["k"] += len(kids)
+        tot["c"] += n12
+        tot["s"] += st
+    recs.sort(key=lambda r: (r[6], -(abs(r[1] - 1) + abs(r[2] - 2)), r[0]))
+    for p, pa, pb, nk, n12, st, trivial in recs:
+        tup = "".join(rules.wolfram_to_tuple(p))
+        keeps = "---" if trivial else r"\textbf{0}"
+        rows.append(
+            f"${p}$ & \\texttt{{{tup}}} & "
+            f"${pa:.4f}$ & ${pb:.4f}$ & ${nk}$ & ${n12}$ & ${st}$ & "
+            f"{keeps} \\\\")
+    nt = [r for r in recs if not r[6]]
+    body = "\n".join(rows)
+    foot = (r"\hline" "\n"
+            f"all & & & & ${tot['k']}$ & ${tot['c']}$ & ${tot['s']}$ & \\\\")
+    return ("\\begin{tabular}{rlrrrrrc}\n\\hline\n"
+            "parent & tuple & $a$ & $b$ & children & $\\to(1,2)$ & "
+            "at parent & keeps structure \\\\\n\\hline\n"
+            f"{body}\n{foot}\n\\hline\n\\end{{tabular}}\n")
 
 if __name__ == "__main__":
     main()

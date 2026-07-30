@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 552 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 555 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -197,6 +197,24 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
    - Both map panels use ONE rate convention, so the 9 unitary rules land at
      identical coordinates in both -- assertion A2 made visual. This needed the
      attractor series capped to the same N window as the sector series.
+   - **Dissipation destroys sector structure, 120/120 (R9 sec.6).** Every
+     V+reset rule has a COHERENT PART: switch the resets off, D,E -> I, leaving
+     only I and V, i.e. one of the 16 unitary rules (rules.coherent_part /
+     coherent_parent / dissipative_children). The map partitions the 160 V+reset
+     rules into exactly 14 clusters: a parent with v Hadamards has 3^(4-v)-1
+     children (4*26 + 6*8 + 4*2 = 160; VVVV has none, IIII is nobody's parent).
+     Then in the SECTOR plane:
+       * 8 parents already sit at (1,2) -- nothing to destroy -- and all 40 of
+         their children stay exactly there;
+       * 6 parents have genuine sector structure and hold 120 children, and
+         **NOT ONE of the 120 keeps its parent's position**; 104 collapse all
+         the way to (1,2), the other 16 move somewhere intermediate.
+     So adding any reset to a rule with sector structure destroys it, no
+     exceptions over the 120 available cases -- and 144 = 104 + 40 reconciles
+     exactly with the pile-up count above.
+     In the ATTRACTOR plane the moves are large for ALL 14 clusters, including
+     the 8 that do not move at all on the sector axis -- which is why both
+     planes are kept. Figures fig_dissip_{sector,attractor}_obc0.
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 
