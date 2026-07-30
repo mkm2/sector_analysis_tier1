@@ -378,7 +378,10 @@ def tab_poly_survivors(bc: str, d: Dict) -> str:
 
 #: The frontier rules: sector = position of the extremal excitation.
 FRONTIER = {110: "rightmost", 124: "leftmost", 188: "leftmost",
-            230: "rightmost", 44: "leftmost (+split)", 100: "leftmost (+tail)"}
+            230: "rightmost", 44: "leftmost (+split)",
+            100: "leftmost (+tail)",
+            # unitary members: the frontier charge is not created by a reset
+            60: "leftmost (unitary)", 102: "rightmost (unitary)"}
 
 
 def tab_frontier(bc: str, d: Dict) -> str:

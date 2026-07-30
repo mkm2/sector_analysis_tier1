@@ -294,11 +294,26 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      vs ~1.22. So rho and psi are BULK constants and sec.6.2's headline is not a
      boundary effect. Worth having checked -- it is exactly the objection the
      frontier family turned out to deserve.
-   - **obc1 is NOT implemented** in the engine (core/cycle.py handles pbc and
-     obc0 only; a sentinel for "fixed 1" beside the existing "fixed 0" would do
-     it). Left as an open item rather than patched in: adding a boundary
-     convention to the validated core needs its own regression coverage (branch
-     norms, unitarity, every bc-parametrised test).
+   - **obc1: DO NOT implement** (user, 2026-07-30). Removed from R9's open items.
+   - **R9 is STRICTLY obc0** (user, 2026-07-30). The pbc robustness material was
+     excised from the report: sec.6.4 now states the frontier-charge caveat
+     structurally (the charge is defined by reference to an END of the chain, so
+     the question of whether it is bulk cannot be settled at obc0) and defers it
+     to the pbc report. The task's two pbc-specified regression targets (156
+     Lucas, 22 attractors) are noted as passing but deferred. The pbc facts
+     themselves survive only in the test suite (3 tests, clearly labelled NOT
+     the pbc sweep) and in this file, so they are not lost.
+   - **60 and 102 are UNITARY frontier rules** -- established on obc0 evidence
+     alone: same dyadic tower (verified N=10,12) and the extremal-excitation
+     charge (verified N=9: lowest set bit for 60, highest for 102). So the
+     frontier charge is NOT created by dissipation; it already exists in the
+     unitary rule space, and is a destination reachable both directly (60, 102)
+     and as a dissipative degradation of phi-fragmentation (110, 124, 188, 230
+     from 108, 156, 198). This corrects their earlier filing beside 150/105.
+   - **pbc: DO NOT START the sweep yet** -- the user has further caveats to give
+     first (2026-07-30). Held items for that report: the frontier-vs-bulk
+     question, the 8 exponential rules' boundary robustness, 156-pbc Lucas and
+     22-pbc.
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 

@@ -658,14 +658,21 @@ def test_frontier_and_wall_charge_are_different_mechanisms():
     assert front.sizes_wcc != wall.sizes_wcc
 
 
-# --- boundary robustness: bulk structure vs boundary artefact (R9 sec.6.5) ----
+# --- boundary robustness -----------------------------------------------------
+# NOT part of R9, which is strictly obc0, and NOT the pbc sweep.  These three
+# tests pin a handful of pbc values at small N because they answer a question
+# R9 sec.6.4 raises and cannot settle: the frontier charge is defined by
+# reference to an end of the chain, so it should vanish on a ring, while the
+# wall charge should not.  Kept here so the fact is not lost before the pbc
+# report is written.
 
 @pytest.mark.parametrize("rule", [44, 60, 100, 102, 110, 124, 188, 230])
 def test_frontier_family_is_an_obc0_artefact(rule):
     """
     The pinned-frontier charge is the position of the extremal excitation, which
     is not definable on a ring -- so the whole N+1 dyadic tower must collapse at
-    pbc, and it does: 2 sectors at every N.
+    pbc, and it does: 2 sectors at every N.  Includes the two UNITARY members,
+    60 and 102, which carry the same charge without any reset.
     """
     for N in (7, 9, 11):
         assert wcc.weak_components(rule, N, "obc0").n_wcc == N + 1 or rule in (44, 100)

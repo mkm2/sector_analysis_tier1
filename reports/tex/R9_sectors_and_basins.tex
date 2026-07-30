@@ -182,11 +182,10 @@ All of the following are regression-tested in \fn{tests/test\_wcc.py}.
   the reference series for $N=8\ldots17$ exactly --- $\#$sectors
   $5,6,6,7,7,8,8,9,9,10$ and $D_{\max}$ $126$, $210$, $462$, $924$, $1716$,
   $3003$, $6435$, $12870$, $24310$, $43758$.
-\item \textbf{Rule 156} \rt{pbc}: $n_\wcc=\mathrm{Lucas}(N)+1$, verified
-  $N=6\ldots12$.
-\item \textbf{Rule 22} \rt{pbc}, even $N$: three monitored attractors, all of
-  size $1$, against $n_\wcc=2$; the transient fraction runs
-  $0.9531,0.9883,0.9971,0.9993$ at $N=6,8,10,12$ and $\to1$.
+\item Two of the task's regression targets are \rt{pbc}-specified (rule $156$'s
+  Lucas law and rule $22$'s attractor count). Both are implemented and pass in
+  the test suite, but they are \rt{pbc} statements and are therefore discussed in
+  the \rt{pbc} report, not here.
 \end{itemize}
 
 \paragraph{A naming trap worth recording.} Wolfram numbers are not classical ECA
@@ -217,8 +216,6 @@ factors as $x^4-x^3-x^2+1=(x-1)(x^3-x-1)$, so the growth base is the
 \]
 the real root of $x^3=x+1$. This is an exact algebraic base, not a fit, so the
 gap to $\varphi$ cannot be attributed to a short series or to a parity artifact.
-The ring agrees: a parity-resolved fit of the \rt{pbc} series gives
-$\approx1.28$--$1.31$, also well below $\varphi$.
 
 What this falsifies is the \emph{transparency} step of the argument, not the
 wall grammar itself: rule $28$ replaces one of rule $156$'s symbols with a reset
@@ -599,8 +596,10 @@ $150$. Survival has to be asked in terms of the growth \emph{class}.
 \item \textbf{Exponential parents} ($108$, $156$, $198$, $201$), $104$ children:
   $8$ stay exponential (\S\ref{sec:openfrag}), \textbf{$14$ degrade to polynomial
   but keep growing}, $82$ collapse to a constant number of sectors.
-\item \textbf{Polynomial parents} ($150$, $105$ with $\alpha=1$; $60$, $102$ with
-  $\alpha\approx0.82$), $32$ children: \textbf{$0$ survive.} Every one drops to a
+\item \textbf{Polynomial parents} --- $150$ and $105$ with the wall charge
+  ($\alpha=1$), $60$ and $102$ with the frontier charge of \S\ref{sec:frontier}
+  (fitted $\alpha\approx0.82$, same dyadic tower) --- $32$ children:
+  \textbf{$0$ survive.} Every one drops to a
   \emph{constant} sector count. For $150$ specifically, six of its eight children
   fall to a single sector and the other two ($22$~\rt{IVVD}, $182$~\rt{IVVE}) to
   two sectors; all eight of $105$'s fall to one. The domain-wall charge does not
@@ -642,15 +641,17 @@ descendants of its own.
 
 Six of the fourteen polynomial survivors --- $44$, $100$, $110$, $124$, $188$,
 $230$ --- are \emph{not} degraded copies of the rule-$150$ wall charge. They carry
-a different conserved quantity, and the sector sizes give it away immediately.
+a different conserved quantity, and two \emph{unitary} rules, $60=\rt{IIVV}$ and
+$102=\rt{IVIV}$, carry the same one, so it is not produced by dissipation at all.
+The sector sizes give it away immediately.
 At $N=12$, rule $110$ has thirteen sectors of sizes
 \[
 2048,\,1024,\,512,\,256,\,128,\,64,\,32,\,16,\,8,\,4,\,2,\,1,\,1 ,
 \]
 a \textbf{dyadic tower} rather than a binomial row. The charge is the
 \textbf{position of the extremal excitation}: verified at $N=9$, every sector is a
-level set of the index of the rightmost $1$ for $110$ and $230$, and of the
-leftmost $1$ for $124$, $188$ and $44$. The outermost excitation is pinned by the
+level set of the index of the rightmost $1$ for $110$, $230$ and $102$, and of the
+leftmost $1$ for $124$, $188$, $44$ and $60$. The outermost excitation is pinned by the
 reset and everything inside it is free, which gives
 \begin{equation}
 n_\wcc = N+1,\qquad D_{\max}=2^{N-1}\ \text{exactly},\qquad
@@ -680,10 +681,21 @@ $D_{\max}/2^N$ & $\sim N^{-1/2}\to0$ & $\tfrac12$, constant \\
 
 \noindent The frontier family has \emph{twice} as many sectors asymptotically and
 a largest sector that stays a fixed half of the space rather than shrinking. Two
-of the six are less clean: $44$ splits each frontier class further at odd $N$
-($n_\wcc=N+1$ for even $N$, $N+3$ for odd), and $100$ has $N+3$ sectors with a
-short non-dyadic tail ($\ldots,26,16,6,6,4,2$), so its charge is the leftmost
-excitation plus a refinement.
+of the six dissipative members are less clean: $44$ splits each frontier class
+further at odd $N$ ($n_\wcc=N+1$ for even $N$, $N+3$ for odd), and $100$ has $N+3$
+sectors with a short non-dyadic tail ($\ldots,26,16,6,6,4,2$), so its charge is
+the leftmost excitation plus a refinement.
+
+\paragraph{Two of them are unitary, which reclassifies them.} $60$ and $102$ were
+listed in \S\ref{sec:polytier} among the polynomial parents beside $150$ and
+$105$, on the strength of a fitted $\alpha\approx0.82$. That grouping is wrong:
+their sector sizes are the same dyadic tower and their charge is the same extremal
+excitation, so they belong here, and the differing $\alpha$ only reflects the
+fitter seeing one series through a different window. It also means the frontier
+charge exists already in the \emph{unitary} rule space --- it is a destination
+reachable both directly ($60$, $102$) and as a dissipative degradation of
+$\varphi$-fragmentation ($110$, $124$, $188$, $230$ from $108$, $156$, $198$) ---
+and not something a reset creates.
 
 Since sectors are enclosures, this is an open-system statement in the sense that
 matters here: the pinned frontier is a conserved quantity of the \emph{channel},
@@ -692,79 +704,20 @@ fragmentation than the wall charge, and both are reachable from the same
 $\varphi$-fragmented parents --- $108$ contributes four frontier rules while
 $156$ and $198$ contribute the wall-charge ones.
 
-\subsection{But the frontier charge is a boundary artefact}
-\label{sec:boundary}
+\paragraph{A caveat this report cannot settle.} The charge here is the position of
+the \emph{extremal} excitation, and that is a quantity only an open chain has ---
+a ring has no leftmost site. So the frontier structure is, on its face, tied to
+the boundary in a way the domain-wall number of \S\ref{sec:r150family} is not:
+the wall number is defined by $b_j=x_j\oplus x_{j+1}$ everywhere in the bulk,
+whereas ``the first $1$ from the left'' presupposes a left. Whether the frontier
+sectors are bulk structure or an artefact of \rt{obc0} is therefore a real
+question, and it is not one this report can answer, because answering it means
+changing the boundary condition. It is deferred to the \rt{pbc} report, and until
+then \S\ref{sec:frontier} should be read as a statement about open chains only.
+The same question does not arise for the eight exponentially fragmented rules of
+\S\ref{sec:openfrag}, whose charges are not defined by reference to an end, but
+confirming that is also \rt{pbc} work.
 
-There is an obvious objection to the frontier family, and it is correct. ``The
-position of the leftmost excitation'' is not definable on a ring, so if that is
-really the charge, the whole structure has to vanish under periodic boundaries.
-It does, completely:
-
-\begin{center}
-\begin{tabular}{rllll}
-\toprule
-rule & tuple & charge & $n_\wcc$ at \rt{obc0} & $n_\wcc$ at \rt{pbc} \\
-\midrule
-$110$ & \rt{IEIV} & rightmost excitation & $N+1$ & $2$ \\
-$124$ & \rt{IIEV} & leftmost excitation & $N+1$ & $2$ \\
-$188$ & \rt{IIVE} & leftmost excitation & $N+1$ & $2$ \\
-$230$ & \rt{IVIE} & rightmost excitation & $N+1$ & $2$ \\
-$44$ & \rt{IIDV} & leftmost $+$ split & $N{+}1$ / $N{+}3$ & $2$ \\
-$100$ & \rt{IDIV} & leftmost $+$ tail & $N+3$ & $2$ \\
-$60$ & \rt{IIVV} & --- & $N+1$ & $2$ \\
-$102$ & \rt{IVIV} & --- & $N+1$ & $2$ \\
-\midrule
-$150$ & \rt{IVVI} & domain-wall number & $\lfloor\frac{N+1}{2}\rfloor+1$ &
-  $\frac N2+3$ / $\frac{N+3}2$ \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\noindent All eight collapse to \emph{two} sectors at every $N$ from $6$ to $13$,
-while rule $150$'s wall charge survives with exactly R8's \rt{pbc} closed form.
-Note this catches $60$ and $102$ as well: they were classified above as
-polynomial parents with $\alpha\approx0.82$, and their obc0 series is the same
-$N+1$ dyadic tower, so they belong to this family rather than beside $150$ and
-$105$. Their $\alpha$ differed only because the fitter saw the same series
-through a different window.
-
-So \S\ref{sec:frontier} must be read with that caveat: the pinned frontier is a
-genuine conserved quantity \emph{of the open system at open boundaries}, and an
-artefact of those boundaries. It is not bulk physics. Whether it also vanishes
-under \rt{obc1} (missing neighbour reads $1$ rather than $0$) is the natural
-third test and would presumably confirm the same reading, but \rt{obc1} is not
-implemented in this engine and adding a boundary convention to the validated core
-is not something to slip in untested; it is listed as an open item.
-
-\paragraph{The exponential rules, by contrast, are bulk.} The same check applied
-to the eight rules of \S\ref{sec:openfrag} gives the opposite answer --- every one
-of them still fragments on the ring, with the \emph{same} bases to within
-finite-size error:
-
-\begin{center}
-\begin{tabular}{rlrll}
-\toprule
-rule & tuple & \rt{obc0} base & \rt{pbc} base (even / odd $N$) & reading \\
-\midrule
-$73$, $109$ & \rt{VIID}, \rt{EIIV} & $\psi=1.46557$ & $1.4651$ / $1.4591$ &
-  $\psi$ confirmed \\
-$28$, $70$, $157$, $199$ & & $\rho=1.32472$ & $1.3049$ / $1.2708$--$1.3099$ &
-  consistent with $\rho$ \\
-$29$, $71$ & \rt{EIVD}, \rt{EVID} & $\approx1.22$ & $1.1579$ / $1.2328$ &
-  same ballpark \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\noindent The supergolden agreement is the striking one: $1.4651$ against
-$\psi=1.46557$, a discrepancy of $3\times10^{-4}$ from nine points per parity
-branch. So $\rho$ and $\psi$ are \textbf{bulk} constants, and the open-system
-fragmentation of \S\ref{sec:openfrag} is not a boundary effect. That is worth
-having checked, because it is exactly the objection the frontier family turned out
-to deserve.
-
-(These \rt{pbc} numbers are a targeted robustness check on an \rt{obc0} claim, not
-the \rt{pbc} sweep, which remains a separate report.)
 
 \paragraph{And 105 is not 150's partner.} R8 treats them as reflection partners
 and this report inherited that, but the sector multisets differ at
@@ -989,14 +942,6 @@ discriminate:
   $D_{\max}/2^N$ is bounded below.
 \item \textbf{A basin histogram in the Tier-1a schema}, so the gap of
   \S\ref{sec:basins} cannot recur for future units.
-\item \textbf{\rt{obc1} as a third boundary convention.} \S\ref{sec:boundary}
-  separates bulk structure from boundary artefact using \rt{pbc}; \rt{obc1}
-  (missing neighbour reads $1$) would be an independent check on the same
-  question, and is a small change to \fn{core/cycle.py} --- a sentinel for
-  ``fixed $1$'' beside the existing ``fixed $0$''. It is not done here because
-  adding a boundary convention to the validated core needs its own regression
-  coverage (branch norms, unitarity, every \rt{bc}-parametrised test), not a
-  two-line patch.
 \end{enumerate}
 
 \section{Reproduce}
