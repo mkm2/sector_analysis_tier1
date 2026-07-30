@@ -1,0 +1,364 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\cmark}{\ensuremath{\checkmark}}
+\newcommand{\xmark}{\ensuremath{\times}}
+\providecommand{\ket}[1]{|#1\rangle}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\rec}{\mathrm{rec}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{\textbf{Report R10 --- Permutation circuits: the same 256 rules with
+$V=X$}\\
+\large A control for the sector/attractor machinery, open boundaries}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-30 \quad\small(\fn{xgate\_version} \texttt{1x.1}, \rt{obc0})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The Tier-1 machinery separates two decompositions of the computational basis: the
+weakly connected components (sectors, exact for both the monitored and the
+unmonitored dynamics) and the terminal strongly connected components (monitored
+attractors). In the Hadamard family those two disagree strongly, and R9 is largely
+about the disagreement. This report runs the identical analysis on the same $256$
+symbol tables with the active gate changed from the Hadamard to $X$. Every local
+symbol is then a function on bits, the transition graph has out-degree one, and
+three things follow at once: the two decompositions become \emph{identical} in
+number, sectors and basins coincide, and the $16$ rules built from \rt{I} and
+\rt{V} alone are reversible cellular automata whose sectors are exactly the
+permutation cycles. We verify all of this over $256$ rules, confirm that the
+partition sum rule and the exclusion curve carry over unchanged, and record the
+one place where the two families genuinely differ in physics rather than in
+bookkeeping: the permutation circuits fragment into exponentially many,
+exponentially large sectors whose \emph{attractors are almost always short}. Only
+$24$ of $256$ rules have an exponentially long cycle, and for the $80$ V-free
+rules the number is zero. Swept to $N=24$ for all $256$ rules. \rt{obc0} only;
+\rt{pbc} is held.
+\end{abstract}
+
+\tableofcontents
+
+\section{What changes when $V=X$}
+\label{sec:setup}
+
+The symbol table is untouched. Each entry still says what happens at a site for
+one neighbour pattern; only the active gate is different:
+
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+symbol & Hadamard family (R1--R9) & this report \\
+\midrule
+\rt{I} & identity & identity \\
+\rt{V} & Hadamard & $X$, i.e.\ $x_i\mapsto1-x_i$ \\
+\rt{D} & reset to $\ket0$ & reset to $\ket0$ \\
+\rt{E} & reset to $\ket1$ & reset to $\ket1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent All four are now \emph{functions} on the computational basis, so the
+circuit is one too, and $\operatorname{succ}(x)$ is a single state. Three
+consequences, and they are the reason this family is a useful control.
+
+\begin{proposition}[functional graph]
+The one-cycle transition graph has out-degree exactly $1$.
+\end{proposition}
+
+\begin{theorem}[F1: one cycle per component]
+In a functional graph every weakly connected component contains exactly one
+cycle. Hence for every X-gate rule, every $N$ and every boundary condition,
+\begin{equation}
+n_\rec \;=\; n_\wcc ,
+\label{eq:F1}
+\end{equation}
+the basin of each cycle is its entire component, and no state lies in two basins.
+\end{theorem}
+
+\noindent That identity is exactly what fails in the Hadamard family, and fails
+badly: R9's rule $22$ at $N=12$ has three monitored attractors, each a single
+state, sitting inside two sectors that cover all $4096$ states. There A4 could
+only be asserted in one direction. Here the two tiers coincide by construction,
+so any disagreement in the code would show up immediately --- which makes this
+family a test of the machinery as much as a physics question.
+
+\subsection{What ``reversible'' means here, and what it does not}
+\label{sec:reversible-def}
+
+The word is overloaded in this area, so it is fixed explicitly.
+
+\begin{definition}
+A rule is \emph{reversible at $(N,\rt{bc})$} if its one-cycle map
+$\{0,1\}^N\to\{0,1\}^N$ is a bijection.
+\end{definition}
+
+\begin{proposition}
+A rule is reversible, for every $N\ge3$ and both boundary conventions, iff its
+symbol table uses only \rt{I} and \rt{V}. There are $2^4=16$ such rules:
+$51$, $54$, $57$, $60$, $99$, $102$, $105$, $108$, $147$, $150$, $153$, $156$,
+$195$, $198$, $201$, $204$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+One elementary step reads the two neighbour bits of site $i$ and then applies
+\rt{I} or $X$ to site $i$. The controls are bits $\neq i$ and are untouched by
+that step, so the step is a controlled-$X$ and hence a bijection; a composition of
+bijections is a bijection, whatever the layer order. Conversely \rt{D} and \rt{E}
+send both values of the target bit to the same value, so two states differing only
+in site $i$ but sharing its neighbour pattern collide.
+\end{proof}
+
+\noindent Note the proof does not use the sublattice structure, so it survives the
+case where the even sites fail to be an independent set (\rt{pbc} at odd $N$).
+Checked exhaustively anyway at $N=7,8,9$ for both conventions: exactly those $16$
+are bijections and none of the other $240$ is.
+
+\paragraph{Not the six reversible ECA.} A better-known count lives nearby and the
+two must not be conflated. For \emph{elementary} cellular automata --- one layer,
+simultaneous update, each cell a function of its three-cell neighbourhood ---
+only \textbf{six} of the $256$ rules are reversible: $15$, $51$, $85$, $170$,
+$204$, $240$, the shifts and complements.
+
+Two things differ, not one. The construction differs: the brick-wall QCA updates
+one sublattice at a time and applies a gate to the target conditioned on its
+neighbours, which makes invertibility a purely \emph{local} property of the gate.
+And the quantifier differs: the ECA six are those bijective for \emph{every} $N$,
+an intersection over lattice sizes, and at a fixed $N$ the bijective set is
+strictly larger --- on a ring of $N=7$ it also contains $45$, $75$, $89$ and
+$150$. Our $16$ need no such intersection: the proposition above is proved
+locally and holds at every $N$ separately, which is why the two counts are not
+comparable term by term. Only $51$ and $204$ lie in both sets.
+
+\noindent So the $16$ rules that were ``unitary'' in the Hadamard family are here
+\emph{reversible} in the sense just defined: every state is recurrent, each
+component is a single cycle, and the sector decomposition \emph{is} the orbit
+decomposition of a permutation of $\{0,1\}^N$.
+
+\paragraph{Implementation.} The site order and the neighbour conventions are not
+reimplemented. The compiled step list comes straight from
+\fn{core/cycle.py::\_compile}, so the brick-wall order (even sites ascending,
+then odd, each reading the current state) and the boundary handling are
+byte-for-byte those of the validated engine; only the local action is swapped.
+Nothing in the Hadamard engine is touched, and the two live in separate stores.
+This matters because the brick-wall order is \emph{not} two simultaneous
+sublattice updates once the even sites stop being an independent set.
+
+\paragraph{Cost.} The whole analysis is one $O(2^N)$ pass over a functional
+graph --- a three-colour walk that finds the cycles and, on the way back, each
+node's distance to one. No amplitudes, no Tarjan stack, no union-find needed
+(though we run union-find anyway as a cross-check, \S\ref{sec:valid}). All $256$ rules at $N=24$
+--- sixteen million states each --- take $43$~min in total, against hours per
+\emph{rule} for the Hadamard sweep at $N=16$. The map itself is built with numpy,
+lifting the loop over $x$ out of Python while keeping the site order from
+\fn{\_compile}, which is what makes $N=24$ affordable; the vectorised and scalar
+builders are checked against each other in the tests.
+
+\section{Coverage}
+\label{sec:sweep}
+
+\begin{center}
+\iftable{tab_r10_coverage_obc0.tex}
+\end{center}
+
+\noindent Uniform over all $256$ rules. \rt{pbc} is deliberately not run: the ring
+has its own caveats and is held for a separate report.
+
+\section{The headline: large sectors, short attractors}
+\label{sec:headline}
+
+\begin{center}
+\iftable{tab_r10_families_obc0.tex}
+\end{center}
+
+\noindent Read the two middle columns against each other. \textbf{$239$ of $256$
+rules have exponentially large sectors, and only $24$ have exponentially long
+cycles.} For the $80$ V-free rules the count is \emph{zero}: not one of them has a
+cycle whose length grows exponentially, while $78$ of them have exponentially
+large sectors. The median cyclic fraction --- the share of the basis that is
+periodic at all --- is $1.8\times10^{-7}$ for the V+reset family and
+$1.5\times10^{-5}$ for the V-free family at $N=24$, with a median transient depth
+of $13$ and $12$ steps.
+
+So the permutation circuits are the textbook classical picture: a state falls
+through a long transient into a short attractor, and essentially all of the
+Hilbert space is transient. The sector structure is large and the recurrent
+structure is tiny, and the gap between them is the whole content of the family.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_maps_obc0.pdf}{\textwidth}
+\caption{\textbf{X1, the two maps.} Left: base of the sector count against base of
+the largest \emph{sector}. Right: the same $x$-axis --- identical by
+\eqref{eq:F1}, not merely similar --- against the base of the longest
+\emph{cycle}. The dotted curve is $ab=2$; it binds the left panel, because
+sectors partition, and is only a reference on the right, because cycles do not.
+The collapse of the right panel onto $b=1$ is the headline: marker area grows with
+the number of rules in a cell and the two largest cells there hold $110$ and $40$
+rules.}
+\label{fig:x1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_drop_obc0.pdf}{\textwidth}
+\caption{\textbf{X2, the drop, per rule.} Left: longest cycle against largest
+sector. Every rule lies on or below the diagonal --- a cycle cannot be longer than
+the sector containing it --- and the reversible rules are exactly the ones
+\emph{on} it, since for them the sector \emph{is} the cycle. Right: the
+distribution of the cyclic fraction, log-scaled, by family.}
+\label{fig:x2}
+\end{figure}
+
+\section{The reversible rules}
+\label{sec:reversible}
+
+For the $16$ rules built from \rt{I} and \rt{V} the two decompositions are not
+just equal in number: the sectors \emph{are} the cycles, elementwise. So a single
+table describes both maps.
+
+\begin{center}
+\iftable{tab_r10_reversible_obc0.tex}
+\end{center}
+
+\noindent Three anchors are exact and worth stating, because they are the
+analogues of R9's:
+
+\begin{itemize}
+\item \textbf{Rule $204$} (\rt{IIII}) is the identity: $2^N$ fixed points,
+  $a=2$, $b=1$, $ab=2$ --- on the curve, as in the Hadamard case, but for a
+  different reason (there every sector was a frozen singleton; here every
+  \emph{cycle} is).
+\item \textbf{Rule $51$} (\rt{VVVV}) is the global flip $x\mapsto\bar x$:
+  $2^{N-1}$ two-cycles, so $a=2$, $b=1$ and $ab=2$. Note the contrast with the
+  Hadamard family, where $51$ gives \emph{one} sector of size $2^N$ --- the same
+  symbol table, opposite extremes of the sector axis, purely from the gate.
+\item \textbf{Rule $150$} (\rt{IVVI}) with $V=X$ is the linear map
+  $x_i\mapsto x_i\oplus x_{i-1}\oplus x_{i+1}$ applied brick-wall. Its longest
+  cycle is short and grows \emph{linearly}: $D_{\max}=14,15,16,17,18$ at
+  $N=13\ldots17$, i.e.\ $N+1$ over the range computed, with
+  $n_\wcc\approx2^N/(N+1)$ so $a=2$, $b=1$, $ab=2$. Against the Hadamard rule
+  $150$, whose sectors are the binomial domain-wall shells of R8, this is a
+  completely different object built from the same table.
+\end{itemize}
+
+\noindent The family spans the whole plane. At one end $204$ and $51$ have $2^{N}$
+and $2^{N-1}$ tiny orbits; at the other, $57$ and $99$ (\rt{VIVV}, \rt{VVIV})
+have only $110$ sectors at $N=17$ with the largest holding $36\,456$ states,
+giving $a=1.405$, $b=1.961$ and $ab=2.755$. Four rules --- $60$, $102$, $153$,
+$195$ --- and also $108$ and $201$ sit at $b=2$ exactly with $a\approx1.79$--$1.85$,
+so $ab\approx3.6$--$3.7$, far above the exclusion curve: many orbits \emph{and} a
+largest orbit that is a fixed fraction of the space.
+
+\section{What carries over, and what does not}
+\label{sec:carry}
+
+\paragraph{Carries over.} The sum rule and the exclusion curve are properties of a
+\emph{partition}, and sectors partition here exactly as they did there. The
+fit-free finite-$N$ form
+\[
+n_\wcc(N)\cdot D_{\max}(N)\;\ge\;2^N
+\]
+holds for all $256$ rules at every $N$, and is tight in the same place --- the
+smallest ratio anywhere is exactly $1.0000$, at rule $0$, $N=6$.
+
+\paragraph{Does not carry over.} Everything that depended on the Hadamard being a
+\emph{superposing} gate. There is no interference, so no destructive cancellation
+in $\operatorname{succ}$; no dark states; no distinction between the monitored and
+the unmonitored channel at the level of the support, since a single Kraus branch
+survives on each basis state. The Tier-1d monitored/unmonitored certificate is
+vacuous here. Conversely the transient structure, which was a thin and somewhat
+awkward part of the Hadamard story, becomes the dominant feature.
+
+\paragraph{The one identity that is a genuine control.} $n_\rec=n_\wcc$ held for
+\textbf{every unit computed}, with zero failures, and the union-find sector
+decomposition --- which knows nothing about functional graphs --- reproduced the
+basin decomposition exactly wherever both were run. Two independent code paths,
+one theorem, no discrepancies.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_transient_obc0.pdf}{\textwidth}
+\caption{\textbf{X3, transient structure.} Cyclic fraction (log scale), transient
+depth, and largest sector as a fraction of the space, against $N$. The reversible
+rules sit at cyclic fraction $1$ and depth $0$ by construction; the irreversible
+ones fall away exponentially.}
+\label{fig:x3}
+\end{figure}
+
+\section{Validation}
+\label{sec:valid}
+
+\begin{center}
+\iftable{tab_r10_validation_obc0.tex}
+\end{center}
+
+\noindent The last row is the point of the family rather than a failure: the cycle
+map has no exclusion curve, because cycles do not partition the basis, and $217$
+of $241$ rules do sit below $ab=2$ there. In the sector map, where the curve does
+bind, only \emph{two} rules fall below --- and neither is a violation. Both are
+the degenerate case R9~\S5 documents, where the sector count is sub-exponential
+so the base product silently drops the polynomial factor: $X_{25}$
+(\rt{VIVD}) has an essentially constant sector count
+($2,3,2,2,3,2$ over $N=19\ldots24$) with $b=1.99887$, and $X_{182}$ (\rt{IVVE})
+a linear one ($11,11,12,12,13,13$) with $b=1.881$. With $a=1$ the inequality
+degenerates to $b\ge2$, approached from below at finite $N$, which is what both
+are doing. Carrying the sweep from $N=20$ to $N=24$ took this count from $14$ to
+$2$, so the residue is a finite-size artefact and not a family of offenders.
+
+\section{Open items}
+
+\begin{enumerate}
+\item \textbf{\rt{pbc}.} Held, as for R9.
+\item \textbf{Rule $150$'s cycle length.} $D_{\max}=N+1$ over $N=13\ldots17$ is
+  five points; the map is $\mathrm{GF}(2)$-linear, so the orbit structure is
+  governed by the order of a matrix over $\mathrm{GF}(2)$ and should be derivable
+  rather than fitted. That derivation is not attempted here.
+\item \textbf{The $24$ rules with exponentially long cycles.} Six are
+  reversible (where a long cycle is unsurprising); the other eighteen are
+  V+reset rules that nonetheless sustain an exponentially long attractor despite
+  a median cyclic fraction of $10^{-7}$. That list is short and deserves the same
+  treatment R9 gave its eight open-system-fragmented rules.
+\item \textbf{Comparison with the Hadamard sector map} rule by rule. The two
+  families share a symbol table but not a single quantitative law; whether any
+  rule-level correlation survives the gate change is untested.
+\end{enumerate}
+
+\section{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.permutation.sweep --bc obc0 --n-min 6 --n-max 20
+python -m qca_fragmentation.permutation.analysis --bc obc0
+python -m qca_fragmentation.permutation.tables   --bc obc0
+python -m qca_fragmentation.permutation.figures  --bc obc0 --rebuild
+python -m pytest qca_fragmentation/tests/test_xgate.py -q
+\end{verbatim}
+
+\begin{sloppypar}
+Code: \fn{permutation/xca.py} (the map, ported from \fn{core/cycle.py}),
+\fn{permutation/functional.py} (the one-pass decomposition and the union-find
+cross-check), \fn{permutation/analysis.py}, \fn{permutation/tables.py},
+\fn{permutation/figures.py}. Data:
+\fn{results\_xgate/\{rule\}\_\{bc\}.jsonl} and
+\fn{analytics/xgate\_map\_obc0.json}.
+\end{sloppypar}
+
+\end{document}

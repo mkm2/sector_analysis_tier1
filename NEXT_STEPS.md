@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 591 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10 regenerated; full suite 658 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -337,6 +337,46 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      22-pbc.
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
+
+16. **R10 — X-gate PERMUTATION circuits — DONE (2026-07-30).** The same 256
+   symbol tables with V = X instead of the Hadamard. Every symbol is then a
+   FUNCTION on bits, so succ(x) is single-valued and the transition graph is a
+   FUNCTIONAL GRAPH. Consequences, all verified over 4864 units (N=6..24, all
+   256 rules, obc0):
+   - **n_recurrent == n_wcc identically, 4864/4864, zero failures.** One cycle
+     per weak component (F1), so basins ARE sectors and no state is shared. This
+     is exactly the identity that fails badly for the Hadamard circuits (R9:
+     rule 22 has 3 attractors inside 2 sectors), which makes the family a
+     control on the machinery, not just a physics question.
+   - **REVERSIBLE = the map is a bijection <=> every symbol is I or V, i.e. the
+     16 rules 51,54,57,60,99,102,105,108,147,150,153,156,195,198,201,204.**
+     Proved locally (each step is a controlled-X, so invertible; D/E destroy
+     information), hence true at EVERY N and both bc -- checked N=7,8,9.
+     **Do NOT conflate with the six reversible ECA** (15,51,85,170,204,240):
+     different construction AND different quantifier -- the ECA six are those
+     bijective for EVERY N (an intersection), and at fixed N the ECA bijective
+     set is larger (N=7 also has 45,75,89,150). Only 51 and 204 are in both.
+   - **Headline: large sectors, short attractors.** 239 of 256 rules have
+     exponentially large sectors but only 24 have exponentially long cycles;
+     for the 80 V-free rules that count is ZERO. Median cyclic fraction at
+     N=24: 1.8e-7 (V+reset), 1.5e-5 (V-free); median transient depth 13 and 12.
+   - Sum rule and the finite-N hyperbola carry over unchanged (256/256, tightest
+     exactly 1.0000). Sector map: only **2** rules with ab<2 at N<=24 (was 14 at
+     N<=20) and both are the degenerate sub-exponential case of R9 sec.5 --
+     X25 VIVD has a near-constant sector count with b=1.99887, X182 IVVE a
+     linear one with b=1.881. Cycle map: 217/241 below 2, as expected, since
+     cycles do not partition.
+   - Reversible anchors: 204 identity (2^N fixed points), 51 global flip
+     (2^(N-1) 2-cycles), 150 = the linear map x_i -> x_i XOR x_{i-1} XOR x_{i+1}
+     whose longest cycle is only N+1. Contrast 57/99 with 110 sectors at N=17,
+     largest 36456.
+   - Engine: `permutation/xca.py` ports the compiled step list from
+     core/cycle.py (so the brick-wall order and boundaries are byte-identical to
+     the validated engine; only the local action is swapped) and adds a numpy
+     builder that lifts the loop over x out of Python -- N=22 went 30s -> 1.06s,
+     which is what made N=24 affordable. Scalar and vectorised paths are checked
+     against each other. Store `results_xgate/`, version 1x.1. 60 tests.
+   - **pbc NOT run** (held with R9's).
 
 ## Open from R8 (C150)
 8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the

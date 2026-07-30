@@ -389,3 +389,96 @@ def append_manifest(rule: int, bc: str, N: int, runtime: float,
         entry.update(extra)
     with open(MANIFEST, "a") as f:
         f.write(json.dumps(entry) + "\n")
+
+# --- X-gate (permutation) circuits: same 256 symbol tables, V = X ------------
+# Its own store again: a different physical model, not a new tier over the same
+# units, so nothing here can be confused with a Hadamard record.
+XGATE_VERSION = "1x.1"
+XGATE_RESULTS_DIR = os.path.join(REPO_ROOT, "results_xgate")
+XGATE_FIELDS = [
+    "rule", "bc", "N", "reversible",
+    "n_wcc", "sizes_wcc", "size_hist_wcc", "wcc_truncated", "d_max_wcc",
+    "n_frozen", "d_max_ratio",
+    "n_recurrent", "sizes_recurrent", "recurrent_hist", "recurrent_truncated",
+    "d_max_recurrent", "n_fixed_points",
+    "transient_depth", "transient_fraction", "att_per_sector",
+    "runtime", "xgate_version",
+]
+
+
+def xgate_results_path(rule: int, bc: str) -> str:
+    return os.path.join(XGATE_RESULTS_DIR, f"{rule}_{bc}.jsonl")
+
+
+def load_xgate_results(rule: int, bc: str) -> Dict[int, dict]:
+    path = xgate_results_path(rule, bc)
+    out: Dict[int, dict] = {}
+    if not os.path.exists(path):
+        return out
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            out[rec["N"]] = rec
+    return out
+
+
+def has_xgate_unit(rule: int, bc: str, N: int,
+                   *, xgate_version: str = XGATE_VERSION) -> bool:
+    rec = load_xgate_results(rule, bc).get(N)
+    return rec is not None and rec.get("xgate_version") == xgate_version
+
+
+def sizes_from_xgate_record(rec, which: str = "wcc") -> list:
+    key, hist, trunc = (("sizes_wcc", "size_hist_wcc", "wcc_truncated")
+                        if which == "wcc"
+                        else ("sizes_recurrent", "recurrent_hist",
+                              "recurrent_truncated"))
+    if rec.get(trunc) and rec.get(hist):
+        out = []
+        for s, c in rec[hist].items():
+            out.extend([int(s)] * c)
+        out.sort(reverse=True)
+        return out
+    return rec.get(key) or []
+
+
+def record_from_xgate(res: dict) -> dict:
+    sw, sr = res["sizes_wcc"], res["sizes_recurrent"]
+    rec = dict(res)
+    rec.pop("N", None)
+    rec = {
+        "rule": res["rule"], "bc": res["bc"], "N": res["N"],
+        "reversible": bool(res["reversible"]),
+        "n_wcc": res["n_wcc"],
+        "sizes_wcc": sw[:_SIZES_CAP],
+        "size_hist_wcc": _histogram(sw),
+        "wcc_truncated": len(sw) > _SIZES_CAP,
+        "d_max_wcc": res["d_max_wcc"],
+        "n_frozen": res["n_frozen"],
+        "d_max_ratio": res["d_max_ratio"],
+        "n_recurrent": res["n_recurrent"],
+        "sizes_recurrent": sr[:_SIZES_CAP],
+        "recurrent_hist": _histogram(sr),
+        "recurrent_truncated": len(sr) > _SIZES_CAP,
+        "d_max_recurrent": res["d_max_recurrent"],
+        "n_fixed_points": res["n_fixed_points"],
+        "transient_depth": res["transient_depth"],
+        "transient_fraction": res["transient_fraction"],
+        "att_per_sector": res["att_per_sector"],
+        "runtime": res.get("runtime"),
+        "xgate_version": XGATE_VERSION,
+    }
+    return rec
+
+
+def append_xgate_result(rec: dict) -> None:
+    os.makedirs(XGATE_RESULTS_DIR, exist_ok=True)
+    ordered = {k: rec.get(k) for k in XGATE_FIELDS}
+    with open(xgate_results_path(rec["rule"], rec["bc"]), "a") as f:
+        f.write(json.dumps(ordered) + "\n")
