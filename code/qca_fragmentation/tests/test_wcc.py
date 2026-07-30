@@ -656,3 +656,33 @@ def test_frontier_and_wall_charge_are_different_mechanisms():
     assert front.d_max_wcc / 2 ** N == pytest.approx(0.5)
     assert wall.d_max_wcc / 2 ** N < 0.45                      # shrinking
     assert front.sizes_wcc != wall.sizes_wcc
+
+
+# --- boundary robustness: bulk structure vs boundary artefact (R9 sec.6.5) ----
+
+@pytest.mark.parametrize("rule", [44, 60, 100, 102, 110, 124, 188, 230])
+def test_frontier_family_is_an_obc0_artefact(rule):
+    """
+    The pinned-frontier charge is the position of the extremal excitation, which
+    is not definable on a ring -- so the whole N+1 dyadic tower must collapse at
+    pbc, and it does: 2 sectors at every N.
+    """
+    for N in (7, 9, 11):
+        assert wcc.weak_components(rule, N, "obc0").n_wcc == N + 1 or rule in (44, 100)
+        assert wcc.weak_components(rule, N, "pbc").n_wcc == 2, (rule, N)
+
+
+@pytest.mark.parametrize("rule", [28, 70, 157, 199, 73, 109, 29, 71])
+def test_open_system_fragmentation_survives_the_ring(rule):
+    """The eight exponentially fragmented rules are BULK: their sector counts
+    still grow on the ring, unlike the frontier family."""
+    ys = [wcc.weak_components(rule, N, "pbc").n_wcc for N in (7, 9, 11, 13)]
+    assert len(set(ys)) > 1
+    assert ys[-1] > 2 * ys[0], (rule, ys)          # genuinely growing
+
+
+def test_wall_charge_survives_the_ring_with_r8_closed_form():
+    """Rule 150's pbc sector count is R8's formula: N/2+3 (even), (N+3)/2 (odd)."""
+    for N in range(6, 14):
+        want = N // 2 + 3 if N % 2 == 0 else (N + 3) // 2
+        assert wcc.weak_components(150, N, "pbc").n_wcc == want, N

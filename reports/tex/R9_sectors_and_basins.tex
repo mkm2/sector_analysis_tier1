@@ -685,12 +685,86 @@ of the six are less clean: $44$ splits each frontier class further at odd $N$
 short non-dyadic tail ($\ldots,26,16,6,6,4,2$), so its charge is the leftmost
 excitation plus a refinement.
 
-Since sectors are enclosures, this is again an open-system statement: the pinned
-frontier is a conserved quantity of the \emph{channel}, dissipatively stabilised
-rather than merely inherited. It is a genuinely different route to polynomial
-fragmentation than the wall charge, and both routes are reachable from the same
+Since sectors are enclosures, this is an open-system statement in the sense that
+matters here: the pinned frontier is a conserved quantity of the \emph{channel},
+not of a measurement record. It is a genuinely different route to polynomial
+fragmentation than the wall charge, and both are reachable from the same
 $\varphi$-fragmented parents --- $108$ contributes four frontier rules while
 $156$ and $198$ contribute the wall-charge ones.
+
+\subsection{But the frontier charge is a boundary artefact}
+\label{sec:boundary}
+
+There is an obvious objection to the frontier family, and it is correct. ``The
+position of the leftmost excitation'' is not definable on a ring, so if that is
+really the charge, the whole structure has to vanish under periodic boundaries.
+It does, completely:
+
+\begin{center}
+\begin{tabular}{rllll}
+\toprule
+rule & tuple & charge & $n_\wcc$ at \rt{obc0} & $n_\wcc$ at \rt{pbc} \\
+\midrule
+$110$ & \rt{IEIV} & rightmost excitation & $N+1$ & $2$ \\
+$124$ & \rt{IIEV} & leftmost excitation & $N+1$ & $2$ \\
+$188$ & \rt{IIVE} & leftmost excitation & $N+1$ & $2$ \\
+$230$ & \rt{IVIE} & rightmost excitation & $N+1$ & $2$ \\
+$44$ & \rt{IIDV} & leftmost $+$ split & $N{+}1$ / $N{+}3$ & $2$ \\
+$100$ & \rt{IDIV} & leftmost $+$ tail & $N+3$ & $2$ \\
+$60$ & \rt{IIVV} & --- & $N+1$ & $2$ \\
+$102$ & \rt{IVIV} & --- & $N+1$ & $2$ \\
+\midrule
+$150$ & \rt{IVVI} & domain-wall number & $\lfloor\frac{N+1}{2}\rfloor+1$ &
+  $\frac N2+3$ / $\frac{N+3}2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent All eight collapse to \emph{two} sectors at every $N$ from $6$ to $13$,
+while rule $150$'s wall charge survives with exactly R8's \rt{pbc} closed form.
+Note this catches $60$ and $102$ as well: they were classified above as
+polynomial parents with $\alpha\approx0.82$, and their obc0 series is the same
+$N+1$ dyadic tower, so they belong to this family rather than beside $150$ and
+$105$. Their $\alpha$ differed only because the fitter saw the same series
+through a different window.
+
+So \S\ref{sec:frontier} must be read with that caveat: the pinned frontier is a
+genuine conserved quantity \emph{of the open system at open boundaries}, and an
+artefact of those boundaries. It is not bulk physics. Whether it also vanishes
+under \rt{obc1} (missing neighbour reads $1$ rather than $0$) is the natural
+third test and would presumably confirm the same reading, but \rt{obc1} is not
+implemented in this engine and adding a boundary convention to the validated core
+is not something to slip in untested; it is listed as an open item.
+
+\paragraph{The exponential rules, by contrast, are bulk.} The same check applied
+to the eight rules of \S\ref{sec:openfrag} gives the opposite answer --- every one
+of them still fragments on the ring, with the \emph{same} bases to within
+finite-size error:
+
+\begin{center}
+\begin{tabular}{rlrll}
+\toprule
+rule & tuple & \rt{obc0} base & \rt{pbc} base (even / odd $N$) & reading \\
+\midrule
+$73$, $109$ & \rt{VIID}, \rt{EIIV} & $\psi=1.46557$ & $1.4651$ / $1.4591$ &
+  $\psi$ confirmed \\
+$28$, $70$, $157$, $199$ & & $\rho=1.32472$ & $1.3049$ / $1.2708$--$1.3099$ &
+  consistent with $\rho$ \\
+$29$, $71$ & \rt{EIVD}, \rt{EVID} & $\approx1.22$ & $1.1579$ / $1.2328$ &
+  same ballpark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The supergolden agreement is the striking one: $1.4651$ against
+$\psi=1.46557$, a discrepancy of $3\times10^{-4}$ from nine points per parity
+branch. So $\rho$ and $\psi$ are \textbf{bulk} constants, and the open-system
+fragmentation of \S\ref{sec:openfrag} is not a boundary effect. That is worth
+having checked, because it is exactly the objection the frontier family turned out
+to deserve.
+
+(These \rt{pbc} numbers are a targeted robustness check on an \rt{obc0} claim, not
+the \rt{pbc} sweep, which remains a separate report.)
 
 \paragraph{And 105 is not 150's partner.} R8 treats them as reflection partners
 and this report inherited that, but the sector multisets differ at
@@ -915,6 +989,14 @@ discriminate:
   $D_{\max}/2^N$ is bounded below.
 \item \textbf{A basin histogram in the Tier-1a schema}, so the gap of
   \S\ref{sec:basins} cannot recur for future units.
+\item \textbf{\rt{obc1} as a third boundary convention.} \S\ref{sec:boundary}
+  separates bulk structure from boundary artefact using \rt{pbc}; \rt{obc1}
+  (missing neighbour reads $1$) would be an independent check on the same
+  question, and is a small change to \fn{core/cycle.py} --- a sentinel for
+  ``fixed $1$'' beside the existing ``fixed $0$''. It is not done here because
+  adding a boundary convention to the validated core needs its own regression
+  coverage (branch norms, unitarity, every \rt{bc}-parametrised test), not a
+  two-line patch.
 \end{enumerate}
 
 \section{Reproduce}

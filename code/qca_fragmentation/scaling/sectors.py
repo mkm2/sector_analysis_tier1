@@ -676,6 +676,36 @@ def survival_by_parent_class(d: Dict, bc: str = "obc0") -> Dict:
                            "parent_class": pcls, "class": ccls})
     return {"by_parent_class": out, "detail": detail}
 
+# --- boundary robustness -----------------------------------------------------
+
+#: Rules whose obc0 sector structure is the pinned-frontier (dyadic) one.
+FRONTIER_RULES = (44, 60, 100, 102, 110, 124, 188, 230)
+
+
+def boundary_robustness(rules_in, n_max: int = 13) -> List[Dict]:
+    """
+    Recompute the sector count on the RING for a handful of rules, to separate
+    bulk structure from a boundary artefact.
+
+    This is a targeted check, not a pbc sweep -- the pbc report is separate.  It
+    exists because a charge like "the position of the leftmost excitation" is not
+    even definable on a ring, so any sector structure built on it must vanish
+    there, while a bulk charge such as the domain-wall number must not.
+    """
+    from ..graph import wcc as _wcc
+    out = []
+    for r in rules_in:
+        o = [_wcc.weak_components(r, N, "obc0").n_wcc
+             for N in range(6, n_max + 1)]
+        p = [_wcc.weak_components(r, N, "pbc").n_wcc
+             for N in range(6, n_max + 1)]
+        out.append({"rule": r, "tuple": "".join(rules.wolfram_to_tuple(r)),
+                    "obc0": o, "pbc": p,
+                    "pbc_constant": len(set(p)) == 1,
+                    "pbc_n": p[-1], "obc0_n": o[-1],
+                    "survives": not (len(set(p)) == 1)})
+    return out
+
 
 if __name__ == "__main__":
     main()

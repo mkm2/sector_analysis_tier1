@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 572 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 589 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -277,6 +277,28 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      **N = 1 (mod 4)** 105's sectors carry ODD wall number: N=9 gives
      [252,120,120,10,10] = C(10,odd w) vs 150's [210,210,45,45,1,1] =
      C(10,even w); same at N=13. Elsewhere they agree exactly.
+   - **The frontier family is an obc0 ARTEFACT (R9 sec.6.5; user's point).**
+     "Position of the leftmost excitation" is not definable on a ring, so the
+     N+1 dyadic tower must vanish at pbc -- and it does: **all eight of
+     44,60,100,102,110,124,188,230 collapse to n_wcc = 2 at every N=6..13.**
+     This also catches **60 and 102**, which had been filed as polynomial parents
+     with alpha~0.82 beside 150/105; their obc0 series is the same N+1 dyadic
+     tower, so they belong to the frontier family, and the alpha differed only
+     because the fitter saw one series through a different window.
+     Rule 150's wall charge SURVIVES pbc with exactly R8's closed form
+     (N/2+3 even, (N+3)/2 odd, verified N=6..13) -- bulk, not boundary.
+   - **The 8 exponentially fragmented rules ARE bulk** -- the same check gives
+     the opposite answer: all eight still fragment on the ring with the SAME
+     bases to within finite size. 73/109: pbc 1.4651 vs psi = 1.46557 (3e-4!).
+     28/70/157/199: pbc 1.305/1.271-1.310 vs rho = 1.32472. 29/71: 1.158/1.233
+     vs ~1.22. So rho and psi are BULK constants and sec.6.2's headline is not a
+     boundary effect. Worth having checked -- it is exactly the objection the
+     frontier family turned out to deserve.
+   - **obc1 is NOT implemented** in the engine (core/cycle.py handles pbc and
+     obc0 only; a sentinel for "fixed 1" beside the existing "fixed 0" would do
+     it). Left as an open item rather than patched in: adding a boundary
+     convention to the validated core needs its own regression coverage (branch
+     norms, unitarity, every bc-parametrised test).
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 
