@@ -377,9 +377,10 @@ plane, base $a$ of the sector count against base $b$ of the largest sector ---
 \emph{monitored only}. The dotted line is $ab=2$; it excludes the region below it
 in the left panel and is only a reference in the right one. Marker area grows
 with the number of rules stacked in a cell and the count is printed inside
-crowded cells, without which the distribution is invisible: $73\%$ of the sector
+crowded cells, without which the distribution is invisible: $77\%$ of the sector
 map lies in one cell. Colour is by family, with the quantum rules (those carrying
-a Hadamard) drawn forward and the V-free rules held back as a baseline. The nine
+a Hadamard) drawn forward and the V-free rules held back as a baseline. Gold rings and labels mark the eight
+V+reset rules that stay exponentially fragmented (\S\ref{sec:openfrag}). The nine
 unitary rules land at \emph{identical} coordinates in both panels, which is
 assertion A2 made visible.}
 \label{fig:f1}
@@ -391,8 +392,8 @@ assertion A2 made visible.}
 \subsection{The sector axis is uninformative for the V+reset rules}
 \label{sec:pileup}
 
-The left panel of Fig.~\ref{fig:f1} has a blunt message: \textbf{$186$ of $256$
-rules sit at exactly $(a,b)=(1,2)$} --- one sector, of size $2^N$. Broken down by
+The left panel of Fig.~\ref{fig:f1} has a blunt message: \textbf{$196$ of the $254$
+placeable rules sit at exactly $(a,b)=(1,2)$} --- one sector, of size $2^N$. Broken down by
 family:
 
 \begin{center}
@@ -400,19 +401,19 @@ family:
 \toprule
 family & rules & at $(1,2)$ & elsewhere \\
 \midrule
-unitary (V only) & $16$ & $9$ & $7$ \\
-V + reset & $160$ & $\mathbf{144}$ & $16$ \\
-V-free baseline & $80$ & $33$ & $45$ \\
+unitary (V only) & $16$ & $11$ & $5$ \\
+V + reset & $160$ & $\mathbf{150}$ & $10$ \\
+V-free baseline & $80$ & $35$ & $43$ \\
 \midrule
-all & $256$ & $186$ ($73\%$) & $70$ \\
+all & $254$ & $196$ ($77\%$) & $58$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\noindent So $90\%$ of the rules that combine a Hadamard with a reset have
+\noindent So $94\%$ of the rules that combine a Hadamard with a reset have
 \emph{no sector structure at all}: the reset connects the whole basis into a
 single enclosure. That is a real result rather than a plotting problem, and it
-has a corollary for how this tier should be used. For those $144$ rules the
+has a corollary for how this tier should be used. For those $150$ rules the
 sector axis says nothing, and everything interesting is in the monitored map,
 where the same rules spread over the whole column $a_\att\approx1$ from
 $b_\att=1.0$ up to $1.89$ (right panel of Fig.~\ref{fig:f1}). The V-free
@@ -426,18 +427,18 @@ Quantitatively, with the deficit $2-a_\att b_\att$ of V4:
 \toprule
 family & rules & median deficit \\
 \midrule
-unitary (V only) & $9$ & $-0.135$ \\
+unitary (V only) & $9$ & $0.000$ \\
 V + reset & $152$ & $+0.534$ \\
-V-free baseline & $78$ & $+0.909$ \\
+V-free baseline & $78$ & $+1.000$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\noindent The unitary median is negative because those rules sit \emph{on or
-above} the curve in both planes --- for a unitary rule the two planes are the same
-plane. The V-free median of $+0.909$ says $a_\att b_\att\approx1$: their
-attractors are $O(1)$ fixed points and essentially the entire space is transient.
-The V+reset family sits between the two.
+\noindent The unitary median is exactly zero because for a unitary rule the two
+planes \emph{are} the same plane, and the median unitary rule sits on the curve.
+The V-free median of exactly $+1$ says $a_\att b_\att=1$: their monitored
+attractors are $O(1)$ fixed points and essentially the whole space is transient.
+The V+reset family sits between the two, at $+0.53$.
 
 \begin{figure}[htbp]
 \centering
@@ -445,7 +446,7 @@ The V+reset family sits between the two.
 \caption{\textbf{F2, the monitored attractor map for the quantum rules alone}
 (unitary and V+reset; the V-free baseline is dropped here). MONITORED
 quantities throughout. This is where the V+reset family has structure: in the
-sector plane all $144$ of them collapse onto $(1,2)$.}
+sector plane $150$ of the $160$ collapse onto $(1,2)$.}
 \label{fig:f2}
 \end{figure}
 
@@ -458,8 +459,7 @@ its position in the monitored-attractor plane; arrow width grows with the number
 of rules making the same move, and a dot means the rule does not move at all
 (which is what every unitary rule does, by A2). Right: the distribution of the
 deficit $2-a_\att b_\att$ by family. The V-free baseline piles up at $+1$ --- its
-attractors are $O(1)$ fixed points --- while the unitary rules sit at $0$ or
-below.}
+attractors are $O(1)$ fixed points --- while the unitary rules sit at $0$.}
 \label{fig:f3}
 \end{figure}
 
@@ -501,21 +501,83 @@ against the rule tables rather than assumed.
 \noindent The table splits the fourteen clusters cleanly in two.
 
 \begin{itemize}
-\item \textbf{Eight parents already sit at $(1,2)$} --- one sector holding the
-  whole space --- so there is nothing for a reset to destroy, and all $40$ of
+\item \textbf{Ten parents already sit at $(1,2)$} --- one sector holding the
+  whole space --- so there is nothing for a reset to destroy, and all $56$ of
   their children stay exactly where the parent is.
-\item \textbf{Six parents have genuine sector structure}, and they hold $120$
-  children between them. \emph{Not one of the $120$ keeps its parent's
-  position.} $104$ collapse all the way to $(1,2)$; the remaining $16$ move to
-  some intermediate point but never stay.
+\item \textbf{Four parents have genuine sector structure} --- the $v=1$ rules
+  $156$, $198$, $108$, $201$ --- and they hold $104$ children between them.
+  \emph{Not one of the $104$ keeps its parent's position.} $94$ collapse all the
+  way to $(1,2)$; the remaining $10$ move to some intermediate point but never
+  stay --- and eight of those ten are still \emph{exponentially} fragmented,
+  which is \S\ref{sec:openfrag}.
 \end{itemize}
 
 \noindent That is the sharpest statement this tier produces about dissipation:
 \textbf{adding any reset to a rule that has sector structure destroys that
-structure, without exception over the $120$ cases available}. It also explains
-the pile-up of \S\ref{sec:pileup} arithmetically --- the $144$ V+reset rules at
-$(1,2)$ are exactly the $104$ that collapsed plus the $40$ that were never
+structure, without exception over the $104$ cases available}. It also explains
+the pile-up of \S\ref{sec:pileup} arithmetically --- the $150$ V+reset rules at
+$(1,2)$ are exactly the $94$ that collapsed plus the $56$ that were never
 anywhere else.
+
+\subsection{Fragmentation in an open quantum system}
+\label{sec:openfrag}
+
+The $104$ children of the four structured parents split $94$ / $10$: ninety-four
+collapse to $(1,2)$, and ten land somewhere in between. Those ten are the
+interesting ones, and eight of them are interesting for a specific reason ---
+their sector count still grows \emph{exponentially}.
+
+\begin{center}
+\iftable{tab_r9_openfrag_obc0.tex}
+\end{center}
+
+\noindent Why this is worth stating as a result rather than a curiosity. A sector
+is an \emph{enclosure}: $\operatorname{span}(\text{WCC})$ is invariant under every
+Kraus operator, so an exponentially growing sector count is a statement about the
+unmonitored channel just as much as about the measured circuit
+(\S\ref{sec:tiers}). These eight rules therefore exhibit \textbf{Hilbert-space
+fragmentation as open quantum systems} --- not a unitary circuit that someone
+later added noise to, and not an artefact of conditioning on measurement records.
+Each contains a genuine reset, and each has a coherent correspondent that is
+itself fragmented, so the fragmentation is inherited rather than accidental.
+
+The structure of the list is tidier than the selection deserves:
+
+\begin{itemize}
+\item They come from all \textbf{four} of the structured parents --- the $v=1$
+  rules $156$, $198$, $108$, $201$ --- three, three, one and one respectively.
+  No $v\ge2$ parent contributes, because none of them has sector structure to
+  pass on in the first place.
+\item The bases are \textbf{exact algebraic numbers}, from integer recurrences,
+  for six of the eight: the \textbf{plastic number} $\rho=1.32472$, the real root
+  of $x^3=x+1$, for $28$, $70$, $157$, $199$; and the \textbf{supergolden ratio}
+  $\psi=1.46557$, the real root of $x^3=x^2+1$, for $73$ and $109$. Note the
+  parents' bases are $\varphi$ (root of $x^2=x+1$) and $\psi_{201}=1.75488$: the
+  reset raises the order of the characteristic polynomial rather than perturbing
+  the root.
+\item They pair up. $\{28,70\}$ share $(\rho,2)$, $\{157,199\}$ share
+  $(\rho,\sqrt3)$, $\{29,71\}$ share $\approx(1.22,1.81)$, and $73$, $109$ are
+  each their own reflection partner. Within a pair the two rules are reflections
+  of one another, one built on \rt{D} and the other on \rt{E}.
+\item $28$ and $70$ keep $b=2$ \emph{exactly}: exponentially many sectors
+  \emph{and} a largest sector that is still a fixed fraction of the space. Rule
+  $28$ is the one whose $\varphi$ prediction \S\ref{sec:r28} falsified --- and the
+  plastic number that replaced it is the same constant that appears here for
+  three other rules.
+\end{itemize}
+
+\noindent The remaining two of the ten, $6$ (\rt{IVDD}) and $20$ (\rt{IDVD}),
+have $a=1$: their sector counts are linear ($4,5,5,6,6,7,7,8,8,9,9$), so they keep
+a little structure but are not fragmented.
+
+\paragraph{A caution on the two fitted rows.} For $29$ and $71$ the base comes
+from a parity-resolved fit, not a recurrence, so $1.2147$ and $1.2294$ should be
+read as ``about $1.22$'' and not as two distinct constants; their series
+oscillate strongly with $N$ ($3,6,5,9,7,14,10,21,15,31,22$ for rule $29$) and each
+parity branch has only five or six points. That they are exponential is solid ---
+both branches grow geometrically --- but the value is not pinned, and if they
+follow the pattern of the other six the honest guess is that both are the same
+algebraic number.
 
 \begin{figure}[htbp]
 \centering
@@ -528,7 +590,8 @@ area and arrow width grow with the number of children making the same move.
 Top row and the two leftmost middle panels: parents with sector structure, every
 arrow pointing away and up-left towards $(1,2)$. Remaining panels: parents
 already at $(1,2)$, where the children coincide with the parent and no arrow is
-drawn. These coordinates are exact for both experiments.}
+drawn. Gold rings mark the eight children that remain exponentially fragmented
+(\S\ref{sec:openfrag}). These coordinates are exact for both experiments.}
 \label{fig:f6}
 \end{figure}
 
@@ -705,7 +768,8 @@ discriminate:
   \rt{IEEI}. A grammar that produces the domain-wall counting should say why the
   same-reset-type pair is the one that breaks it.
 \item \textbf{Which V+reset rules escape the collapse} (\S\ref{sec:pileup}).
-  Only $16$ of $160$ keep any sector structure; a grammar should predict that
+  Only $10$ of $160$ keep any sector structure and only $8$ stay
+  exponentially fragmented (\S\ref{sec:openfrag}); a grammar should predict that
   list, and it is a short one.
 \end{enumerate}
 

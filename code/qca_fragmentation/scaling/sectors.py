@@ -33,6 +33,9 @@ SECTOR_PATH = os.path.join(ANALYTICS, "sector_map_{bc}.json")
 
 PHI = (1 + 5 ** 0.5) / 2
 
+#: bases within this of 1 are not exponential growth
+_KAPPA_BAND = 0.02
+
 #: Rules whose sector law is DERIVED rather than fitted.  (base, alpha, source)
 ANALYTIC: Dict[Tuple[int, str], Dict[str, Tuple[float, float, str]]] = {
     (204, "obc0"): {"n_wcc": (2.0, 0.0, "IIII: every state frozen"),
@@ -259,9 +262,17 @@ def series_descriptor(rule: int, bc: str, key: str,
         # the RATE must come from the two-parameter fit ln y = c + kappa N (or
         # from an exact recurrence, handled below).
         alpha = float(f["alpha_M2"] or 0.0)
-        fe = fit_pure_exponential(Ns, ys)
-        base = (float(fe["base"]) if fe.get("ok")
-                else float(f["base"] or 1.0))
+        if cls == "polynomial":
+            # M2 was selected but its kappa is within the noise band, so the
+            # series is a power of N, not an exponential.  Reporting a base of
+            # 1.09 next to the class "polynomial" is self-contradictory, and it
+            # is what put six linear-sector-count rules (44, 100, 110, 124, 188,
+            # 230, whose counts run 7,8,...,17) at a > 1.
+            base = 1.0
+        else:
+            fe = fit_pure_exponential(Ns, ys)
+            base = (float(fe["base"]) if fe.get("ok")
+                    else float(f["base"] or 1.0))
 
     lo = hi = None
     if f.get("kappa_loo_range"):
@@ -279,10 +290,27 @@ def series_descriptor(rule: int, bc: str, key: str,
             base, exact, source = pr["base"], True, "parity recurrence"
             parity = True
         else:
-            fe = fit_pure_exponential([n for n in Ns if n % 2 == 0],
-                                      [y for n, y in zip(Ns, ys) if n % 2 == 0])
-            if fe.get("ok"):
-                base, source, parity = float(fe["base"]), "parity fit", True
+            en = [n for n in Ns if n % 2 == 0]
+            ey = [y for n, y in zip(Ns, ys) if n % 2 == 0]
+            # Classify the parity BRANCH, do not merely fit it: rule 44's even-N
+            # sector counts are 7,9,11,13,15,17, a straight line, and a pure
+            # exponential fit to a straight line still returns a base of 1.09.
+            ef = fit_series(en, ey)
+            fe = fit_pure_exponential(en, ey)
+            if fe.get("ok") and ef.get("ok"):
+                if ef["growth_class"] == "exponential":
+                    base, source, parity = float(fe["base"]), "parity fit", True
+                else:
+                    base, alpha, source, parity = 1.0, alpha, \
+                        f"parity branch {ef['growth_class']}", True
+    # A base recovered from a parity split or an exact recurrence overrides the
+    # class BIC assigned to the mixed series: rule 29's sector count is
+    # 3,6,5,9,7,14,10,21,15,31,22, which BIC reads as polynomial because the
+    # parity oscillation swamps the trend, while each parity branch plainly grows
+    # exponentially (base 1.215).  Class and base have to agree.
+    if base > 1.0 + _KAPPA_BAND and (exact or parity):
+        cls = "exponential"
+
     if an is not None:
         base, alpha, exact, source = an[0], an[1], True, an[2]
         lo = hi = None
@@ -539,6 +567,54 @@ def main(argv=None):
         print(f"anchor W156: a*b = {c['product']:.4f} (must be > 2) "
               f"-> {'ABOVE' if c['product'] > 2 else 'NOT ABOVE'}")
 
+
+
+
+# --- fragmentation that survives dissipation ---------------------------------
+
+def open_system_fragmented(d: Dict) -> List[Dict]:
+    """
+    The V+reset rules that keep an EXPONENTIALLY growing sector count.
+
+    These are the interesting ones physically.  A sector is an enclosure --
+    span(WCC) is invariant under every Kraus operator -- so an exponentially
+    growing sector count is exact for the unmonitored channel as well as for the
+    measured circuit.  A rule in this list therefore exhibits Hilbert-space
+    fragmentation as an OPEN quantum system, not merely as a unitary circuit that
+    someone later added noise to.
+
+    Selection is deliberately narrow: the rule must contain a reset (so it is
+    genuinely dissipative), its coherent correspondent must itself have sector
+    structure (otherwise there was nothing to survive), and its own sector count
+    must be classified exponential with a base bounded away from 1.
+    """
+    xy = {p["rule"]: p for p in d["points"]}
+    out = []
+    for parent in sorted(rules.UNITARY_RULES):
+        pp = xy.get(parent)
+        if pp is None or pp["n_wcc"]["base"] is None:
+            continue
+        pa, pb = pp["n_wcc"]["base"], pp["d_max_wcc"]["base"]
+        if abs(pa - 1) < 1e-6 and abs(pb - 2) < 1e-6:
+            continue                       # parent had nothing to lose
+        for c in rules.dissipative_children(parent):
+            q = xy.get(c)
+            if q is None or q["n_wcc"]["base"] is None:
+                continue
+            if q["n_wcc"]["cls"] != "exponential":
+                continue
+            if q["n_wcc"]["base"] <= 1.0 + _KAPPA_BAND:
+                continue
+            out.append({
+                "rule": c, "tuple": q["tuple"], "parent": parent,
+                "parent_tuple": pp["tuple"],
+                "a": q["n_wcc"]["base"], "b": q["d_max_wcc"]["base"],
+                "product": q["product_ab"],
+                "a_named": q["n_wcc"]["named"], "b_named": q["d_max_wcc"]["named"],
+                "a_exact": q["n_wcc"]["exact"], "a_source": q["n_wcc"]["source"],
+                "parent_a": pa, "parent_b": pb,
+            })
+    return sorted(out, key=lambda r: (-r["a"], r["rule"]))
 
 if __name__ == "__main__":
     main()

@@ -126,6 +126,47 @@ def _panel(ax, cells, title, xlabel, ylabel):
     ax.set_ylim(0.88, 2.14)
 
 
+#: The open-system fragmented rules get a gold halo and a label wherever they
+#: appear: they are the physically interesting minority and would otherwise be
+#: eight anonymous dots among 256.
+HALO = "#e8a33d"
+
+
+def _highlight(ax, d, xy, *, label=True, ring=210):
+    frag = sectors.open_system_fragmented(d)
+    for r in frag:
+        pt = xy.get(r["rule"])
+        if pt is None:
+            continue
+        ax.scatter(*pt, s=ring, marker="o", facecolor="none",
+                   edgecolor=HALO, linewidth=2.0, alpha=0.95, zorder=9)
+    if label:
+        seen = {}
+        for r in frag:
+            pt = xy.get(r["rule"])
+            if pt is None:
+                continue
+            seen.setdefault((round(pt[0], 3), round(pt[1], 3)), []).append(r["rule"])
+        # W29/W71 and W73/W109 sit within 0.015 of each other, so labels are
+        # pushed apart vertically in order of y rather than overprinting.
+        items = sorted(seen.items(), key=lambda kv: (-kv[0][1], kv[0][0]))
+        placed = []
+        for (x, y), rs in items:
+            dy = -4
+            while any(abs(x - px) < 0.09 and abs((y + dy * 0.006)
+                                                - (py + pdy * 0.006)) < 0.030
+                      for px, py, pdy in placed):
+                dy += 13
+            placed.append((x, y, dy))
+            ax.annotate("W" + "/".join(str(v) for v in sorted(rs)), (x, y),
+                        textcoords="offset points", xytext=(12, dy),
+                        fontsize=7.0, color="#8a5a12", zorder=10,
+                        fontweight="bold",
+                        arrowprops=(dict(arrowstyle="-", lw=0.5, color=HALO)
+                                    if dy != -4 else None))
+    return frag
+
+
 # --- F1 + F2: the two maps on identical axes ----------------------------------
 
 def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
@@ -151,6 +192,13 @@ def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
            r"base $b_{\rm att}$ of $D_{\max}^{\rm att}$")
 
     # 51 and 150 sit at exactly the same point, so the labels are staggered
+    frag = _highlight(axes[0], d,
+                      {p["rule"]: (p["n_wcc"]["base"], p["d_max_wcc"]["base"])
+                       for p in d["points"]
+                       if p["n_wcc"]["base"] is not None})
+    _highlight(axes[1], d,
+               {x["rule"]: (x["a_att"], x["b_att"])
+                for x in d["attractor_deficits"]}, label=False)
     for r, lab, off in ((204, "204", (-24, 6)), (51, "51", (14, 12)),
                         (150, "150", (14, -14)), (156, "156", (12, 4))):
         p = next((x for x in d["points"] if x["rule"] == r), None)
@@ -166,6 +214,10 @@ def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
                      label=_FAMLABEL[k]) for k in ("unitary", "mixed", "classical")]
     hs.append(plt.Line2D([], [], color="#444444", lw=1.0, ls=":",
                          label=r"$ab=2$ (excluded below, left panel only)"))
+    hs.append(plt.Line2D([], [], marker="o", ls="", markersize=9,
+                         markerfacecolor="none", markeredgecolor=HALO,
+                         markeredgewidth=2.0,
+                         label=f"fragmented open systems ({len(frag)})"))
     axes[0].legend(handles=hs, fontsize=7.5, loc="lower left", framealpha=0.95)
     fig.suptitle("Marker area grows with the number of rules stacked in a cell; "
                  "the count is printed inside crowded cells.  "
@@ -420,8 +472,6 @@ def main(argv=None):
                       if k != "hyperbola_margins"}, indent=1))
 
 
-if __name__ == "__main__":
-    main()
 
 
 # --- F6: clustering the dissipative rules by their coherent correspondent -----
@@ -499,6 +549,7 @@ def fig_dissipation_clusters(bc: str, out: str, plane: str = "attractor",
                 ax.annotate(f"{n}", (x, y), fontsize=6.2, ha="center",
                             va="center", color="white", fontweight="bold",
                             zorder=6)
+        _highlight(ax, d, {c: v for c, v in kids}, label=False, ring=150)
         if pxy is not None:
             ax.scatter(*pxy, s=200, marker="*", facecolor="#1f4e9c",
                        edgecolor="white", lw=1.0, zorder=7)
@@ -540,3 +591,6 @@ def fig_dissipation_clusters(bc: str, out: str, plane: str = "attractor",
         fig.savefig(p_, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", out)
+
+if __name__ == "__main__":
+    main()

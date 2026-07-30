@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 555 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 558 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -215,6 +215,34 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      In the ATTRACTOR plane the moves are large for ALL 14 clusters, including
      the 8 that do not move at all on the sector axis -- which is why both
      planes are kept. Figures fig_dissip_{sector,attractor}_obc0.
+   - **FRAGMENTATION IN AN OPEN QUANTUM SYSTEM: 8 rules (R9 sec.6.2).** Of the
+     104 children of the four structured parents (156/198/108/201), 94 collapse
+     to (1,2), 10 land intermediate, and **8 of those keep an EXPONENTIALLY
+     growing sector count**. Because a sector is an enclosure, this is exact for
+     the unmonitored channel too -- genuine open-system HSF, not a unitary
+     circuit with noise added afterwards. Six of the eight have EXACT algebraic
+     bases from integer recurrences:
+       * **plastic number rho = 1.32472** (root of x^3 = x+1):
+         28 IIVD (b=2), 70 IVID (b=2), 157 EIVI (b=sqrt3), 199 EVII (b=sqrt3)
+       * **supergolden psi = 1.46557** (root of x^3 = x^2+1):
+         73 VIID (b=1.78187), 109 EIIV (b=1.79363)
+       * fitted only, ~1.22: 29 EIVD, 71 EVID (parity-oscillating series, value
+         not pinned; both are exponential but likely the same constant)
+     Note the parents' bases are phi (x^2=x+1) and psi_201=1.75488, so the reset
+     RAISES THE ORDER of the characteristic polynomial rather than perturbing
+     the root. They pair by reflection: {28,70} at (rho,2), {157,199} at
+     (rho,sqrt3), {29,71}, and 73/109 are self-reflective. 28 and 70 keep b=2
+     exactly -- exponentially many sectors AND a volume-law largest sector.
+     Highlighted with gold rings in fig_sector_map / fig_dissip_* and pinned by
+     3 tests. `sectors.open_system_fragmented()`.
+   - Classifier fixes needed to get this right: class and base must agree.
+     A polynomial class must report base 1 (six linear-count rules were being
+     given a=1.09 by an M2 fit), and a base from a parity split only counts as
+     exponential if the parity BRANCH is classified exponential (rule 44's even-N
+     counts are 7,9,11,...,17 -- a straight line that a pure exponential fit
+     still reports as base 1.09). After the fix: 196/254 rules at (1,2),
+     150/160 of the V+reset family, and the deficit medians sharpen to exactly
+     0.000 (unitary), +0.534 (V+reset), +1.000 (V-free).
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 

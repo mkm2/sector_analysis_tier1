@@ -459,3 +459,58 @@ def test_dissipation_destroys_sector_structure_without_exception():
                 n_keep += 1
     assert n_kids >= 100
     assert n_keep == 0, f"{n_keep} of {n_kids} children kept their parent's point"
+
+
+# --- fragmentation surviving dissipation (R9 sec.6.2) ------------------------
+
+_OPEN_FRAG = {73, 109, 28, 70, 157, 199, 71, 29}
+PLASTIC_ = 1.324717957244746
+SUPERGOLDEN = 1.4655712318767682
+
+
+def test_open_system_fragmented_set():
+    """
+    The V+reset rules whose sector count still grows exponentially.  A sector is
+    an enclosure, so this is fragmentation of the OPEN system, exact for the
+    unmonitored channel too -- not a unitary circuit with noise bolted on.
+    """
+    from qca_fragmentation.scaling import sectors
+    d = sectors.load("obc0")
+    if d is None:
+        pytest.skip("sector map not built")
+    frag = sectors.open_system_fragmented(d)
+    assert {r["rule"] for r in frag} == _OPEN_FRAG
+    for r in frag:
+        t = rules.wolfram_to_tuple(r["rule"])
+        assert "V" in t                                  # still quantum
+        assert rules.channel_kraus_symbols(t)            # genuinely dissipative
+        assert r["a"] > 1.02
+        assert r["product"] > 2.0 - 1e-9                 # still above the curve
+        # inherited: the coherent correspondent is itself fragmented
+        assert r["parent"] in (156, 198, 108, 201)
+
+
+def test_open_fragmented_bases_are_exact_algebraic_numbers():
+    """Six of the eight have integer recurrences: the plastic number for
+    28/70/157/199 and the supergolden ratio for 73/109."""
+    from qca_fragmentation.scaling import sectors
+    d = sectors.load("obc0")
+    if d is None:
+        pytest.skip("sector map not built")
+    by = {r["rule"]: r for r in sectors.open_system_fragmented(d)}
+    for rule in (28, 70, 157, 199):
+        assert by[rule]["a"] == pytest.approx(PLASTIC_, abs=1e-9), rule
+        assert by[rule]["a_exact"], rule
+    for rule in (73, 109):
+        assert by[rule]["a"] == pytest.approx(SUPERGOLDEN, abs=1e-9), rule
+        assert by[rule]["a_exact"], rule
+    # and the two b values that are exact constants
+    assert by[28]["b"] == pytest.approx(2.0, abs=1e-9)
+    assert by[70]["b"] == pytest.approx(2.0, abs=1e-9)
+    assert by[157]["b"] == pytest.approx(3 ** 0.5, abs=1e-9)
+    assert by[199]["b"] == pytest.approx(3 ** 0.5, abs=1e-9)
+
+
+def test_supergolden_and_plastic_are_the_roots_they_should_be():
+    assert SUPERGOLDEN ** 3 == pytest.approx(SUPERGOLDEN ** 2 + 1, abs=1e-12)
+    assert PLASTIC_ ** 3 == pytest.approx(PLASTIC_ + 1, abs=1e-12)

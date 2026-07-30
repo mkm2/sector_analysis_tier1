@@ -259,6 +259,7 @@ def write_all(bc: str = "obc0") -> None:
         (f"tab_r9_validation_{bc}", tab_validation(bc)),
         (f"tab_r9_basins_{bc}", tab_basin_recompute(bc)),
         (f"tab_r9_dissip_{bc}", tab_dissipation_clusters(bc, d)),
+        (f"tab_r9_openfrag_{bc}", tab_open_fragmented(bc, d)),
     ]
     for name, txt in tables:
         p = os.path.join(TEXDIR, f"{name}.tex")
@@ -316,6 +317,24 @@ def tab_dissipation_clusters(bc: str, d: Dict) -> str:
             "parent & tuple & $a$ & $b$ & children & $\\to(1,2)$ & "
             "at parent & keeps structure \\\\\n\\hline\n"
             f"{body}\n{foot}\n\\hline\n\\end{{tabular}}\n")
+
+def tab_open_fragmented(bc: str, d: Dict) -> str:
+    """The V+reset rules whose sector count still grows exponentially."""
+    rows = []
+    for r in sectors.open_system_fragmented(d):
+        an = r["a_named"] or "---"
+        bn = r["b_named"] or "---"
+        mark = r"\cmark" if r["a_exact"] else "fit"
+        rows.append(
+            f"${r['rule']}$ & \\texttt{{{r['tuple']}}} & "
+            f"${r['parent']}$ & \\texttt{{{r['parent_tuple']}}} & "
+            f"${r['a']:.5f}$ & {an} & {mark} & "
+            f"${r['b']:.5f}$ & {bn} & ${r['product']:.4f}$ \\\\")
+    return ("\\begin{tabular}{rlrlrlcrlr}\n\\hline\n"
+            "rule & tuple & parent & & $a$ & name & exact & $b$ & name & $ab$ "
+            "\\\\\n\\hline\n" + "\n".join(rows)
+            + "\n\\hline\n\\end{tabular}\n")
+
 
 if __name__ == "__main__":
     main()
