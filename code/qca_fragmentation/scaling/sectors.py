@@ -51,9 +51,18 @@ ANALYTIC: Dict[Tuple[int, str], Dict[str, Tuple[float, float, str]]] = {
 }
 
 
-def load_series(rule: int, bc: str) -> Dict[str, List]:
+#: Largest N reached for EVERY rule.  The headline map fits inside this uniform
+#: window so the bases are comparable across the whole rule space; rules that
+#: happen to have a longer series (from a targeted extension) would otherwise be
+#: fitted on a different domain, which is not a like-for-like comparison.
+UNIFORM_N_CAP = 16
+
+
+def load_series(rule: int, bc: str, n_cap: Optional[int] = None) -> Dict[str, List]:
     """The Tier-1e series for one rule, ergodic units included but flagged."""
     recs = results_io.load_wcc_results(rule, bc)
+    if n_cap is not None:
+        recs = {N: r for N, r in recs.items() if N <= n_cap}
     out = {"N": [], "n_wcc": [], "d_max_wcc": [], "n_frozen": [],
            "d_max_ratio": [], "ergodic": [], "transient_fraction": [],
            "att_per_sector": [], "n_recurrent": []}
@@ -100,6 +109,74 @@ def _parity_split_helps(Ns, ys) -> bool:
     return max(r_ev, r_od) < 0.5 * full
 
 
+def is_irregular(Ns: List[int], ys: List[int]) -> bool:
+    """
+    A series that no growth law describes: strongly non-monotone with a large
+    residual under the best log-linear fit.  W90/W165 are the type case --
+    n_wcc = 2,1,4,4,2,6,2,6,12,1,20 -- where forcing a base out of the fitter
+    yields 1.0 for both series and hence the impossible product ab = 1.
+    """
+    import numpy as np
+    if len(ys) < 5:
+        return False
+    y = np.asarray(ys, float)
+    if np.any(y <= 0):
+        return True
+    down = np.sum(np.diff(y) < 0)
+    n = np.asarray(Ns, float)
+    k, c = np.polyfit(n, np.log(y), 1)
+    rms = float(np.sqrt(np.mean((np.log(y) - (k * n + c)) ** 2)))
+    return bool(down >= 2 and rms > 0.35)
+
+
+def finite_hyperbola(rule: int, bc: str,
+                     n_cap: Optional[int] = None) -> Optional[Dict]:
+    """
+    The theorem at finite N, with no fitting anywhere:
+
+        n_wcc(N) * D_max(N)  >=  2^N      for every N.
+
+    This is an immediate corollary of the A1 sum rule and is the actual content
+    of the exclusion curve.  The asymptotic statement ab >= 2 is a corollary
+    about bases that only means anything when BOTH series are exponential; when
+    one of them is sub-exponential the base product drops the polynomial factor
+    and the test degenerates.  So this is the check that should carry the
+    validation, and the base plane is the presentation.
+    """
+    s = load_series(rule, bc, n_cap)
+    if not s["N"]:
+        return None
+    ratios = [(N, k * d / (1 << N))
+              for N, k, d in zip(s["N"], s["n_wcc"], s["d_max_wcc"])]
+    worst_N, worst = min(ratios, key=lambda t: t[1])
+    return {"rule": rule, "bc": bc, "min_ratio": worst, "at_N": worst_N,
+            "holds": bool(worst >= 1.0 - 1e-12), "n_units": len(ratios)}
+
+
+def _saturated(ys: List[int], tail: int = 4) -> bool:
+    """A bounded integer series that has stopped changing is CONSTANT, whatever
+    the BIC says.  W36's sector count is 9,9,10,10,10,10,10,10,10,10,10; the M2
+    fit reads the initial step as curvature and returns base 0.95 -- below 1,
+    which is impossible for a count."""
+    return len(ys) >= tail + 1 and len(set(ys[-tail:])) == 1
+
+
+def _volume_fraction_base(Ns: List[int], ys: List[int],
+                          tail: int = 4, thresh: float = 0.9):
+    """
+    If D_max(N)/2^N stays bounded away from zero, the base is EXACTLY 2 -- no fit
+    can improve on that, and a fitted 1.64 (W36) or 2.06 (W134) is simply wrong.
+    Returns (base, alpha, source) or None.
+    """
+    if len(ys) < tail:
+        return None
+    r = [y / (1 << N) for N, y in zip(Ns, ys)][-tail:]
+    if min(r) >= thresh:
+        return (2.0, 0.0, f"$D_{{\\max}}/2^N \\geq {thresh}$ over the last "
+                          f"{tail} sizes")
+    return None
+
+
 def series_descriptor(rule: int, bc: str, key: str,
                       Ns: List[int], ys: List[int]) -> Optional[Dict]:
     """
@@ -113,6 +190,25 @@ def series_descriptor(rule: int, bc: str, key: str,
     f = fit_series(Ns, ys)
     if not f.get("ok"):
         return None
+    if an is None and is_irregular(Ns, ys):
+        return {"cls": "irregular", "base": None, "alpha": None, "exact": False,
+                "source": "non-monotone, no growth law", "parity_split": None,
+                "base_lo": None, "base_hi": None, "n_points": f["n_points"],
+                "N_range": f["N_range"], "named": None}
+    if an is None:
+        vf = _volume_fraction_base(Ns, ys)
+        if vf is not None:
+            return {"cls": "exponential", "base": vf[0], "alpha": vf[1],
+                    "exact": True, "source": vf[2], "parity_split": None,
+                    "base_lo": None, "base_hi": None,
+                    "n_points": f["n_points"], "N_range": f["N_range"],
+                    "named": name_base(vf[0])}
+        if _saturated(ys):
+            return {"cls": "constant", "base": 1.0, "alpha": 0.0, "exact": True,
+                    "source": f"saturated at {ys[-1]}", "parity_split": None,
+                    "base_lo": None, "base_hi": None,
+                    "n_points": f["n_points"], "N_range": f["N_range"],
+                    "named": None}
     cls, model = f["growth_class"], f["best_model"]
     if model == "M0":
         base, alpha = 1.0, 0.0
@@ -145,14 +241,31 @@ def series_descriptor(rule: int, bc: str, key: str,
         base, alpha, exact, source = an[0], an[1], True, an[2]
         lo = hi = None
 
+    # Both n_wcc and D_max lie in [1, 2^N], so both bases lie in [1, 2].  A fit
+    # outside that window contradicts a theorem, so the theorem wins and the
+    # value is clamped -- with the clamp recorded, never silent.  This is what
+    # the binomial rules need: W134's D_max is 924, 1716, 3003, 6435, 12870,
+    # 24310, i.e. exactly rule 150's central binomials ~ 2^N/sqrt(N), and the M2
+    # fit lands at 2.0588 because the N^{-1/2} prefactor pulls the estimate past
+    # the boundary.
+    clamped = None
+    if base > 2.0 + 1e-12:
+        clamped, base, exact = f"fit {base:.4f} clamped to 2", 2.0, False
+    elif base < 1.0 - 1e-12:
+        clamped, base, exact = f"fit {base:.4f} clamped to 1", 1.0, False
+    if clamped:
+        source = f"{source}; {clamped}"
+
     return {"cls": cls, "base": float(base), "alpha": float(alpha),
+            "clamped": clamped,
             "exact": bool(exact), "source": source, "parity_split": parity,
             "base_lo": lo, "base_hi": hi, "n_points": f["n_points"],
             "N_range": f["N_range"], "named": name_base(float(base))}
 
 
-def rule_point(rule: int, bc: str) -> Optional[Dict]:
-    s = load_series(rule, bc)
+def rule_point(rule: int, bc: str,
+               n_cap: Optional[int] = None) -> Optional[Dict]:
+    s = load_series(rule, bc, n_cap)
     if len(s["N"]) < 3:
         return None
     t = rules.wolfram_to_tuple(rule)
@@ -174,7 +287,9 @@ def rule_point(rule: int, bc: str) -> Optional[Dict]:
         "d_max_ratio_at_Nmax": s["d_max_ratio"][i],
         "transient_fraction_at_Nmax": s["transient_fraction"][i],
         "att_per_sector_at_Nmax": s["att_per_sector"][i],
-        "product_ab": a["base"] * b["base"],
+        "product_ab": (a["base"] * b["base"]
+                       if (a["base"] is not None and b["base"] is not None)
+                       else None),
     }
 
 
@@ -199,6 +314,13 @@ def hyperbola_check(pt: Dict, tol: float = 0.0) -> Dict:
     predicts for the sub-leading base, which is often sharper than the fit.
     """
     a, b = pt["n_wcc"], pt["d_max_wcc"]
+    if a["base"] is None or b["base"] is None:      # irregular series
+        return {"rule": pt["rule"], "bc": pt["bc"], "product": None,
+                "margin": None, "slack": None, "raw_below": False,
+                "within_slack": None, "verdict": "irregular", "ok": True,
+                "exact_a": False, "exact_b": False,
+                "a": a["base"], "b": b["base"], "bound_violations": [],
+                "b_lower_bound": None, "b_fit_hi": None, "on_curve": False}
     prod = a["base"] * b["base"]
     slack = tol
     for d, other in ((a, b), (b, a)):
@@ -206,16 +328,36 @@ def hyperbola_check(pt: Dict, tol: float = 0.0) -> Dict:
             slack = max(slack, abs(d["base_hi"] - d["base_lo"]) * other["base"])
     raw_below = bool(prod < 2.0 - 1e-9)
     within = bool(prod >= 2.0 - slack - 1e-9)
+    # When either series is sub-exponential its base is 1 by convention, so the
+    # product silently drops the polynomial factor and ab >= 2 is no longer the
+    # theorem -- for a polynomial sector count the theorem degenerates to
+    # b >= 2, approached from below at finite N.  Such rules are reported as
+    # degenerate, not as violations; finite_hyperbola() carries the real check.
+    degenerate = (a["cls"] in ("constant", "polynomial")
+                  or b["cls"] in ("constant", "polynomial"))
     if not raw_below:
         verdict = "on_curve" if abs(prod - 2.0) < 1e-6 else "above"
+    elif degenerate:
+        verdict = "degenerate_subexponential"
     elif slack > SLACK_VACUOUS:
         verdict = "inconclusive"
     elif within:
         verdict = "below_within_uncertainty"
     else:
         verdict = "VIOLATION"
+    # Physical bounds, from the same partition logic as the hyperbola:
+    # 1 <= n_wcc <= 2^N and 1 <= D_max <= 2^N force 1 <= a,b <= 2.  A fitted
+    # base outside that window is a mis-fit by inspection, no series length
+    # argument required, and must be reported rather than plotted as data.
+    bounds = []
+    if not (1.0 - 1e-9 <= a["base"] <= 2.0 + 1e-9):
+        bounds.append(f"a={a['base']:.4f} outside [1,2]")
+    if not (1.0 - 1e-9 <= b["base"] <= 2.0 + 1e-9):
+        bounds.append(f"b={b['base']:.4f} outside [1,2]")
+
     b_lo = 2.0 / a["base"] if a["base"] > 0 else None
     return {"rule": pt["rule"], "bc": pt["bc"], "product": prod,
+            "bound_violations": bounds,
             "margin": prod - 2.0, "slack": slack,
             "raw_below": raw_below, "within_slack": within,
             "verdict": verdict,
@@ -255,26 +397,32 @@ def attractor_deficit(rule: int, bc: str) -> Optional[Dict]:
             "product": prod, "deficit": 2.0 - prod}
 
 
-def build(bc: str = "obc0") -> Dict:
-    pts, checks, deficits = [], [], []
+def build(bc: str = "obc0", n_cap: Optional[int] = UNIFORM_N_CAP) -> Dict:
+    pts, checks, deficits, finite = [], [], [], []
     for rule in range(256):
-        p = rule_point(rule, bc)
+        p = rule_point(rule, bc, n_cap)
         if p is None:
             continue
         pts.append(p)
         checks.append(hyperbola_check(p))
+        fh = finite_hyperbola(rule, bc, n_cap)
+        if fh:
+            finite.append(fh)
         d = attractor_deficit(rule, bc)
         if d:
             deficits.append(d)
     tally: Dict[str, int] = {}
     for c in checks:
         tally[c["verdict"]] = tally.get(c["verdict"], 0) + 1
-    out = {"bc": bc, "n_rules": len(pts), "points": pts,
+    out = {"bc": bc, "n_cap": n_cap, "n_rules": len(pts), "points": pts,
            "hyperbola": checks, "attractor_deficits": deficits,
            "verdicts": tally,
+           "finite_hyperbola": finite,
+           "finite_hyperbola_failures": [f for f in finite if not f["holds"]],
            # every rule whose product is below 2, whatever the slack says --
            # the task forbids letting these pass silently
            "raw_below": [c for c in checks if c["raw_below"]],
+           "bound_violations": [c for c in checks if c["bound_violations"]],
            "violations": [c for c in checks if c["verdict"] == "VIOLATION"]}
     os.makedirs(ANALYTICS, exist_ok=True)
     with open(SECTOR_PATH.format(bc=bc), "w") as f:
@@ -298,6 +446,18 @@ def main(argv=None):
     d = build(args.bc)
     print(f"{d['n_rules']} rules with a Tier-1e descriptor ({args.bc})")
     print("verdicts:", d["verdicts"])
+    ff = d["finite_hyperbola_failures"]
+    worst = min(d["finite_hyperbola"], key=lambda f: f["min_ratio"])
+    print(f"finite-N check n_wcc(N)*Dmax(N) >= 2^N : "
+          f"{len(d['finite_hyperbola']) - len(ff)}/{len(d['finite_hyperbola'])} "
+          f"hold; tightest is W{worst['rule']} at N={worst['at_N']} "
+          f"with ratio {worst['min_ratio']:.4f}")
+    for f in ff[:10]:
+        print(f"   FAIL W{f['rule']} at N={f['at_N']}: ratio {f['min_ratio']:.6f}")
+    print(f"physically impossible fitted bases (must lie in [1,2]): "
+          f"{len(d['bound_violations'])}")
+    for v in d["bound_violations"]:
+        print(f"   W{v['rule']:<4} {'; '.join(v['bound_violations'])}")
     print(f"rules with a*b < 2 (all listed, whatever the slack): "
           f"{len(d['raw_below'])}")
     for v in sorted(d["raw_below"], key=lambda c: c["product"])[:20]:

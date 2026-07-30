@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8 regenerated; full suite 433 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 543 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -137,6 +137,54 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      the cumulative mean needs t ~ 800 to stabilise and a naive t in [200,400]
      window is 2% low. Cap BLAS threads to 4 -- the default oversubscribes and
      costs a factor 2.
+
+15. **Tier 1e — WCC sectors and basins, obc0 — DONE (2026-07-30, R9).**
+   New tier: the weakly connected component as the sector-level observable
+   (an ENCLOSURE, so exact for monitored AND unmonitored; partitions the basis;
+   = minimal projectors of the DIAGONAL commutant). Vocabulary now fixed:
+   sector = WCC, monitored attractor = terminal SCC, channel attractor = block
+   of the fixed-point algebra. Never mix them.
+   - **Sweep: all 256 rules obc0 at every N=6..16 (uniform), 2892 units.**
+     N-major order so a run stopped on a wall-clock budget still leaves uniform
+     coverage. 30 diagnostic rules carried to N=17/18; the headline map uses the
+     uniform N<=16 window only (comparability).
+   - **The theorem, fit-free: n_wcc(N)*D_max(N) >= 2^N holds 256/256 at every
+     N, and is TIGHT** (min ratio exactly 1.0000, rule 0 at N=6). This is what
+     carries the validation; a*b>=2 is a corollary about bases that degenerates
+     when either series is sub-exponential.
+   - Base plane: 189 on the curve (ab=2), 60 above, 5 degenerate (polynomial
+     sector count), 2 irregular, **0 violations**. Anchors: 204/51/150 on the
+     curve to 6 decimals; **156 above at ab=2.0313** (V3 passes) with b=1.2554
+     vs the expected 4^(1/5)=1.3195 -- gap open, needs larger N.
+   - **Rule 28 FALSIFIES the task's a_wcc >= phi prediction.** Exact recurrence
+     a_n = a_{n-1}+a_{n-2}-a_{n-4}, char. (x-1)(x^3-x-1), base = plastic number
+     rho = 1.32472 << phi = 1.618. Verified out of sample; pbc agrees (~1.30).
+   - **Rule 150's wall charge is not a property of unitarity.** Six DISSIPATIVE
+     rules (134 IVDI, 142 IEDI, 148 IDVI, 158 IEVI, 212 IDEI, 214 IVEI) have
+     EXACTLY C150's sector multiset C(N+1,even w) at every N=6..16. The only
+     two exceptions in the I**I family are 132 IDDI and 222 IEEI -- the
+     same-reset-type pairs. Sector-level counterpart of Tier-2 R-T13's DFS
+     finding for 134/148, now for six rules and the whole multiset.
+     The tempting generalisation (only the I-pattern matters, since V/D/E all
+     give the same undirected flip edge) is FALSE: only 3 of 16 I-pattern
+     groups collapse ({140,156,220}, {196,198,206}, {204}). Cause: the odd-layer
+     symbol reads the post-even-layer state, where V branches and D/E do not.
+   - **Basin sum rule was UNANSWERABLE for 76 obc0 units** -- Tier 1a caps
+     sizes_basins at 2048 and never stored a basin histogram, so the multiset
+     is lost (every failure is a truncated record; no untruncated one fails).
+     Per user request, recomputed independently into results_basins/ WITH the
+     histogram: **67 units, sum rule holds 67/67, agrees with the surviving
+     Tier-1a fields, 1.17 h.**
+   - Validation: 2874 units, sum-rule residual identically 0; A2 (unitary
+     n_wcc=n_rec=n_scc + identical multisets) 99/99; 11 descriptors clamped to
+     the theorem bound [1,2] (each recorded) -- the binomial rules need it.
+   - Deviations from the task spec, both flagged in R9: the ergodic early exit
+     is NOT used (it would break A1 and lose the V2 anchors), and
+     ENGINE_VERSION was NOT bumped (that would invalidate ~6000 Tier-1a records
+     and force a full recompute, which the same section forbids) -- the version
+     lives on the new tier as TIER1E_VERSION="1e.1".
+   - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
+     own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 
 ## Open from R8 (C150)
 8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the

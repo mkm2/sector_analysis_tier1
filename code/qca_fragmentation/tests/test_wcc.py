@@ -251,6 +251,67 @@ def test_edges_are_symmetrised():
     assert sorted(sizes, reverse=True) == [3, 1]
 
 
+# --- rule 150's family (R9 sec.6) --------------------------------------------
+
+_R150_FAMILY = [134, 142, 148, 158, 212, 214]      # dissipative, same sectors
+_R150_EXCEPTIONS = [132, 222]                      # IDDI and IEEI differ
+
+
+@pytest.mark.parametrize("rule", _R150_FAMILY)
+@pytest.mark.parametrize("N", [8, 10, 12])
+def test_dissipative_rules_share_rule_150_sectors(rule, N):
+    """The domain-wall charge is not a property of unitarity: replacing either
+    Hadamard of IVVI by a reset leaves the sector multiset untouched."""
+    ref = wcc.weak_components(150, N, "obc0").sizes_wcc
+    got = wcc.weak_components(rule, N, "obc0").sizes_wcc
+    assert got == ref
+    assert ref == sorted((comb(N + 1, w) for w in range(0, N + 2, 2)),
+                         reverse=True)
+
+
+@pytest.mark.parametrize("rule", _R150_EXCEPTIONS)
+def test_same_reset_type_pair_breaks_the_wall_charge(rule):
+    """IDDI and IEEI -- both active symbols the same reset type -- do NOT."""
+    N = 12
+    ref = wcc.weak_components(150, N, "obc0").sizes_wcc
+    got = wcc.weak_components(rule, N, "obc0").sizes_wcc
+    assert got != ref
+    assert sum(got) == 2 ** N            # still a partition, of course
+
+
+def test_i_pattern_does_not_determine_the_sector_partition():
+    """
+    The tempting generalisation -- V, D and E all generate the same undirected
+    flip edge, so only the I-pattern should matter -- is false, because the
+    odd-layer symbol is read off the post-even-layer state.  IDDI vs IVVI is a
+    counterexample within one I-pattern group.
+    """
+    N = 10
+    pat = lambda r: tuple(s == "I" for s in rules.wolfram_to_tuple(r))
+    assert pat(132) == pat(150)
+    assert (wcc.weak_components(132, N, "obc0").sizes_wcc
+            != wcc.weak_components(150, N, "obc0").sizes_wcc)
+
+
+# --- the finite-N form of the exclusion curve --------------------------------
+
+@pytest.mark.parametrize("rule", [0, 22, 28, 36, 51, 74, 90, 132, 150, 156,
+                                  165, 173, 204, 222])
+def test_finite_hyperbola_holds(rule):
+    """n_wcc(N) * D_max(N) >= 2^N, exactly, with no fitting -- the actual
+    content of the exclusion curve (R9 eq. finite)."""
+    for N in (7, 9, 11):
+        r = wcc.weak_components(rule, N, "obc0")
+        assert r.n_wcc * r.d_max_wcc >= (1 << N), (rule, N)
+
+
+def test_finite_hyperbola_is_tight_for_the_identity_rule():
+    """Rule 204 saturates it: 2^N sectors of size 1."""
+    for N in (7, 9, 11):
+        r = wcc.weak_components(204, N, "obc0")
+        assert r.n_wcc * r.d_max_wcc == (1 << N)
+
+
 # --- record schema ------------------------------------------------------------
 
 def test_wcc_record_roundtrip_and_derived_fields():

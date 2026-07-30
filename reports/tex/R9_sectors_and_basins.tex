@@ -1,0 +1,585 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\cmark}{\ensuremath{\checkmark}}
+\newcommand{\xmark}{\ensuremath{\times}}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\att}{\mathrm{att}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending
+  (regenerate after the sweep)}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending (regenerate after the sweep)}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{\textbf{Report R9 --- Sectors and basins: the weak-component
+decomposition over the rule space}\\
+\large Tier 1e, open boundaries}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-29 \quad\small(\fn{tier1e\_version} \texttt{1e.1}, \rt{obc0})}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The dissipative pipeline has so far reported terminal strongly connected
+components --- ``recurrent classes'' --- and their basins. Those are the right
+object for the \emph{measured} circuit and the wrong object for a sector axis:
+they do not partition the basis, they are monitored-relative, and the Tier-2
+wall grammar predicts sectors rather than attractors. This report adds the
+weakly connected component (WCC) as a first-class observable, which fixes all
+three at once: $\operatorname{span}(\text{WCC})$ is an enclosure of the channel,
+invariant under every Kraus operator and therefore exact for the monitored and
+the unmonitored dynamics alike; WCCs partition the basis; and they are precisely
+the minimal projectors of the \emph{diagonal} part of the commutant. We sweep
+all $256$ rules at open boundaries, verify the sum rule and the cross-tier
+consistency assertions, and test the exclusion curve $ab\ge2$ that a partition
+forces on the sector map. Two negative results are recorded prominently: the
+Tier-2 prediction $a_\wcc\ge\varphi$ for rule $28$ is \emph{false} --- the sector
+count obeys an exact recurrence with base the plastic number
+$\rho=1.32472$ --- and the basin sum rule turned out to be unanswerable from the
+Tier-1a archive for $76$ units, which we fixed by recomputing them
+independently. This report covers \rt{obc0} only; \rt{pbc} follows separately.
+\end{abstract}
+
+\tableofcontents
+
+\section{Three tiers, and why the WCC is the sector-level object}
+\label{sec:tiers}
+
+\subsection{Vocabulary}
+
+The single most important thing this report changes is naming. Throughout the
+project from here on:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{sector} & weakly connected component; exact for \emph{both} experiments\\
+\textbf{monitored attractor} & terminal SCC; a property of the measured circuit\\
+\textbf{channel attractor} & block of the fixed-point algebra (Tier 1b / 1d)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent A terminal SCC is never a ``sector''; a WCC is never an ``attractor''.
+Every table and figure caption below states which experiment its numbers
+describe.
+
+\subsection{Why terminal SCCs cannot carry a sector axis}
+
+\begin{description}
+\item[(P1) They do not partition.] Transient states belong to no recurrent
+  class, so $\sum_k|A_k|\ll 2^N$ and no sum rule constrains the multiset. The
+  unitary sectors \emph{do} partition, so the existing figures put two
+  different kinds of object on one axis. Rule $22$ at $N=12$ is the extreme
+  case: three monitored attractors, each a single state, covering $3$ of
+  $4096$ states, against two sectors covering all $4096$.
+\item[(P2) They are monitored-relative.] The transient/recurrent split is a
+  property of the measured chain; the unmonitored channel can keep immortal
+  weight on transient states (R5 rule 22, R7).
+\item[(P3) They are not what the analytics predicts.] The Tier-2 wall grammar
+  and transfer matrices give sector counts.
+\end{description}
+
+\subsection{What a WCC is}
+
+\begin{definition}
+The one-cycle support graph has nodes $x\in\{0,1\}^N$ and an edge $x\to y$
+whenever $\langle y|\Phi_C(|x\rangle\langle x|)|y\rangle\neq0$. A \emph{sector}
+is a connected component of this graph read as undirected.
+\end{definition}
+
+\begin{proposition}[enclosure]
+$\operatorname{span}(\text{sector})$ is invariant under every Kraus operator of
+$\Phi_C$, hence invariant for the monitored and the unmonitored dynamics alike.
+\end{proposition}
+
+\noindent The commutant reading is the one that connects this tier to R8. A
+diagonal operator $D$ commutes with the dynamics iff $D_x=D_y$ whenever the
+support graph has an edge $x\to y$, i.e.\ iff $D$ is constant on components. So
+\begin{equation}
+\dim\{\,D \text{ diagonal}:[D,\Phi_C]=0\,\}\;=\;\#\text{components}\;=\;n_\wcc,
+\label{eq:diagcommutant}
+\end{equation}
+and the graph analysis computes \emph{exactly} the diagonal part of the
+commutant --- no more. That is why it cannot see reflection, or any other
+symmetry whose eigenvectors are superpositions rather than basis states
+(R8~\S10.3: at $N=11$ the diagonal part is $7$-dimensional inside a commutant of
+dimension $23\,360$).
+
+\subsection{The algorithm, and one deliberate deviation}
+
+A single streaming pass over $\operatorname{succ}(x)$ for
+$x=0\ldots2^N-1$, union-find with union by size and path compression, every edge
+symmetrised by construction ($\mathrm{union}(x,y)$ for each $y\in
+\operatorname{succ}(x)$). No adjacency storage, no DFS stack. This is the code
+path the unitary sweep already used, now factored into
+\fn{graph/wcc.py::weak\_components} and shared by both callers.
+
+\paragraph{Deviation, and why.} The Tarjan sweep aborts a unit as soon as one
+component exceeds $f_{\rm erg}2^N$. The WCC pass does \emph{not}: aborting
+leaves an incomplete partition, which would break the sum rule A1 and destroy
+the exact anchors the exclusion-curve test needs --- rule $51$ has to come out
+as one sector of size exactly $2^N$, not as ``something exceeded half the
+space''. Union-find is cheap enough to always finish, so \rt{ergodic} here is a
+\emph{classification} derived from $D_{\max}$, and the exponential saving lives
+in the sweep instead. A second guard: a rule is not written off as ergodic on
+the strength of a tiny chain, since at $N=6$ almost anything connects past half
+of $64$ states; the verdict must hold at two consecutive $N$ and never below
+$N=10$.
+
+\section{The sweep}
+\label{sec:sweep}
+
+All $256$ rules at \rt{obc0}, swept with $N$ in the \emph{outer} loop so that a
+run stopped against a wall-clock budget still leaves uniform coverage --- every
+rule with the same $N$ range and therefore comparable fits. Records live in
+their own store \fn{results\_tier1e/}, keyed on $(\text{rule},N,\rt{bc})$ and
+versioned \texttt{1e.1}.
+
+\paragraph{A note on versioning.} The task asks for the shared
+\fn{ENGINE\_VERSION} to be bumped to \texttt{1e.1}. Doing that would make
+\fn{has\_unit()} false for all ${\sim}6000$ archived Tier-1a records, so the next
+sweep would recompute the lot --- which the same section explicitly forbids. The
+version bump therefore lives on the new tier, exactly as Tier 1d does. Nothing
+in Tier 1a/1b/1d is recomputed or invalidated.
+
+\begin{center}
+\iftable{tab_r9_coverage_obc0.tex}
+\end{center}
+
+\noindent Coverage is uniform: all $256$ rules at every $N=6\ldots16$, so the
+descriptors of \S\ref{sec:hyper} are all fitted on the same domain. A targeted
+set of $30$ diagnostic rules was carried to $N=17$--$18$ afterwards; the headline
+map deliberately does \emph{not} use those extra points, since a rule fitted on a
+longer window is not comparable with one fitted on the uniform window.
+
+\section{Ground truths}
+\label{sec:truth}
+
+All of the following are regression-tested in \fn{tests/test\_wcc.py}.
+
+\begin{itemize}
+\item \textbf{Rule 204} (\rt{IIII}): $2^N$ sectors of size $1$; $a=2$, $b=1$.
+\item \textbf{Rule 51} (\rt{VVVV}): one sector of size $2^N$; $a=1$, $b=2$.
+\item \textbf{Rule 150} \rt{obc0}: sectors are the domain-wall-number
+  eigenspaces, $|S_w|=\binom{N+1}{w}$ on even $w$. The computed values reproduce
+  the reference series for $N=8\ldots17$ exactly --- $\#$sectors
+  $5,6,6,7,7,8,8,9,9,10$ and $D_{\max}$ $126$, $210$, $462$, $924$, $1716$,
+  $3003$, $6435$, $12870$, $24310$, $43758$.
+\item \textbf{Rule 156} \rt{pbc}: $n_\wcc=\mathrm{Lucas}(N)+1$, verified
+  $N=6\ldots12$.
+\item \textbf{Rule 22} \rt{pbc}, even $N$: three monitored attractors, all of
+  size $1$, against $n_\wcc=2$; the transient fraction runs
+  $0.9531,0.9883,0.9971,0.9993$ at $N=6,8,10,12$ and $\to1$.
+\end{itemize}
+
+\paragraph{A naming trap worth recording.} Wolfram numbers are not classical ECA
+rules in this encoding. $W_{90}$ has symbol tuple \rt{DEED} and is
+\emph{dissipative}; assertion A2 must not be applied to it. Its $N=8$ \rt{obc0}
+numbers make the P1 point cleanly: sector sizes $112,112,16,16$ summing to
+$256$, against terminal-SCC sizes $7,7,1,1$ summing to $16$.
+
+\section{Rule 28: the wall-transparency prediction fails}
+\label{sec:r28}
+
+The task predicts $a_\wcc\ge\varphi$ for rule $28$ (\rt{IIVD}), on the grounds
+that it inherits the $01$-wall grammar of rule $156$, and asks for a prominent
+flag if that is violated. \textbf{It is violated.} The \rt{obc0} sector count is
+\[
+n_\wcc(N)=11,15,20,27,36,48,64,85,113,150,199 \qquad (N=6\ldots16),
+\]
+which satisfies the exact integer recurrence
+\begin{equation}
+a_n=a_{n-1}+a_{n-2}-a_{n-4},
+\label{eq:r28}
+\end{equation}
+verified out of sample on every available term. Its characteristic polynomial
+factors as $x^4-x^3-x^2+1=(x-1)(x^3-x-1)$, so the growth base is the
+\textbf{plastic number}
+\[
+\rho=1.324717957\ldots\;<\;\varphi=1.618033988\ldots,
+\]
+the real root of $x^3=x+1$. This is an exact algebraic base, not a fit, so the
+gap to $\varphi$ cannot be attributed to a short series or to a parity artifact.
+The ring agrees: a parity-resolved fit of the \rt{pbc} series gives
+$\approx1.28$--$1.31$, also well below $\varphi$.
+
+What this falsifies is the \emph{transparency} step of the argument, not the
+wall grammar itself: rule $28$ replaces one of rule $156$'s symbols with a reset
+\rt{D}, and the reset evidently removes wall configurations from circulation
+rather than merely relabelling them. Quantifying which configurations are lost
+is a Tier-2 question and is listed in \S\ref{sec:hooks}.
+
+\section{The hyperbola}
+\label{sec:hyper}
+
+\begin{theorem}[exclusion curve]
+Sectors partition the basis, so with $K\sim a^N$ sectors and $D_{\max}\sim b^N$,
+\begin{equation}
+K\,D_{\max}\;\ge\;\sum_k D_k\;=\;2^N
+\qquad\Longrightarrow\qquad
+ab\;\ge\;2,
+\label{eq:hyper}
+\end{equation}
+with equality iff the sector sizes are all comparable. No rule may lie below
+$b=2/a$.
+\end{theorem}
+
+\noindent This is a theorem about \emph{partitions}. It therefore constrains the
+sector map and says nothing whatever about the monitored-attractor map, where
+$a_\att b_\att<2$ is expected and the deficit $2-a_\att b_\att$ measures
+transient dominance (V4). We assert nothing there and report the deficit as an
+observable.
+
+\subsection{Anchors}
+
+\begin{center}
+\iftable{tab_r9_anchors_obc0.tex}
+\end{center}
+
+\noindent Rules $204$, $51$ and $150$ sit on the curve to six decimals, as they
+must. Rule $156$ is the interesting case and is discussed in
+\S\ref{sec:inconclusive}.
+
+\subsection{The check that carries the validation}
+
+The asymptotic statement $ab\ge2$ is a corollary about \emph{bases}, and it only
+means anything when both series are exponential: if the sector count is
+polynomial its base is $1$ by convention, the product silently drops the
+polynomial factor, and the inequality degenerates to $b\ge2$ approached from
+below at finite $N$. So the validation is carried instead by the theorem in its
+original, fit-free form,
+\begin{equation}
+n_\wcc(N)\cdot D_{\max}(N)\;\ge\;2^N\qquad\text{for every }N,
+\label{eq:finite}
+\end{equation}
+an immediate corollary of the A1 sum rule involving no fitting anywhere.
+
+\begin{center}
+\fbox{\parbox{0.86\textwidth}{\centering
+\eqref{eq:finite} holds for \textbf{$256/256$ rules at every $N$}, and it is
+\emph{tight}: the smallest value of $n_\wcc D_{\max}/2^N$ anywhere in the sweep
+is exactly $1.0000$ (rule $0$ at $N=6$).}}
+\end{center}
+
+\subsection{Verdicts in the base plane}
+
+\begin{center}
+\iftable{tab_r9_verdicts_obc0.tex}
+\end{center}
+
+\noindent The base-plane check is built so that a wide uncertainty band can never
+launder a sub-$2$ product into a silent pass. Four things are recorded
+separately: the raw product, whether it falls below $2$ at all, whether the
+shortfall sits inside the propagated leave-one-out spread, and whether either
+series is sub-exponential so that the test is degenerate by construction. Every
+rule with $ab<2$ is listed in full, as the task requires.
+
+\begin{center}
+\iftable{tab_r9_below_obc0.tex}
+\end{center}
+
+\noindent \textbf{There are no violations.} All five remaining sub-$2$ rules
+($74$, $88$, $104$, $173$, $233$) have a \emph{polynomial} sector count --- for
+instance $W_{173}$ and $W_{88}$ both have $n_\wcc=3,3,4,4,4,5,5,5,6,6,6$, i.e.\
+$\sim N/2$ --- so $a=1$ and the degenerate form of \eqref{eq:hyper} demands
+$b\ge2$, which a finite-$N$ fit necessarily approaches from below
+($1.90$--$1.96$ here). Two further rules, $W_{90}$ and $W_{165}$, have genuinely
+irregular series ($n_\wcc=2,1,4,4,2,6,2,6,12,1,20$) that no growth law describes;
+they are classified \emph{irregular} and omitted from the base plane rather than
+placed at a fictitious coordinate.
+
+\subsection{Two bounds that the fitter needs and the theorem supplies}
+\label{sec:inconclusive}
+
+Since $1\le n_\wcc,D_{\max}\le 2^N$, both bases lie in $[1,2]$. A fit outside
+that window contradicts a theorem, so the theorem wins: $11$ descriptors were
+clamped, each recorded, never silently. The clamp is exactly what the binomial
+rules need --- $W_{134}$'s $D_{\max}$ is $924,1716,3003,6435,12870,24310$, i.e.\
+precisely rule $150$'s central binomials $\sim2^N/\sqrt N$, and the $M2$ fit
+lands at $2.0588$ because the $N^{-1/2}$ prefactor pulls the estimate past the
+boundary. Similarly a bounded integer series that has stopped changing is
+constant whatever the BIC says: $W_{36}$'s sector count is
+$9,9,10,10,\ldots,10$, which the unclamped fitter read as ``exponential with
+base $0.95$'' --- below $1$, and impossible for a count.
+
+\paragraph{The hyperbola as a predictor.} Read backwards, \eqref{eq:hyper} is
+sharper than the fit. At the $N\le11$ stage of this sweep the six rules $140$,
+$156$, $196$, $198$, $206$, $220$ all had an \emph{exact} $a=\varphi$ with a
+$D_{\max}$ series the BIC still called polynomial, so $ab=\varphi<2$; the theorem
+already forced $b\ge2/\varphi=1.2361$ while the fitted band topped out at
+$1.2369$, pinning the exponent to a window of width $10^{-3}$ before the data
+could resolve it. Carrying the sweep to $N=16$ confirmed the prediction: rule
+$156$ now reads $b=1.2554$ and $ab=2.0313$, \textbf{above} the curve, satisfying
+V3. (The expected $b=4^{1/5}=1.3195$ remains a little above the measured value;
+resolving that gap needs larger $N$ and is listed as an open item.)
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_sector_map_obc0.pdf}{\textwidth}
+\caption{\textbf{F1, sector map (both experiments).} Base $a$ of the sector
+count against base $b$ of the largest sector, all $256$ rules, \rt{obc0}. The
+solid curve is $ab=2$ and the shaded region below it is excluded by
+\eqref{eq:hyper}. Filled markers are exact bases (integer recurrence or
+analytic), hollow are fitted. Right panel: the sub-leading powers, with
+$\alpha=-1/2$ marking the binomial rules. These numbers are exact for the
+monitored \emph{and} the unmonitored dynamics.}
+\label{fig:f1}
+\end{figure}
+
+\section{Sectors against monitored attractors}
+\label{sec:contrast}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_monitored_map_obc0.pdf}{\textwidth}
+\caption{\textbf{F2, monitored attractor map (MONITORED only).} The same plane
+for terminal SCCs. The hyperbola is drawn only as a reference and the region
+below it is shaded to make the contrast with Fig.~\ref{fig:f1} explicit: rules
+may and do sit there, because terminal SCCs do not partition the basis. The
+deficit $2-a_\att b_\att$ is an observable, not a failure.}
+\label{fig:f2}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_sector_vs_attractor_obc0.pdf}{\textwidth}
+\caption{\textbf{F3, monitored structure inside one enclosure.} Left:
+$n_{\rm recurrent}/n_\wcc$ at the largest $N$ reached, against the sector base.
+Right: the monitored transient fraction against $D_{\max}^\wcc/2^N$. The
+attractor counts are monitored; the sector quantities are not.}
+\label{fig:f3}
+\end{figure}
+
+\begin{center}
+\iftable{tab_r9_transient_obc0.tex}
+\end{center}
+
+\section{Rule 150's wall charge survives six dissipative rules}
+\label{sec:r150family}
+
+The sector axis makes a comparison possible that the attractor axis could not,
+and it turns up an exact coincidence. Consider the nine rules of the form
+\rt{I}$\,\cdot\,\cdot\,$\rt{I}, i.e.\ those where a site is inert unless its two
+neighbours differ. Seven of them --- including six \emph{dissipative} ones ---
+have \textbf{exactly} rule $150$'s sector-size multiset, at every
+$N=6\ldots16$:
+
+\begin{center}
+\begin{tabular}{llc}
+\toprule
+rule & tuple & sector multiset $=$ that of $W_{150}$ \\
+\midrule
+$134$ & \rt{IVDI} & \cmark \\
+$142$ & \rt{IEDI} & \cmark \\
+$148$ & \rt{IDVI} & \cmark \\
+$150$ & \rt{IVVI} & --- (unitary reference) \\
+$158$ & \rt{IEVI} & \cmark \\
+$212$ & \rt{IDEI} & \cmark \\
+$214$ & \rt{IVEI} & \cmark \\
+$132$ & \rt{IDDI} & \xmark\ ($n_\wcc=2584$, $D_{\max}=322$ at $N=16$) \\
+$222$ & \rt{IEEI} & \xmark\ ($n_\wcc=988$, $D_{\max}=686$ at $N=16$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent So the domain-wall charge of R8 --- $|S_w|=\binom{N+1}{w}$ on even $w$,
+$\lfloor(N+1)/2\rfloor+1$ sectors --- is not a property of unitarity at all. It
+survives replacing \emph{either or both} Hadamards by a reset, and the two
+exceptions are precisely the rules whose two active symbols are the \emph{same}
+reset type (\rt{DD} or \rt{EE}). This is the sector-level counterpart of the
+Tier-2 observation (R-T13) that $W_{148}$ and $W_{134}$ inherit an exact
+decoherence-free subspace of dimension $\lfloor(N+1)/2\rfloor+1$, which is
+exactly C150's sector count: here the whole multiset, not just its cardinality,
+is shown to agree, and for six rules rather than two.
+
+\paragraph{A conjecture that fails.} The obvious generalisation --- that the
+sector partition depends only on which of the four symbols are \rt{I}, since
+\rt{V}, \rt{D} and \rt{E} all generate the same \emph{undirected} flip edge
+$x\leftrightarrow x\oplus2^i$ --- is \textbf{false}. Grouping all $256$ rules by
+their \rt{I}-pattern gives $16$ groups, and only three collapse to a single
+sector signature: $\{140,156,220\}$, $\{196,198,206\}$ and the singleton
+$\{204\}$. (Those first two are exactly the $\varphi$ families of
+\S\ref{sec:inconclusive}, which is why all six share $a=\varphi$.) The reason the
+argument fails is the brick-wall composition: the odd-layer symbol is read off
+the \emph{post-even-layer} state, and a \rt{V} leaves a branch supported on both
+values of the flipped bit where a \rt{D} or \rt{E} leaves only one, so the
+downstream firing pattern differs even though the single-site undirected edge
+does not.
+
+\section{Growth classes and exact bases}
+\label{sec:growth}
+
+\begin{center}
+\iftable{tab_r9_classes_obc0.tex}
+\end{center}
+
+\begin{center}
+\iftable{tab_r9_exact_obc0.tex}
+\end{center}
+
+\section{Basins, and a gap in the Tier-1a archive}
+\label{sec:basins}
+
+Basins are a \textbf{monitored} observable throughout this section.
+
+The sum rule $\sum_k|\text{basin}_k|+|\text{shared}|=2^N$ turned out to be
+\emph{unanswerable} for $76$ \rt{obc0} units. The cause is a schema gap rather
+than a physics failure: Tier 1a caps \fn{sizes\_basins} at $2048$ entries and,
+unlike \fn{sizes\_recurrent}, never stored a basin histogram, so for a unit
+whose basin list hit the cap the multiset is genuinely lost. Every one of the
+$76$ failures is a truncated record and no untruncated record fails.
+
+Asserting the check away would have hidden a real gap. Instead those units were
+recomputed from the rule definition and stored alongside, in
+\fn{results\_basins/}, this time \emph{with} the histogram, and cross-checked
+against the Tier-1a fields that did survive (\fn{n\_scc}, \fn{n\_recurrent},
+\fn{shared\_basin\_size}, \fn{transient\_depth}).
+
+\begin{center}
+\iftable{tab_r9_basins_obc0.tex}
+\end{center}
+
+\noindent \textbf{The gap is closed}: no unit remains truncated-and-unrecomputed.
+The checks that are still unavailable are unavailable for reasons that are not
+defects. Fifty-six of them are units where the Tier-1a Tarjan pass took its
+ergodic early exit and so never computed basins at all --- there the check is
+\emph{undefined}, not missing. The remaining twenty-five are the $N=17$--$18$
+units of the targeted extension, which lie beyond where the Tier-1a sweep ever
+ran; the sector quantities there are complete, only the monitored basin
+comparison has nothing to compare against.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_basins_obc0.pdf}{\textwidth}
+\caption{\textbf{F4, basin structure (MONITORED).} Largest basin, shared basin
+and transient fraction against $N$ for selected rules. Two things to read off.
+The shared basin is \emph{identically zero} for every rule shown: each transient
+state funnels to a unique terminal SCC, so the basins alone already partition the
+transient part and no state is ambiguous between attractors. And the two unitary
+rules ($156$, $201$) sit at transient fraction $0$ by construction --- every state
+is recurrent --- which is the cleanest illustration of why the transient fraction
+is a monitored quantity and not a sector one. Tier 1d's certificate T3 gives
+certified zeros for the \emph{unmonitored} basins of the V-free rules, so for
+those $80$ rules the monitored and channel populations coincide and these curves
+are channel-exact; for the rest they are monitored-only.}
+\label{fig:f4}
+\end{figure}
+
+\section{Validation}
+\label{sec:valid}
+
+\begin{center}
+\iftable{tab_r9_validation_obc0.tex}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_validation_obc0.pdf}{\textwidth}
+\caption{\textbf{F5, validation panel.} Left: distribution of the hyperbola
+margin $ab-2$. Right: pass rates for the sum rule A1 (residual identically
+zero), the unitary agreement A2, and the monitored basin sum rule.}
+\label{fig:f5}
+\end{figure}
+
+\noindent On the cross-tier assertions: A2 (for unitary rules, $n_\wcc=
+n_{\rm recurrent}=n_{\rm scc}$ with identical size multisets) holds wherever
+both records exist. A3 ($n_\wcc\le n_{\rm scc}$) is structural and holds
+throughout. A4 is asserted only in the direction that is actually true --- every
+sector contains at least one terminal SCC, hence $n_{\rm recurrent}\ge n_\wcc$;
+the reverse bound is false in general and is not asserted.
+
+\section{Comparison hooks for Tier 2}
+\label{sec:hooks}
+
+The numbers the wall grammar has to reproduce, in order of how sharply they
+discriminate:
+
+\begin{enumerate}
+\item \textbf{Rule 28's plastic number.} Equation~\eqref{eq:r28} and
+  $\rho=1.32472$, exact. The transparency argument that predicted $\varphi$ is
+  wrong; a correct grammar must explain why one reset symbol takes
+  $\varphi\to\rho$, i.e.\ why $x^2=x+1$ becomes $x^3=x+1$.
+\item \textbf{The $\varphi$ family.} $140$, $156$, $196$, $198$, $206$, $220$ all
+  have $a=\varphi$ exactly at \rt{obc0}; the grammar should say why these six and
+  no others, and should predict $b$, which the hyperbola confines to
+  $[1.2361,1.2369]$.
+\item \textbf{The exact-base census} of \S\ref{sec:growth}: every rule whose
+  sector count satisfies an integer recurrence, with the recurrence.
+\item \textbf{The on-curve population.} $189$ of $256$ rules sit at $ab=2$
+  exactly, i.e.\ their sector sizes are all comparable. Which symbol tables force
+  that is a grammar question.
+\item \textbf{Rule 150's family} (\S\ref{sec:r150family}). The wall charge is
+  shared by six dissipative rules and broken by exactly two, \rt{IDDI} and
+  \rt{IEEI}. A grammar that produces the domain-wall counting should say why the
+  same-reset-type pair is the one that breaks it.
+\end{enumerate}
+
+\section{Open items}
+
+\begin{enumerate}
+\item \textbf{\rt{pbc}.} This report is \rt{obc0} only, by instruction. The ring
+  is a separate report; note that rule $156$'s Lucas law and rule $22$'s
+  attractor count are \rt{pbc} statements already verified here in passing.
+\item \textbf{Higher $N$ for the $\varphi$ family.} $N\le16$ gives rule $156$
+  $b=1.2554$ against the expected $4^{1/5}=1.3195$; the theorem floor is
+  $2/\varphi=1.2361$. Settling whether the true value is $4^{1/5}$ needs larger
+  $N$ than this sweep reached.
+\item \textbf{$W_{90}$ and $W_{165}$} (both \rt{DEED}/\rt{EDDE}) have irregular
+  sector counts that no growth law fits. Their structure is presumably
+  number-theoretic in $N$; nothing in the engine is wrong (A1 holds exactly), but
+  they have no place in a base plane.
+\item \textbf{The five polynomial-sector rules} $74$, $88$, $104$, $173$, $233$:
+  confirm $b=2$ directly rather than through a fit, e.g.\ by showing
+  $D_{\max}/2^N$ is bounded below.
+\item \textbf{A basin histogram in the Tier-1a schema}, so the gap of
+  \S\ref{sec:basins} cannot recur for future units.
+\end{enumerate}
+
+\section{Reproduce}
+
+\begin{verbatim}
+# the sector sweep (N in the outer loop: uniform coverage if stopped early)
+python -m qca_fragmentation.wcc_sweep --which all --bc obc0 \
+       --n-min 6 --n-max 16 --no-stop-on-ergodic --order n
+
+# a single rule
+python -m qca_fragmentation.run_rule --rule 156 --N 6-16 --bc obc0 --tier wcc
+
+# recompute the basin units the Tier-1a archive cannot answer
+python -m qca_fragmentation.basin_recompute --bc obc0
+
+# descriptors + hyperbola, then tables and figures F1-F5
+python -m qca_fragmentation.scaling.sectors      --bc obc0
+python -m qca_fragmentation.scaling.r9_tables    --bc obc0
+python -m qca_fragmentation.scaling.sector_figure --bc obc0 --rebuild
+
+python -m pytest qca_fragmentation/tests -q
+\end{verbatim}
+
+\begin{sloppypar}
+Data: \fn{results\_tier1e/\{rule\}\_\{bc\}.jsonl} (one record per unit with the
+full sector-size histogram, the derived observables and the A2--A4 check
+results), \fn{results\_basins/\{rule\}\_\{bc\}.jsonl} (the independent basin
+recomputation), \fn{analytics/sector\_map\_obc0.json} (per-rule descriptors,
+hyperbola verdicts and attractor deficits),
+\fn{analytics/sector\_validation\_obc0.json}, and
+\fn{checkpoints/manifest.jsonl} for the audit trail.
+\end{sloppypar}
+
+\end{document}

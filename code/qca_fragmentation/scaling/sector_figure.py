@@ -68,7 +68,12 @@ def _jitter(rule, s=0.005):
 
 def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
     d = data or sectors.load(bc) or sectors.build(bc)
-    pts = d["points"]
+    # irregular series have no base and cannot be placed in this plane; they are
+    # counted in the title rather than plotted at a fictitious coordinate
+    pts = [p for p in d["points"]
+           if p["n_wcc"]["base"] is not None
+           and p["d_max_wcc"]["base"] is not None]
+    n_irr = len(d["points"]) - len(pts)
     fig, axes = plt.subplots(1, 2, figsize=(12.4, 5.2),
                              gridspec_kw={"width_ratios": [1.35, 1]})
     ax = axes[0]
@@ -91,7 +96,9 @@ def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
     ax.set_xlabel(r"base $a$ of $\#$sectors ($n_{\rm wcc}\sim a^N$)")
     ax.set_ylabel(r"base $b$ of $D_{\max}$ ($\sim b^N$)")
     ax.set_title(f"F1  sector map, {len(pts)} rules ({bc}) — "
-                 r"exact for BOTH experiments", fontsize=10)
+                 f"exact for BOTH experiments"
+                 + (f"; {n_irr} irregular omitted" if n_irr else ""),
+                 fontsize=10)
     hs = [plt.Line2D([], [], marker="o", ls="", color=FAMILY_COLOUR[k],
                      label=FAMILY_LABEL[k]) for k in FAMILY_COLOUR]
     hs.append(plt.Line2D([], [], color="k", lw=1.2, label=r"$ab=2$"))
@@ -106,6 +113,8 @@ def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
         c = FAMILY_COLOUR[p["family"]]
         ax2.scatter(p["n_wcc"]["alpha"], p["d_max_wcc"]["alpha"], s=26,
                     facecolor=c, edgecolor="none", alpha=0.6, zorder=3)
+    ax2.set_xlim(-2.2, 2.2)
+    ax2.set_ylim(-3.2, 5.2)
     ax2.axhline(-0.5, color=MUTED, ls=":", lw=0.8)
     ax2.annotate(r"$\alpha=-1/2$ (binomial)", (0.02, -0.5), fontsize=7,
                  color=TEXT, textcoords="offset points", xytext=(0, 4))
@@ -151,7 +160,8 @@ def fig_monitored_map(bc: str, out: str, data: Optional[Dict] = None):
 
 def fig_sector_vs_attractor(bc: str, out: str, data: Optional[Dict] = None):
     d = data or sectors.load(bc) or sectors.build(bc)
-    pts = [p for p in d["points"] if p["att_per_sector_at_Nmax"]]
+    pts = [p for p in d["points"] if p["att_per_sector_at_Nmax"]
+           and p["n_wcc"]["base"] is not None]
     fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.8))
     ax = axes[0]
     _style(ax)
@@ -265,7 +275,8 @@ def validation_stats(bc: str, data: Optional[Dict] = None) -> Dict:
                 basin_bad += 1
             else:
                 basin_unknown += 1
-    margins = [c["margin"] for c in d["hyperbola"]]
+    # irregular rules have no base and therefore no margin
+    margins = [c["margin"] for c in d["hyperbola"] if c["margin"] is not None]
     return {"bc": bc, "n_units": len(sums),
             "sum_rule_max_abs_residual": max(abs(s) for s in sums) if sums else 0,
             "a2_ok": a2_ok, "a2_total": a2_tot,
@@ -302,8 +313,9 @@ def fig_validation(bc: str, out: str, data: Optional[Dict] = None):
         ax.text(i, 100 * v / t + 1.5, f"{v}/{t}", ha="center", fontsize=8)
     ax.set_ylim(0, 112)
     ax.set_ylabel("% passing")
-    ax.set_title(f"F5b  validation ({st['basin_unknown']} basin checks still "
-                 f"unavailable)", fontsize=10)
+    ax.set_title(f"F5b  validation ({st['basin_unknown']} basin checks "
+                 f"undefined: ergodic units, or $N$ beyond Tier 1a)",
+                 fontsize=9.5)
     fig.tight_layout()
     for p_ in (out, out.replace(".pdf", ".png")):
         fig.savefig(p_, dpi=150, bbox_inches="tight")
