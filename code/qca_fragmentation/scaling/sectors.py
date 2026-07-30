@@ -50,6 +50,23 @@ ANALYTIC: Dict[Tuple[int, str], Dict[str, Tuple[float, float, str]]] = {
                     "d_max_wcc": (2.0, -0.5, "R8: central binomial")},
 }
 
+# R2 sec.3 derives the D_max base of rule 156/198 from theory rather than data,
+# and insists it stay that way.  Writing the chain as "rooms" of length l between
+# domain walls, a room contributes l+1 states and consumes l+2 sites, so
+# D_max = b^N with b(l) = (l+1)^{1/(l+2)}; the saddle point ln x = 1 + 1/x
+# (x = l+1) sits at l ~ 2.5911, whose two integer neighbours are exactly the two
+# candidate bases 3^{1/4} = 1.31607 and 4^{1/5} = 1.31951.  They differ by 0.26%
+# and no finite series can choose between them -- the derivation does, and picks
+# the larger.  At finite N the largest sector is a MIXTURE of rooms of length 2
+# and 3, which is why neither pure recurrence is exact over the computed range.
+#
+# All six rules below share the identical WCC D_max series
+# 6,9,12,16,20,27,36,48,64,81,108 (N=6..16), so the derivation covers all of them.
+_ROOM_BASE = 4 ** 0.2
+for _r in (140, 156, 196, 198, 206, 220):
+    ANALYTIC.setdefault((_r, "obc0"), {})["d_max_wcc"] = (
+        _ROOM_BASE, -0.5, "R2 sec.3: room-packing saddle point, $4^{1/5}$")
+
 
 #: Largest N reached for EVERY rule.  The headline map fits inside this uniform
 #: window so the bases are comparable across the whole rule space; rules that
@@ -161,19 +178,39 @@ def _saturated(ys: List[int], tail: int = 4) -> bool:
     return len(ys) >= tail + 1 and len(set(ys[-tail:])) == 1
 
 
-def _volume_fraction_base(Ns: List[int], ys: List[int],
-                          tail: int = 4, thresh: float = 0.9):
+def _volume_fraction_base(Ns: List[int], ys: List[int], tail: int = 6):
     """
-    If D_max(N)/2^N stays bounded away from zero, the base is EXACTLY 2 -- no fit
-    can improve on that, and a fitted 1.64 (W36) or 2.06 (W134) is simply wrong.
-    Returns (base, alpha, source) or None.
+    Decide whether D_max = c * 2^N * N^alpha, i.e.\\ whether the base is EXACTLY 2
+    with a POWER-LAW prefactor, by asking which model explains the residual
+    r(N) = D_max/2^N better: a power of N or an exponential in N.
+
+    This is the other half of R2 sec.3's warning.  There the trap was that M2's
+    alpha*ln N absorbs growth and biases kappa DOWNWARD for rule 156; here the
+    two-parameter fit has no alpha to absorb an N^{-1/2} prefactor, so it biases
+    the base downward for the binomial rules instead -- W134's D_max is exactly
+    rule 150's central binomials, base 2 with alpha = -1/2, and the pure
+    exponential fit reports 1.9244.  Neither fit is trustworthy on its own; the
+    discriminating question is the shape of the prefactor.
+
+    Returns (2.0, alpha, source) when the power-law model wins, else None.
     """
-    if len(ys) < tail:
+    import numpy as np
+    if len(ys) < tail or any(y <= 0 for y in ys):
         return None
-    r = [y / (1 << N) for N, y in zip(Ns, ys)][-tail:]
-    if min(r) >= thresh:
-        return (2.0, 0.0, f"$D_{{\\max}}/2^N \\geq {thresh}$ over the last "
-                          f"{tail} sizes")
+    n = np.asarray(Ns[-tail:], float)
+    r = np.log([y / (1 << N) for N, y in zip(Ns, ys)][-tail:])
+
+    def rss(x):
+        A = np.column_stack([np.ones_like(x), x])
+        beta, res, *_ = np.linalg.lstsq(A, r, rcond=None)
+        pred = A @ beta
+        return float(((r - pred) ** 2).sum()), beta
+
+    rss_pow, beta_pow = rss(np.log(n))      # r = c + alpha ln N  -> base 2
+    rss_exp, _ = rss(n)                      # r = c + kappa N     -> base != 2
+    if rss_pow < rss_exp:
+        return (2.0, float(beta_pow[1]),
+                r"$D_{\max}/2^N$ is a power of $N$, so the base is exactly $2$")
     return None
 
 
@@ -215,7 +252,16 @@ def series_descriptor(rule: int, bc: str, key: str,
     elif model == "M1":
         base, alpha = 1.0, float(f["params"]["M1"][1])
     else:
-        base, alpha = float(f["base"] or 1.0), float(f["alpha_M2"] or 0.0)
+        # R2 sec.3, "a second, purely numerical trap": M2's alpha*ln N term
+        # absorbs part of the growth, so its kappa is a BIASED rate estimator --
+        # for rule 156 it reports 1.2554 against a true 4^{1/5} = 1.3195.  M2 is
+        # the right tool for the growth CLASS and for the sub-leading power, but
+        # the RATE must come from the two-parameter fit ln y = c + kappa N (or
+        # from an exact recurrence, handled below).
+        alpha = float(f["alpha_M2"] or 0.0)
+        fe = fit_pure_exponential(Ns, ys)
+        base = (float(fe["base"]) if fe.get("ok")
+                else float(f["base"] or 1.0))
 
     lo = hi = None
     if f.get("kappa_loo_range"):

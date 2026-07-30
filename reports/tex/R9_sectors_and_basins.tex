@@ -253,8 +253,9 @@ observable.
 \end{center}
 
 \noindent Rules $204$, $51$ and $150$ sit on the curve to six decimals, as they
-must. Rule $156$ is the interesting case and is discussed in
-\S\ref{sec:inconclusive}.
+must, and rule $156$ sits above it at exactly $\varphi\cdot4^{1/5}=2.1350$. How
+the rate behind that number is obtained --- and why it must not be read off a
+BIC fit --- is \S\ref{sec:rates}.
 
 \subsection{The check that carries the validation}
 
@@ -294,15 +295,46 @@ rule with $ab<2$ is listed in full, as the task requires.
 \iftable{tab_r9_below_obc0.tex}
 \end{center}
 
-\noindent \textbf{There are no violations.} All five remaining sub-$2$ rules
-($74$, $88$, $104$, $173$, $233$) have a \emph{polynomial} sector count --- for
-instance $W_{173}$ and $W_{88}$ both have $n_\wcc=3,3,4,4,4,5,5,5,6,6,6$, i.e.\
-$\sim N/2$ --- so $a=1$ and the degenerate form of \eqref{eq:hyper} demands
-$b\ge2$, which a finite-$N$ fit necessarily approaches from below
-($1.90$--$1.96$ here). Two further rules, $W_{90}$ and $W_{165}$, have genuinely
-irregular series ($n_\wcc=2,1,4,4,2,6,2,6,12,1,20$) that no growth law describes;
-they are classified \emph{irregular} and omitted from the base plane rather than
-placed at a fictitious coordinate.
+\noindent \textbf{There are no violations.} Every remaining sub-$2$ rule
+($6$, $14$, $20$, $74$, $84$, $88$, $229$) has a \emph{polynomial} sector count
+--- for instance $W_{88}$ has $n_\wcc=3,3,4,4,4,5,5,5,6,6,6$, i.e.\ $\sim N/2$ ---
+so $a=1$, and the degenerate form of \eqref{eq:hyper} demands $b\ge2$, which a
+finite-$N$ fit necessarily approaches from below ($1.92$--$1.94$ here). Their
+$D_{\max}/2^N$ decays slowly enough to be consistent with a power-law prefactor
+but not cleanly enough for the test of \S\ref{sec:rates} to certify it; the
+theorem, not the fit, gives their base. Two further rules, $W_{90}$ and
+$W_{165}$, have genuinely irregular series
+($n_\wcc=2,1,4,4,2,6,2,6,12,1,20$) that no growth law describes; they are
+classified \emph{irregular} and omitted from the base plane rather than placed at
+a fictitious coordinate.
+
+\subsection{Where the rate estimate comes from}
+\label{sec:rates}
+
+R2~\S3 already documented the trap that this sweep first walked into, and it is
+worth restating because it decides four of the numbers above. The BIC model
+$\ln y=c+\alpha\ln N+\kappa N$ is the right tool for the growth \emph{class} and
+for the sub-leading power, but its $\alpha\ln N$ term absorbs part of the growth,
+so $\kappa$ is a \emph{biased} rate estimator. On rule $156$'s $D_{\max}$ it
+returns $b=1.2554$ against a true $4^{1/5}=1.31951$ --- far enough off to look
+like a different constant, which is exactly how it first appeared here. Rates are
+therefore taken, in order of priority:
+
+\begin{enumerate}
+\item from an \textbf{exact integer recurrence} where one exists;
+\item from an \textbf{analytic derivation} where R2 or R8 supplies one;
+\item otherwise from the \textbf{two-parameter fit} $\ln y=c+\kappa N$, which
+  cannot trade rate against power.
+\end{enumerate}
+
+\noindent The two-parameter fit has the mirror-image bias, and the binomial rules
+expose it: with no $\alpha$ to absorb an $N^{-1/2}$ prefactor it pushes the base
+\emph{below} $2$ ($1.9244$ for $W_{134}$, whose $D_{\max}$ is exactly rule $150$'s
+central binomials). Neither fit is trustworthy alone, so the discriminating
+question is asked directly --- is the residual $D_{\max}/2^N$ better explained by
+a power of $N$ or by an exponential in $N$? When the power wins, the base is
+exactly $2$ and $\alpha$ comes from that fit. That recovers $b=2$ for the whole
+binomial family and puts them on the curve beside rule $150$.
 
 \subsection{Two bounds that the fitter needs and the theorem supplies}
 \label{sec:inconclusive}
@@ -319,15 +351,21 @@ $9,9,10,10,\ldots,10$, which the unclamped fitter read as ``exponential with
 base $0.95$'' --- below $1$, and impossible for a count.
 
 \paragraph{The hyperbola as a predictor.} Read backwards, \eqref{eq:hyper} is
-sharper than the fit. At the $N\le11$ stage of this sweep the six rules $140$,
-$156$, $196$, $198$, $206$, $220$ all had an \emph{exact} $a=\varphi$ with a
-$D_{\max}$ series the BIC still called polynomial, so $ab=\varphi<2$; the theorem
-already forced $b\ge2/\varphi=1.2361$ while the fitted band topped out at
-$1.2369$, pinning the exponent to a window of width $10^{-3}$ before the data
-could resolve it. Carrying the sweep to $N=16$ confirmed the prediction: rule
-$156$ now reads $b=1.2554$ and $ab=2.0313$, \textbf{above} the curve, satisfying
-V3. (The expected $b=4^{1/5}=1.3195$ remains a little above the measured value;
-resolving that gap needs larger $N$ and is listed as an open item.)
+sharper than any fit, and it called the answer here before the data could. At the
+$N\le11$ stage the six rules $140$, $156$, $196$, $198$, $206$, $220$ all had an
+\emph{exact} $a=\varphi$ with a $D_{\max}$ series still classified polynomial, so
+$ab=\varphi<2$; the theorem already forced $b\ge2/\varphi=1.2361$. With the rate
+taken as \S\ref{sec:rates} requires, all six now sit at
+\begin{equation}
+a\,b\;=\;\varphi\cdot4^{1/5}\;=\;1.61803\times1.31951\;=\;2.1350 ,
+\end{equation}
+which is exactly the value V3 asks for --- \textbf{above} the curve, with $a$ from
+an exact Fibonacci recurrence and $b$ from R2~\S3's room-packing saddle point
+rather than from either fit. The six share one $D_{\max}$ series,
+$6,9,12,16,20,27,36,48,64,81,108$ over $N=6\ldots16$, so the derivation covers all
+of them; the two candidate bases $3^{1/4}=1.31607$ and $4^{1/5}=1.31951$ differ by
+$0.26\%$ and no finite series can separate them, which is precisely why the base
+is taken from theory.
 
 \begin{figure}[htbp]
 \centering
@@ -536,10 +574,10 @@ discriminate:
 \item \textbf{\rt{pbc}.} This report is \rt{obc0} only, by instruction. The ring
   is a separate report; note that rule $156$'s Lucas law and rule $22$'s
   attractor count are \rt{pbc} statements already verified here in passing.
-\item \textbf{Higher $N$ for the $\varphi$ family.} $N\le16$ gives rule $156$
-  $b=1.2554$ against the expected $4^{1/5}=1.3195$; the theorem floor is
-  $2/\varphi=1.2361$. Settling whether the true value is $4^{1/5}$ needs larger
-  $N$ than this sweep reached.
+\item \textbf{Separating $3^{1/4}$ from $4^{1/5}$ empirically} for the $\varphi$
+  family. R2~\S3 settles it by derivation and this report follows that; the two
+  candidates differ by $0.26\%$, so confirming it from data alone would need far
+  more than the eleven sizes available here.
 \item \textbf{$W_{90}$ and $W_{165}$} (both \rt{DEED}/\rt{EDDE}) have irregular
   sector counts that no growth law fits. Their structure is presumably
   number-theoretic in $N$; nothing in the engine is wrong (A1 holds exactly), but

@@ -312,6 +312,70 @@ def test_finite_hyperbola_is_tight_for_the_identity_rule():
         assert r.n_wcc * r.d_max_wcc == (1 << N)
 
 
+# --- R2 sec.3: the rate must not come from the M2 fit ------------------------
+
+_PHI_FAMILY = [140, 156, 196, 198, 206, 220]
+_R2_DMAX = [6, 9, 12, 16, 20, 27, 36, 48, 64, 81, 108]      # N = 6..16
+
+
+@pytest.mark.parametrize("rule", _PHI_FAMILY)
+def test_phi_family_shares_the_r2_dmax_series(rule):
+    """All six carry the series R2 sec.3 derives the base of, so the
+    room-packing derivation covers all of them."""
+    from qca_fragmentation.scaling import sectors
+    s = sectors.load_series(rule, "obc0", 16)
+    if len(s["N"]) < len(_R2_DMAX):
+        pytest.skip("sweep has not reached N=16 for this rule")
+    assert s["d_max_wcc"] == _R2_DMAX
+
+
+def test_m2_rate_is_biased_and_is_not_used():
+    """
+    R2 sec.3's "purely numerical trap": M2's alpha*ln N absorbs growth, so its
+    kappa understates the rate.  The descriptor must not report it.
+    """
+    from qca_fragmentation.scaling import sectors
+    from qca_fragmentation.scaling.fits import fit_series
+    s = sectors.load_series(156, "obc0", 16)
+    if len(s["N"]) < len(_R2_DMAX):
+        pytest.skip("sweep has not reached N=16")
+    m2 = fit_series(s["N"], s["d_max_wcc"])["base"]
+    assert m2 < 1.28                      # the biased estimate
+    d = sectors.series_descriptor(156, "obc0", "d_max_wcc",
+                                  s["N"], s["d_max_wcc"])
+    assert d["base"] == pytest.approx(4 ** 0.2, abs=1e-9)
+    assert "R2" in d["source"]
+
+
+def test_rule_156_sits_at_phi_times_4_to_the_fifth():
+    """V3: the anchor that must lie ABOVE the curve, at phi * 4^(1/5)."""
+    from qca_fragmentation.scaling import sectors
+    s = sectors.load_series(156, "obc0", 16)
+    if len(s["N"]) < len(_R2_DMAX):
+        pytest.skip("sweep has not reached N=16")
+    p = sectors.rule_point(156, "obc0", 16)
+    assert p["n_wcc"]["base"] == pytest.approx(PHI, abs=1e-9)
+    assert p["n_wcc"]["exact"]
+    assert p["d_max_wcc"]["base"] == pytest.approx(4 ** 0.2, abs=1e-9)
+    assert p["product_ab"] == pytest.approx(PHI * 4 ** 0.2, abs=1e-9)
+    assert sectors.hyperbola_check(p)["verdict"] == "above"
+
+
+def test_binomial_rules_get_base_two_not_the_undershoot():
+    """The mirror bias: the two-parameter fit has no alpha to absorb the
+    N^{-1/2} prefactor and reports ~1.92 for W134, whose D_max is exactly rule
+    150's central binomials.  The power-law-prefactor test must recover 2."""
+    from qca_fragmentation.scaling import sectors
+    for rule in (134, 142, 148, 158, 212, 214):
+        s = sectors.load_series(rule, "obc0", 16)
+        if len(s["N"]) < 8:
+            pytest.skip("sweep too short")
+        d = sectors.series_descriptor(rule, "obc0", "d_max_wcc",
+                                      s["N"], s["d_max_wcc"])
+        assert d["base"] == pytest.approx(2.0, abs=1e-9), (rule, d)
+        assert d["alpha"] < 0.0           # a decaying prefactor
+
+
 # --- record schema ------------------------------------------------------------
 
 def test_wcc_record_roundtrip_and_derived_fields():
