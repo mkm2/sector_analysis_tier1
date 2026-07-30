@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 589 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 591 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -310,6 +310,27 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      unitary rule space, and is a destination reachable both directly (60, 102)
      and as a dissipative degradation of phi-fragmentation (110, 124, 188, 230
      from 108, 156, 198). This corrects their earlier filing beside 150/105.
+   - **NAMING CORRECTION: do not say "phi-fragmented" (R9 sec.6.2a).** Wrong on
+     two counts, both easy to fall into again:
+       * ACROSS rules phi changes role. 156/198: n_wcc = 21,34,55,89,... is
+         FIBONACCI (coeffs [1,1]), so phi is the base of the sector COUNT; their
+         D_max = 6,9,12,16,20,27,... has NO integer recurrence and its base
+         4^(1/5) comes from R2 sec.3's room-packing saddle point.
+         108/201: n_wcc = 37,65,114,200,... has coeffs [2,-1,1], base 1.754878 =
+         root of x^3 = 2x^2 - x + 1; their D_max = 8,13,21,34,55,... IS Fibonacci,
+         so for THIS pair phi is the base of the largest sector SIZE.
+       * WITHIN one rule the two quantities obey unrelated laws (Fibonacci word
+         count vs a saddle-point optimisation over room length), so no single
+         constant names "the fragmentation" of a rule.
+     Use "the four exponentially fragmented parents" and always quote a base
+     together with its observable. (a,b): 156/198 = (phi, 4^(1/5)), ab=2.1350;
+     108/201 = (1.75488, phi), ab=2.8394 -- both above the curve but for
+     different reasons, the first pair by having many sectors, the second by
+     having large ones.
+   - **The "reset raises the degree" claim holds only for the Fibonacci-count
+     pair.** 156/198 count by x^2=x+1 and their rho children by x^3=x+1 (degree
+     up); 201/108 already count by a cubic and their psi children stay cubic
+     (x^3=x^2+1). No single statement covers all eight.
    - **pbc: DO NOT START the sweep yet** -- the user has further caveats to give
      first (2026-07-30). Held items for that report: the frontier-vs-bulk
      question, the 8 exponential rules' boundary robustness, 156-pbc Lucas and

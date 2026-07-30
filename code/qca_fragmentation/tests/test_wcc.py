@@ -693,3 +693,46 @@ def test_wall_charge_survives_the_ring_with_r8_closed_form():
     for N in range(6, 14):
         want = N // 2 + 3 if N % 2 == 0 else (N + 3) // 2
         assert wcc.weak_components(150, N, "pbc").n_wcc == want, N
+
+
+# --- which constant describes what (R9 sec.6.2a) ------------------------------
+
+def test_phi_plays_different_roles_in_the_two_parent_pairs():
+    """
+    Why "phi-fragmented" is the wrong label for the four structured parents:
+    for 156/198 phi is the base of the sector COUNT (Fibonacci-many sectors),
+    for 108/201 it is the base of the largest sector SIZE, while their count
+    grows as the root of x^3 = 2x^2 - x + 1.
+    """
+    from qca_fragmentation.scaling import sectors
+    for rule in (156, 198):
+        s = sectors.load_series(rule, "obc0", 16)
+        rn = find_integer_recurrence(s["n_wcc"])
+        assert rn["ok"] and rn["coeffs"] == [1, 1]           # Fibonacci count
+        assert rn["base"] == pytest.approx(PHI, abs=1e-9)
+        # and D_max is NOT a recurrence: its base comes from theory (R2 sec.3)
+        assert not find_integer_recurrence(s["d_max_wcc"]).get("ok")
+    for rule in (108, 201):
+        s = sectors.load_series(rule, "obc0", 16)
+        rn = find_integer_recurrence(s["n_wcc"])
+        assert rn["ok"] and rn["coeffs"] == [2, -1, 1]
+        assert rn["base"] == pytest.approx(1.7548776662, abs=1e-6)
+        rd = find_integer_recurrence(s["d_max_wcc"])
+        assert rd["ok"] and rd["coeffs"] == [1, 1]           # Fibonacci SIZE
+        assert rd["base"] == pytest.approx(PHI, abs=1e-9)
+
+
+def test_the_degree_raising_pattern_holds_only_for_the_fibonacci_count_pair():
+    """
+    156/198 count by x^2 = x+1 and their rho children by x^3 = x+1: degree up.
+    201/108 already count by a cubic, and their psi children stay cubic
+    (x^3 = x^2+1): degree unchanged.  So no single statement covers all eight.
+    """
+    assert rules.coherent_parent(28) == 156
+    assert rules.coherent_parent(70) == 198
+    assert rules.coherent_parent(73) == 201
+    assert rules.coherent_parent(109) == 108
+    # rho and psi are both cubic; phi is quadratic
+    assert PLASTIC_ ** 3 == pytest.approx(PLASTIC_ + 1, abs=1e-12)
+    assert SUPERGOLDEN ** 3 == pytest.approx(SUPERGOLDEN ** 2 + 1, abs=1e-12)
+    assert PHI ** 2 == pytest.approx(PHI + 1, abs=1e-12)

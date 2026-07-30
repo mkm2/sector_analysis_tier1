@@ -548,10 +548,14 @@ The structure of the list is tidier than the selection deserves:
 \item The bases are \textbf{exact algebraic numbers}, from integer recurrences,
   for six of the eight: the \textbf{plastic number} $\rho=1.32472$, the real root
   of $x^3=x+1$, for $28$, $70$, $157$, $199$; and the \textbf{supergolden ratio}
-  $\psi=1.46557$, the real root of $x^3=x^2+1$, for $73$ and $109$. Note the
-  parents' bases are $\varphi$ (root of $x^2=x+1$) and $\psi_{201}=1.75488$: the
-  reset raises the order of the characteristic polynomial rather than perturbing
-  the root.
+  $\psi=1.46557$, the real root of $x^3=x^2+1$, for $73$ and $109$. For the four
+  $\rho$ rules the reset \emph{raises the degree} of the characteristic
+  polynomial: their parents $156$ and $198$ count sectors by
+  $x^2=x+1$ and the children count by $x^3=x+1$. That pattern does \emph{not}
+  extend to $73$ and $109$, whose parents $201$ and $108$ already count by a
+  cubic, $x^3=2x^2-x+1$; there the degree is unchanged and only the polynomial
+  moves, to $x^3=x^2+1$. So there is no single statement covering all eight ---
+  see \S\ref{sec:whichconstant}.
 \item They pair up. $\{28,70\}$ share $(\rho,2)$, $\{157,199\}$ share
   $(\rho,\sqrt3)$, $\{29,71\}$ share $\approx(1.22,1.81)$, and $73$, $109$ are
   each their own reflection partner. Within a pair the two rules are reflections
@@ -575,6 +579,60 @@ parity branch has only five or six points. That they are exponential is solid --
 both branches grow geometrically --- but the value is not pinned, and if they
 follow the pattern of the other six the honest guess is that both are the same
 algebraic number.
+
+\subsection{Which constant describes what: a naming correction}
+\label{sec:whichconstant}
+
+Earlier drafts of this report called the four structured parents the
+``$\varphi$-fragmented'' rules. That is wrong, and worth correcting explicitly
+because the error is easy to make: $\varphi$ describes \emph{different observables}
+in the two pairs, and no single constant describes a rule's fragmentation at all.
+The exact recurrences:
+
+\begin{center}
+\begin{tabular}{rlll}
+\toprule
+rule & sector count $n_\wcc$ & largest sector $D_{\max}$ \\
+\midrule
+$156$, $198$ & $21,34,55,89,\ldots$ & $6,9,12,16,20,27,\ldots$ \\
+ & Fibonacci, $a_n=a_{n-1}+a_{n-2}$ & \emph{no} integer recurrence \\
+ & base $\varphi$, root of $x^2=x+1$ & base $4^{1/5}$, from theory (R2~\S3) \\
+\midrule
+$108$, $201$ & $37,65,114,200,\ldots$ & $8,13,21,34,55,\ldots$ \\
+ & $a_n=2a_{n-1}-a_{n-2}+a_{n-3}$ & Fibonacci, $a_n=a_{n-1}+a_{n-2}$ \\
+ & base $1.75488$, root of $x^3=2x^2-x+1$ & base $\varphi$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Two separate problems with the old label.
+
+\begin{itemize}
+\item \textbf{Across rules, $\varphi$ changes role.} For $156$ and $198$ it is the
+  base of the sector \emph{count} --- there are Fibonacci-many sectors. For $108$
+  and $201$ it is the base of the largest sector \emph{size} --- the biggest
+  sector is Fibonacci-sized --- while their sector count grows as the root of
+  $x^3=2x^2-x+1$. Calling both pairs ``$\varphi$-fragmented'' asserts a shared
+  property they do not have.
+\item \textbf{Within one rule, the two quantities have unrelated mechanisms.}
+  Rule $156$'s sector count is a Fibonacci word count; its largest sector is
+  \emph{not} an integer recurrence at all, and its base comes from the
+  room-packing saddle point of R2~\S3, an optimisation over room length that has
+  nothing to do with $\varphi$. Naming the rule after one constant hides the fact
+  that its two structural laws are different laws.
+\end{itemize}
+
+\noindent So the group is referred to below as \textbf{the four exponentially
+fragmented parents}, and any base is quoted together with the observable it
+belongs to. The pairs are, in the notation $(a,b)$ of \S\ref{sec:hyper},
+\[
+156,198:\ (\varphi,\ 4^{1/5}),\ ab=2.1350;\qquad
+108,201:\ (1.75488,\ \varphi),\ ab=2.8394 ,
+\]
+so both sit above the exclusion curve, but for structurally different reasons ---
+the first pair by having many sectors, the second by having large ones. That
+$\varphi$ appears in both lines is a coincidence of which observable one looks at,
+not evidence of a common mechanism.
 
 \subsection{The base plane hides a whole tier, and 150/105 are in it}
 \label{sec:polytier}
@@ -624,11 +682,12 @@ $150$'s sector series $4,5,5,6,6,7,7,8,8,9,9$ and two have rule $105$'s:
 \noindent Those six are $20$, $148$, $158$ (from $156$) and $6$, $134$, $214$
 (from $198$) --- and four of them are exactly the mixed rules of
 \S\ref{sec:r150family} that share $150$'s whole multiset. So dissipation can
-degrade $\varphi$-fragmentation \emph{down to} the rule-$150$ wall charge, while a
+degrade the exponential fragmentation of $156$/$198$ \emph{down to} the
+rule-$150$ wall charge, while a
 reset applied \emph{to} the wall charge destroys it outright. The wall charge sits
 one level below the exponential rules in a hierarchy
 \[
-\text{exponential }(\varphi,\ \psi_{201})\;\longrightarrow\;
+\text{exponential count }(\varphi\ \text{or}\ 1.75488)\;\longrightarrow\;
 \underbrace{\rho,\ \psi}_{8}\;\longrightarrow\;
 \underbrace{\text{wall charge}}_{14}\;\longrightarrow\;
 \underbrace{\text{one sector}}_{82},
@@ -694,14 +753,14 @@ excitation, so they belong here, and the differing $\alpha$ only reflects the
 fitter seeing one series through a different window. It also means the frontier
 charge exists already in the \emph{unitary} rule space --- it is a destination
 reachable both directly ($60$, $102$) and as a dissipative degradation of
-$\varphi$-fragmentation ($110$, $124$, $188$, $230$ from $108$, $156$, $198$) ---
+the exponential rules ($110$, $124$, $188$, $230$ from $108$, $156$, $198$) ---
 and not something a reset creates.
 
 Since sectors are enclosures, this is an open-system statement in the sense that
 matters here: the pinned frontier is a conserved quantity of the \emph{channel},
 not of a measurement record. It is a genuinely different route to polynomial
 fragmentation than the wall charge, and both are reachable from the same
-$\varphi$-fragmented parents --- $108$ contributes four frontier rules while
+exponentially fragmented parents --- $108$ contributes four frontier rules while
 $156$ and $198$ contribute the wall-charge ones.
 
 \paragraph{A caveat this report cannot settle.} The charge here is the position of
@@ -803,8 +862,8 @@ sector partition depends only on which of the four symbols are \rt{I}, since
 $x\leftrightarrow x\oplus2^i$ --- is \textbf{false}. Grouping all $256$ rules by
 their \rt{I}-pattern gives $16$ groups, and only three collapse to a single
 sector signature: $\{140,156,220\}$, $\{196,198,206\}$ and the singleton
-$\{204\}$. (Those first two are exactly the $\varphi$ families of
-\S\ref{sec:inconclusive}, which is why all six share $a=\varphi$.) The reason the
+$\{204\}$. (Those first two are exactly the six rules of
+\S\ref{sec:inconclusive} whose \emph{sector count} has base $\varphi$.) The reason the
 argument fails is the brick-wall composition: the odd-layer symbol is read off
 the \emph{post-even-layer} state, and a \rt{V} leaves a branch supported on both
 values of the flipped bit where a \rt{D} or \rt{E} leaves only one, so the
@@ -904,8 +963,8 @@ discriminate:
   $\rho=1.32472$, exact. The transparency argument that predicted $\varphi$ is
   wrong; a correct grammar must explain why one reset symbol takes
   $\varphi\to\rho$, i.e.\ why $x^2=x+1$ becomes $x^3=x+1$.
-\item \textbf{The $\varphi$ family.} $140$, $156$, $196$, $198$, $206$, $220$ all
-  have $a=\varphi$ exactly at \rt{obc0}; the grammar should say why these six and
+\item \textbf{The six rules with a Fibonacci sector count.} $140$, $156$, $196$,
+  $198$, $206$, $220$ all have $a=\varphi$ exactly at \rt{obc0}; the grammar should say why these six and
   no others, and should predict $b$, which the hyperbola confines to
   $[1.2361,1.2369]$.
 \item \textbf{The exact-base census} of \S\ref{sec:growth}: every rule whose
