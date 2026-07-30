@@ -514,3 +514,145 @@ def test_open_fragmented_bases_are_exact_algebraic_numbers():
 def test_supergolden_and_plastic_are_the_roots_they_should_be():
     assert SUPERGOLDEN ** 3 == pytest.approx(SUPERGOLDEN ** 2 + 1, abs=1e-12)
     assert PLASTIC_ ** 3 == pytest.approx(PLASTIC_ + 1, abs=1e-12)
+
+
+# --- growth class, not base: what survives for 150 and 105 (R9 sec.6.3) ------
+
+def test_base_plane_cannot_see_polynomial_sector_structure():
+    """Rules 51 and 150 both sit at (a,b) = (1,2), but 51 has ONE sector and
+    150 has floor((N+1)/2)+1 of them.  The class distinguishes them."""
+    from qca_fragmentation.scaling import sectors
+    d = sectors.load("obc0")
+    if d is None:
+        pytest.skip("sector map not built")
+    for r in (51, 150):
+        p = next(x for x in d["points"] if x["rule"] == r)
+        assert p["n_wcc"]["base"] == pytest.approx(1.0)
+        assert p["d_max_wcc"]["base"] == pytest.approx(2.0)
+    assert sectors.sector_growth_class(51, "obc0", d) == "constant"
+    assert sectors.sector_growth_class(150, "obc0", d) == "polynomial"
+    s = sectors.load_series(150, "obc0", 16)
+    assert s["n_wcc"] == [(N + 1) // 2 + 1 for N in s["N"]]
+
+
+def test_nothing_survives_for_the_polynomial_parents():
+    """R9 sec.6.3: every child of a polynomial-sector parent drops to a
+    CONSTANT sector count -- 0 of 32, so polynomial structure is more fragile
+    than exponential structure, where 22 of 104 keep some growth."""
+    from qca_fragmentation.scaling import sectors
+    d = sectors.load("obc0")
+    if d is None:
+        pytest.skip("sector map not built")
+    r = sectors.survival_by_parent_class(d, "obc0")
+    poly = r["by_parent_class"]["polynomial"]
+    assert set(poly["parents"]) == {60, 102, 105, 150}
+    assert poly["children"] == 32
+    assert poly["exponential"] == 0 and poly["polynomial"] == 0
+    assert poly["constant"] == 32
+    exp = r["by_parent_class"]["exponential"]
+    assert exp["exponential"] == 8 and exp["polynomial"] == 14
+
+
+def test_the_wall_charge_is_a_sink_reachable_from_the_exponential_rules():
+    """Six children of 156/198 land on rule 150's EXACT sector series, so the
+    wall charge is reachable by dissipation from above even though it has no
+    dissipative descendants of its own."""
+    from qca_fragmentation.scaling import sectors
+    d = sectors.load("obc0")
+    if d is None:
+        pytest.skip("sector map not built")
+    ref = sectors.load_series(150, "obc0", 16)["n_wcc"]
+    hit = {c for c in (20, 148, 158, 6, 134, 214)
+           if sectors.load_series(c, "obc0", 16)["n_wcc"] == ref}
+    assert hit == {20, 148, 158, 6, 134, 214}
+    for c in hit:
+        assert rules.coherent_parent(c) in (156, 198)
+
+
+def test_rule_105_is_not_rule_150_at_N_1_mod_4():
+    """105 = VIIV fires when the neighbours AGREE; at N = 1 (mod 4) its sectors
+    carry ODD wall number, so the multiset differs from 150's."""
+    for N in (9, 13):
+        s150 = results_io.sizes_from_wcc_record(
+            results_io.load_wcc_results(150, "obc0")[N])
+        s105 = results_io.sizes_from_wcc_record(
+            results_io.load_wcc_results(105, "obc0")[N])
+        even = sorted((comb(N + 1, w) for w in range(0, N + 2, 2)), reverse=True)
+        odd = sorted((comb(N + 1, w) for w in range(1, N + 2, 2)), reverse=True)
+        assert s150 == even, N
+        assert s105 == odd, N
+        assert s150 != s105
+    for N in (8, 12):                     # and they agree elsewhere
+        assert (results_io.sizes_from_wcc_record(
+                    results_io.load_wcc_results(150, "obc0")[N])
+                == results_io.sizes_from_wcc_record(
+                    results_io.load_wcc_results(105, "obc0")[N]))
+
+
+# --- the pinned-frontier family (R9 sec.6.4) ---------------------------------
+
+def _components(rule, N, bc="obc0"):
+    """{root: [members]} of the WCC partition."""
+    from array import array
+    succ = wcc.make_succ(rule, N, bc)
+    parent = array("q", range(1 << N))
+    size = array("q", [1]) * (1 << N)
+
+    def find(a):
+        r = a
+        while parent[r] != r:
+            r = parent[r]
+        while parent[a] != r:
+            parent[a], a = r, parent[a]
+        return r
+
+    for x in range(1 << N):
+        rx = find(x)
+        for y in succ(x):
+            ry = find(y)
+            if rx != ry:
+                if size[rx] < size[ry]:
+                    rx, ry = ry, rx
+                parent[ry] = rx
+                size[rx] += size[ry]
+    out = {}
+    for x in range(1 << N):
+        out.setdefault(find(x), []).append(x)
+    return out
+
+
+@pytest.mark.parametrize("rule,which", [(110, "high"), (230, "high"),
+                                        (124, "low"), (188, "low"),
+                                        (44, "low")])
+def test_frontier_charge_is_the_extremal_excitation(rule, which):
+    """Every sector is a level set of the index of the outermost 1."""
+    N = 9
+    key = ((lambda x: x.bit_length() - 1 if x else -1) if which == "high"
+           else (lambda x: (x & -x).bit_length() - 1 if x else -1))
+    for mem in _components(rule, N).values():
+        assert len({key(v) for v in mem}) == 1, (rule, mem[:6])
+
+
+@pytest.mark.parametrize("rule", [110, 124, 188, 230])
+def test_frontier_rules_have_N_plus_1_sectors_and_dyadic_sizes(rule):
+    """n_wcc = N+1, sizes 2^{N-1},...,2,1,1, D_max = 2^{N-1} exactly."""
+    for N in (8, 10, 12):
+        r = wcc.weak_components(rule, N, "obc0")
+        assert r.n_wcc == N + 1, (rule, N)
+        assert r.d_max_wcc == 2 ** (N - 1), (rule, N)
+        assert r.sizes_wcc == [2 ** k for k in range(N - 1, -1, -1)] + [1]
+        assert sum(r.sizes_wcc) == 2 ** N
+
+
+def test_frontier_and_wall_charge_are_different_mechanisms():
+    """Both sit at (a,b) = (1,2) but differ in every structural respect."""
+    N = 12
+    front = wcc.weak_components(110, N, "obc0")
+    wall = wcc.weak_components(150, N, "obc0")
+    assert front.n_wcc == N + 1 == 13
+    assert wall.n_wcc == (N + 1) // 2 + 1 == 7
+    assert front.d_max_wcc == 2 ** (N - 1)                     # half the space
+    assert wall.d_max_wcc == comb(N + 1, 6)                    # binomial
+    assert front.d_max_wcc / 2 ** N == pytest.approx(0.5)
+    assert wall.d_max_wcc / 2 ** N < 0.45                      # shrinking
+    assert front.sizes_wcc != wall.sizes_wcc

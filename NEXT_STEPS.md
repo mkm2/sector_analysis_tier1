@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 558 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9 regenerated; full suite 572 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -243,6 +243,40 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      still reports as base 1.09). After the fix: 196/254 rules at (1,2),
      150/160 of the V+reset family, and the deficit medians sharpen to exactly
      0.000 (unitary), +0.534 (V+reset), +1.000 (V-free).
+   - **The base plane HIDES a whole tier -- survival must be asked by growth
+     CLASS, not base (R9 sec.6.3/6.4).** a=1 conflates "one sector" with "linear
+     sector count", so rule 150 (floor((N+1)/2)+1 sectors, 9 at N=16) was
+     plotted on top of rule 51 (exactly 1). Resolved by
+     `sectors.sector_growth_class` / `survival_by_parent_class`:
+       parent class            parents          children | ->exp ->poly ->const
+       exponential  108,156,198,201                 104  |   8    14     82
+       polynomial   60,102,105,150                   32  |   0     0     32
+       constant     54,57,99,147,153,195             24  |   0     0     24
+     So for **150 and 105 NOTHING survives** -- all 16 children drop to a
+     CONSTANT sector count (150: six to 1 sector, two to 2; 105: all eight to 1).
+     Polynomial sector structure is MORE fragile than exponential, not less.
+   - **The wall charge is a sink, not a source.** Six of the 14 polynomial
+     survivors (20,148,158 from 156; 6,134,214 from 198) have EXACTLY rule 150's
+     series 4,5,5,6,6,7,7,8,8,9,9. So dissipation can degrade phi-fragmentation
+     DOWN TO the wall charge, while a reset applied TO the wall charge destroys
+     it. Hierarchy: exponential(phi,psi_201) -> {rho,psi} (8) -> wall charge (14)
+     -> one sector (82), with the wall charge a terminal rung.
+   - **A SECOND polynomial mechanism: the pinned frontier (R9 sec.6.4).** The
+     other six polynomial survivors -- 110 IEIV, 124 IIEV, 188 IIVE, 230 IVIE,
+     44 IIDV, 100 IDIV -- conserve the **position of the extremal excitation**
+     (rightmost 1 for 110/230, leftmost for 124/188/44; verified at N=9 that
+     every sector is a level set of that index). The outermost excitation is
+     pinned by the reset, everything inside is free, giving
+     **n_wcc = N+1, sizes 2^(N-1),...,2,1,1 (dyadic tower), D_max = 2^(N-1)
+     EXACTLY, so D_max/2^N = 1/2 constant.** Contrast the wall charge: ~N/2
+     sectors, binomial sizes, D_max/2^N ~ N^(-1/2) -> 0. Both sit at (a,b)=(1,2)
+     and are indistinguishable in the base plane. 44 splits further at odd N
+     (N+1 even / N+3 odd); 100 has N+3 with a non-dyadic tail.
+   - **105 is NOT 150's reflection partner** (R8 implied it; corrected here). 105
+     = VIIV fires when neighbours AGREE, 150 = IVVI when they differ, and at
+     **N = 1 (mod 4)** 105's sectors carry ODD wall number: N=9 gives
+     [252,120,120,10,10] = C(10,odd w) vs 150's [210,210,45,45,1,1] =
+     C(10,even w); same at N=13. Elsewhere they agree exactly.
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 

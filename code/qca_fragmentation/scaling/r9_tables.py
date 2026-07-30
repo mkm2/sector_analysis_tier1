@@ -260,6 +260,9 @@ def write_all(bc: str = "obc0") -> None:
         (f"tab_r9_basins_{bc}", tab_basin_recompute(bc)),
         (f"tab_r9_dissip_{bc}", tab_dissipation_clusters(bc, d)),
         (f"tab_r9_openfrag_{bc}", tab_open_fragmented(bc, d)),
+        (f"tab_r9_survclass_{bc}", tab_survival_by_class(bc, d)),
+        (f"tab_r9_polysurv_{bc}", tab_poly_survivors(bc, d)),
+        (f"tab_r9_frontier_{bc}", tab_frontier(bc, d)),
     ]
     for name, txt in tables:
         p = os.path.join(TEXDIR, f"{name}.tex")
@@ -334,6 +337,68 @@ def tab_open_fragmented(bc: str, d: Dict) -> str:
             "rule & tuple & parent & & $a$ & name & exact & $b$ & name & $ab$ "
             "\\\\\n\\hline\n" + "\n".join(rows)
             + "\n\\hline\n\\end{tabular}\n")
+
+def tab_survival_by_class(bc: str, d: Dict) -> str:
+    """What survives a reset, resolved by the growth CLASS of the parent."""
+    r = sectors.survival_by_parent_class(d, bc)
+    order = ["exponential", "polynomial", "constant", "irregular"]
+    rows = []
+    for k in order:
+        v = r["by_parent_class"].get(k)
+        if not v:
+            continue
+        ps = ", ".join(str(x) for x in sorted(v["parents"]))
+        rows.append(
+            f"{k} & {ps} & ${len(v['parents'])}$ & ${v['children']}$ & "
+            f"${v['exponential']}$ & ${v['polynomial']}$ & ${v['constant']}$ \\\\")
+    return ("\\begin{tabular}{llrrrrr}\n\\hline\n"
+            "parent's sector growth & parents & \\# & children & "
+            "$\\to$exp & $\\to$poly & $\\to$const \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_poly_survivors(bc: str, d: Dict) -> str:
+    """The 14 children that keep POLYNOMIAL sector growth -- invisible at a=1."""
+    r = sectors.survival_by_parent_class(d, bc)
+    rows = []
+    r150 = sectors.load_series(150, bc, sectors.UNIFORM_N_CAP)["n_wcc"]
+    r105 = sectors.load_series(105, bc, sectors.UNIFORM_N_CAP)["n_wcc"]
+    for x in r["detail"]:
+        if x["class"] != "polynomial" or x["parent_class"] != "exponential":
+            continue
+        ys = sectors.load_series(x["rule"], bc, sectors.UNIFORM_N_CAP)["n_wcc"]
+        same = ("$=150$" if ys == r150 else ("$=105$" if ys == r105 else "---"))
+        rows.append(
+            f"${x['rule']}$ & \\texttt{{{''.join(rules.wolfram_to_tuple(x['rule']))}}} & "
+            f"${x['parent']}$ & ${ys[0]}\\!\\to\\!{ys[-1]}$ & {same} \\\\")
+    return ("\\begin{tabular}{rlrrl}\n\\hline\n"
+            "rule & tuple & parent & $n_{\\rm wcc}$, $N{=}6\\!\\to\\!16$ & "
+            "series \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+#: The frontier rules: sector = position of the extremal excitation.
+FRONTIER = {110: "rightmost", 124: "leftmost", 188: "leftmost",
+            230: "rightmost", 44: "leftmost (+split)", 100: "leftmost (+tail)"}
+
+
+def tab_frontier(bc: str, d: Dict) -> str:
+    """The dyadic-tower rules: N+1 sectors, sizes 2^{N-1}...1, D_max = 2^{N-1}."""
+    rows = []
+    for c, which in FRONTIER.items():
+        ys = sectors.load_series(c, bc, sectors.UNIFORM_N_CAP)
+        n, dm = ys["n_wcc"], ys["d_max_wcc"]
+        Ns = ys["N"]
+        law = ("$N{+}1$" if n == [N + 1 for N in Ns]
+               else ("$N{+}3$" if n == [N + 3 for N in Ns] else "parity"))
+        dlaw = (r"$2^{N-1}$" if dm == [2 ** (N - 1) for N in Ns] else "---")
+        rows.append(
+            f"${c}$ & \\texttt{{{''.join(rules.wolfram_to_tuple(c))}}} & "
+            f"${rules.coherent_parent(c)}$ & {which} & {law} & ${n[-1]}$ & "
+            f"{dlaw} & ${dm[-1]/2 ** Ns[-1]:.4f}$ \\\\")
+    return ("\\begin{tabular}{rlrllrlr}\n\\hline\n"
+            "rule & tuple & parent & pinned & $n_{\\rm wcc}$ & at $N{=}16$ & "
+            "$D_{\\max}$ & $D_{\\max}/2^N$ \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
 
 
 if __name__ == "__main__":

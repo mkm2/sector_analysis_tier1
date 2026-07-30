@@ -49,7 +49,14 @@ ANALYTIC: Dict[Tuple[int, str], Dict[str, Tuple[float, float, str]]] = {
     # R8 sec.4: |S_w| = C(N+1,w) on even w, #sectors = floor((N+1)/2)+1
     (150, "obc0"): {"n_wcc": (1.0, 1.0, "R8: floor((N+1)/2)+1, linear"),
                     "d_max_wcc": (2.0, -0.5, "R8: central binomial C(N+1,.)")},
-    (105, "obc0"): {"n_wcc": (1.0, 1.0, "R8: reflection partner of 150"),
+    # 105 = VIIV fires when the neighbours AGREE, where 150 = IVVI fires when
+    # they differ, so it is NOT simply 150's partner: at N = 1 (mod 4) its
+    # sectors carry ODD wall number and the multiset differs.  N=9 gives
+    # [252,120,120,10,10] = C(10, odd w) against 150's [210,210,45,45,1,1] =
+    # C(10, even w), and likewise at N=13.  At all other N the two agree.  The
+    # growth is linear either way, which is all the base captures.
+    (105, "obc0"): {"n_wcc": (1.0, 1.0, "linear; cf. 150 but odd $w$ at "
+                                        "$N\\equiv1\\ (4)$"),
                     "d_max_wcc": (2.0, -0.5, "R8: central binomial")},
 }
 
@@ -615,6 +622,60 @@ def open_system_fragmented(d: Dict) -> List[Dict]:
                 "parent_a": pa, "parent_b": pb,
             })
     return sorted(out, key=lambda r: (-r["a"], r["rule"]))
+
+def sector_growth_class(rule: int, bc: str, d: Dict,
+                        n_cap: Optional[int] = UNIFORM_N_CAP) -> str:
+    """
+    'constant' / 'polynomial' / 'exponential' / 'irregular' for the SECTOR COUNT.
+
+    The base plane cannot express this: a rule with a linear sector count and one
+    with a single sector both sit at a = 1, so rule 150 (which has
+    floor((N+1)/2)+1 sectors, 9 of them at N=16) is plotted on top of rule 51
+    (which has exactly one).  Survival questions have to be asked in terms of the
+    growth CLASS, not the base.
+    """
+    pts = {p["rule"]: p for p in d["points"]}
+    q = pts.get(rule)
+    if q is None:
+        return "unknown"
+    if q["n_wcc"]["base"] is None:
+        return "irregular"
+    ys = load_series(rule, bc, n_cap)["n_wcc"]
+    if ys and len(set(ys)) == 1:
+        return "constant"
+    return q["n_wcc"]["cls"]
+
+
+def survival_by_parent_class(d: Dict, bc: str = "obc0") -> Dict:
+    """
+    What survives a reset, resolved by the growth class of the coherent parent.
+
+    This is the question the base plane cannot answer.  Grouping the 14 clusters
+    by the parent's sector-growth class and asking what class each child lands in
+    separates three quite different fates, where the (a,b) = (1,2) cell had
+    conflated them.
+    """
+    out: Dict[str, Dict] = {}
+    detail: List[Dict] = []
+    for parent in sorted(rules.UNITARY_RULES):
+        kids = rules.dissipative_children(parent)
+        if not kids:
+            continue
+        pcls = sector_growth_class(parent, bc, d)
+        row = out.setdefault(pcls, {"parents": [], "children": 0,
+                                    "exponential": 0, "polynomial": 0,
+                                    "constant": 0, "irregular": 0})
+        row["parents"].append(parent)
+        for c in kids:
+            ccls = sector_growth_class(c, bc, d)
+            if ccls == "unknown":
+                continue
+            row["children"] += 1
+            row[ccls] = row.get(ccls, 0) + 1
+            detail.append({"rule": c, "parent": parent,
+                           "parent_class": pcls, "class": ccls})
+    return {"by_parent_class": out, "detail": detail}
+
 
 if __name__ == "__main__":
     main()

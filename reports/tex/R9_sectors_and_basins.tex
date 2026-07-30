@@ -579,6 +579,129 @@ both branches grow geometrically --- but the value is not pinned, and if they
 follow the pattern of the other six the honest guess is that both are the same
 algebraic number.
 
+\subsection{The base plane hides a whole tier, and 150/105 are in it}
+\label{sec:polytier}
+
+The bookkeeping above is done in the base plane, and the base plane cannot tell a
+linear sector count from a single sector: both give $a=1$. So rule $150$ ---
+which has $\lfloor(N+1)/2\rfloor+1$ sectors, nine of them at $N=16$, the
+domain-wall charge of R8 --- is plotted on top of rule $51$, which has exactly
+one. Calling both of them ``already at $(1,2)$, nothing to destroy'' is wrong for
+$150$. Survival has to be asked in terms of the growth \emph{class}.
+
+\begin{center}
+\iftable{tab_r9_survclass_obc0.tex}
+\end{center}
+
+\noindent Three quite different fates, which the $(1,2)$ cell had conflated:
+
+\begin{itemize}
+\item \textbf{Exponential parents} ($108$, $156$, $198$, $201$), $104$ children:
+  $8$ stay exponential (\S\ref{sec:openfrag}), \textbf{$14$ degrade to polynomial
+  but keep growing}, $82$ collapse to a constant number of sectors.
+\item \textbf{Polynomial parents} ($150$, $105$ with $\alpha=1$; $60$, $102$ with
+  $\alpha\approx0.82$), $32$ children: \textbf{$0$ survive.} Every one drops to a
+  \emph{constant} sector count. For $150$ specifically, six of its eight children
+  fall to a single sector and the other two ($22$~\rt{IVVD}, $182$~\rt{IVVE}) to
+  two sectors; all eight of $105$'s fall to one. The domain-wall charge does not
+  tolerate a reset anywhere.
+\item \textbf{Constant parents} (six rules), $24$ children: nothing to lose ---
+  though note even rule $54$'s two sectors become one.
+\end{itemize}
+
+\noindent So the answer for $150$ and $105$ is blunt: \textbf{nothing survives}.
+That is a \emph{stronger} statement than for the exponential parents, where
+$8+14$ of $104$ children keep some growth. Polynomial sector structure is more
+fragile than exponential sector structure, not less.
+
+\paragraph{But the wall charge is a sink, not a source.} The fourteen polynomial
+survivors are worth looking at, because six of them have \emph{exactly} rule
+$150$'s sector series $4,5,5,6,6,7,7,8,8,9,9$ and two have rule $105$'s:
+
+\begin{center}
+\iftable{tab_r9_polysurv_obc0.tex}
+\end{center}
+
+\noindent Those six are $20$, $148$, $158$ (from $156$) and $6$, $134$, $214$
+(from $198$) --- and four of them are exactly the mixed rules of
+\S\ref{sec:r150family} that share $150$'s whole multiset. So dissipation can
+degrade $\varphi$-fragmentation \emph{down to} the rule-$150$ wall charge, while a
+reset applied \emph{to} the wall charge destroys it outright. The wall charge sits
+one level below the exponential rules in a hierarchy
+\[
+\text{exponential }(\varphi,\ \psi_{201})\;\longrightarrow\;
+\underbrace{\rho,\ \psi}_{8}\;\longrightarrow\;
+\underbrace{\text{wall charge}}_{14}\;\longrightarrow\;
+\underbrace{\text{one sector}}_{82},
+\]
+and it is a terminal rung: reachable from above, but with no dissipative
+descendants of its own.
+
+\subsection{A second polynomial mechanism: the pinned frontier}
+\label{sec:frontier}
+
+Six of the fourteen polynomial survivors --- $44$, $100$, $110$, $124$, $188$,
+$230$ --- are \emph{not} degraded copies of the rule-$150$ wall charge. They carry
+a different conserved quantity, and the sector sizes give it away immediately.
+At $N=12$, rule $110$ has thirteen sectors of sizes
+\[
+2048,\,1024,\,512,\,256,\,128,\,64,\,32,\,16,\,8,\,4,\,2,\,1,\,1 ,
+\]
+a \textbf{dyadic tower} rather than a binomial row. The charge is the
+\textbf{position of the extremal excitation}: verified at $N=9$, every sector is a
+level set of the index of the rightmost $1$ for $110$ and $230$, and of the
+leftmost $1$ for $124$, $188$ and $44$. The outermost excitation is pinned by the
+reset and everything inside it is free, which gives
+\begin{equation}
+n_\wcc = N+1,\qquad D_{\max}=2^{N-1}\ \text{exactly},\qquad
+\frac{D_{\max}}{2^N}=\tfrac12 .
+\end{equation}
+
+\begin{center}
+\iftable{tab_r9_frontier_obc0.tex}
+\end{center}
+
+\noindent Set against the wall charge, the contrast is sharp, and both are
+invisible in the base plane because both have $a=1$, $b=2$:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+ & rule-$150$ family & frontier family \\
+\midrule
+conserved quantity & domain-wall number & position of the extremal excitation \\
+$n_\wcc$ & $\lfloor(N+1)/2\rfloor+1\sim N/2$ & $N+1$ \\
+sector sizes & binomial $\binom{N+1}{w}$, even $w$ & dyadic $2^{N-1},\ldots,2,1,1$ \\
+$D_{\max}$ & $\binom{N+1}{\sim N/2}\sim2^N/\sqrt N$ & $2^{N-1}$ exactly \\
+$D_{\max}/2^N$ & $\sim N^{-1/2}\to0$ & $\tfrac12$, constant \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The frontier family has \emph{twice} as many sectors asymptotically and
+a largest sector that stays a fixed half of the space rather than shrinking. Two
+of the six are less clean: $44$ splits each frontier class further at odd $N$
+($n_\wcc=N+1$ for even $N$, $N+3$ for odd), and $100$ has $N+3$ sectors with a
+short non-dyadic tail ($\ldots,26,16,6,6,4,2$), so its charge is the leftmost
+excitation plus a refinement.
+
+Since sectors are enclosures, this is again an open-system statement: the pinned
+frontier is a conserved quantity of the \emph{channel}, dissipatively stabilised
+rather than merely inherited. It is a genuinely different route to polynomial
+fragmentation than the wall charge, and both routes are reachable from the same
+$\varphi$-fragmented parents --- $108$ contributes four frontier rules while
+$156$ and $198$ contribute the wall-charge ones.
+
+\paragraph{And 105 is not 150's partner.} R8 treats them as reflection partners
+and this report inherited that, but the sector multisets differ at
+$N\equiv1\pmod4$. Rule $105=\rt{VIIV}$ fires when the two neighbours
+\emph{agree}, where $150=\rt{IVVI}$ fires when they differ, and at those $N$ the
+sectors of $105$ carry \emph{odd} wall number: at $N=9$ its multiset is
+$[252,120,120,10,10]=\binom{10}{\text{odd }w}$ against $150$'s
+$[210,210,45,45,1,1]=\binom{10}{\text{even }w}$, and likewise at $N=13$. At all
+other $N$ in range the two agree exactly. The growth is linear either way, which
+is all the base captures --- another thing the base plane hides.
+
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/fig_dissip_sector_obc0.pdf}{\textwidth}
