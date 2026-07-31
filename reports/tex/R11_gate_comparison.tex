@@ -91,9 +91,13 @@ consequence is visible in the tables: rule $108$'s X-gate cycle length is
 classified \emph{linear} on $N\le16$ and \emph{exponential} on $N\le24$, which is
 a statement about how much data the classifier has, not about the rule.
 
-\paragraph{What is not compared.} The Hadamard family carries objects with no
-counterpart here --- dark states, the monitored/unmonitored certificate of R7, the
-protected-coherence gap --- because they need interference. Conversely the
+\paragraph{What is not compared.} The Hadamard family carries objects that need
+interference between distinct branches of a basis state --- destructive
+cancellation in $\operatorname{succ}$, the R7 visibility theorem's sharp cases.
+It does \emph{not} have a monopoly on protected coherence: R10~\S9 finds
+decoherence-free subspaces of exponential dimension throughout the permutation
+family, and for the $81$ V-free rules they are literally the same subspaces,
+since the channel is the same. Conversely the
 permutation family's transient structure has no Hadamard counterpart worth
 plotting. The comparison is restricted to the two coordinates both families
 define: the sector count $n_\wcc\sim a^N$ and the largest sector
@@ -471,7 +475,7 @@ quantum state. Under $X$ a basis state remains a basis state for all time, so
 $S(t)\equiv0$ and there is nothing to measure --- the fragmentation is invisible
 to any entanglement probe applied to basis states.
 
-\paragraph{Every conserved quantity of the $X$ circuit is classical.} A
+\paragraph{Every \emph{sector} label of the $X$ circuit is classical.} A
 permutation of the basis conserves the indicator function of each of its orbits,
 so a fragmented automaton has an exponentially large commutant for free. That is
 not a discovery about the model; it is the statement that a deterministic map has
@@ -479,7 +483,9 @@ trajectories. What R9 finds is the same object in a setting where the sector lab
 is still a classical function on configurations but the dynamics inside is not ---
 and where, by the diagonal-commutant identity of R8~\S10.3, the sector projectors
 are precisely the diagonal part of the commutant, i.e.\ everything a classical
-partition can see and nothing more.
+partition can see and nothing more. The qualifier matters: the \emph{off}-diagonal
+part of the commutant of an X-gate rule with resets is not trivial either, and
+R10~\S9 measures it.
 
 \subsection{Why the $X$-gate and the V-free rules are the boring end}
 
@@ -497,9 +503,14 @@ Hilbert-space fragmentation in the sense the term is used for constrained quantu
 models.
 
 The $81$ V-free rules make the point sharpest, because they are the same circuit
-under both gates (Corollary~\ref{cor:nofree}). Whatever fragmentation they show is
-a property of a classical cellular automaton that a quantum engine happened to
-compute. Four of R9's eight ``fragmentation in an open quantum system'' rules ---
+under both gates (Corollary~\ref{cor:nofree}). Whatever \emph{fragmentation} they
+show is a property of a classical cellular automaton that a quantum engine
+happened to compute. Their \emph{coherence} structure is another matter: rule
+$232$ (\rt{DIIE}) is V-free and has a decoherence-free subspace of dimension
+$\sim\varphi^N$, confirmed against the exact Cesaro rank
+($\dim\operatorname{Fix}(\Phi)=n_{\rm rec}^2$, R10~\S9.4). A classical-population
+circuit can protect an exponentially large quantum subspace, and that is not a
+classical statement. Four of R9's eight ``fragmentation in an open quantum system'' rules ---
 $140$, $196$, $206$, $220$ --- are in this set, so for those four the claim should
 be read as classical fragmentation surviving a reset, with the Hadamard playing no
 part. The other four ($156$, $198$, $108$, $201$) do use the gate, and for them
@@ -580,14 +591,21 @@ before this section is used anywhere outside the project.
 
 The comparison is not symmetric, and the asymmetries are informative.
 
-\paragraph{Only the Hadamard family has interference.} Dark states, the
-distinction between the monitored and the unmonitored channel at the level of the
-support, and R7's certificate all need a successor set with more than one element
-and amplitudes that can cancel. Under $X$ there is a single Kraus branch on each
-basis state, so those objects are vacuous. The X-gate family is a \emph{classical}
-control: it isolates what in R9 is graph combinatorics from what is quantum
-mechanics. The answer, from \S\ref{sec:classes}, is that the sector axis is almost
-entirely the former.
+\paragraph{Only the Hadamard family has branch interference --- which is less than
+it sounds.} Destructive cancellation between two branches of a basis state needs
+a successor set with more than one element, and under $X$ there is only ever one,
+so that specific mechanism is absent. It does not follow that the permutation
+family is decoherence-free-trivial, and an earlier draft of both reports said
+that it did. A reset has two Kraus operators which agree on populations and
+differ on coherences, so the functional graph --- a statement about populations
+alone --- cannot see decoherence at all. R10~\S9 computes what it misses: at
+$N=12$, $127$ of the $240$ irreversible X rules carry a decoherence-free subspace
+of dimension $>1$, and the dimensions are exponential, with rule $1$'s equal to
+the golden-mean shift ($F_{N+2}$), rules $76$ and $73$'s to the no-\rt{111} shift
+(tribonacci), and rule $22$'s to the Lucas numbers $L_{N+1}$. The X-gate family
+is therefore a classical control \emph{for populations only}. That is still the
+useful reading --- \S\ref{sec:classes} shows the sector axis is almost entirely
+graph combinatorics --- but the coherence axis is not classical at all.
 
 \paragraph{Only the permutation family has a clean recurrent structure.} With
 out-degree one, $n_\rec=n_\wcc$ identically and every basin is a sector, so

@@ -236,6 +236,78 @@ def tab_parents(bc: str, d: Dict) -> str:
             + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
 
 
+def tab_dfs(bc: str, d: Dict) -> str:
+    """The decoherence-free census, by family (R10 sec.9)."""
+    from . import coherence as co
+    cd = co.load(bc) or co.census((10, 12), bc)
+    s = co.summarise(cd)
+    rows = []
+    for f in ("reversible", "V+reset", "V-free"):
+        r = s["by_family"].get(f)
+        if not r:
+            continue
+        rows.append(f"{f} & ${r['rules']}$ & ${r['dfs']}$ & "
+                    f"${r['whole_rec']}$ \\\\")
+    tot = {k: sum(v[k] for v in s["by_family"].values())
+           for k in ("rules", "dfs", "whole_rec")}
+    rows.append("\\hline\nall & $%d$ & $%d$ & $%d$ \\\\"
+                % (tot["rules"], tot["dfs"], tot["whole_rec"]))
+    return ("\\begin{tabular}{lrrr}\n\\hline\n"
+            f"family & rules & DFS of $\\dim>1$ & whole $\\mathrm{{Rec}}$ one block "
+            "\\\\\n\\hline\n" + "\n".join(rows) +
+            "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_dfs_series(bc: str, d: Dict, Ns=(8, 10, 12, 14, 16)) -> str:
+    """DFS dimension against N for the notable rules."""
+    from . import coherence as co
+    picks = ((1, "VDDD", "golden-mean shift, no \\rt{11}"),
+             (76, "IIID", "no \\rt{111}"),
+             (73, "VIID", "no \\rt{111}"),
+             (205, "EIII", "tribonacci base, not a no-word shift"),
+             (109, "EIIV", "tribonacci base, not a no-word shift"),
+             (22, "IVVD", "Lucas $L_{N+1}$"),
+             (232, "DIIE", "base $\\to\\varphi$, sequence unidentified"),
+             (90, "DEED", "labels de-synchronise"))
+    rows = []
+    for rule, tup, note in picks:
+        dims = [co.dfs_blocks(rule, N, bc)["dfs_max"] for N in Ns]
+        base = (dims[-1] / dims[0]) ** (1.0 / (Ns[-1] - Ns[0])) if dims[0] else 0
+        seq = ",\\,".join(f"{v:,}".replace(",", r"\,") for v in dims)
+        rows.append(f"${rule}$ & \\rt{{{tup}}} & ${seq}$ & ${base:.4f}$ & {note} "
+                    f"\\\\")
+    head = "$N=" + ",".join(str(n) for n in Ns) + "$"
+    return ("\\begin{tabular}{rllrl}\n\\hline\n"
+            f"rule & tuple & $\\dim$ DFS, {head} & base & recurrent set "
+            "\\\\\n\\hline\n" + "\n".join(rows) +
+            "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_orbits(bc: str, d: Dict) -> str:
+    """The exhibited orbits (R10 sec.10): sampled L_max at high N."""
+    from . import orbits as orb
+    od = orb.load(bc)
+    if od is None:
+        return "\\emph{orbit sampler not run}\n"
+    picks = (57, 99, 73, 201, 109, 108, 156, 198)
+    rows = []
+    for rule in picks:
+        Ns, Ls = orb.series(rule, bc, od)
+        if not Ns:
+            continue
+        hi = [(n, L) for n, L in zip(Ns, Ls)][-1]
+        s0 = analysis.load_series(rule, bc, analysis.UNIFORM_N_CAP)
+        ex = s0["d_max_recurrent"][-1]
+        frac = hi[1] / (1 << hi[0])
+        rows.append(f"${rule}$ & \\rt{{{''.join(rules.wolfram_to_tuple(rule))}}} & "
+                    f"${ex:,}$ & ${hi[0]}$ & ${hi[1]:,}$ & "
+                    f"${_sci(frac)}$ \\\\".replace(",", r"\,"))
+    return ("\\begin{tabular}{rlrrrr}\n\\hline\n"
+            "rule & tuple & exact $L_{\\max}$ at $N=24$ & $N$ & orbit exhibited "
+            "& fraction of $2^N$ \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
 def write_all(bc: str = "obc0") -> None:
     d = analysis.load(bc) or analysis.build(bc)
     os.makedirs(TEXDIR, exist_ok=True)
@@ -248,6 +320,9 @@ def write_all(bc: str = "obc0") -> None:
                       (f"tab_r10_above_seq_{bc}", tab_above_seq(bc, d)),
                       (f"tab_r10_resetonly_{bc}", tab_reset_only(bc, d)),
                       (f"tab_r10_movement_{bc}", tab_movement(bc, d)),
+                      (f"tab_r10_dfs_{bc}", tab_dfs(bc, d)),
+                      (f"tab_r10_dfsseries_{bc}", tab_dfs_series(bc, d)),
+                      (f"tab_r10_orbits_{bc}", tab_orbits(bc, d)),
                       (f"tab_r10_parents_{bc}", tab_parents(bc, d)),
                       (f"tab_r10_validation_{bc}", tab_validation(bc, d))):
         p = os.path.join(TEXDIR, f"{name}.tex")

@@ -400,6 +400,50 @@ def fig_parent_clusters(bc: str, out: str, plane: str = "cycle",
     print("wrote", out)
 
 
+def fig_orbits(bc: str, out: str):
+    """
+    X7.  The longest orbit against N: exact where the full walk reached, and
+    exhibited by the sampler beyond it.  Log scale, so an exponential is a line.
+    """
+    from . import orbits as orb
+    d = orb.load(bc)
+    if d is None:
+        print("no orbit data")
+        return
+    fig, axes = plt.subplots(1, 2, figsize=(12.4, 5.0))
+    groups = ((axes[0], (156, 198, 108, 201, 73, 109),
+               "short orbits: exponential but modest"),
+              (axes[1], (57, 99), "long orbits: a finite fraction of the space"))
+    for ax, rs, title in groups:
+        _style(ax)
+        for rule in rs:
+            s = analysis.load_series(rule, bc, analysis.UNIFORM_N_CAP)
+            ln = ax.plot(s["N"], s["d_max_recurrent"], "o-", ms=3.5, lw=1.2,
+                         label=f"X{rule} exact")[0]
+            sN, sL = orb.series(rule, bc, d)
+            if sN:
+                ax.plot(sN, sL, "s--", ms=3.5, lw=1.0, alpha=0.85,
+                        color=ln.get_color(),
+                        label=f"X{rule} sampled")
+        ax.set_yscale("log")
+        ax.set_xlabel("$N$")
+        ax.set_ylabel(r"longest orbit $L_{\max}$")
+        ax.set_title(title, fontsize=9.5)
+        ax.legend(fontsize=6.5, ncol=2)
+    axes[1].plot(range(20, 33), [0.4 * 2 ** n for n in range(20, 33)],
+                 color="#888888", ls=":", lw=1.0, label=r"$0.4\cdot2^N$")
+    axes[1].legend(fontsize=6.5, ncol=2)
+    fig.suptitle("X7  the longest orbit, measured by the full walk (circles) and "
+                 "EXHIBITED by following one orbit (squares).  A sampled point "
+                 f"is a lower bound on $L_{{\\max}}$ ({bc}).",
+                 fontsize=9, x=0.01, ha="left", color=TEXT)
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    for p_ in (out, out.replace(".pdf", ".png")):
+        fig.savefig(p_, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="R10 figures")
     ap.add_argument("--bc", default="obc0", choices=["obc0", "pbc"])
@@ -418,6 +462,7 @@ def main(argv=None):
         fig_parent_clusters(a.bc, os.path.join(
             FIGURES_DIR, f"fig_xgate_parents_{plane}_{a.bc}.pdf"),
             plane=plane, d=d)
+    fig_orbits(a.bc, os.path.join(FIGURES_DIR, f"fig_xgate_orbits_{a.bc}.pdf"))
 
 
 if __name__ == "__main__":

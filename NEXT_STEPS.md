@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10/R11 regenerated; full suite 685 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10/R11 regenerated; full suite 703 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -407,6 +407,38 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      They are exactly the 8 exponential-cycle rules, labelled in Fig X1 right
      with their sequences tabulated. Ten more sit exactly ON the curve at (2,1),
      all reversible.
+   - **EXHIBITED long orbits (R10 sec.10, 2026-07-31).** The exponential-cycle
+     claim was a FIT over N<=24 where the numbers are 391..561 (and 6.8M for
+     57/99). Now proved by exhibition: `permutation/orbits.py` follows ONE orbit
+     with a bitwise sweep -- at obc0 the sublattices are independent sets so the
+     brick-wall sweep is two SIMULTANEOUS half-updates, ~20 integer ops, O(1)
+     memory, 1.2M sweeps/s. Resets do NOT break this (an even site writes an
+     even bit and reads only odd bits, whatever the local action); verified
+     against xca.x_step for all 256 rules at N=6..11, every state, 0 mismatches.
+     pbc is refused (sublattices are not independent at odd N).
+     Results: 57/99 have ONE orbit through 203 million states at N=29 (38% of
+     the space; 47% at N=26, 50% at N=27); the other six run from 391-561 at
+     N=24 to 5460-21505 at N=40. Lengths stay lcm-composite (420, 840, 1260,
+     1540, 2310, 4620, 6930, 9240 for 156). A sampled point is a LOWER BOUND and
+     its tightness degrades with N, so its fitted base (1.18-1.23) understates
+     the exact one (1.26-1.27) -- read it as a certificate, not a measurement.
+   - **CORRECTION: the family DOES have decoherence-free subspaces (R10 sec.9).**
+     The first draft's "no dark states / the Tier-1d certificate is vacuous" is
+     withdrawn. A functional graph describes POPULATIONS; a reset has Kraus
+     operators |0><0| and |0><1| which agree on basis states and differ on
+     coherences. With J(x) = the sites where a reset fired on a bit not already
+     at the reset value, |x><y| survives iff J(x) = J(y), and sec.8's
+     inheritance property (J empty on Rec) is exactly a DFS criterion --
+     inheritance flag == no-jump flag for 240/240 rules. Census at N=12: 127 of
+     240 irreversible rules carry a DFS of dim>1, 121 of them the whole
+     recurrent set. Dimensions are exponential and are constrained shifts:
+     rule 1 = the golden-mean shift (no "11"), F_{N+2}, base phi (the PXP
+     space); rules 76/73 = no "111", tribonacci base 1.8393; rule 22 = Lucas
+     L_{N+1}; rule 232 (V-free, the user's example) base -> phi. Rules 90/165
+     protect NOTHING (labels de-synchronise), matching R7 from the other side.
+     Cross-checked against the exact superoperator: dim Fix(Phi) = n_rec^2
+     (232 obc0: 49/121/289 at N=4,5,6; 90 pbc N=6: 16). Code
+     `permutation/coherence.py`, `analytics/xgate_dfs_obc0.json`.
    - **pbc NOT run** (held with R9's).
 
 17. **R11 — Hadamard vs X, one rule space two gates — DONE (2026-07-31).**

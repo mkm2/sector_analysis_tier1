@@ -341,3 +341,114 @@ def test_an_honestly_exponential_cycle_survives_the_guards():
     d = _sectors.series_descriptor(57, "obc0", "x_d_max_recurrent",
                                    s["N"], s["d_max_recurrent"])
     assert d["cls"] == "exponential" and d["base"] > 1.9, d
+
+
+# --- the bitwise stepper (R10 sec.10) -----------------------------------------
+
+from qca_fragmentation.permutation import orbits as orb          # noqa: E402
+from qca_fragmentation.permutation import coherence as coh       # noqa: E402
+
+
+@pytest.mark.parametrize("N", [6, 7, 8, 9])
+def test_bitwise_step_equals_the_compiled_step(N):
+    """The sublattice identity must hold for the RESET rules too, not just the
+    I/V ones: an even site writes an even bit and reads only odd bits, so the
+    even half-sweep cannot change any input to another even site whatever the
+    local action is."""
+    for rule in range(256):
+        step = orb.make_bitstep(rule, N, "obc0")
+        t = rules.wolfram_to_tuple(rule)
+        for x in range(1 << N):
+            assert step(x) == xca.x_step(x, N, t, "obc0"), (rule, N, x)
+
+
+def test_bitwise_step_refuses_pbc():
+    """At pbc with odd N the sublattices are not independent sets."""
+    with pytest.raises(ValueError):
+        orb.make_bitstep(150, 9, "pbc")
+
+
+def test_sampled_orbit_length_is_a_lower_bound_on_the_exact_maximum():
+    """The sampler exhibits an orbit, so it can never exceed L_max; whether it
+    attains it depends on how much of the space the longest orbit covers.  For
+    73 and 109 it is tight at 400 draws; for 156 it is not always, because its
+    longest orbit lives in a rare sector (R11 sec.7.2)."""
+    from qca_fragmentation.permutation import analysis as an
+    for rule, tight in ((156, False), (73, True), (109, True)):
+        s = an.load_series(rule, "obc0", 24)
+        if 20 not in s["N"]:
+            pytest.skip("sweep not present")
+        i = s["N"].index(20)
+        g = orb.sample_orbits(rule, 20, samples=400, burn=orb.burn_for(rule, 20),
+                              cap=10 ** 7)
+        assert g["abandoned"] == 0
+        assert g["max"] <= s["d_max_recurrent"][i]
+        if tight:
+            assert g["max"] == s["d_max_recurrent"][i]
+
+
+# --- coherence: the correction to R10's first draft ---------------------------
+
+def test_a_functional_graph_still_decoheres():
+    """Rule 90's reset labels de-synchronise around its cycles, so no coherence
+    survives -- exactly R7's finding, reproduced from the X-gate side."""
+    d = coh.dfs_blocks(90, 12, "obc0")
+    assert d["dfs_max"] == 1 and not d["no_jump_anywhere"]
+
+
+def test_rule_232_has_an_exponentially_large_dfs():
+    """The type case: every recurrent state is a fixed point on which no reset
+    ever jumps, so the whole recurrent set spans a decoherence-free subspace."""
+    dims = []
+    for N in (8, 10, 12):
+        d = coh.dfs_blocks(232, N, "obc0")
+        assert d["no_jump_anywhere"] and d["n_blocks"] == 1
+        assert d["dfs_max"] == d["n_rec"]
+        dims.append(d["dfs_max"])
+    assert dims == [44, 117, 305]
+    assert (dims[2] / dims[0]) ** 0.25 == pytest.approx(1.618, abs=0.01)
+
+
+def test_inheritance_is_exactly_the_no_jump_condition():
+    """R10 sec.8 measured that the reset acts as the identity on the recurrent
+    set for 177 of 240 rules.  That is the same statement as 'no Kraus jump
+    fires on a recurrent state', i.e. the DFS criterion."""
+    from qca_fragmentation.permutation import movement as mvm
+    inh = mvm.inheritance(10, "obc0")
+    for r_s, v in inh["rules"].items():
+        d = coh.dfs_blocks(int(r_s), 10, "obc0")
+        assert v["inherits"] == d["no_jump_anywhere"], (r_s, v, d)
+
+
+def test_rule_1_dfs_is_the_golden_mean_shift():
+    """Its recurrent set -- and hence its DFS -- is exactly the set of strings
+    with no two adjacent 1s, the hard-core constrained space."""
+    for N in (10, 12):
+        rec = {x for c in coh.recurrent_states(1, N, "obc0") for x in c}
+        want = {x for x in range(1 << N) if "11" not in format(x, f"0{N}b")}
+        assert rec == want
+        assert coh.dfs_blocks(1, N, "obc0")["dfs_max"] == len(want)
+
+
+def test_dfs_blocks_agree_with_the_exact_cesaro_rank():
+    """
+    The label census is validated against the full superoperator, not just
+    against itself.  For a V-free rule the channel is the same in both families,
+    so the Tier-1b oracle applies: a single DFS block of dimension d whose states
+    are all fixed points must give dim Fix(Phi) = d^2.
+    """
+    from qca_fragmentation.quantum import dissipative_report as dr
+    for rule, N, bc in ((232, 6, "obc0"), (90, 6, "pbc")):
+        d = coh.dfs_blocks(rule, N, bc)
+        g = dr.cesaro_gap(rule, N, bc)
+        assert d["n_blocks"] == 1 and d["cycle_lengths"] == [1], (rule, d)
+        assert g["cesaro_rank"] == d["dfs_max"] ** 2, (rule, d, g)
+        assert g["classical_dim"] == d["dfs_max"]
+
+
+def test_rule_10_pbc_has_the_two_cycle_coherence_R7_found():
+    """R7: rule 10 (DEDD) has a 2-cycle whose Kraus labels are matched, so the
+    coherence between its two states is protected.  Found here from the label
+    side, at N = 8 pbc."""
+    d = coh.dfs_blocks(10, 8, "pbc")
+    assert d["dfs_max"] == 2

@@ -11,6 +11,7 @@
 \newcommand{\cmark}{\ensuremath{\checkmark}}
 \newcommand{\xmark}{\ensuremath{\times}}
 \providecommand{\ket}[1]{|#1\rangle}
+\providecommand{\bra}[1]{\langle#1|}
 \newcommand{\wcc}{\mathrm{wcc}}
 \newcommand{\rec}{\mathrm{rec}}
 \newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
@@ -58,8 +59,13 @@ analyses organise the family: the move from the sector map to the cycle map is
 purely vertical and is a theorem, and the move from a reversible parent to its
 dissipative children shows that for $177$ of $240$ children the resets act as the
 \emph{identity} on the recurrent set, so the child's attractors are literally
-orbits of its parent. Swept to $N=24$ for all $256$ rules. \rt{obc0} only;
-\rt{pbc} is held.
+orbits of its parent. Two corrections to the first draft are folded in: the eight
+exponential orbits are now \emph{exhibited} rather than fitted, by following a
+single orbit with a bitwise sweep that needs no $2^N$ memory --- $203$ million
+states in one orbit at $N=29$ for rule $57$, and $N=40$ for the rest --- and the
+claim that the family has no dark states is withdrawn, since $127$ of the $240$
+irreversible rules carry a decoherence-free subspace, of exponential dimension.
+Swept to $N=24$ for all $256$ rules. \rt{obc0} only; \rt{pbc} is held.
 \end{abstract}
 
 \tableofcontents
@@ -642,13 +648,19 @@ n_\wcc(N)\cdot D_{\max}(N)\;\ge\;2^N
 holds for all $256$ rules at every $N$, and is tight in the same place --- the
 smallest ratio anywhere is exactly $1.0000$, at rule $0$, $N=6$.
 
-\paragraph{Does not carry over.} Everything that depended on the Hadamard being a
-\emph{superposing} gate. There is no interference, so no destructive cancellation
-in $\operatorname{succ}$; no dark states; no distinction between the monitored and
-the unmonitored channel at the level of the support, since a single Kraus branch
-survives on each basis state. The Tier-1d monitored/unmonitored certificate is
-vacuous here. Conversely the transient structure, which was a thin and somewhat
-awkward part of the Hadamard story, becomes the dominant feature.
+\paragraph{Does not carry over.} Interference between distinct trajectories of a
+\emph{basis} state: $\operatorname{succ}$ is single-valued, so no two branches can
+cancel, and at the level of the support the monitored and the unmonitored channel
+agree. Conversely the transient structure, which was a thin and somewhat awkward
+part of the Hadamard story, becomes the dominant feature.
+
+\paragraph{What the first draft of this report got wrong.} It continued that
+sentence with ``no dark states \ldots\ the Tier-1d monitored/unmonitored
+certificate is vacuous here''. That is false, and \S\ref{sec:coherence} is the
+correction. A functional graph is a statement about \emph{populations}; a reset
+is not a unitary, and its two Kraus operators act identically on basis states and
+completely differently on a coherence. Decoherence-free subspaces exist in this
+family, are exponentially large, and are invisible to everything above.
 
 \paragraph{The V-free rules are literally the same circuits.}
 \label{sec:refine-note}
@@ -679,6 +691,203 @@ rules sit at cyclic fraction $1$ and depth $0$ by construction; the irreversible
 ones fall away exponentially.}
 \label{fig:x3}
 \end{figure}
+
+\section{Exhibiting the long orbits}
+\label{sec:exhibit}
+
+\S\ref{sec:above} rests on a fit: eight rules are called exponential because a
+two-parameter exponential describes their longest-cycle series over
+$N=6\ldots24$, where the largest number involved is $6.8$ million for two of them
+and $561$ for the rest. Fitting an exponential to numbers of order $500$ is not a
+demonstration, so this section attacks the same claim from the other side ---
+by \emph{exhibiting} an orbit and measuring its length. A measured orbit is a
+lower bound on $L_{\max}$, and a lower bound that keeps growing exponentially is
+what the claim needs. It is also a proof rather than an estimate: the orbit is
+there.
+
+\paragraph{Why it is cheap.} Following one orbit needs no graph. At \rt{obc0} the
+even sites are an independent set and so are the odd ones, so the brick-wall
+sweep is exactly two \emph{simultaneous} sublattice updates --- an even site
+reads only odd bits, which the even half-sweep does not touch. A simultaneous
+sublattice update is a handful of bitwise operations on the state word:
+\[
+L=(x\ll1)\wedge\text{mask},\quad R=x\gg1,\qquad
+x \;\longmapsto\; \bigl((x\oplus A_V)\wedge\neg A_D\bigr)\vee A_E ,
+\]
+where $A_s$ collects the sublattice sites whose neighbour pattern selects symbol
+$s$. One sweep is about twenty integer operations at any $N$, and the memory is
+one machine word --- against $O(2^N)$ for the full walk. At $1.2$ million sweeps
+per second this puts $N=40$ within reach for rules whose orbits are short, and
+$N=29$ for rules whose orbit is a finite fraction of the space.
+
+\paragraph{The resets do not break it.} The identity is a property of the
+interaction graph, not of the local action: an even site \emph{writes} an even bit
+and \emph{reads} only odd bits, so nothing an even site does --- \rt{I}, \rt{V},
+\rt{D} or \rt{E} --- can change an input to another even site. Verified rather
+than argued: the bitwise sweep agrees with the compiled scalar step
+(\fn{xca.x\_step}) for all $256$ rules at $N=6\ldots11$, every state, zero
+mismatches, and $240$ of those rules carry a reset. At \rt{pbc} with odd $N$ the
+sublattices stop being independent sets and the identity genuinely fails, so the
+constructor refuses \rt{pbc}.
+
+\begin{center}
+\small
+\iftable{tab_r10_orbits_obc0.tex}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_orbits_obc0.pdf}{\textwidth}
+\caption{\textbf{X7, the longest orbit against $N$}, log scale, so an exponential
+is a straight line. Circles: exact, from the full $O(2^N)$ walk. Squares:
+exhibited, by following a single orbit. Left, the six rules whose orbits are
+exponential but modest --- carried from $N=24$ to $N=40$. Right, rules $57$ and
+$99$, whose orbit tracks $0.4\cdot2^N$ (dotted).}
+\label{fig:x7}
+\end{figure}
+
+\paragraph{Result.} The growth continues, on both scales.
+
+\begin{itemize}
+\item Rules $57$ and $99$ have an orbit through a \emph{finite fraction} of the
+  space at every size reached: $31.6$ million states at $N=26$ ($47\%$),
+  $66.9$ million at $N=27$ ($50\%$), $203$ million at $N=29$ ($38\%$). The
+  fit's $b_\rec=2$ is not an extrapolation; the orbit is exhibited.
+\item The other six run from $L_{\max}=391$--$561$ at $N=24$ to $5460$--$21505$ at
+  $N=40$, a factor of $13$--$38$ over sixteen sites, still on a straight line in
+  Figure~\ref{fig:x7}.
+\item The lengths stay conspicuously composite: $420$, $840$, $1260$, $1540$,
+  $2310$, $4620$, $6930$, $9240$ for rule $156$, which is the least-common-multiple
+  structure of R11~\S7.2 continuing to $N=40$.
+\end{itemize}
+
+\paragraph{A caveat on the sampled numbers.} A sampled point is a lower bound and
+its tightness degrades with $N$: the maximal-length sectors are a shrinking share
+of the space, so a fixed number of draws finds them less often. Fitting the
+sampled tail gives bases of $1.18$--$1.23$ against the exact fits' $1.26$--$1.27$,
+and the discrepancy is the bound loosening, not a disagreement about the growth.
+Read the sampled series as a certificate --- there \emph{is} an orbit of at least
+this length --- not as a measurement of $L_{\max}$.
+
+\section{Coherence: what the functional graph cannot see}
+\label{sec:coherence}
+
+Everything above is about where basis states go. This section is about what
+happens to a coherence between two of them, and it reverses one of the first
+draft's conclusions.
+
+\subsection{A functional graph does not mean a unitary}
+
+A reset is a channel, not a gate. Reset-to-$\ket0$ has two Kraus operators,
+$\ket0\bra0$ and $\ket0\bra1$, and \emph{both} send a basis state to one whose
+target bit is $0$ --- which is exactly why $\operatorname{succ}$ is single-valued
+and the graph is functional. On a coherence they do something else entirely. For
+$\rho=\ket x\bra y$ the channel gives $\sum_\mu K_\mu\ket x\bra y K_\mu^\dagger$,
+and a term survives only if the \emph{same} $\mu$ has a non-zero matrix element on
+both sides. At a reset site that means the coherence survives iff $x$ and $y$
+already agree on the target bit when the reset fires. So define the label of one
+sweep,
+\[
+J(x) \;=\; \{\,\text{sites where a reset fired on a bit not already holding the
+reset value}\,\},
+\]
+the set of places where the \emph{off}-diagonal Kraus branch was taken. Then
+\[
+\ket x\bra y \;\longmapsto\;
+\begin{cases}
+\ket{\Phi(x)}\bra{\Phi(y)}, & J(x)=J(y),\\[2pt]
+0, & \text{otherwise.}
+\end{cases}
+\]
+$J$ does not affect where a basis state goes, so the functional graph is blind to
+it. This is the same-label join of the Tier-1d pair graph (R7), specialised to a
+family in which $\operatorname{succ}$ happens to be single-valued.
+
+\begin{proposition}[DFS blocks]
+$x\sim y$ iff $J(\Phi^t x)=J(\Phi^t y)$ for every $t\ge0$ is an equivalence
+relation on the recurrent set, and the span of each class is a decoherence-free
+subspace: the channel restricted to it is the permutation, hence unitary.
+\end{proposition}
+
+\subsection{\S\ref{sec:move2}'s inheritance measurement was a DFS criterion}
+
+The connection to what has already been computed is exact. ``The reset acts as the
+identity on the recurrent set'' --- the property \S\ref{sec:move2} verified for
+$177$ of the $240$ irreversible rules --- says precisely that no reset ever takes
+its off-diagonal branch there, i.e.\ $J\equiv\emptyset$ on $\mathrm{Rec}$. Then
+all labels agree trivially and the \emph{whole recurrent set} is a single DFS.
+Checked rule by rule: the inheritance flag and the no-jump flag agree for
+$240$ of $240$ rules. The measurement was right; the reading of it was missing.
+
+\begin{center}
+\iftable{tab_r10_dfs_obc0.tex}
+\end{center}
+
+\noindent At $N=12$, \textbf{$127$ of the $240$ irreversible rules carry a
+decoherence-free subspace of dimension greater than one}, and for $121$ of them it
+is the entire recurrent set. (The $16$ reversible rules trivially have one of
+dimension $2^N$: they are unitary.) So the family has protected coherence
+almost half the time, and the first draft's ``no dark states'' was wrong by a
+wide margin.
+
+\subsection{The dimensions are exponential, and they are constrained shifts}
+
+\begin{center}
+\small
+\iftable{tab_r10_dfsseries_obc0.tex}
+\end{center}
+
+\noindent Two of these are exactly identifiable, and they are the sort of space
+the constrained-model literature is about.
+
+\begin{itemize}
+\item \textbf{Rule $1$} (\rt{VDDD}). Its recurrent set --- and therefore its DFS ---
+  is exactly the golden-mean shift, the strings with no two adjacent $1$s, of
+  dimension $F_{N+2}$. That is the hard-core / Rydberg-blockade constrained space,
+  and here it is a subspace on which a dissipative circuit acts unitarily.
+\item \textbf{Rules $76$ and $73$} (\rt{IIID}, \rt{VIID}). The strings with no
+  three consecutive $1$s, dimension following the tribonacci recurrence
+  $a_N=a_{N-1}+a_{N-2}+a_{N-3}$, base $1.83929$, the tribonacci constant.
+\item \textbf{Rule $22$} (\rt{IVVD}) gives the Lucas numbers $L_{N+1}$ exactly:
+  $76,199,521,1364,3571$ at $N=8\ldots16$, base $\varphi$.
+\item \textbf{Rule $232$} (\rt{DIIE}) has $44,117,305,798,2091$, base
+  $\to\varphi$; the sequence is not one we recognise.
+\end{itemize}
+
+\noindent And the negative case is equally sharp. Rules $90$ and $165$
+(\rt{DEED}, \rt{EDDE}) --- the two GF(2)-affine ones of \S\ref{sec:vfree} --- have
+long cycles whose reset labels de-synchronise, every block has dimension $1$, and
+no coherence survives at all. R7 reached the same conclusion from the Hadamard
+side; the criterion is label synchronisation around the cycle, not the mere
+existence of a cycle.
+
+\subsection{Cross-check against the exact channel}
+
+Rule $232$ is V-free, so it is the \emph{same circuit} under both gates
+(\S\ref{sec:refine-note}) and the Tier-1b superoperator machinery applies to it
+unchanged. Its exact Cesaro rank is
+\[
+\dim\operatorname{Fix}(\Phi)\;=\;49,\;121,\;289 \quad\text{at } N=4,5,6\ (\rt{obc0}),
+\]
+i.e.\ $n_{\rm rec}^2$ with $n_{\rm rec}=7,11,17$ --- a full matrix algebra $M_d$,
+which is the signature of a decoherence-free subspace of dimension $d$. The
+monitored description sees $d$ classical pointer states and misses all $d^2-d$
+coherences; the Tier-1b classification calls the attractor
+``$d\times$mixing, $d_k=1$'' because it works class by class and the coherence is
+\emph{between} classes. Our label census gives the same $d$ from the X side, with
+no superoperator: $17$, $44$, $117$, $305$ at $N=6,8,10,12$.
+
+\subsection{What this does and does not rescue}
+
+It does not make the sector structure interesting --- a cycle decomposition is
+still what every bijection has. What it does is locate the quantum content
+precisely. It is not in where the populations go, which is classical; it is in
+which coherences the resets are forced to leave alone, and that is a genuinely
+non-classical, exponentially large structure carried by a circuit whose
+populations are deterministic. It is also the one place where this family is
+\emph{not} a control for the Hadamard one: for the $81$ V-free rules the channel
+is identical, so these decoherence-free subspaces are exactly as present in R1--R9
+as they are here.
 
 \section{Validation}
 \label{sec:valid}
@@ -727,10 +936,15 @@ artefact and not a family of offenders.
   five points; the map is $\mathrm{GF}(2)$-linear, so the orbit structure is
   governed by the order of a matrix over $\mathrm{GF}(2)$ and should be derivable
   rather than fitted. That derivation is not attempted here.
-\item \textbf{Rules $57$ and $99$.} These two have $b_\rec=2$: a single orbit
-  through a constant fraction of the space, $6.8\times10^6$ states of
-  $1.7\times10^7$ at $N=24$, while still having $1798$ sectors. Neither the
-  orbit length nor the sector count has been derived.
+\item \textbf{Rules $57$ and $99$.} A single orbit through a constant fraction of
+  the space --- $203$ million states at $N=29$ (\S\ref{sec:exhibit}) --- while
+  still having exponentially many sectors. Neither the orbit length nor the
+  sector count has been derived.
+\item \textbf{The DFS dimensions.} \S\ref{sec:coherence} identifies rule $1$'s
+  as the golden-mean shift and rules $76$/$73$'s as the no-\rt{111} shift, but
+  rule $232$'s $44,117,305,798,2091$ and rule $205$'s tribonacci-base sequence are
+  unidentified, and no general criterion is given for which constrained shift a
+  given table produces.
 \item \textbf{The recurrent sets that are Fibonacci.} \S\ref{sec:three}
   identifies $\mathrm{Rec}(X_1)$ exactly as the golden-mean shift. Twenty-one
   further rules have $|\mathrm{Rec}|\in\{F_N,F_{N+1},F_{N+2}\}$ and their sets
