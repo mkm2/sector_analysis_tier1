@@ -1,0 +1,410 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\providecommand{\ket}[1]{|#1\rangle}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\rec}{\mathrm{rec}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\title{\textbf{Report R11 --- One rule space, two gates}\\
+\large What changes, and what cannot change, when the Hadamard is replaced by
+$X$}
+\author{QCA Sector Analysis project (Tier 1)}
+\date{2026-07-31 \quad\small(R9 \texttt{1e.1} vs R10 \texttt{1x.1}, \rt{obc0},
+common window $N\le16$)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+R1--R9 analyse $256$ brick-wall rules whose active gate is the Hadamard; R10
+analyses the same $256$ symbol tables with the gate changed to $X$. This report
+compares them. The two families turn out not to be independent: because applying
+the Hadamard to a site produces \emph{both} values of the target bit, the flip is
+always one of the outcomes, so the $X$ transition graph is a subgraph of the
+Hadamard one and the $X$ sectors \textbf{refine} the Hadamard sectors --- verified
+exhaustively for all $256$ rules and over $2816$ swept units, with zero
+exceptions. Three consequences organise everything else. The gate can only ever
+\emph{split} sectors, never merge them, so no rule loses sector structure: of the
+$51$ rules with an exponentially growing sector count under $H$, all $51$ keep one
+under $X$, and $39$ rules with no structure under $H$ acquire it. The $81$ rules
+with no \rt{V} are literally the same circuit under both gates, which makes the
+two independent engines a cross-implementation test that they pass on all $916$
+shared units. And on the $16$-rule unitary/reversible baseline --- the only fully
+like-for-like comparison, since both families satisfy sectors\,$=$\,attractors
+there --- the gate change is nearly a reflection: $9$ of the $11$ rules that have
+a single giant sector under $H$ end up with no giant sector at all under $X$,
+$7$ of them at the opposite extreme of the axis, with rule $204$ the sole fixed point and
+rule $51$ going from a single sector of $2^N$ states to $2^{N-1}$ two-cycles.
+Quantitatively almost nothing transfers: on the unitary baseline the Pearson
+correlation between the two gates' exponents is $+0.17$ in $a$ and $+0.03$ in
+$b$. \rt{obc0} only; \rt{pbc} is held for both families.
+\end{abstract}
+
+\tableofcontents
+
+\section{What is being compared, and on what window}
+\label{sec:method}
+
+The rule encoding is shared exactly. A rule is a tuple
+$(r_{00},r_{01},r_{10},r_{11})$ over $\{\rt{I},\rt{V},\rt{D},\rt{E}\}$; the
+circuit applies the symbol selected by a site's two neighbours, brick-wall, even
+sublattice ascending and then odd, each reading the current state. Both engines
+compile the same step list from \fn{core/cycle.py}. The single difference is what
+\rt{V} means:
+
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+symbol & Hadamard family (R1--R9) & permutation family (R10) \\
+\midrule
+\rt{I} & identity & identity \\
+\rt{V} & Hadamard $H$ & $X$ \\
+\rt{D} & reset to $\ket0$ & reset to $\ket0$ \\
+\rt{E} & reset to $\ket1$ & reset to $\ket1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{The window.} R9 fits its bases on $N\le16$ and R10 on $N\le24$. A base
+fitted on a longer window is a different number, so every comparison below
+rebuilds the X-gate descriptors on \textbf{the same window as the Hadamard ones},
+$N\le16$, through the identical \fn{scaling/sectors.py} machinery. Nothing is
+compared across windows. Where an $N=24$ number is quoted it is labelled. One
+consequence is visible in the tables: rule $108$'s X-gate cycle length is
+classified \emph{linear} on $N\le16$ and \emph{exponential} on $N\le24$, which is
+a statement about how much data the classifier has, not about the rule.
+
+\paragraph{What is not compared.} The Hadamard family carries objects with no
+counterpart here --- dark states, the monitored/unmonitored certificate of R7, the
+protected-coherence gap --- because they need interference. Conversely the
+permutation family's transient structure has no Hadamard counterpart worth
+plotting. The comparison is restricted to the two coordinates both families
+define: the sector count $n_\wcc\sim a^N$ and the largest sector
+$D_{\max}\sim b^N$, plus the growth \emph{class} of each.
+
+\section{The two families are nested}
+\label{sec:refine}
+
+The comparison is not between two unrelated data sets. There is an exact
+containment, and it is elementary.
+
+\begin{theorem}[refinement]
+\label{thm:refine}
+For every rule, every $N$ and both boundary conventions,
+$\operatorname{succ}_X(x)\in\operatorname{succ}_H(x)$ for every basis state $x$.
+Hence the $X$ transition graph is a subgraph of the Hadamard transition graph on
+the same vertex set, and the $X$ sectors refine the Hadamard sectors: every
+$X$-component lies inside a single $H$-component, and every Hadamard sector is a
+disjoint union of $X$ sectors.
+\end{theorem}
+
+\begin{proof}
+Consider one elementary step. At \rt{I}, \rt{D}, \rt{E} sites the two families do
+the same thing. At a \rt{V} site the Hadamard maps $\ket{b}$ to
+$(\ket0\pm\ket1)/\sqrt2$, so the measured or Kraus-resolved successor set contains
+\emph{both} values of the target bit; the $X$ action, which sets it to $1-b$, is
+one of them. The circuit is a composition of such steps, and choosing the flip at
+every \rt{V} site along the sweep is one branch of the Hadamard successor set. So
+each $X$ edge is an $H$ edge. Union-find over a subgraph produces a refinement.
+\end{proof}
+
+\begin{corollary}
+\label{cor:mono}
+$n_\wcc^X(N)\ge n_\wcc^H(N)$ and $D_{\max}^X(N)\le D_{\max}^H(N)$, pointwise in
+$N$; asymptotically $a_X\ge a_H$ and $b_X\le b_H$.
+\end{corollary}
+
+\begin{corollary}
+\label{cor:nofree}
+A rule with no \rt{V} never invokes the gate, so its two circuits are the
+\emph{same map}. There are $81$ such rules ($204$ and the $80$ V-free ones), and
+for them the refinement is an equality.
+\end{corollary}
+
+\noindent All of this is verified rather than assumed:
+
+\begin{center}
+\iftable{tab_r11_structure_obc0.tex}
+\end{center}
+
+\noindent The last row is worth its own sentence. The Hadamard sectors come from
+a set-valued successor relation streamed through union-find; the X-gate sectors
+come from a numpy step table and a three-colour walk. The two share no code below
+\fn{core/cycle.py::\_compile}. On the $81$ rules where they must agree they agree
+exactly --- the full sector-size multiset, at every $N$ where both were run. That
+is the strongest cross-implementation check either report has.
+
+\paragraph{Reading the theorem physically.} The Hadamard's extra edge is the
+non-flip branch, and it is exactly what \emph{glues} $X$ sectors together. So one
+may think of the Hadamard sector structure as the $X$ sector structure after
+gluing: superposition is a coarsening operation on the sector lattice. That is
+the reverse of the intuition one might start with --- that a superposing gate
+would \emph{create} structure --- and it explains the census in the next section
+without any further input.
+
+\section{No rule loses its sector structure}
+\label{sec:classes}
+
+Corollary~\ref{cor:mono} says the sector count cannot fall. The growth-class
+cross-tabulation makes the consequence concrete:
+
+\begin{center}
+\iftable{tab_r11_classes_obc0.tex}
+\end{center}
+
+\noindent Every entry below the diagonal is zero, as it must be. Reading the rows:
+
+\begin{itemize}
+\item \textbf{All $51$ rules with an exponential sector count under the Hadamard
+  keep one under $X$.} Hilbert-space fragmentation, measured by the growth class
+  of the sector count, is not a property of the Hadamard: it survives replacing
+  the superposing gate by a permutation.
+\item $39$ of the $173$ rules with a \emph{constant} sector count under $H$ ---
+  no structure at all, one or two sectors covering the space --- acquire structure
+  under $X$: $28$ exponential, $6$ linear, $5$ irregular. The gate change can only
+  add.
+\item $10$ of the $30$ rules with a linear sector count under $H$ become
+  exponential; the other $20$ stay linear.
+\end{itemize}
+
+\noindent The reverse reading is the one that matters for the Hadamard reports:
+if a rule has no sector structure under $X$, it has none under $H$ either. The
+$134$ rules in the top-left cell are structureless under both gates, and that is a
+property of their symbol table rather than of the dynamics.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_cmp_all_obc0.pdf}{\textwidth}
+\caption{\textbf{C2, all $256$ rules on a common window.} Left: the sector plane,
+Hadamard point (circle) joined to $X$ point (square) for each rule that has a
+\rt{V}; the $81$ V-free rules are drawn as diamonds, one point each, because the
+gate cannot move them (Corollary~\ref{cor:nofree}). Almost every Hadamard point
+sits at $(1,2)$ --- one giant sector --- and the gate change fans them out to the
+right. Right: the sector-count base under one gate against the other. Nothing lies
+below the diagonal, which is Corollary~\ref{cor:mono} drawn.}
+\label{fig:c2}
+\end{figure}
+
+\section{The unitary / reversible baseline}
+\label{sec:baseline}
+
+The $16$ rules built from \rt{I} and \rt{V} alone are the cleanest comparison
+available, for a specific reason: on the Hadamard side they are unitary, so
+sectors and monitored attractors coincide (R9's check A2), and on the $X$ side
+they are reversible, so sectors and cycles coincide (R10's F1). The same object is
+being measured in both families, and the comparison cannot be confounded by the
+transient structure that dominates everywhere else.
+
+\begin{center}
+\small
+\iftable{tab_r11_baseline_obc0.tex}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_cmp_baseline_obc0.pdf}{\textwidth}
+\caption{\textbf{C1, the baseline.} Left: each of the $16$ rules under both
+gates, joined by the move; marker area counts rules sharing a cell. Right: the
+sector-count base rule by rule. Rule $204$ is the only one the gate leaves where
+it was.}
+\label{fig:c1}
+\end{figure}
+
+\noindent Three things stand out, and none of them is a small effect.
+
+\paragraph{The gate nearly reflects the family.} Eleven of the $16$ sit at
+$(a,b)=(1,2)$ under the Hadamard --- a single sector of size $2^N$, no
+fragmentation whatever. Under $X$, nine of those eleven end at $b=1$: the largest
+sector is no longer a fixed fraction of the space at all. Seven go to $(2,1)$
+exactly --- exponentially many tiny orbits, maximal fragmentation --- and $153$ and
+$195$ to $(1.83,1)$. Only $57$ and $99$ keep $b=2$, moving left instead of down.
+The extreme case is rule $51$
+(\rt{VVVV}). Under the Hadamard it is the most ergodic rule in the family, one
+sector covering the whole basis. Under $X$ it is $x\mapsto\bar x$, so the space
+splits into $2^{N-1}$ two-cycles. Same symbol table, opposite ends of the sector
+axis, and Theorem~\ref{thm:refine} says which way round it must be: the Hadamard
+picture is the $X$ picture after gluing.
+
+\paragraph{Only $204$ is fixed.} Rule $204$ is \rt{IIII}, the identity, which
+contains no \rt{V} and therefore cannot move (Corollary~\ref{cor:nofree}). It is
+the only one of the $16$ with that property, and correspondingly the only rule
+whose $a$ is identical in the two columns.
+
+\paragraph{The four fragmented rules stay fragmented, with different
+constants.} $156$, $198$, $108$, $201$ are the four rules whose sector count grows
+exponentially under the Hadamard, and all four still do under $X$ --- but the
+constants have no relation:
+\[
+\begin{array}{lcc}
+ & \text{Hadamard} & X \\[2pt]
+156,\ 198 & (\varphi,\ 4^{1/5}) & (2,\ 1.298) \\
+108,\ 201 & (1.7549,\ \varphi) & (1.828,\ 2),\ (1.847,\ 1.234)
+\end{array}
+\]
+The Hadamard values are exact algebraic numbers with derivations behind them
+(R2~\S3's room-packing saddle point for $4^{1/5}$; the golden ratio and the root
+of $x^3=2x^2-x+1$ from integer recurrences). The X-gate values are not the same
+numbers and are not obviously algebraic. Fragmentation transfers; the
+\emph{grammar} producing it does not.
+
+\paragraph{And the correlation is nil.}
+
+\begin{center}
+\iftable{tab_r11_correlation_obc0.tex}
+\end{center}
+
+\noindent On the $16$ baseline rules the Pearson correlation between the two
+gates is $+0.17$ in $a$ and $+0.03$ in $b$, with mean absolute differences of
+$0.65$ and $0.63$ on axes of total width $1$. Read the ``all $256$'' row with
+care: its apparent $r=+0.64$ is inflated by the $81$ rules that are the same
+circuit under both gates and therefore correlate perfectly by construction.
+Restricted to the $175$ rules that actually contain a \rt{V}, $r$ falls to
+$+0.47$ and $+0.33$. The gate does not preserve exponents.
+
+\section{R9's headline sets under the other gate}
+\label{sec:survivors}
+
+R9 singled out three sets of rules. Each is asked here what it does under $X$.
+
+\begin{center}
+\small
+\iftable{tab_r11_survivors_obc0.tex}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_cmp_survivors_obc0.pdf}{\textwidth}
+\caption{\textbf{C3, the three sets.} Hadamard (circle) to $X$ (square) in the
+sector plane, common window. Labels list the rules sharing a destination cell.}
+\label{fig:c3}
+\end{figure}
+
+\subsection{The open-system-fragmented rules}
+
+R9's central physical claim is that eight V+reset rules keep an exponentially
+growing sector count, and that because a sector is an enclosure --- $\mathrm{span}$
+of a weak component is invariant under every Kraus operator --- this is
+fragmentation of an \emph{open} quantum system rather than of a unitary circuit
+with noise added afterwards.
+
+All eight remain exponential under $X$, and four of them do something stronger:
+$140$, $196$, $206$, $220$ have \emph{exactly} the same sector count as under the
+Hadamard, $2584$ at $N=16$, because they are V-free and hence the same circuit
+(Corollary~\ref{cor:nofree}). Their appearance in R9's list is therefore not a
+statement about the Hadamard at all: those four rules are classical, and their
+fragmentation is a classical fact that R9 measured with a quantum engine. The
+other four --- $156$, $198$, $108$, $201$ --- do contain a \rt{V}, and for them the
+$X$ count is strictly larger ($7744$ against $2584$; $16560$ against $10252$;
+$12076$ against $5842$), exactly as Corollary~\ref{cor:mono} requires.
+
+This is a sharpening of R9 rather than a contradiction of it. The claim ``these
+rules fragment as open quantum systems'' stands; what R11 adds is that for half
+of them the Hadamard was never doing any work.
+
+\subsection{The linear-sector-count rules and the pinned frontier}
+
+R9~\S6.4 identified six rules --- $44$, $100$, $110$, $124$, $188$, $230$ --- whose
+sector count is strictly linear, $N+1$ of them, carried by a charge that is the
+position of the extremal excitation; \S6.5 showed the charge is an \rt{obc0}
+artefact, collapsing to two sectors on the ring. Under $X$ the six split three
+ways:
+
+\begin{itemize}
+\item $188$ (\rt{IIVE}) and $230$ (\rt{IVIE}) keep \emph{exactly} $17$ sectors at
+  $N=16$, the same linear count as under the Hadamard, though they contain a
+  \rt{V} and are therefore not forced to. For these two the pinned-frontier charge
+  is gate-independent.
+\item $110$ and $124$ become exponential but only just, $149$ sectors at $N=16$
+  against $17$.
+\item $44$ and $100$ jump to $595$.
+\end{itemize}
+
+\noindent The frontier family of \S6.5 adds $60$ and $102$, and those two go all
+the way to $4116$ sectors --- from a linear count to $a=2$, the maximum. So the
+pinned frontier is a Hadamard-specific structure for six of the eight rules that
+carry it, and survives the gate change for two. Combined with R9's finding that it
+does not survive the ring, the charge is doubly fragile: it depends on the
+boundary condition \emph{and}, mostly, on the gate. That is a good reason not to
+build a physical story on it, and it is the sort of thing the comparison is for.
+
+\section{What each family says that the other cannot}
+\label{sec:asym}
+
+The comparison is not symmetric, and the asymmetries are informative.
+
+\paragraph{Only the Hadamard family has interference.} Dark states, the
+distinction between the monitored and the unmonitored channel at the level of the
+support, and R7's certificate all need a successor set with more than one element
+and amplitudes that can cancel. Under $X$ there is a single Kraus branch on each
+basis state, so those objects are vacuous. The X-gate family is a \emph{classical}
+control: it isolates what in R9 is graph combinatorics from what is quantum
+mechanics. The answer, from \S\ref{sec:classes}, is that the sector axis is almost
+entirely the former.
+
+\paragraph{Only the permutation family has a clean recurrent structure.} With
+out-degree one, $n_\rec=n_\wcc$ identically and every basin is a sector, so
+questions about attractors have exact answers (R10~\S\S5--8). In the Hadamard
+family the same questions are genuinely harder --- rule $22$ has three attractors
+inside two sectors --- which is why R9 could assert A4 in one direction only. The
+permutation family is where the attractor-level statements can be proved.
+
+\paragraph{The exclusion curve belongs to both.} $ab\ge2$ is a theorem about
+partitions and applies wherever sectors partition the basis, so it binds both
+families identically, and neither produced a violation. It does \emph{not} apply
+to cycles, and R10~\S5 makes that precise: the recurrent set is not the whole
+space, so the analogous constraint degenerates.
+
+\section{Open items}
+
+\begin{enumerate}
+\item \textbf{\rt{pbc}.} Held for both families. The refinement theorem is proved
+  without reference to the boundary, so it should carry over verbatim, and it will
+  be worth checking that the ring does not break the $81$-rule identity.
+\item \textbf{The gluing map.} Theorem~\ref{thm:refine} says each Hadamard sector
+  is a union of $X$ sectors, but nothing here counts them: the natural next
+  observable is the number of $X$ sectors per Hadamard sector, whose growth would
+  measure exactly how much the non-flip branch glues.
+\item \textbf{A third gate.} $X$ and $H$ are the two extremes --- a permutation and
+  a maximally superposing gate. A partial rotation would interpolate, and the
+  refinement theorem suggests the sector lattice would interpolate monotonically
+  with it.
+\item \textbf{The four classical rules in R9's open-fragmented list.} $140$,
+  $196$, $206$, $220$ deserve a purely combinatorial derivation of their $2584$
+  sectors; nothing quantum is involved and the count is Fibonacci.
+\end{enumerate}
+
+\section{Reproduce}
+
+\begin{verbatim}
+cd code
+python -m qca_fragmentation.permutation.compare --bc obc0
+python -m qca_fragmentation.permutation.compare_tables --bc obc0
+python -m qca_fragmentation.permutation.compare_figures --bc obc0 --rebuild
+python -m pytest qca_fragmentation/tests/test_gate_compare.py -q
+\end{verbatim}
+
+\begin{sloppypar}
+Code: \fn{permutation/compare.py} (the refinement checks, the common-window
+descriptors, the correlations), \fn{permutation/compare\_tables.py},
+\fn{permutation/compare\_figures.py}. Data: \fn{results\_wcc/} and
+\fn{results\_xgate/}, \fn{analytics/gate\_compare\_obc0.json}.
+\end{sloppypar}
+
+\end{document}

@@ -504,11 +504,17 @@ def test_open_fragmented_bases_are_exact_algebraic_numbers():
     for rule in (73, 109):
         assert by[rule]["a"] == pytest.approx(SUPERGOLDEN, abs=1e-9), rule
         assert by[rule]["a_exact"], rule
-    # and the two b values that are exact constants
-    assert by[28]["b"] == pytest.approx(2.0, abs=1e-9)
-    assert by[70]["b"] == pytest.approx(2.0, abs=1e-9)
+    # The b values.  70/157/199 all have D_max = 2*3^(N/2-1) on even N, so
+    # b = sqrt(3) exactly -- 70 used to be reported at 2.0, which the corrected
+    # volume-fraction guard (R9 sec.6.3, 2026-07-31) removed along with seven
+    # other spurious base-2 descriptors.
+    assert by[70]["b"] == pytest.approx(3 ** 0.5, abs=1e-9)
     assert by[157]["b"] == pytest.approx(3 ** 0.5, abs=1e-9)
     assert by[199]["b"] == pytest.approx(3 ** 0.5, abs=1e-9)
+    # 28 is the one case where the two parities do not share a base: its even
+    # branch settles to a ratio of exactly 3 per two sites (sqrt 3) and its odd
+    # branch to 1 + sqrt 3, so the single fitted number lies between them.
+    assert 3 ** 0.5 > by[28]["b"] > (1 + 3 ** 0.5) ** 0.5
 
 
 def test_supergolden_and_plastic_are_the_roots_they_should_be():

@@ -45,8 +45,11 @@ def tab_families(bc: str, d: Dict) -> str:
         P = [p for p in d["points"] if p["family"] == f]
         if not P:
             continue
-        bw = sum(1 for p in P if (p["d_max_wcc"]["base"] or 1) > 1.02)
-        br = sum(1 for p in P if (p["d_max_recurrent"]["base"] or 1) > 1.02)
+        # by growth CLASS, not by base: a linearly growing cycle also has a
+        # base above 1 under a naive fit, and mixing the two is exactly the
+        # error the kappa-band guard in scaling/sectors.py now prevents.
+        bw = sum(1 for p in P if p["d_max_wcc"]["cls"] == "exponential")
+        br = sum(1 for p in P if p["d_max_recurrent"]["cls"] == "exponential")
         cf = np.median([p["cyclic_fraction_at_Nmax"] for p in P])
         td = np.median([p["transient_depth_at_Nmax"] for p in P])
         rows.append(f"{f} & ${len(P)}$ & ${bw}$ & ${br}$ & "
@@ -105,12 +108,111 @@ def tab_validation(bc: str, d: Dict) -> str:
             + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
 
 
+def tab_cycle_classes(bc: str, d: Dict) -> str:
+    """Growth class of the longest CYCLE, by family: the collapse, tabulated."""
+    from . import movement as mv
+    cen = mv.cycle_class_census(d)
+    rows = []
+    for f in ("reversible", "V+reset", "V-free"):
+        r = cen.get(f)
+        if not r:
+            continue
+        rows.append(f"{f} & ${r['rules']}$ & ${r['constant']}$ & "
+                    f"${r['polynomial']}$ & ${r['exponential']}$ & "
+                    f"${r['irregular']}$ \\\\")
+    tot = {k: sum(cen[f].get(k, 0) for f in cen)
+           for k in ("rules", "constant", "polynomial", "exponential",
+                     "irregular")}
+    rows.append("\\hline\nall & $%d$ & $%d$ & $%d$ & $%d$ & $%d$ \\\\"
+                % (tot["rules"], tot["constant"], tot["polynomial"],
+                   tot["exponential"], tot["irregular"]))
+    return ("\\begin{tabular}{lrrrrr}\n\\hline\n"
+            "family & rules & bounded & linear & exponential & irregular "
+            "\\\\\n\\hline\n" + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_growing_cycles(bc: str, d: Dict) -> str:
+    """Every rule whose longest cycle grows with $N$ at all."""
+    from . import movement as mv
+    rows = []
+    for g in mv.growing_cycles(d):
+        if g["cls"] == "polynomial":
+            continue
+        tail = ",\\,".join(f"{v:,}".replace(",", r"\,") for v in g["tail"])
+        base = "--" if g["base"] is None else f"{g['base']:.4f}"
+        rows.append(f"${g['rule']}$ & \\texttt{{{g['tuple']}}} & "
+                    f"{g['cls']} & ${base}$ & ${g['parent']}$ & ${tail}$ \\\\")
+    return ("\\begin{tabular}{rllrrl}\n\\hline\n"
+            "rule & tuple & class & base & parent & longest cycle, "
+            "$N=20\\ldots24$ \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_reset_only(bc: str, d: Dict) -> str:
+    """The 16 all-reset rules as boolean functions of the two neighbours."""
+    from . import movement as mv
+    rows = []
+    for r in mv.reset_only_table(d):
+        rows.append(f"${r['rule']}$ & \\texttt{{{r['tuple']}}} & {r['f']} & "
+                    f"{'yes' if r['affine'] else 'no'} & {r['cls']} & "
+                    f"${r['cyc_max']:,}$ \\\\".replace(",", r"\,"))
+    return ("\\begin{tabular}{rllllr}\n\\hline\n"
+            "rule & tuple & $x_i\\mapsto f(l,r)$ & GF(2)-affine & cycle class "
+            "& longest cycle seen \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_movement(bc: str, d: Dict) -> str:
+    """Movement 1, WCC -> recurrent, summarised by family."""
+    from . import movement as mv
+    rows = []
+    M = mv.movement(d)
+    for f in ("reversible", "V+reset", "V-free"):
+        v = [m for m in M if m["family"] == f and m["drop"] is not None]
+        if not v:
+            continue
+        dr = [m["drop"] for m in v]
+        rows.append(f"{f} & ${len(v)}$ & ${sum(1 for m in v if m['stays'])}$ & "
+                    f"${np.median(dr):.3f}$ & ${max(dr):.3f}$ & "
+                    f"${_sci(np.median([m['cyclic_fraction'] for m in v]))}$ "
+                    f"\\\\")
+    return ("\\begin{tabular}{lrrrrr}\n\\hline\n"
+            "family & rules with both bases & no move & median drop & "
+            "max drop & median cyclic frac. \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_parents(bc: str, d: Dict) -> str:
+    """Movement 2, parent -> children, one row per reversible parent."""
+    from . import movement as mv
+    inh = mv.load_inheritance(bc) or mv.build_inheritance(bc)
+    rows = []
+    for p in mv.parent_summary(d, inh):
+        if not p["n_children"]:
+            continue
+        md = "--" if p["median_drop"] is None else f"{p['median_drop']:.3f}"
+        rows.append(
+            f"${p['parent']}$ & \\texttt{{{p['tuple']}}} & "
+            f"${p['n_children']}$ & {p['parent_cls_cycle']} & "
+            f"${p['children_exp_sector_count']}$ & ${p['children_exp_cycle']}$ "
+            f"& ${p['inherits']}/{p['inherit_of']}$ & ${md}$ \\\\")
+    return ("\\begin{tabular}{rlrlrrrr}\n\\hline\n"
+            "parent & tuple & children & parent cycle & exp.\\ sectors & "
+            "exp.\\ cycles & inherit & median drop \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
 def write_all(bc: str = "obc0") -> None:
     d = analysis.load(bc) or analysis.build(bc)
     os.makedirs(TEXDIR, exist_ok=True)
     for name, txt in ((f"tab_r10_coverage_{bc}", tab_coverage(bc)),
                       (f"tab_r10_families_{bc}", tab_families(bc, d)),
                       (f"tab_r10_reversible_{bc}", tab_reversible(bc, d)),
+                      (f"tab_r10_cycle_classes_{bc}", tab_cycle_classes(bc, d)),
+                      (f"tab_r10_growing_{bc}", tab_growing_cycles(bc, d)),
+                      (f"tab_r10_resetonly_{bc}", tab_reset_only(bc, d)),
+                      (f"tab_r10_movement_{bc}", tab_movement(bc, d)),
+                      (f"tab_r10_parents_{bc}", tab_parents(bc, d)),
                       (f"tab_r10_validation_{bc}", tab_validation(bc, d))):
         p = os.path.join(TEXDIR, f"{name}.tex")
         with open(p, "w") as f:

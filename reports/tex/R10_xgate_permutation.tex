@@ -50,8 +50,15 @@ partition sum rule and the exclusion curve carry over unchanged, and record the
 one place where the two families genuinely differ in physics rather than in
 bookkeeping: the permutation circuits fragment into exponentially many,
 exponentially large sectors whose \emph{attractors are almost always short}. Only
-$24$ of $256$ rules have an exponentially long cycle, and for the $80$ V-free
-rules the number is zero. Swept to $N=24$ for all $256$ rules. \rt{obc0} only;
+$8$ of $256$ rules have an exponentially long cycle, $207$ have a bounded one,
+and for the $80$ V-free rules the number of exponential cycles is zero --- with a
+complete explanation, since a V-free rule is a boolean function of its two
+neighbours and only the two GF(2)-affine ones sustain long orbits. Two movement
+analyses organise the family: the move from the sector map to the cycle map is
+purely vertical and is a theorem, and the move from a reversible parent to its
+dissipative children shows that for $177$ of $240$ children the resets act as the
+\emph{identity} on the recurrent set, so the child's attractors are literally
+orbits of its parent. Swept to $N=24$ for all $256$ rules. \rt{obc0} only;
 \rt{pbc} is held.
 \end{abstract}
 
@@ -190,13 +197,58 @@ has its own caveats and is held for a separate report.
 \end{center}
 
 \noindent Read the two middle columns against each other. \textbf{$239$ of $256$
-rules have exponentially large sectors, and only $24$ have exponentially long
+rules have exponentially large sectors, and only $8$ have exponentially long
 cycles.} For the $80$ V-free rules the count is \emph{zero}: not one of them has a
 cycle whose length grows exponentially, while $78$ of them have exponentially
 large sectors. The median cyclic fraction --- the share of the basis that is
 periodic at all --- is $1.8\times10^{-7}$ for the V+reset family and
 $1.5\times10^{-5}$ for the V-free family at $N=24$, with a median transient depth
 of $13$ and $12$ steps.
+
+The full cycle-growth census refines the middle column, and is the table to read
+if one wants the shape of the collapse rather than its headline:
+
+\begin{center}
+\iftable{tab_r10_cycle_classes_obc0.tex}
+\end{center}
+
+\noindent $207$ of $256$ rules have a cycle length that does not grow with $N$ at
+all, $27$ grow \emph{linearly}, $8$ exponentially and $14$ are irregular. Of the
+irregular ones all but two simply alternate with the parity of $N$ (rule $23$
+runs $21,1,23,1,25$ over $N=20\ldots24$: at odd $N$ its longest cycle is a single
+fixed point); the two that are genuinely erratic are $90$ and $165$, and
+\S\ref{sec:vfree} says why.
+
+\paragraph{A correction to the first draft of this report.} That count was $24$
+in the first version, and $16$ of the $24$ were fitting artefacts. Two failure
+modes, both invisible to the sector series and both exposed by the cycle series,
+have been fixed in \fn{scaling/sectors.py}:
+
+\begin{itemize}
+\item Over a window of a dozen sizes $\ln N$ is very nearly an affine function of
+  $N$, so the volume-fraction discriminator --- which decides whether
+  $D_{\max}=c\,2^N N^\alpha$ by asking whether $D_{\max}/2^N$ is better explained
+  by a power of $N$ than by an exponential --- could be won by the power-law
+  model on a \emph{bounded} series, whose ratio falls like $-N\ln2$. Rule $45$'s
+  longest cycle is $1,2,2,1,2,2,1,2$ and was reported as growing like $2^N$. The
+  rule now requires the series to be eventually non-decreasing and $|\alpha|$ to
+  be a plausible prefactor power ($\le8$; the steepest genuine sector case in R9
+  is $-4.61$).
+\item BIC selects the three-parameter model M2 for a straight \emph{line} as
+  well, because $\ln y$ is concave: the growth goes into $\alpha\ln N$ and the
+  leftover $\kappa$ is small but not zero, so the class came out ``exponential''
+  and the two-parameter fit then reported a base near $1.1$ for an arithmetic
+  progression. Rule $1$'s cycle lengths run $44,47,50,\ldots,65$, exactly $+3$
+  per site. The leave-one-out band of M2's $\kappa$ settles it --- for rule $1$ it
+  lies entirely \emph{below} $1$ --- so an exponential label now requires that
+  band to exclude zero rate.
+\end{itemize}
+
+\noindent Neither guard touches a single one of R9's $512$ sector descriptors
+(checked by rebuilding the map and diffing: zero changes, identical verdict
+tally), which is the expected outcome --- these are cycle-series pathologies. The
+number of rules with exponentially large \emph{sectors} is likewise unchanged at
+$239$. Every claim below uses the corrected classification.
 
 So the permutation circuits are the textbook classical picture: a state falls
 through a long transient into a short attractor, and essentially all of the
@@ -268,6 +320,249 @@ $195$ --- and also $108$ and $201$ sit at $b=2$ exactly with $a\approx1.79$--$1.
 so $ab\approx3.6$--$3.7$, far above the exclusion curve: many orbits \emph{and} a
 largest orbit that is a fixed fraction of the space.
 
+\section{Sectors, recurrent sets and cycles are three different sizes}
+\label{sec:three}
+
+The rest of this report is about a question that the two panels of
+Figure~\ref{fig:x1} pose immediately: how can $239$ rules have exponentially
+large \emph{sectors} while only $8$ have exponentially long \emph{cycles}? The
+answer is that these count different things, and only one of them is obliged to
+be large.
+
+\paragraph{Three quantities.} For a functional graph, write
+\[
+\text{sectors } \{S_k\},\qquad
+\mathrm{Rec}=\bigcup_k C_k \ \text{(the union of the cycles)},\qquad
+L_k=|C_k| .
+\]
+Then $\sum_k|S_k| = 2^N$ exactly --- sectors partition the basis --- while
+$\sum_k L_k = |\mathrm{Rec}|$, which is whatever the dynamics leaves behind. At
+$N=24$ the median irreversible rule has $|\mathrm{Rec}|/2^N \approx
+3.6\times10^{-7}$: six states out of sixteen million.
+
+\paragraph{Only the sector map has an exclusion curve.} The hyperbola is a
+statement about a partition and nothing else. With $n_\wcc\sim a^N$ and
+$D_{\max}\sim b^N$,
+\[
+a^N b^N \;\gtrsim\; \sum_k |S_k| \;=\; 2^N \quad\Longrightarrow\quad ab\ge2 .
+\]
+Run the same argument on the cycles and it gives $n_\rec\,L_{\max}\ge
+|\mathrm{Rec}|$, i.e.\ $a\,b_\rec \ge c$ where $c$ is the growth base of the
+recurrent set --- \emph{not} $2$. And here $c$ is essentially $a$ itself: almost
+every cycle is a fixed point, so $|\mathrm{Rec}|\approx n_\rec$, and fitting both
+series gives $|c-a|<0.01$ for $222$ of the $240$ rules where both bases exist.
+The constraint on the cycle map therefore degenerates to $b_\rec\ge1$, which is
+no constraint at all. \textbf{The sector map is forced to be exponential
+somewhere; the cycle map is free to collapse, and does.} That is the whole
+content of the two panels, and it is bookkeeping, not physics.
+
+\paragraph{The physics underneath is an anticorrelation.} A large sector is
+evidence of information \emph{loss}: a component is big because many states share
+a future, i.e.\ because the preimage trees are bushy. A long cycle is evidence of
+information \emph{preservation}: to return to $x$ after $L$ steps the map must be
+injective all along the orbit. Contraction inflates the first and deflates the
+second \emph{simultaneously}, so the two coordinates are not merely uncorrelated,
+they are pushed in opposite directions. Only a bijection can be large in both,
+which is precisely why the reversible rules are the ones on the diagonal of
+Figure~\ref{fig:x2} and the only family with a full column of exponential cycles.
+
+\paragraph{How unusual is that?} A uniformly random map on $n=2^{24}$ points has,
+by the classical Flajolet--Odlyzko estimates, about $\sqrt{\pi n/2}\approx5100$
+cyclic points, a longest cycle near $0.78\sqrt n\approx3200$, a tail length
+$\sqrt{\pi n/8}\approx2600$ and only $\tfrac12\ln n\approx8$ components. The
+median irreversible X-gate rule has \textbf{six} cyclic points and a transient
+depth of \textbf{$13$}: three orders of magnitude fewer recurrent states and two
+orders of magnitude shallower than a random map of the same size. A random map
+would have exponentially long cycles, with base $\sqrt2$. So the collapse of the
+cycle map is not a generic property of irreversible maps --- these circuits are
+far more strongly contracting than chance, which is what locality plus a reset
+buys.
+
+\paragraph{An exponentially large recurrent set with only linear cycles.} The
+three sizes really are independent. Rule $1$ (\rt{VDDD}) has a recurrent set of
+size $F_{N+2}$ --- Fibonacci, base $\varphi$ --- and it is not merely the count
+that matches: the recurrent set \emph{is} the golden-mean shift,
+\[
+\mathrm{Rec}(X_1) \;=\; \{x\in\{0,1\}^N : x \text{ contains no } 11\},
+\]
+verified by set equality at $N=10,12,13$ and by cardinality over the whole sweep.
+Its longest cycle meanwhile is $44,47,50,\ldots,65$, growing by exactly $3$ per
+site. Fifteen further rules share the count $F_{N+2}$ and six more the shifted
+counts $F_{N+1}$ and $F_N$. So one can have an exponentially large attractor set
+made almost entirely of \emph{fixed points}: exponential degeneracy without any
+long-time dynamics --- the classical analogue of a large ground-space rather than
+of a long orbit. That distinction is invisible in the base plane, which is why
+the growth-class table above is the honest presentation.
+
+\section{Movement 1: from the sector map to the cycle map}
+\label{sec:move1}
+
+The two panels of Figure~\ref{fig:x1} are the same $256$ rules seen twice, so the
+natural object is the \emph{move}, not the pair of pictures. Drawing it in one
+plane makes an easy theorem visible:
+
+\begin{proposition}
+For every X-gate rule the move from the sector map to the cycle map is a straight
+vertical drop: the horizontal coordinate is identical by \eqref{eq:F1}, and
+$L_k\le|S_k|$ pointwise, so $b_\rec\le b_\wcc$ always.
+\end{proposition}
+
+\noindent In the Hadamard family (R9's F3) the corresponding move had both
+components, and the horizontal one --- sectors merging into shared basins ---
+carried the interest. Here that component is zero by construction, and what is
+left is a clean measurement of how much of a basin is periodic.
+
+\begin{center}
+\iftable{tab_r10_movement_obc0.tex}
+\end{center}
+
+\noindent The distribution is close to two-valued. The $16$ reversible rules do
+not move at all --- for them the sector \emph{is} the cycle, so the drop is
+exactly $0$ and this is a check on the pipeline, not a measurement. Every other
+rule moves, with a median drop of exactly $1.000$: the modal irreversible rule
+has an exponentially large sector, $b_\wcc=2$, and a bounded cycle, $b_\rec=1$.
+Nothing lands \emph{above} the diagonal, as the proposition requires
+($0$ of $241$).
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_movement_obc0.pdf}{\textwidth}
+\caption{\textbf{X4, movement WCC $\to$ recurrent.} Left: filled marker at the
+largest sector, hollow marker at the longest cycle, joined by the move. Every
+arrow is vertical --- that is \eqref{eq:F1}, not an artefact of the layout ---
+and every arrow points down. The reversible rules (blue) have no arrow. Right:
+the drop, log-scaled counts; the pile at $1.0$ is the modal rule, exponential
+sector and bounded cycle.}
+\label{fig:x4}
+\end{figure}
+
+\section{Why the V-free family collapses}
+\label{sec:vfree}
+
+The sharpest case of the collapse is the V-free family: $78$ of $80$ have
+exponentially large sectors and \emph{none} has an exponentially long cycle.
+Here the mechanism is completely identifiable rather than statistical.
+
+A V-free rule's symbols are \rt{I} (keep $x_i$), \rt{D} (set $0$) and \rt{E} (set
+$1$). Take the extreme case first: if \emph{all four} symbols are resets --- $16$
+rules --- then the new bit does not depend on the old bit at all, and the rule is
+literally a boolean function of the two neighbours, $x_i\mapsto f(l,r)$. There
+are exactly $16$ such functions and the rules enumerate them:
+
+\begin{center}
+\iftable{tab_r10_resetonly_obc0.tex}
+\end{center}
+
+\noindent Fourteen of the sixteen are constant, a (possibly negated) projection,
+or monotone, and every one of them has a longest cycle of $1$ or $2$ at every
+size computed. The two that are neither are $f=l\oplus r$ and its negation:
+rules $90$ (\rt{DEED}) and $165$ (\rt{EDDE}). Those two are $\mathrm{GF}(2)$-affine,
+so the sweep is a linear map over $\mathrm{GF}(2)$, its orbit lengths are
+multiplicative orders, and they are exactly the two V-free rules in the whole
+family whose cycle length is not bounded: $63, 62, 2047, 8, 1023$ at
+$N=20\ldots24$, erratic in the way orders of matrices over a finite field are
+erratic. \emph{The XOR column is the entire exception.}
+
+The remaining $64$ V-free rules mix \rt{I} with resets, and all $64$ have a
+bounded cycle. So across the family the pattern is: with no $X$ available, the
+only way to keep a bit oscillating is to compute it linearly from its
+neighbours, and only two of the sixteen local functions do that.
+
+Contrast the rules whose cycles \emph{do} grow:
+
+\begin{center}
+\small
+\iftable{tab_r10_growing_obc0.tex}
+\end{center}
+
+\noindent Every single one contains a \rt{V}, apart from $90$ and $165$. This is
+the answer to the question the family poses: exponential sector structure is
+forced by the sum rule and is available to any strongly contracting map, whereas
+an exponentially long cycle needs a genuine local \emph{flip}, and $80$ rules do
+not have one. Note also that most of the ``irregular'' cycle rules are simply
+parity-alternating --- rule $23$ runs $21,1,23,1,25$, its longest cycle collapsing
+to a fixed point at odd $N$ --- so the truly erratic set is $\{90,165\}$ alone.
+
+\section{Movement 2: from a reversible parent to its children}
+\label{sec:move2}
+
+Every rule has a coherent parent: switch the resets off, $\rt{D},\rt{E}\to\rt{I}$
+(\fn{rules.coherent\_part}). The parent is always one of the $16$ reversible
+rules, and a parent with $k$ identity slots has $3^k-1$ children, so the $16$
+clusters cover all $240$ irreversible rules --- the identity $204$ alone accounts
+for the whole V-free family of $80$. This is R9's F6 clustering carried over, and
+here it can be pushed further than R9 could, because the parent's dynamics is a
+permutation and one may ask whether a child's attractor is literally an
+\emph{orbit of its parent}.
+
+\begin{center}
+\iftable{tab_r10_parents_obc0.tex}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_parents_sector_obc0.pdf}{\textwidth}
+\caption{\textbf{X5, parent movement in the sector plane.} Star: the reversible
+parent. Dots: its children. $227$ of the $233$ arrows point up \emph{and} to the
+left --- adding a reset merges sectors (fewer of them, so $a$ falls) and inflates
+the survivors (so $b$ rises), sliding the cluster along and above the exclusion
+curve. The visible exceptions are the clusters of $57$ and $99$, whose children
+move \emph{down} from $b=2$, and one child of $108$ that moves right.}
+\label{fig:x5}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_parents_cycle_obc0.pdf}{\textwidth}
+\caption{\textbf{X6, the same clusters in the cycle plane.} The $x$-coordinates
+are identical to X5 by \eqref{eq:F1}; only the heights differ. Thirteen of the
+fifteen non-empty clusters collapse onto $b_\rec=1$ entirely. Only $108$ and
+$201$ keep a child at the parent's height, and those two children are $109$ and
+$73$.}
+\label{fig:x6}
+\end{figure}
+
+\subsection{Inheritance: the reset acts as the identity on the recurrent set}
+
+\begin{proposition}[verified, not proved]
+For $177$ of the $240$ children, the child's map and its parent's map agree on
+the child's recurrent set. Consequently every attractor of such a child is an
+orbit of its reversible parent: dissipation \emph{prunes} the parent's orbit list
+without creating new periodic behaviour.
+\end{proposition}
+
+\noindent Checked exhaustively at $N=12$ and $N=13$ --- one size of each parity,
+since the brick-wall sublattices are only independent sets at even $N$ --- with
+the same $177$ rules passing at both. The $63$ exceptions do manufacture
+attractors of their own, but with the two $\mathrm{GF}(2)$-affine rules of
+\S\ref{sec:vfree} set aside they are all short: at $N=12$ the longest among them
+is a $13$-cycle, against $63$ for $90$ and $165$. And the ordering
+$L_{\max}(\text{child}) \le
+L_{\max}(\text{parent})$ holds for $234$ of $240$; the six exceptions
+($90$, $165$, $173$, $175$, $229$, $245$) are all descendants of the identity
+$204$, whose own longest cycle is $1$, so the ceiling they exceed is the
+degenerate one.
+
+This is the cleanest statement in the report about what dissipation does to
+recurrence, and it explains the second column of the parent table. An
+exponentially long cycle can only be \emph{inherited}, so it can only appear
+below a parent that has one; six reversible rules do ($57$, $99$, $108$, $156$,
+$198$, $201$), and exactly two children manage to keep it:
+
+\begin{itemize}
+\item $73$ (\rt{VIID}) under $201$ (\rt{VIII}): identical longest-cycle series,
+  $253,340,391,462,561$ at $N=20\ldots24$. Every cycle of $73$ at $N=12$ is a
+  cycle of $201$ --- all $253$ of them --- inside a recurrent set that the reset
+  has cut down from $1018$ orbits to $253$.
+\item $109$ (\rt{EIIV}) under $108$ (\rt{IIIV}): likewise, $187,238,253,340,391$,
+  and $243$ of $108$'s $1442$ orbits survive at $N=12$.
+\end{itemize}
+
+\noindent Both are minimally dissipative --- one reset symbol in the table --- and
+both keep the parent's \emph{longest} orbit, not merely a long one. The cyclic
+fraction, however, is destroyed: $0.15$ and $0.11$ against the parent's $1$.
+The attractor survives; the basin structure around it does not.
+
 \section{What carries over, and what does not}
 \label{sec:carry}
 
@@ -287,6 +582,20 @@ the unmonitored channel at the level of the support, since a single Kraus branch
 survives on each basis state. The Tier-1d monitored/unmonitored certificate is
 vacuous here. Conversely the transient structure, which was a thin and somewhat
 awkward part of the Hadamard story, becomes the dominant feature.
+
+\paragraph{The V-free rules are literally the same circuits.}
+\label{sec:refine-note}
+A rule with no \rt{V} in its table never invokes the gate, so its Hadamard
+circuit and its X circuit are the same map, symbol for symbol. That is $81$ of
+the $256$ rules ($204$ plus the $80$ V-free ones), and it makes the two stores a
+genuine cross-implementation test: the Hadamard engine (set-valued successors,
+union-find over \fn{core/cycle.py}) and the permutation engine (a numpy step
+table and a three-colour walk) must return identical sector partitions for all
+$81$, and they do, at every $N$ where both were run. More generally the X-gate
+graph is a \emph{subgraph} of the Hadamard one --- flipping the target bit is one
+of the two Hadamard outcomes --- so the X sectors always refine the Hadamard
+sectors. R11 develops that relation; here it is worth stating because it is the
+reason the two reports may be compared at all.
 
 \paragraph{The one identity that is a genuine control.} $n_\rec=n_\wcc$ held for
 \textbf{every unit computed}, with zero failures, and the union-find sector
@@ -311,18 +620,37 @@ ones fall away exponentially.}
 \iftable{tab_r10_validation_obc0.tex}
 \end{center}
 
-\noindent The last row is the point of the family rather than a failure: the cycle
-map has no exclusion curve, because cycles do not partition the basis, and $217$
-of $241$ rules do sit below $ab=2$ there. In the sector map, where the curve does
-bind, only \emph{two} rules fall below --- and neither is a violation. Both are
-the degenerate case R9~\S5 documents, where the sector count is sub-exponential
-so the base product silently drops the polynomial factor: $X_{25}$
-(\rt{VIVD}) has an essentially constant sector count
-($2,3,2,2,3,2$ over $N=19\ldots24$) with $b=1.99887$, and $X_{182}$ (\rt{IVVE})
-a linear one ($11,11,12,12,13,13$) with $b=1.881$. With $a=1$ the inequality
-degenerates to $b\ge2$, approached from below at finite $N$, which is what both
-are doing. Carrying the sweep from $N=20$ to $N=24$ took this count from $14$ to
-$2$, so the residue is a finite-size artefact and not a family of offenders.
+\noindent The last row is the point of the family rather than a failure: the
+cycle map has no exclusion curve, because cycles do not partition the basis
+(\S\ref{sec:three}), and $223$ of $241$ rules do sit below $ab=2$ there. In the
+sector map, where the curve does bind, only \emph{four} rules fall below --- and
+none is a violation. All four are the degenerate case R9~\S5 documents, where the
+sector count is sub-exponential so the base product silently drops the polynomial
+factor, leaving the inequality to degenerate to $b\ge2$ approached from below:
+
+\begin{center}
+\begin{tabular}{rlll}
+\toprule
+rule & tuple & $n_\wcc$ over $N=19\ldots24$ & $ab$ \\
+\midrule
+$25$ & \rt{VIVD} & $2,3,2,2,3,2$ & $1.99887$ \\
+$74$ & \rt{DEID} & $7,8,8,8,9,9$ & $1.91986$ \\
+$88$ & \rt{DIED} & $7,8,8,8,9,9$ & $1.93756$ \\
+$182$ & \rt{IVVE} & $11,11,12,12,13,13$ & $1.88127$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Two of the four are a cross-check rather than a finding: $74$ and $88$
+are V-free, so by \S\ref{sec:refine-note} their dynamics is \emph{identical}
+under both gates, and they are exactly two of the seven rules R9 lists in the
+same degenerate category. The two families reach the same verdict on the same
+rules through two independent code paths.
+
+Carrying the sweep from $N=20$ to $N=24$ took the count of sub-$2$ products from
+$14$ to $2$ under the fitting convention of the first draft, and to $4$ under the
+corrected one of \S\ref{sec:headline}; either way the residue is a finite-size
+artefact and not a family of offenders.
 
 \section{Open items}
 
@@ -332,11 +660,20 @@ $2$, so the residue is a finite-size artefact and not a family of offenders.
   five points; the map is $\mathrm{GF}(2)$-linear, so the orbit structure is
   governed by the order of a matrix over $\mathrm{GF}(2)$ and should be derivable
   rather than fitted. That derivation is not attempted here.
-\item \textbf{The $24$ rules with exponentially long cycles.} Six are
-  reversible (where a long cycle is unsurprising); the other eighteen are
-  V+reset rules that nonetheless sustain an exponentially long attractor despite
-  a median cyclic fraction of $10^{-7}$. That list is short and deserves the same
-  treatment R9 gave its eight open-system-fragmented rules.
+\item \textbf{Rules $57$ and $99$.} These two have $b_\rec=2$: a single orbit
+  through a constant fraction of the space, $6.8\times10^6$ states of
+  $1.7\times10^7$ at $N=24$, while still having $1798$ sectors. Neither the
+  orbit length nor the sector count has been derived.
+\item \textbf{The recurrent sets that are Fibonacci.} \S\ref{sec:three}
+  identifies $\mathrm{Rec}(X_1)$ exactly as the golden-mean shift. Twenty-one
+  further rules have $|\mathrm{Rec}|\in\{F_N,F_{N+1},F_{N+2}\}$ and their sets
+  are \emph{not} the same set; a classification of which constrained shift each
+  one is has not been attempted.
+\item \textbf{Inheritance as a theorem.} \S\ref{sec:move2} verifies at two
+  sizes that the reset acts as the identity on the recurrent set for $177$ of
+  $240$ children. A local criterion separating those $177$ from the $63$ --- which
+  reset symbol can fire on a recurrent state, and when --- would turn a
+  measurement into a proof.
 \item \textbf{Comparison with the Hadamard sector map} rule by rule. The two
   families share a symbol table but not a single quantitative law; whether any
   rule-level correlation survives the gate change is untested.
@@ -345,20 +682,25 @@ $2$, so the residue is a finite-size artefact and not a family of offenders.
 \section{Reproduce}
 
 \begin{verbatim}
-python -m qca_fragmentation.permutation.sweep --bc obc0 --n-min 6 --n-max 20
+cd code
+python -m qca_fragmentation.permutation.sweep --bc obc0 --n-min 6 --n-max 24
 python -m qca_fragmentation.permutation.analysis --bc obc0
-python -m qca_fragmentation.permutation.tables   --bc obc0
-python -m qca_fragmentation.permutation.figures  --bc obc0 --rebuild
+python -m qca_fragmentation.permutation.movement --bc obc0 \
+       --rebuild-inheritance
+python -m qca_fragmentation.permutation.tables --bc obc0
+python -m qca_fragmentation.permutation.figures --bc obc0 --rebuild
 python -m pytest qca_fragmentation/tests/test_xgate.py -q
 \end{verbatim}
 
 \begin{sloppypar}
 Code: \fn{permutation/xca.py} (the map, ported from \fn{core/cycle.py}),
 \fn{permutation/functional.py} (the one-pass decomposition and the union-find
-cross-check), \fn{permutation/analysis.py}, \fn{permutation/tables.py},
+cross-check), \fn{permutation/analysis.py}, \fn{permutation/movement.py} (the
+two movement analyses and the inheritance check), \fn{permutation/tables.py},
 \fn{permutation/figures.py}. Data:
-\fn{results\_xgate/\{rule\}\_\{bc\}.jsonl} and
-\fn{analytics/xgate\_map\_obc0.json}.
+\fn{results\_xgate/\{rule\}\_\{bc\}.jsonl},
+\fn{analytics/xgate\_map\_obc0.json} and
+\fn{analytics/xgate\_inheritance\_obc0.json}.
 \end{sloppypar}
 
 \end{document}

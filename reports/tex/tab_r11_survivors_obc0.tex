@@ -1,0 +1,32 @@
+\begin{tabular}{rlrrrrl}
+\hline
+ & & \multicolumn{2}{c}{$H$: sector count} & \multicolumn{2}{c}{$X$: sector count} & $X$ cycle \\
+rule & tuple & class & at $N=16$ & class & at $N=16$ & class \\
+\hline
+\multicolumn{7}{l}{\emph{open-system fragmented (R9 \S6.3)}} \\
+\quad $156$ & \texttt{IIVI} & exponential & $2\,584$ & exponential & $7\,744$ & exponential \\
+\quad $198$ & \texttt{IVII} & exponential & $2\,584$ & exponential & $7\,744$ & exponential \\
+\quad $140$ & \texttt{IIDI} & exponential & $2\,584$ & exponential & $2\,584$ & constant \\
+\quad $206$ & \texttt{IEII} & exponential & $2\,584$ & exponential & $2\,584$ & constant \\
+\quad $196$ & \texttt{IDII} & exponential & $2\,584$ & exponential & $2\,584$ & constant \\
+\quad $220$ & \texttt{IIEI} & exponential & $2\,584$ & exponential & $2\,584$ & constant \\
+\quad $108$ & \texttt{IIIV} & exponential & $10\,252$ & exponential & $16\,560$ & polynomial \\
+\quad $201$ & \texttt{VIII} & exponential & $5\,842$ & exponential & $12\,076$ & exponential \\
+\multicolumn{7}{l}{\emph{strictly linear sector count (R9 \S6.4)}} \\
+\quad $44$ & \texttt{IIDV} & polynomial & $17$ & exponential & $595$ & constant \\
+\quad $100$ & \texttt{IDIV} & polynomial & $19$ & exponential & $595$ & constant \\
+\quad $110$ & \texttt{IEIV} & polynomial & $17$ & exponential & $149$ & polynomial \\
+\quad $124$ & \texttt{IIEV} & polynomial & $17$ & exponential & $149$ & polynomial \\
+\quad $188$ & \texttt{IIVE} & polynomial & $17$ & polynomial & $17$ & polynomial \\
+\quad $230$ & \texttt{IVIE} & polynomial & $17$ & polynomial & $17$ & polynomial \\
+\multicolumn{7}{l}{\emph{pinned frontier (R9 \S6.5)}} \\
+\quad $44$ & \texttt{IIDV} & polynomial & $17$ & exponential & $595$ & constant \\
+\quad $60$ & \texttt{IIVV} & polynomial & $17$ & exponential & $4\,116$ & constant \\
+\quad $100$ & \texttt{IDIV} & polynomial & $19$ & exponential & $595$ & constant \\
+\quad $102$ & \texttt{IVIV} & polynomial & $17$ & exponential & $4\,116$ & constant \\
+\quad $110$ & \texttt{IEIV} & polynomial & $17$ & exponential & $149$ & polynomial \\
+\quad $124$ & \texttt{IIEV} & polynomial & $17$ & exponential & $149$ & polynomial \\
+\quad $188$ & \texttt{IIVE} & polynomial & $17$ & polynomial & $17$ & polynomial \\
+\quad $230$ & \texttt{IVIE} & polynomial & $17$ & polynomial & $17$ & polynomial \\
+\hline
+\end{tabular}

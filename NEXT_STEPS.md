@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10 regenerated; full suite 658 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10/R11 regenerated; full suite 680 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -357,15 +357,17 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      bijective for EVERY N (an intersection), and at fixed N the ECA bijective
      set is larger (N=7 also has 45,75,89,150). Only 51 and 204 are in both.
    - **Headline: large sectors, short attractors.** 239 of 256 rules have
-     exponentially large sectors but only 24 have exponentially long cycles;
-     for the 80 V-free rules that count is ZERO. Median cyclic fraction at
-     N=24: 1.8e-7 (V+reset), 1.5e-5 (V-free); median transient depth 13 and 12.
+     exponentially large sectors but only **8** have exponentially long cycles
+     (207 bounded, 27 linear, 14 irregular); for the 80 V-free rules the
+     exponential count is ZERO. Median cyclic fraction at N=24: 1.8e-7
+     (V+reset), 1.5e-5 (V-free); median transient depth 13 and 12.
+     [The count was 24 in the first draft; 16 were fitting artefacts, see the
+     three guards in scaling/sectors.py added 2026-07-31.]
    - Sum rule and the finite-N hyperbola carry over unchanged (256/256, tightest
-     exactly 1.0000). Sector map: only **2** rules with ab<2 at N<=24 (was 14 at
-     N<=20) and both are the degenerate sub-exponential case of R9 sec.5 --
-     X25 VIVD has a near-constant sector count with b=1.99887, X182 IVVE a
-     linear one with b=1.881. Cycle map: 217/241 below 2, as expected, since
-     cycles do not partition.
+     exactly 1.0000). Sector map: 4 rules with ab<2 at N<=24, all the degenerate
+     sub-exponential case of R9 sec.5 (X25, X74, X88, X182; 74 and 88 are V-free
+     and are the same rules R9 lists). Cycle map: 223/241 below 2, as expected,
+     since cycles do not partition.
    - Reversible anchors: 204 identity (2^N fixed points), 51 global flip
      (2^(N-1) 2-cycles), 150 = the linear map x_i -> x_i XOR x_{i-1} XOR x_{i+1}
      whose longest cycle is only N+1. Contrast 57/99 with 110 sectors at N=17,
@@ -376,7 +378,80 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      builder that lifts the loop over x out of Python -- N=22 went 30s -> 1.06s,
      which is what made N=24 affordable. Scalar and vectorised paths are checked
      against each other. Store `results_xgate/`, version 1x.1. 60 tests.
+   - **Movement analyses (added 2026-07-31, R10 sec.5-8).** (i) WCC -> recurrent
+     is a purely VERTICAL drop, by theorem: a is shared by F1 and L_k <= |S_k|
+     pointwise. 16 reversible rules do not move; median drop exactly 1.000.
+     (ii) parent -> children (resets off, D,E -> I): 16 clusters, 3^k-1 children
+     each, the identity's cluster being the whole V-free family. For 177 of 240
+     children the reset acts as the IDENTITY on the recurrent set, so the
+     child's attractors are literally orbits of its reversible parent; the 63
+     exceptions make only short cycles. An exponential cycle can only be
+     inherited: 6 reversible parents have one and exactly 2 children keep it
+     (73 under 201, 109 under 108, both with one reset symbol).
+   - **Why V-free collapses.** The 16 all-reset rules ARE the 16 boolean
+     functions f(l,r); 14 are constant/projection/monotone with cycle <= 2, and
+     the only two that are neither are XOR and XNOR = rules 90 and 165, the
+     GF(2)-affine ones, which are exactly the two V-free rules with unbounded
+     cycles. Every other rule with a growing cycle contains a V.
+   - **Three sizes, not two** (R10 sec.5): sectors partition (sum rule -> ab>=2),
+     the recurrent set does not (|Rec|/2^N ~ 3.6e-7 median), and the cycle map's
+     analogous bound degenerates to b>=1 because |Rec| ~ n_rec. Rule 1's
+     recurrent set is EXACTLY the golden-mean shift (no 11), size F_{N+2}, while
+     its longest cycle grows by 3 per site: an exponentially large attractor set
+     made of fixed points. 21 more rules have |Rec| in {F_N, F_{N+1}, F_{N+2}}.
+     Random-map yardstick at N=24: 5100 cyclic points and depth 2600 expected,
+     against 6 and 13 observed.
    - **pbc NOT run** (held with R9's).
+
+17. **R11 — Hadamard vs X, one rule space two gates — DONE (2026-07-31).**
+   `reports/tex/R11_gate_comparison.tex`, 8 pp, obc0, common window N<=16
+   (R9 fits on 16 and R10 on 24, so the X descriptors are REBUILT on 16; never
+   compare across windows).
+   - **REFINEMENT THEOREM.** succ_X(x) is an element of succ_H(x) for every rule,
+     state, N and bc -- the Hadamard produces both values of the target bit and
+     the flip is one of them. So the X graph is a SUBGRAPH of the H graph and the
+     X sectors REFINE the H sectors. Verified exhaustively (256/256 at N=8,9) and
+     pointwise over 2816 units: n_wcc^X >= n_wcc^H and D_max^X <= D_max^H, zero
+     failures. Superposition is a COARSENING operation on the sector lattice.
+   - Corollary: no rule loses sector structure. Class cross-tab is strictly
+     upper-triangular -- all 51 H-exponential rules stay exponential under X, and
+     39 of the 173 H-constant rules gain structure (28 exponential).
+   - Corollary: the 81 rules with no V are the SAME circuit under both gates.
+     The two engines share no code below core/cycle.py::_compile and agree on
+     all 916 shared units -- the strongest cross-implementation check we have.
+   - Unitary/reversible baseline (the only like-for-like comparison, since
+     A2 and F1 both give sectors = attractors): 11 of 16 sit at (1,2) under H;
+     under X 9 of those 11 end at b=1, 7 at (2,1) exactly. 204 is the only fixed
+     point (no V). Pearson r between the gates is +0.17 (a) and +0.03 (b) on the
+     16; +0.47/+0.33 on the 175 rules with a V. Fragmentation transfers, the
+     grammar producing it does not.
+   - R9's headline sets: all 8 open-system-fragmented rules stay exponential,
+     but 4 of them (140/196/206/220) are V-free -- the same circuit -- so the
+     Hadamard was never doing any work there. The pinned frontier survives the
+     gate for only 2 of 8 (188, 230 keep exactly N+1 sectors); 60/102 go to
+     a=2. Combined with R9 sec.6.5 the frontier charge is fragile in BOTH the
+     boundary condition and the gate.
+   - Code: `permutation/compare.py`, `compare_tables.py`, `compare_figures.py`;
+     `analytics/gate_compare_obc0.json`; 12 tests in `tests/test_gate_compare.py`.
+
+18. **Fitting-layer correction (2026-07-31), affects R9 and R10.** Three guards
+   in `scaling/sectors.py`, all found by running the R9 fitting convention on the
+   X-gate CYCLE series:
+   - `_volume_fraction_base` (is D_max = c*2^N*N^alpha?) must now (a) see an
+     eventually non-decreasing series, (b) have |alpha| <= 8, and (c) win on the
+     FULL series and not only on a 6-point tail. Over a short window ln N is
+     nearly affine in N, so a bounded or slowly growing series could win by
+     accident.
+   - An "exponential" class now requires the leave-one-out band of M2's kappa to
+     exclude zero rate; BIC selects M2 for straight LINES too (X1's cycles run
+     44,47,...,65 and were called exponential with base 1.0952).
+   - Effect on R10: the exponential-cycle count 24 -> 8. Effect on R9: EIGHT
+     D_max descriptors lose a spurious base 2 -- 28, 70, 78, 92, 132, 133, 164,
+     222. 70/78 are now sqrt(3) exactly, matching 157/199 (D_max = 2*3^(N/2-1)
+     on even N); 28/92 sit between their two parity branches (even sqrt 3, odd
+     sqrt(1+sqrt 3)). No verdict changes: all eight were and remain above the
+     curve, products now 2.20-2.33 instead of 2.65-3.24. R9 sec.6.3 carries the
+     correction note; tab_r9_classes/exact/openfrag regenerated.
 
 ## Open from R8 (C150)
 8. **Derive dim Fix(U_w) = C(ceil(N/2), w/2)** and the w-resolved version of the

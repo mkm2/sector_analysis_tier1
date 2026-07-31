@@ -240,3 +240,104 @@ def test_the_sixteen_are_not_the_six_reversible_eca():
     assert any(len(per_n[N]) > 6 for N in per_n)      # accidental at fixed N
     assert always & _REVERSIBLE_16 == {51, 204}
     assert len(_REVERSIBLE_16) == 16 and len(always) == 6
+
+
+# --- movement analyses (R10 sec.5-8) ------------------------------------------
+
+from qca_fragmentation.permutation import movement as mvmod   # noqa: E402
+from qca_fragmentation.scaling import sectors as _sectors      # noqa: E402
+
+
+def test_children_partition_the_rule_space():
+    """Every rule is a descendant of exactly one reversible parent, and a parent
+    with k identity slots has 3^k - 1 children."""
+    seen = []
+    for parent in rules.UNITARY_RULES:
+        kids = mvmod.children(parent)
+        k = sum(1 for s in rules.wolfram_to_tuple(parent) if s == "I")
+        assert len(kids) == 3 ** k - 1, (parent, len(kids))
+        seen.extend(kids)
+    assert sorted(seen) == sorted(set(range(256)) - set(rules.UNITARY_RULES))
+    assert len(mvmod.children(204)) == 80          # the whole V-free family
+
+
+def test_the_reset_only_rules_are_the_sixteen_boolean_functions():
+    assert len(mvmod.RESET_ONLY) == 16
+    affine = {r for r in mvmod.RESET_ONLY
+              if mvmod._is_affine(tuple(1 if s == "E" else 0
+                                        for s in rules.wolfram_to_tuple(r)))}
+    # the projections are affine too (degenerate in one argument), so the set
+    # is larger than {90, 165}; what is unique to those two is XOR itself
+    assert {90, 165} <= affine
+    for r in mvmod.RESET_ONLY:
+        tt = tuple(1 if s == "E" else 0 for s in rules.wolfram_to_tuple(r))
+        xor_like = tt in ((0, 1, 1, 0), (1, 0, 0, 1))
+        assert xor_like == (r in (90, 165))
+
+
+@pytest.mark.parametrize("N", [10, 11])
+def test_a_cycle_never_exceeds_its_sector(N):
+    """L_k <= |S_k| pointwise, which is what makes movement 1 point downward."""
+    for rule in (0, 1, 22, 73, 90, 108, 156, 201, 204):
+        res = fnl.analyze(rule, N, "obc0")
+        assert res["d_max_recurrent"] <= res["d_max_wcc"], (rule, N)
+
+
+def test_dissipation_inherits_the_parent_orbits_for_73_and_109():
+    """R10 sec.8: for these two the reset acts as the identity on the recurrent
+    set, so every attractor of the child is an orbit of the parent."""
+    for child, parent in ((73, 201), (109, 108)):
+        for N in (10, 12):
+            ccyc, T = mvmod._cycles(child, N, "obc0")
+            pcyc, Tp = mvmod._cycles(parent, N, "obc0")
+            psets = [frozenset(c) for c in pcyc]
+            assert all(frozenset(c) in psets for c in ccyc), (child, N)
+            assert max(len(c) for c in ccyc) == max(len(c) for c in pcyc)
+
+
+def test_inheritance_summary_is_stable_across_parity():
+    inh = mvmod.inheritance(10, "obc0")
+    assert inh["n_children"] == 240
+    assert inh["rules"]["73"]["inherits"] is True
+    assert inh["rules"]["109"]["inherits"] is True
+    # the identity's cluster: a child cannot have a longer cycle than a parent
+    # whose orbits are all fixed points, EXCEPT trivially, so 90/165 show up
+    assert 90 in inh["longer_than_parent"]
+
+
+# --- the two fitting guards (R10 sec.3) ---------------------------------------
+
+def test_bounded_series_is_not_read_as_base_two():
+    """X45's longest cycle is 1,2,2,1,2,2,... and used to be fitted as 2^N."""
+    Ns = list(range(6, 25))
+    ys = [(1, 2, 2)[i % 3] for i in range(len(Ns))]
+    assert _sectors._volume_fraction_base(Ns, ys) is None
+    d = _sectors.series_descriptor(45, "obc0", "x_d_max_recurrent", Ns, ys)
+    assert d["cls"] != "exponential", d
+
+
+def test_arithmetic_progression_is_polynomial_not_exponential():
+    """X1's cycle lengths are 44,47,50,... : a straight line, base 1."""
+    Ns = list(range(6, 25))
+    ys = [2 + 3 * n for n in Ns]
+    d = _sectors.series_descriptor(1, "obc0", "x_d_max_recurrent", Ns, ys)
+    assert d["cls"] == "polynomial" and abs(d["base"] - 1.0) < 1e-9, d
+
+
+def test_the_guards_leave_a_genuine_binomial_series_alone():
+    """W134's D_max is the central binomials ~ 2^N/sqrt(N): still base 2."""
+    from math import comb
+    Ns = list(range(6, 17))
+    ys = [comb(N + 1, (N + 1) // 2) for N in Ns]
+    vf = _sectors._volume_fraction_base(Ns, ys)
+    assert vf is not None and abs(vf[0] - 2.0) < 1e-12
+    assert abs(vf[1] + 0.5) < 0.25, vf
+
+
+def test_an_honestly_exponential_cycle_survives_the_guards():
+    """X57's longest cycle really does grow like 2^N."""
+    from qca_fragmentation.permutation import analysis as _an
+    s = _an.load_series(57, "obc0", 24)
+    d = _sectors.series_descriptor(57, "obc0", "x_d_max_recurrent",
+                                   s["N"], s["d_max_recurrent"])
+    assert d["cls"] == "exponential" and d["base"] > 1.9, d

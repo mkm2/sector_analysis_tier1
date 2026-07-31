@@ -1,0 +1,22 @@
+\begin{tabular}{rllllr}
+\hline
+rule & tuple & $x_i\mapsto f(l,r)$ & GF(2)-affine & cycle class & longest cycle seen \\
+\hline
+$0$ & \texttt{DDDD} & 0 & no & constant & $1$ \\
+$5$ & \texttt{EDDD} & $\neg(l\vee r)$ & no & constant & $1$ \\
+$10$ & \texttt{DEDD} & $\neg l\wedge r$ & no & constant & $1$ \\
+$15$ & \texttt{EEDD} & $\neg l$ & yes & constant & $1$ \\
+$80$ & \texttt{DDED} & $l\wedge\neg r$ & no & constant & $1$ \\
+$85$ & \texttt{EDED} & $\neg r$ & yes & constant & $1$ \\
+$90$ & \texttt{DEED} & $l\oplus r$ & yes & irregular & $2\,047$ \\
+$95$ & \texttt{EEED} & $\neg(l\wedge r)$ & no & constant & $1$ \\
+$160$ & \texttt{DDDE} & $l\wedge r$ & no & constant & $1$ \\
+$165$ & \texttt{EDDE} & $\neg(l\oplus r)$ & yes & irregular & $2\,047$ \\
+$170$ & \texttt{DEDE} & $r$ & yes & constant & $1$ \\
+$175$ & \texttt{EEDE} & $\neg l\vee r$ & no & constant & $2$ \\
+$240$ & \texttt{DDEE} & $l$ & yes & constant & $1$ \\
+$245$ & \texttt{EDEE} & $l\vee\neg r$ & no & constant & $2$ \\
+$250$ & \texttt{DEEE} & $l\vee r$ & no & constant & $1$ \\
+$255$ & \texttt{EEEE} & 1 & no & constant & $1$ \\
+\hline
+\end{tabular}

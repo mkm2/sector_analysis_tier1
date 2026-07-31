@@ -307,6 +307,7 @@ classified \emph{irregular} and omitted from the base plane rather than placed a
 a fictitious coordinate.
 
 \subsection{Where the rate estimate comes from}
+\label{sec:fitting}
 \label{sec:rates}
 
 R2~\S3 already documented the trap that this sweep first walked into, and it is
@@ -333,6 +334,13 @@ question is asked directly --- is the residual $D_{\max}/2^N$ better explained b
 a power of $N$ or by an exponential in $N$? When the power wins, the base is
 exactly $2$ and $\alpha$ comes from that fit. That recovers $b=2$ for the whole
 binomial family and puts them on the curve beside rule $150$.
+
+The comparison is made on the full series and not only on its tail, and it is
+refused when the series falls back down or when the fitted $\alpha$ is too steep
+to be a prefactor power ($|\alpha|>8$). All three guards were added on
+2026-07-31; the first changed eight of this report's $D_{\max}$ descriptors and
+is documented where they are listed (\S\ref{sec:openfrag}), the other two change
+nothing here and matter for R10.
 
 \subsection{Two bounds that the fitter needs and the theorem supplies}
 \label{sec:inconclusive}
@@ -556,16 +564,41 @@ The structure of the list is tidier than the selection deserves:
   cubic, $x^3=2x^2-x+1$; there the degree is unchanged and only the polynomial
   moves, to $x^3=x^2+1$. So there is no single statement covering all eight ---
   see \S\ref{sec:whichconstant}.
-\item They pair up. $\{28,70\}$ share $(\rho,2)$, $\{157,199\}$ share
-  $(\rho,\sqrt3)$, $\{29,71\}$ share $\approx(1.22,1.81)$, and $73$, $109$ are
+\item They pair up. $\{29,71\}$ share $\approx(1.22,1.81)$, and $73$, $109$ are
   each their own reflection partner. Within a pair the two rules are reflections
-  of one another, one built on \rt{D} and the other on \rt{E}.
-\item $28$ and $70$ keep $b=2$ \emph{exactly}: exponentially many sectors
-  \emph{and} a largest sector that is still a fixed fraction of the space. Rule
-  $28$ is the one whose $\varphi$ prediction \S\ref{sec:r28} falsified --- and the
-  plastic number that replaced it is the same constant that appears here for
-  three other rules.
+  of one another, one built on \rt{D} and the other on \rt{E}. On the $b$ axis
+  the four $\rho$ rules collapse onto a \emph{single} value: $70$ and $199$ ---
+  and their reflections $78$ and $157$ --- all have $D_{\max}=2\cdot3^{N/2-1}$ on
+  even $N$, i.e.\ $b=\sqrt3$ exactly.
+\item Rule $28$ (and its reflection $92$) is the one case in the list where the
+  two parities do not share a base. Its $D_{\max}$ is
+  $14,28,38,76,108,208,324,568,972,1552,2916$; the even branch settles to a ratio
+  of exactly $3$ per two sites, so $b_{\rm even}=\sqrt3$ like the others, while
+  the odd branch settles to $1+\sqrt3$ per two sites, i.e.\
+  $b_{\rm odd}=\sqrt{1+\sqrt3}=1.6529$. The single number in the table,
+  $1.68818$, is a fit through both branches and should be read as ``between the
+  two''. Rule $28$ is also the one whose $\varphi$ prediction \S\ref{sec:r28}
+  falsified --- and the plastic number that replaced it is the same constant that
+  appears here for three other rules.
 \end{itemize}
+
+\paragraph{Correction, 2026-07-31.} An earlier version of this section reported
+$b=2$ \emph{exactly} for $28$ and $70$, and $b=2$ for $132$, $133$, $164$, $222$,
+$78$ and $92$ as well: eight $D_{\max}$ descriptors in all. That came from the
+volume-fraction discriminator (\S\ref{sec:fitting}), which decides whether
+$D_{\max}=c\,2^N N^\alpha$ by asking whether $D_{\max}/2^N$ is better explained
+by a power of $N$ than by an exponential, and which was being run on a six-point
+tail. Over so short a window $\ln N$ is nearly affine in $N$ and the power-law
+model can win against an exponential decay that is genuinely there. Requiring it
+to win on the \emph{full} series as well removes all eight, and the corrected
+numbers are the ones tabulated above. The direction of the error was uniform:
+each of the eight has a $D_{\max}$ that is an exponentially shrinking fraction of
+the space --- $W_{222}$ falls from $0.328$ of the basis at $N=6$ to $0.010$ at
+$N=16$ --- and none was a fixed fraction. No verdict changes: all eight were
+already \emph{above} the exclusion curve and remain so, with products now
+$2.20$--$2.33$ instead of $2.65$--$3.24$. The guard was found while applying the
+same fitting layer to the X-gate cycle series in R10~\S3, where its failure mode
+is far more visible.
 
 \noindent The remaining two of the ten, $6$ (\rt{IVDD}) and $20$ (\rt{IDVD}),
 have $a=1$: their sector counts are linear ($4,5,5,6,6,7,7,8,8,9,9$), so they keep

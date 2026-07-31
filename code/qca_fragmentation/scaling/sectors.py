@@ -36,6 +36,10 @@ PHI = (1 + 5 ** 0.5) / 2
 #: bases within this of 1 are not exponential growth
 _KAPPA_BAND = 0.02
 
+#: largest |alpha| that can still be read as a PREFACTOR power of N in
+#: D_max = c*2^N*N^alpha.  See _volume_fraction_base.
+_ALPHA_MAX = 8.0
+
 #: Rules whose sector law is DERIVED rather than fitted.  (base, alpha, source)
 ANALYTIC: Dict[Tuple[int, str], Dict[str, Tuple[float, float, str]]] = {
     (204, "obc0"): {"n_wcc": (2.0, 0.0, "IIII: every state frozen"),
@@ -203,23 +207,53 @@ def _volume_fraction_base(Ns: List[int], ys: List[int], tail: int = 6):
     discriminating question is the shape of the prefactor.
 
     Returns (2.0, alpha, source) when the power-law model wins, else None.
+
+    TWO GUARDS, both found by applying this to the X-gate CYCLE series, which
+    the sector series never exercised.  Over a short window ln N is very nearly
+    an affine function of N, so a *bounded* series -- whose r(N) falls like
+    -N ln 2 -- is fitted just as well by a power of N as by an exponential, and
+    the comparison above then hands it base 2.  X45's longest cycle is
+    1,2,2,1,2,2,1,2 and was being reported as growing like 2^N.  So:
+
+      * the series must not fall back down (a genuine c*2^N*N^alpha is
+        eventually monotone), and
+      * |alpha| must be a plausible PREFACTOR power.  A prefactor steeper than
+        N^{-8} over this window is the fitter absorbing exponential decay, not a
+        prefactor; the four offenders sit at alpha ~ -15, while the steepest
+        genuine sector case in R9 is -4.61.
+
+    And a third, which the first two do not cover: the power law must win on the
+    FULL series as well as on the tail.  Rule 108's X-gate D_max is
+    5,8,11,...,26,33,42,55 -- plainly not a fixed fraction of 2^N -- and wins on
+    a 6-point tail (rss 0.0011 against 0.0161) purely because ln N is affine in N
+    to first order there; over all 11 points it loses by a factor of seven.  The
+    genuine case is unmoved: the central binomials win at every window length.
     """
     import numpy as np
     if len(ys) < tail or any(y <= 0 for y in ys):
         return None
-    n = np.asarray(Ns[-tail:], float)
-    r = np.log([y / (1 << N) for N, y in zip(Ns, ys)][-tail:])
+    if any(b < a for a, b in zip(ys[-tail:], ys[-tail + 1:])):
+        return None
+    ratio = np.log([y / (1 << N) for N, y in zip(Ns, ys)])
+    allN = np.asarray(Ns, float)
 
-    def rss(x):
-        A = np.column_stack([np.ones_like(x), x])
-        beta, res, *_ = np.linalg.lstsq(A, r, rcond=None)
-        pred = A @ beta
-        return float(((r - pred) ** 2).sum()), beta
+    def wins(k: int):
+        """(power law beats exponential, alpha) on the last k points."""
+        n, r = allN[-k:], ratio[-k:]
 
-    rss_pow, beta_pow = rss(np.log(n))      # r = c + alpha ln N  -> base 2
-    rss_exp, _ = rss(n)                      # r = c + kappa N     -> base != 2
-    if rss_pow < rss_exp:
-        return (2.0, float(beta_pow[1]),
+        def rss(x):
+            A = np.column_stack([np.ones_like(x), x])
+            beta, *_ = np.linalg.lstsq(A, r, rcond=None)
+            return float(((r - A @ beta) ** 2).sum()), beta
+
+        rss_pow, beta_pow = rss(np.log(n))   # r = c + alpha ln N  -> base 2
+        rss_exp, _ = rss(n)                  # r = c + kappa N     -> base != 2
+        return rss_pow < rss_exp, float(beta_pow[1])
+
+    ok_tail, alpha = wins(tail)
+    ok_full, _ = wins(len(ys))
+    if ok_tail and ok_full and abs(alpha) <= _ALPHA_MAX:
+        return (2.0, alpha,
                 r"$D_{\max}/2^N$ is a power of $N$, so the base is exactly $2$")
     return None
 
@@ -317,6 +351,21 @@ def series_descriptor(rule: int, bc: str, key: str,
     # exponentially (base 1.215).  Class and base have to agree.
     if base > 1.0 + _KAPPA_BAND and (exact or parity):
         cls = "exponential"
+
+    # The mirror of that promotion, and the one the sector series never needed.
+    # BIC selects M2 for a straight LINE too -- ln y is concave, so M2 puts the
+    # growth into alpha*ln N and is left with a small kappa that is nevertheless
+    # bigger than the class epsilon.  The two-parameter fit then reports a base
+    # near 1.1 for a series that is an arithmetic progression: the X-gate cycle
+    # lengths of X1 run 44,47,50,...,65, exactly +3 per site, and came out
+    # "exponential, base 1.0952".  The leave-one-out band of M2's kappa is the
+    # honest arbiter -- here it sits ENTIRELY BELOW 1 (0.974..0.980) -- so when
+    # the band fails to exclude zero rate, the exponential label is unsupported.
+    # No R9 sector series is touched by this (checked: zero of 512).
+    if (cls == "exponential" and not exact and not parity
+            and hi is not None and hi < 1.0 + _KAPPA_BAND):
+        cls, base = "polynomial", 1.0
+        source = f"{source}; $\\kappa$ band excludes growth"
 
     if an is not None:
         base, alpha, exact, source = an[0], an[1], True, an[2]
