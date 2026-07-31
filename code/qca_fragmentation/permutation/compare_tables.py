@@ -102,6 +102,41 @@ def tab_survivors(bc: str, d: Dict) -> str:
             "\\\\\n\\hline\n" + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
 
 
+_PH = ("unfragmented", "weak", "strong", "shattered", "degenerate", "irregular")
+
+
+def tab_phases(bc: str, d: Dict) -> str:
+    """HSF phase under each gate, and the cross-tabulation."""
+    ph = d["phases"]
+    rows = []
+    for h in _PH:
+        if h not in ph["cross"]:
+            continue
+        cells = [f"${ph['cross'][h].get(x, 0)}$" for x in _PH]
+        rows.append(f"{h} & " + " & ".join(cells) +
+                    f" & ${sum(ph['cross'][h].values())}$ \\\\")
+    tot = [f"${ph['X'].get(x, 0)}$" for x in _PH]
+    rows.append("\\hline\nall & " + " & ".join(tot) +
+                f" & ${sum(ph['X'].values())}$ \\\\")
+    head = " & ".join(_PH)
+    return ("\\begin{tabular}{lrrrrrrr}\n\\hline\n"
+            " & \\multicolumn{6}{c}{under $X$} & \\\\\n"
+            f"under $H$ & {head} & all \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_split(bc: str, d: Dict, key: str = "split_156") -> str:
+    """How rule 156's Hadamard sectors factorise into X orbits."""
+    sp = d[key]
+    # a representative slice: the populous cells plus the extremes, not all 45
+    keep = [r for r in sp["rows"] if r[3] >= 20 or r[1] >= 8 or r[2] >= 30]
+    rows = [f"${dm}$ & ${n}$ & ${L}$ & ${c}$ \\\\" for dm, n, L, c in keep]
+    return ("\\begin{tabular}{rrrr}\n\\hline\n"
+            "$\\dim$ of the $H$ sector & $X$ orbits & orbit length & "
+            "sectors \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
 def tab_correlation(bc: str, d: Dict) -> str:
     co = d["correlation"]
     label = {"all": "all 256", "has_V": "the 175 with a \\rt{V}",
@@ -129,6 +164,8 @@ def write_all(bc: str = "obc0") -> None:
     for name, txt in ((f"tab_r11_structure_{bc}", tab_structure(bc, d)),
                       (f"tab_r11_baseline_{bc}", tab_baseline(bc, d)),
                       (f"tab_r11_classes_{bc}", tab_classes(bc, d)),
+                      (f"tab_r11_phases_{bc}", tab_phases(bc, d)),
+                      (f"tab_r11_split156_{bc}", tab_split(bc, d)),
                       (f"tab_r11_survivors_{bc}", tab_survivors(bc, d)),
                       (f"tab_r11_correlation_{bc}", tab_correlation(bc, d))):
         p = os.path.join(TEXDIR, f"{name}.tex")

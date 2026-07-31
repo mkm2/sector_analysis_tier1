@@ -100,6 +100,52 @@ def cycle_class_census(d: Dict) -> Dict:
     return out
 
 
+def above_curve(d: Dict, plane: str = "cycle", tail: int = 6) -> List[Dict]:
+    """
+    The rules whose point lies ON or ABOVE $ab=2$ in the requested plane.
+
+    In the sector plane that is unremarkable -- the curve is an exclusion curve
+    there, so everything must be on or above it.  In the CYCLE plane it is the
+    interesting question: nothing forces a rule up there, since cycles do not
+    partition the basis (see the report's "three sizes" section), so a rule with
+    a*b_rec >= 2 has an exponentially long attractor AND exponentially many of
+    them.  Returns the two sequences as well, since the position is a claim
+    about them and the reader should be able to check it.
+    """
+    key = "d_max_wcc" if plane == "sector" else "d_max_recurrent"
+    ykey = "n_wcc" if plane == "sector" else "n_recurrent"
+    out = []
+    for p in d["points"]:
+        a, b = p["n_wcc"]["base"], p[key]["base"]
+        if a is None or b is None or a * b < 2.0 - 1e-9:
+            continue
+        s = analysis.load_series(p["rule"], p["bc"], analysis.UNIFORM_N_CAP)
+        out.append({
+            "rule": p["rule"], "tuple": p["tuple"], "family": p["family"],
+            "a": a, "b": b, "product": a * b,
+            "cls": p[key]["cls"],
+            "on_curve": bool(abs(a * b - 2.0) < 1e-9),
+            "N_tail": s["N"][-tail:],
+            "count_tail": s[ykey][-tail:],
+            "size_tail": s[key][-tail:],
+        })
+    return sorted(out, key=lambda r: (-r["product"], r["rule"]))
+
+
+def above_curve_groups(d: Dict, plane: str = "cycle", tail: int = 6):
+    """above_curve() with rules sharing BOTH sequences collapsed into one row."""
+    groups: Dict = {}
+    for r in above_curve(d, plane, tail):
+        k = (tuple(r["count_tail"]), tuple(r["size_tail"]))
+        groups.setdefault(k, []).append(r)
+    out = []
+    for (cnt, size), rs in groups.items():
+        out.append({**rs[0], "rules": [x["rule"] for x in rs],
+                    "tuples": [x["tuple"] for x in rs],
+                    "count_tail": list(cnt), "size_tail": list(size)})
+    return sorted(out, key=lambda r: (-r["product"], r["rules"][0]))
+
+
 def growing_cycles(d: Dict) -> List[Dict]:
     """The rules whose longest cycle grows at all, with the series tail."""
     out = []

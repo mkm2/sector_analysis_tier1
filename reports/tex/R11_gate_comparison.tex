@@ -344,6 +344,237 @@ does not survive the ring, the charge is doubly fragile: it depends on the
 boundary condition \emph{and}, mostly, on the gate. That is a good reason not to
 build a physical story on it, and it is the sort of thing the comparison is for.
 
+\section{Reading all of this as Hilbert-space fragmentation}
+\label{sec:hsf}
+
+The two coordinates used throughout are exactly the two numbers the HSF
+literature uses to classify a fragmented model, so the map is a phase diagram
+and it is worth saying so explicitly.
+
+\subsection{The $(a,b)$ plane is the fragmentation phase diagram}
+
+A model is \emph{fragmented} when the Hilbert space --- or a symmetry sector of
+it --- splits into exponentially many dynamically disconnected Krylov subspaces.
+With $n_\wcc\sim a^N$ subspaces and a largest one of dimension $D_{\max}\sim b^N$:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+$a=1$, $b=2$ & \textbf{unfragmented} & one Krylov sector carries the space \\
+$a>1$, $b=2$ & \textbf{weak} & exponentially many, largest still $\sim2^N$ \\
+$a>1$, $1<b<2$ & \textbf{strong} & largest sector an exponentially
+  vanishing fraction \\
+$b=1$ & \textbf{shattered} & every sector sub-exponential \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The exclusion curve $ab\ge2$ is then the statement that one cannot have
+few sectors \emph{and} small ones, which is why the weak/strong boundary at $b=2$
+and the shattered edge at $b=1$ are the two edges of the diagram rather than
+independent axes. The corner $a=1$, $b<2$ is forbidden asymptotically, and every
+rule the fitter puts there has a sub-exponential sector count that the base cannot
+express (R9~\S5); those are labelled ``degenerate'' below and are a fitting
+category, not a phase.
+
+\begin{center}
+\small
+\iftable{tab_r11_phases_obc0.tex}
+\end{center}
+
+\noindent Refinement (Theorem~\ref{thm:refine}) forbids the lower-left of this
+table too: a gate change to $X$ can only move a rule \emph{towards} more
+fragmentation. And it does. Under the Hadamard $50$ of $256$ rules are strongly
+fragmented; under $X$, $75$ are, plus $12$ shattered. Not one rule becomes less
+fragmented. The two \emph{weak} entries are $57$ and $99$, the only rules anywhere
+in either family with exponentially many sectors and a largest sector still of
+full exponential size.
+
+\subsection{Rules 156 and 198: a configuration space, or a bundle of orbits}
+\label{sec:156}
+
+The clearest single comparison in the report. Rules $156$ (\rt{IIVI}) and $198$
+(\rt{IVII}) are strongly fragmented under \emph{both} gates --- and mean something
+completely different by it.
+
+\paragraph{Under the Hadamard: a constrained configuration space.} R2~\S3 derives
+the structure. Domain walls are frozen; the chain decomposes into ``rooms''
+between them; a room of length $\ell$ contributes $\ell+1$ basis states and
+consumes $\ell+2$ sites. Counting the wall patterns gives $n_\wcc\sim\varphi^N$
+and maximising the room packing gives $D_{\max}\sim(4^{1/5})^N$, the saddle point
+of $b(\ell)=(\ell+1)^{1/(\ell+2)}$. So a sector is labelled by a \emph{static}
+charge --- the wall pattern --- and inside it the accessible states form an
+exponentially large constrained configuration space, on which the Hadamard acts
+as a genuine quantum dynamics.
+
+\paragraph{Under $X$: the same sectors, cut into orbits by extra charges.} The
+sectors cannot be finer than the Hadamard ones by anything other than refinement,
+and indeed the wall pattern is still conserved. But the $X$ dynamics is a
+permutation, so each Hadamard sector decomposes further --- and it does so with a
+very particular arithmetic. At $N=14$ rule $156$'s $987$ Hadamard sectors split
+into $2280$ $X$ orbits, and \textbf{every sector splits into orbits that are all
+the same length}:
+\[
+\dim(\text{$H$ sector}) \;=\; (\text{number of $X$ orbits})\times(\text{orbit length}).
+\]
+
+\begin{center}
+\small
+\iftable{tab_r11_split156_obc0.tex}
+\end{center}
+
+\noindent Read the arithmetic. A sector of dimension $16$ appears as $2\times8$,
+$4\times4$ or $8\times2$; one of dimension $36$ as $3\times12$ or $6\times6$; one
+of dimension $64$ as $16\times4$. The orbit lengths that occur are $1$ through
+$15$, then $18$, $20$, $21$, $22$, $24$, $28$, $30$, $35$, $36$, $40$, $42$ and
+$60$ --- and $35=\mathrm{lcm}(5,7)$, $42=\mathrm{lcm}(6,7)$,
+$60=\mathrm{lcm}(4,15)$. At $N=24$ the longest orbit in the whole rule is $420$,
+and the sequence leading there is $105,140,140,210,210,420,420,420$, i.e.
+$\mathrm{lcm}(3,5,7)$, $\mathrm{lcm}(4,5,7)$, $\mathrm{lcm}(2,3,5,7)$,
+$\mathrm{lcm}(3,4,5,7)$.
+
+That is the signature of \emph{independent periodic subsystems}. The natural
+reading, consistent with every number above though not derived here: inside a
+fixed wall pattern each room carries its own cyclic degree of freedom of some
+period $p_r$; the $X$ dynamics advances all of them together; so the sector
+dimension is $\prod_r p_r$, an orbit has length $\mathrm{lcm}_r(p_r)$, and the
+number of orbits is $\prod_r p_r/\mathrm{lcm}_r(p_r)$ --- the \emph{relative
+phases} between rooms. Those relative phases are exactly the extra conserved
+charges that the $X$ gate has and the Hadamard has not: the Hadamard superposes
+the room states and destroys the phase label, gluing the orbits back into one
+sector.
+
+The property is specific, not generic: it holds for $156$ and $198$ at every $N$
+checked, and fails for $108$, $201$, $54$, $150$ and $105$, whose sectors contain
+orbits of differing length.
+
+\subsection{Why the Hadamard result is the interesting one}
+
+Three reasons, in increasing order of weight.
+
+\paragraph{The sectors have room in them.} Strong fragmentation is only a
+statement worth making if a sector is big enough to have its own thermodynamics.
+Rule $156$ under the Hadamard has $\varphi^N$ sectors of size up to
+$(4^{1/5})^N$ --- both exponential, product $2.135>2$ --- so each Krylov sector is
+an exponentially large quantum system in its own right, and the questions HSF is
+asked (does a sector thermalise? what is the level statistics inside it? what does
+an initial state relax to?) all have content. Under $X$ the same rule has
+$\sim2^N/\mathrm{poly}$ orbits whose typical length is $O(N)$: exponentially many
+``sectors'', each of which is a single trajectory.
+
+\paragraph{It is visible in an entanglement measurement.} Under the Hadamard an
+initial computational basis state spreads over its sector, and R8~\S10 measured
+exactly this for rule $150$ at $N=11$: the saturation value of the entanglement
+entropy clusters by sector, each cluster sitting near the Page value of its own
+sector dimension. The fragmentation is therefore an observable statement about a
+quantum state. Under $X$ a basis state remains a basis state for all time, so
+$S(t)\equiv0$ and there is nothing to measure --- the fragmentation is invisible
+to any entanglement probe applied to basis states.
+
+\paragraph{Every conserved quantity of the $X$ circuit is classical.} A
+permutation of the basis conserves the indicator function of each of its orbits,
+so a fragmented automaton has an exponentially large commutant for free. That is
+not a discovery about the model; it is the statement that a deterministic map has
+trajectories. What R9 finds is the same object in a setting where the sector label
+is still a classical function on configurations but the dynamics inside is not ---
+and where, by the diagonal-commutant identity of R8~\S10.3, the sector projectors
+are precisely the diagonal part of the commutant, i.e.\ everything a classical
+partition can see and nothing more.
+
+\subsection{Why the $X$-gate and the V-free rules are the boring end}
+
+The same three points, run in reverse, and they are worth stating plainly because
+the numbers in \S\ref{sec:classes} look impressive on their own.
+
+Under $X$ the $256$ rules split into two kinds and neither supports an interesting
+fragmentation claim. For the $16$ reversible rules, sectors \emph{are} orbits,
+so the decomposition exists for every bijection whatsoever and contains no
+information about locality, constraints or interactions. For the other $240$, the
+sectors are basins of attraction: they can be exponentially large, but the
+long-time state is a cycle of median length $1$ and a cyclic fraction of
+$10^{-7}$, so a sector is an exponentially large funnel into a point. Neither is
+Hilbert-space fragmentation in the sense the term is used for constrained quantum
+models.
+
+The $81$ V-free rules make the point sharpest, because they are the same circuit
+under both gates (Corollary~\ref{cor:nofree}). Whatever fragmentation they show is
+a property of a classical cellular automaton that a quantum engine happened to
+compute. Four of R9's eight ``fragmentation in an open quantum system'' rules ---
+$140$, $196$, $206$, $220$ --- are in this set, so for those four the claim should
+be read as classical fragmentation surviving a reset, with the Hadamard playing no
+part. The other four ($156$, $198$, $108$, $201$) do use the gate, and for them
+the claim stands as stated.
+
+\subsection{Automaton circuits: why the community calls them quantum}
+\label{sec:automaton}
+
+The natural objection to R10 is that it studies a classical cellular automaton and
+calls it a QCA. The objection is half right, and the half that is wrong is
+instructive.
+
+\paragraph{Unitarity is not quantumness.} A permutation matrix is unitary, so a
+reversible CA \emph{is} a quantum cellular automaton under the structural
+definition --- discrete time, strict locality, a causal cone, a unitary on
+$(\mathbb{C}^2)^{\otimes N}$. Nothing is being smuggled. What is true is that
+unitarity alone buys none of the phenomena the word ``quantum'' is meant to
+signal.
+
+\paragraph{The quantum content is in the initial state, not the gate.} A
+permutation circuit maps basis states to basis states, but it is linear, and on a
+\emph{superposition} it does not act classically at all. Take $\ket{+}^{\otimes N}$
+or any product state off the computational axis: an automaton circuit will
+entangle it, and can scramble it as fast as a generic circuit. This is the reason
+the class is studied. It sits in the solvable corner --- classically simulable
+trajectory by trajectory, so accessible at sizes no exact diagonalisation reaches,
+while still supporting entanglement growth, operator spreading and hydrodynamics
+that are genuinely quantum questions. Our rule $1$ result in R10~\S5 is of this
+type: its recurrent set is exactly the golden-mean shift, which is a statement
+about a classical constraint, but it fixes the long-time support of any quantum
+state prepared in that sector.
+
+\paragraph{Where the class comes from.} Two lines of work are the relevant
+context, and the connection is concrete rather than thematic.
+
+\emph{Rule 54.} The most-studied exactly solvable QCA is the Rule 54 automaton
+(studied by, among others, Prosen and collaborators, and by Klobas and Bertini for
+its exact steady states and entanglement dynamics). It is a deterministic
+reversible cellular automaton whose local update, in the brick-wall formulation,
+is $x_i\mapsto x_i\oplus(x_{i-1}\vee x_{i+1})$ --- and that is exactly our
+\rt{IVVV}, which our Wolfram numbering calls rule $54$. More generally, for all
+$16$ reversible rules the local update is $x_i\mapsto x_i\oplus f(x_{i-1},x_{i+1})$
+with $f$ one of the $16$ boolean functions of two arguments, and the induced
+elementary CA is the ECA of the \emph{same Wolfram number} --- we checked all $16$.
+So the reversible X-gate family is precisely the set of ECAs that are affine in
+the centre cell, brick-walled, and Rule 54 is one of its members. R10's structural
+results therefore apply to it directly: $X_{54}$ has $2^N/\mathrm{poly}$ orbits of
+length $52,55,58,61,64,67$ at $N=19\ldots24$, growing by exactly $3$ per site,
+which is the soliton picture on an open chain seen through the sector axis.
+
+\emph{Quantum automaton circuits.} The other line uses exactly this class as a
+tool: unitaries that permute the computational basis, deployed to study
+fragmentation, freezing and anomalously slow transport at sizes where the
+entanglement can still be computed --- work associated with Iadecola and
+collaborators, and with the automaton-circuit studies of subdiffusion and
+subsystem symmetries. The methodological bargain is explicit there: classical
+simulability in exchange for a restricted class of dynamics, with the quantum
+questions asked of superposed initial states.
+
+\paragraph{What this report adds to that.} A complete $256$-rule census of the
+sector and orbit structure of the class, and one structural statement that the
+automaton literature and the constrained-quantum-model literature do not usually
+put side by side: the automaton sectors \emph{refine} the Hadamard ones
+(Theorem~\ref{thm:refine}). An automaton model is therefore a lower bound on the
+fragmentation of its superposing counterpart, never an upper bound, and any
+fragmentation found in an automaton circuit should be checked against the
+question of whether it survives gluing --- which for $39$ of our $256$ rules it
+does not.
+
+\paragraph{A caveat on the attributions.} The two paragraphs above characterise
+the literature from memory, without the papers to hand; the identification of
+$X_{54}$ with Rule 54 is our own check and is exact, but the names and the
+framing attached to the two research lines should be verified against the sources
+before this section is used anywhere outside the project.
+
 \section{What each family says that the other cannot}
 \label{sec:asym}
 

@@ -155,6 +155,23 @@ $150$. Our $16$ need no such intersection: the proposition above is proved
 locally and holds at every $N$ separately, which is why the two counts are not
 comparable term by term. Only $51$ and $204$ lie in both sets.
 
+\paragraph{They are ECAs, of the same number.} The complementary fact is worth
+recording, because it is what connects this family to the literature. For a rule
+built from \rt{I} and \rt{V} the local update is
+\[
+x_i \;\longmapsto\; x_i \oplus f(x_{i-1},x_{i+1}),
+\]
+with $f$ the indicator of \rt{V} in the symbol table, i.e.\ one of the $16$
+boolean functions of two arguments. That map is an elementary cellular automaton,
+and --- checked for all $16$ --- it is the ECA of \emph{the same Wolfram number} as
+the rule. So the reversible family is exactly the set of ECAs that are affine in
+the centre cell, applied brick-wall; being affine in the centre cell is what makes
+the brick-wall version a bijection, which is the proposition above in another
+language. In particular $X_{54}$ (\rt{IVVV}) is
+$x_i\mapsto x_i\oplus(x_{i-1}\vee x_{i+1})$, the Rule 54 automaton, which is the
+most-studied exactly solvable QCA in the literature; R11~\S7.5 develops that
+connection.
+
 \noindent So the $16$ rules that were ``unitary'' in the Hadamard family are here
 \emph{reversible} in the sense just defined: every state is recurrent, each
 component is a single cycle, and the sector decomposition \emph{is} the orbit
@@ -264,10 +281,60 @@ the largest \emph{sector}. Right: the same $x$-axis --- identical by
 \emph{cycle}. The dotted curve is $ab=2$; it binds the left panel, because
 sectors partition, and is only a reference on the right, because cycles do not.
 The collapse of the right panel onto $b=1$ is the headline: marker area grows with
-the number of rules in a cell and the two largest cells there hold $110$ and $40$
-rules.}
+the number of rules in a cell and the two largest cells there hold $113$ and $40$
+rules. The eight rules that nonetheless lie \emph{above} the curve on the right
+are named there and tabulated in \S\ref{sec:above}; the ten sitting exactly
+\emph{on} it are all at $(2,1)$ and are listed in the text.}
 \label{fig:x1}
 \end{figure}
+
+\subsection{The eight rules above the curve in the cycle map}
+\label{sec:above}
+
+Nothing forces a point up there. In the sector panel $ab\ge2$ is an exclusion
+curve and every rule must respect it; in the cycle panel it is only a drawn
+reference, so a rule with $a\,b_\rec>2$ is making a genuine claim --- it has
+exponentially many attractors \emph{and} an exponentially long one. Exactly eight
+rules do, and they are the eight of \S\ref{sec:vfree}'s exponential-cycle list:
+
+\begin{center}
+\iftable{tab_r10_above_obc0.tex}
+\end{center}
+
+\noindent Six are reversible, where a long orbit costs nothing, and the two
+irreversible ones are $73$ and $109$ --- the two children that inherit an
+exponential cycle from a parent that has one (\S\ref{sec:move2}). Both sit just
+above the curve, at $2.08$, because the reset has thinned the attractor count
+without touching the longest orbit.
+
+The sequences, so the claim can be checked rather than taken on the fitted bases:
+
+\begin{center}
+\small
+\iftable{tab_r10_above_seq_obc0.tex}
+\end{center}
+
+\noindent Read them in pairs. $57$ and $99$ are the extreme case: only $1798$
+orbits at $N=24$ but the longest runs through $6\,807\,384$ of the
+$16\,777\,216$ states, i.e.\ $41\%$ of the space in a single cycle --- $b_\rec=2$
+with $a=1.44$, the highest product in the family. $156$ and $198$ are the
+opposite arrangement at almost the same product: $1.17$ million orbits, none
+longer than $420$, with the length climbing through the highly composite values
+$140,210,420$ in the manner of an lcm rather than a growth law. $201$ and $73$
+share their cycle series exactly ($238,253,\ldots,561$), as do $108$ and $109$
+($154,187,\ldots,391$) --- that is the inheritance of \S\ref{sec:move2} visible in
+the raw numbers, the child keeping the parent's longest orbit while its own
+attractor count is an order of magnitude smaller ($114\,189$ against
+$1\,812\,802$; $102\,737$ against $2\,373\,460$).
+
+Ten further rules sit exactly \emph{on} $ab=2$, all in the single cell $(2,1)$:
+$51$, $54$, $60$, $102$, $105$, $147$, $150$, $153$, $195$, $204$. All ten are
+reversible, so every state is periodic and the sector count is forced to
+$\Theta(2^N/L_{\max})$ with $L_{\max}$ bounded or linear --- $204$ has $2^N$ fixed
+points, $51$ has $2^{N-1}$ two-cycles, $60$, $102$, $153$ and $195$ have cycle
+length $32$ at every $N\ge19$, and $105$, $150$, $54$, $147$ grow linearly. They
+are on the curve for the same bookkeeping reason the identity is on it in the
+sector map, not because anything constrains them.
 
 \begin{figure}[htbp]
 \centering

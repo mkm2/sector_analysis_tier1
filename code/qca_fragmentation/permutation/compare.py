@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from collections import Counter
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -164,6 +165,125 @@ def vfree_identity(bc: str = "obc0") -> Dict:
             "units_same": same, "units_diff": diff, "failures": bad[:10]}
 
 
+# --- Hilbert-space fragmentation, in the standard vocabulary -----------------
+
+#: bases within this of an integer are treated as that integer
+_BAND = 0.02
+
+
+def hsf_phase(a: Optional[float], b: Optional[float]) -> str:
+    """
+    The HSF phase of a rule, read off the (a, b) point.
+
+    With n_wcc ~ a^N sectors and D_max ~ b^N, the standard vocabulary is:
+
+      unfragmented   a = 1, b = 2      one Krylov sector of full weight
+      weak           a > 1, b = 2      exponentially many, largest still 2^N
+                                       up to a sub-exponential factor
+      strong         a > 1, 1 < b < 2  largest sector an exponentially
+                                       vanishing fraction of the space
+      shattered      b = 1             every sector sub-exponential
+
+    'degenerate' is not a phase: it is the fit-degenerate corner a = 1 with
+    b < 2, which the sum rule forbids asymptotically (a*b >= 2) and which
+    therefore always means a sub-exponential sector count that the base cannot
+    express (R9 sec.5).
+    """
+    if a is None or b is None:
+        return "irregular"
+    if b <= 1.0 + _BAND:
+        return "shattered"
+    if a <= 1.0 + _BAND:
+        return "unfragmented" if b >= 2.0 - _BAND else "degenerate"
+    return "weak" if b >= 2.0 - _BAND else "strong"
+
+
+def phase_table(rows: List[Dict]) -> Dict:
+    """Phase under each gate, and the cross-tabulation."""
+    ph = [(r["rule"], hsf_phase(r["a_h"], r["b_h"]),
+           hsf_phase(r["a_x"], r["b_x"])) for r in rows]
+    cross: Dict[str, Dict[str, int]] = {}
+    for _, h, x in ph:
+        cross.setdefault(h, {})
+        cross[h][x] = cross[h].get(x, 0) + 1
+    return {"per_rule": [{"rule": r, "h": h, "x": x} for r, h, x in ph],
+            "H": dict(Counter(h for _, h, _ in ph)),
+            "X": dict(Counter(x for _, _, x in ph)),
+            "cross": cross}
+
+
+def sector_orbit_split(rule: int, N: int, bc: str = "obc0") -> Dict:
+    """
+    How each Hadamard sector of `rule` breaks into X-gate orbits.
+
+    This is the refinement theorem made concrete, and for rules 156 and 198 it
+    has a striking form: every Hadamard sector splits into orbits that are ALL
+    THE SAME LENGTH, so
+
+        dim(H sector) = (number of X orbits) * (orbit length),
+
+    i.e. the X dynamics acts on the sector as a free Z_L action and the orbit
+    label is an extra conserved charge carried on top of whatever labels the
+    Hadamard sector.  Not universal -- 108, 201, 54, 150, 105 all have sectors
+    with orbits of differing length -- so it is reported, not assumed.
+    """
+    import numpy as np
+    from ..graph import wcc as _wcc
+    from . import xca as _xca
+
+    succ = _wcc.make_succ(rule, N, bc)
+    par = list(range(1 << N))
+
+    def find(a):
+        while par[a] != a:
+            par[a] = par[par[a]]
+            a = par[a]
+        return a
+
+    for x in range(1 << N):
+        for y in succ(x):
+            ra, rb = find(x), find(y)
+            if ra != rb:
+                par[ra] = rb
+    lab = [find(x) for x in range(1 << N)]
+
+    T = _xca.step_table_np(rule, N, bc)
+    seen = np.zeros(1 << N, np.int8)
+    orbits = []
+    for x in range(1 << N):
+        if seen[x]:
+            continue
+        path = []
+        y = x
+        while seen[y] == 0:
+            seen[y] = 1
+            path.append(y)
+            y = int(T[y])
+        if seen[y] == 1:
+            orbits.append(path[path.index(y):])
+        for z in path:
+            seen[z] = 2
+
+    dim = Counter(lab)
+    by: Dict[int, List[int]] = {}
+    for o in orbits:
+        by.setdefault(lab[o[0]], []).append(len(o))
+    rows = Counter()
+    unequal = 0
+    for k, lens in by.items():
+        if len(set(lens)) > 1:
+            unequal += 1
+            continue
+        rows[(dim[k], len(lens), lens[0])] += 1
+    return {"rule": rule, "N": N, "bc": bc,
+            "n_h_sectors": len(dim), "n_x_orbits": len(orbits),
+            "unequal_sectors": unequal,
+            "factorises": unequal == 0,
+            "rows": sorted((d, n, L, c) for (d, n, L), c in rows.items()),
+            "orbit_counts": sorted({n for _, n, _ in rows}),
+            "orbit_lengths": sorted({L for _, _, L in rows})}
+
+
 def class_table(rows: List[Dict], key_h: str, key_x: str) -> Dict[str, Dict[str, int]]:
     """Cross-tabulation of growth CLASS under the two gates."""
     out: Dict[str, Dict[str, int]] = {}
@@ -216,7 +336,10 @@ def build(bc: str = "obc0", n_cap: int = COMMON_N_CAP) -> Dict:
            "pointwise": pointwise_order(bc, n_cap),
            "vfree_identity": vfree_identity(bc),
            "class_sector_count": class_table(rows, "cls_a_h", "cls_a_x"),
-           "class_sector_size": class_table(rows, "cls_b_h", "cls_b_x")}
+           "class_sector_size": class_table(rows, "cls_b_h", "cls_b_x"),
+           "phases": phase_table(rows),
+           "split_156": sector_orbit_split(156, 14, bc),
+           "split_198": sector_orbit_split(198, 14, bc)}
     os.makedirs(analysis.ANALYTICS, exist_ok=True)
     with open(CMP_PATH.format(bc=bc), "w") as f:
         json.dump(out, f)
@@ -330,6 +453,18 @@ def main(argv=None):
     vf = d["vfree_identity"]
     print(f"  V-free cross-implementation: {vf['units_same']} units identical, "
           f"{vf['units_diff']} different")
+    print("\n== HSF phase ==")
+    ph = d["phases"]
+    print("  H:", ph["H"])
+    print("  X:", ph["X"])
+    for h, row in sorted(ph["cross"].items()):
+        print(f"  {h:<13} -> " + "  ".join(f"{k}={v}" for k, v in sorted(row.items())))
+    sp = d["split_156"]
+    print(f"\n== rule 156 at N={sp['N']}: {sp['n_h_sectors']} H sectors split "
+          f"into {sp['n_x_orbits']} X orbits ==")
+    print(f"  every sector factorises (equal orbit lengths): {sp['factorises']}")
+    print(f"  orbit counts seen {sp['orbit_counts']}")
+    print(f"  orbit lengths seen {sp['orbit_lengths']}")
     print("\n== growth class of the sector COUNT: H (rows) vs X (cols) ==")
     for h, row in sorted(d["class_sector_count"].items()):
         print(f"  {h:<13}" + "  ".join(f"{k}={v}" for k, v in sorted(row.items())))

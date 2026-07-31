@@ -18,7 +18,7 @@ from __future__ import annotations
 import argparse
 import os
 from collections import Counter
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import matplotlib
 matplotlib.use("Agg")
@@ -85,6 +85,45 @@ def _scatter(ax, cells, annotate_above=10):
                     fontweight="bold", zorder=20)
 
 
+def _label_above(ax, d, ykey, eps=1e-9):
+    """
+    Name the rules that sit strictly ABOVE $ab=2$, cell by cell.
+
+    Only meaningful in the cycle panel.  There the curve constrains nothing, so
+    a point above it is a rule with exponentially many attractors AND an
+    exponentially long one; the reader should be able to see which.  Rules
+    exactly ON the curve are left unlabelled -- there are ten of them in one
+    cell and they are listed in the text instead.
+    """
+    from . import movement as mvmod
+    cells: Dict = {}
+    for r in mvmod.above_curve(d, "cycle" if ykey == "d_max_recurrent"
+                               else "sector"):
+        if r["on_curve"]:
+            continue
+        st = EMPH[r["family"]]
+        cells.setdefault((round(r["a"] + st["dx"], 3), round(r["b"], 3),
+                          st["color"]), []).append(r["rule"])
+    placed: List = []
+    for (x, y, col), rs in sorted(cells.items()):
+        # 108/201 and 73/109 sit within 0.015 of each other in both coordinates,
+        # so a fixed offset overprints them; nudge the second of a close pair.
+        dy = -3
+        while any(abs(x - px) < 0.06 and abs((y + dy * 0.0016) - py) < 0.022
+                  for px, py in placed):
+            dy = -3 - 11 if dy == -3 else dy - 11
+        right = x > 1.92          # keep the rightmost cells inside the axes
+        if right:
+            dy = 9                # ... and clear of the label to their left
+        placed.append((x, y + dy * 0.0016))
+        ax.annotate(", ".join(str(v) for v in sorted(rs)), (x, y), fontsize=7,
+                    color=col, fontweight="bold",
+                    xytext=(-9 if right else 9, dy),
+                    textcoords="offset points",
+                    va="bottom" if right else "baseline",
+                    ha="right" if right else "left", zorder=20)
+
+
 def fig_maps(bc: str, out: str, d: Optional[Dict] = None):
     d = d or analysis.load(bc) or analysis.build(bc)
     pts = d["points"]
@@ -97,6 +136,8 @@ def fig_maps(bc: str, out: str, d: Optional[Dict] = None):
         _style(ax)
         _hyperbola(ax)
         _scatter(ax, _cells(pts, key))
+        if key == "d_max_recurrent":
+            _label_above(ax, d, key)
         ax.set_xlabel(r"base $a$ of $n_{\rm wcc}=n_{\rm recurrent}$")
         ax.set_title(title, fontsize=9.5)
         ax.set_xlim(0.90, 2.12)

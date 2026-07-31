@@ -2,7 +2,7 @@
 
 Deep dataset: dissipative N<=17, unitary N<=21 (Tier 1a/1c); Tier 1d pair graph
 diss N<=9 pbc. **C150 (rule 150) obc0: closed form for all N, numerical
-frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10/R11 regenerated; full suite 680 tests pass.
+frontier N<=32.** Reports R1/R2/R5/R6/R7/R8/R9/R10/R11 regenerated; full suite 685 tests pass.
 R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150).
 
 ## Done
@@ -401,6 +401,12 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      made of fixed points. 21 more rules have |Rec| in {F_N, F_{N+1}, F_{N+2}}.
      Random-map yardstick at N=24: 5100 cyclic points and depth 2600 expected,
      against 6 and 13 observed.
+   - **The eight rules above the curve in the cycle map** (R10 sec.3.1, added
+     2026-07-31): 57/99 (ab=2.88, a single orbit through 41% of the space at
+     N=24), 156/198 (2.55), 201 (2.34), 108 (2.34), 73 (2.08), 109 (2.08).
+     They are exactly the 8 exponential-cycle rules, labelled in Fig X1 right
+     with their sequences tabulated. Ten more sit exactly ON the curve at (2,1),
+     all reversible.
    - **pbc NOT run** (held with R9's).
 
 17. **R11 — Hadamard vs X, one rule space two gates — DONE (2026-07-31).**
@@ -431,8 +437,38 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
      gate for only 2 of 8 (188, 230 keep exactly N+1 sectors); 60/102 go to
      a=2. Combined with R9 sec.6.5 the frontier charge is fragile in BOTH the
      boundary condition and the gate.
+   - **HSF reading (R11 sec.7, added 2026-07-31).** The (a,b) plane IS the
+     fragmentation phase diagram: (1,2) unfragmented, (a>1, b=2) weak,
+     (a>1, 1<b<2) strong, b=1 shattered; the corner a=1, b<2 is forbidden by
+     the sum rule and always means a sub-exponential count ("degenerate").
+     Counts: H 196 unfragmented / 50 strong / 1 shattered; X 152 / 75 / 12 plus
+     2 weak (57, 99 -- the only weakly fragmented rules anywhere). Refinement
+     forbids the lower-left: no rule becomes LESS fragmented under X.
+   - **156/198 are the sharp contrast.** Under H a strongly fragmented
+     CONFIGURATION SPACE: wall pattern frozen, rooms between walls, phi^N
+     sectors of size up to 4^(1/5)^N (R2 sec.3). Under X the same sectors, cut
+     into ORBITS by extra charges: at N=14 the 987 H sectors split into 2280 X
+     orbits and EVERY sector factorises, dim = (#orbits) x (orbit length) --
+     16x4, 4x4, 3x12, 6x6 ... Orbit lengths are lcms (35, 42, 60; the global
+     maxima 105, 140, 210, 420 are lcm(3,5,7), lcm(4,5,7), lcm(2,3,5,7),
+     lcm(3,4,5,7)), i.e. independent room cycles with the relative phases as
+     the extra conserved charges. Holds for 156/198 at every N checked; FAILS
+     for 108, 201, 54, 150, 105.
+   - **Why H is the interesting end**: sectors big enough to thermalise inside
+     (phi * 4^(1/5) = 2.135 > 2); visible in entanglement (R8 sec.10: rule-150
+     saturation clusters by sector) whereas under X a basis state stays a basis
+     state and S(t) = 0; and every X conserved quantity is a classical orbit
+     indicator, which any bijection has for free.
+   - **X54 IS Rule 54.** For all 16 reversible rules the local update is
+     x_i -> x_i XOR f(l,r) and the induced ECA is the ECA of the SAME Wolfram
+     number (checked for all 16). So the reversible family = the ECAs affine in
+     the centre cell, brick-walled; X54 = IVVV = x_i XOR (l OR r) is the Rule 54
+     automaton of the Klobas/Bertini/Prosen literature. R11 sec.7.5 also covers
+     why automaton circuits are called quantum (unitarity is structural; the
+     quantum content is in superposed initial states) and flags that the
+     literature attributions there are from memory and need checking.
    - Code: `permutation/compare.py`, `compare_tables.py`, `compare_figures.py`;
-     `analytics/gate_compare_obc0.json`; 12 tests in `tests/test_gate_compare.py`.
+     `analytics/gate_compare_obc0.json`; 17 tests in `tests/test_gate_compare.py`.
 
 18. **Fitting-layer correction (2026-07-31), affects R9 and R10.** Three guards
    in `scaling/sectors.py`, all found by running the R9 fitting convention on the

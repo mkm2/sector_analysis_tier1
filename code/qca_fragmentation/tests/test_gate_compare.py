@@ -78,3 +78,50 @@ def test_no_rule_loses_its_sector_growth_class():
         h, x = r["cls_a_h"], r["cls_a_x"]
         if h in order and x in order:
             assert order[x] >= order[h], (r["rule"], h, x)
+
+
+# --- HSF reading (R11 sec.7) --------------------------------------------------
+
+def test_hsf_phase_labels():
+    assert compare.hsf_phase(1.0, 2.0) == "unfragmented"
+    assert compare.hsf_phase(1.6, 2.0) == "weak"
+    assert compare.hsf_phase(1.618, 1.3195) == "strong"
+    assert compare.hsf_phase(2.0, 1.0) == "shattered"
+    assert compare.hsf_phase(1.0, 1.9) == "degenerate"     # forbidden corner
+    assert compare.hsf_phase(None, 1.5) == "irregular"
+
+
+def test_the_gate_never_reduces_fragmentation():
+    """Refinement forbids the lower-left of the phase cross-tabulation."""
+    d = compare.load("obc0") or compare.build("obc0")
+    order = {"unfragmented": 0, "weak": 1, "strong": 2, "shattered": 3}
+    for r in d["phases"]["per_rule"]:
+        if r["h"] in order and r["x"] in order:
+            assert order[r["x"]] >= order[r["h"]], r
+
+
+@pytest.mark.parametrize("rule", [156, 198])
+def test_156_sectors_factorise_into_equal_orbits(rule):
+    """R11 sec.7.2: dim(H sector) = (#X orbits) x (orbit length), exactly."""
+    for N in (10, 12):
+        sp = compare.sector_orbit_split(rule, N, "obc0")
+        assert sp["unequal_sectors"] == 0, (rule, N)
+        for dim, n, L, _ in sp["rows"]:
+            assert dim == n * L, (rule, N, dim, n, L)
+
+
+def test_the_reversible_rules_are_the_eca_of_the_same_number():
+    """R11 sec.7.5: for the 16 I/V rules the local update is
+    x_i -> x_i XOR f(l, r), and that map is the ECA of the same Wolfram
+    number -- which is what identifies X54 with the Rule 54 automaton."""
+    for rule in rules.UNITARY_RULES:
+        t = rules.wolfram_to_tuple(rule)
+        f = [1 if s == "V" else 0 for s in t]
+        n = 0
+        for i, (l, c, r) in enumerate([(1, 1, 1), (1, 1, 0), (1, 0, 1),
+                                       (1, 0, 0), (0, 1, 1), (0, 1, 0),
+                                       (0, 0, 1), (0, 0, 0)]):
+            n |= (c ^ f[2 * l + r]) << (7 - i)
+        assert n == rule, (rule, n)
+    # and rule 54 is the OR one, x_i -> x_i XOR (x_{i-1} OR x_{i+1})
+    assert "".join(rules.wolfram_to_tuple(54)) == "IVVV"

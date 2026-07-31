@@ -148,6 +148,40 @@ def tab_growing_cycles(bc: str, d: Dict) -> str:
             + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
 
 
+def tab_above(bc: str, d: Dict) -> str:
+    """The rules labelled in the right panel of X1: a*b_rec > 2."""
+    from . import movement as mv
+    rows = []
+    for g in mv.above_curve_groups(d, "cycle"):
+        if g["on_curve"]:
+            continue
+        rs = ", ".join(str(v) for v in sorted(g["rules"]))
+        tp = ", ".join(f"\\rt{{{t}}}" for t in dict.fromkeys(g["tuples"]))
+        rows.append(f"${rs}$ & {tp} & {g['family']} & ${g['a']:.4f}$ & "
+                    f"${g['b']:.4f}$ & ${g['product']:.4f}$ \\\\")
+    return ("\\begin{tabular}{llrrrr}\n\\hline\n"
+            "rules & tuple & family & $a$ & $b_{\\rm rec}$ & $ab$ "
+            "\\\\\n\\hline\n" + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
+def tab_above_seq(bc: str, d: Dict) -> str:
+    """Their two sequences, so the position can be checked by hand."""
+    from . import movement as mv
+    groups = [g for g in mv.above_curve_groups(d, "cycle")
+              if not g["on_curve"]]
+    N0, N1 = groups[0]["N_tail"][0], groups[0]["N_tail"][-1]
+    rows = []
+    for g in groups:
+        rs = ", ".join(str(v) for v in sorted(g["rules"]))
+        cnt = ",\\,".join(f"{v:,}".replace(",", r"\,") for v in g["count_tail"])
+        siz = ",\\,".join(f"{v:,}".replace(",", r"\,") for v in g["size_tail"])
+        rows.append(f"${rs}$ & $n_\\rec$ & ${cnt}$ \\\\")
+        rows.append(f" & $L_{{\\max}}$ & ${siz}$ \\\\[2pt]")
+    return ("\\begin{tabular}{lll}\n\\hline\n"
+            f"rules & series & $N={N0}\\ldots{N1}$ \\\\\n\\hline\n"
+            + "\n".join(rows) + "\n\\hline\n\\end{tabular}\n")
+
+
 def tab_reset_only(bc: str, d: Dict) -> str:
     """The 16 all-reset rules as boolean functions of the two neighbours."""
     from . import movement as mv
@@ -210,6 +244,8 @@ def write_all(bc: str = "obc0") -> None:
                       (f"tab_r10_reversible_{bc}", tab_reversible(bc, d)),
                       (f"tab_r10_cycle_classes_{bc}", tab_cycle_classes(bc, d)),
                       (f"tab_r10_growing_{bc}", tab_growing_cycles(bc, d)),
+                      (f"tab_r10_above_{bc}", tab_above(bc, d)),
+                      (f"tab_r10_above_seq_{bc}", tab_above_seq(bc, d)),
                       (f"tab_r10_resetonly_{bc}", tab_reset_only(bc, d)),
                       (f"tab_r10_movement_{bc}", tab_movement(bc, d)),
                       (f"tab_r10_parents_{bc}", tab_parents(bc, d)),
