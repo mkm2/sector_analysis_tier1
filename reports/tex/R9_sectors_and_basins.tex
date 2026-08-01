@@ -547,13 +547,48 @@ largest $N$ computed, each family sorted.}
   basis. The median recurrent fraction at the largest $N$ is
   $6.5\times10^{-3}$ for the V+reset family and $2.6\times10^{-4}$ for the V-free
   one.
-\item \textbf{The V-free family is the more strongly contracting of the two},
-  which is the opposite of what one might guess from the fact that it has no
-  quantum gate. Its median mass base is exactly $1$ --- a \emph{bounded} recurrent
-  set, a handful of frozen states at any $N$ --- against $\psi=1.46557$, the
-  supergolden ratio, for the median V+reset rule. The Hadamard, by spreading a
-  state over its sector, keeps exponentially more of the basis alive.
+\item \textbf{The V-free family contracts somewhat harder}, which is the opposite
+  of what one might guess from the fact that it has no quantum gate, but the
+  effect is modest: $51\%$ of V-free rules have a \emph{bounded} recurrent set
+  ($c=1$, a fixed handful of frozen states at any $N$) against $44\%$ of the
+  V+reset rules, and the two base distributions separate at $p=0.006$ on a rank
+  test ($p=0.013$ on the log recurrent fraction). The Hadamard, by spreading a
+  state over its sector, keeps more of the basis alive --- but by about a decade
+  in the median fraction, not by an exponent.
+\item \textbf{And most of that gap is one subfamily.} Splitting the V-free rules
+  at whether the rule is all-reset:
+  \begin{center}\small
+  \begin{tabular}{lcccc}
+  \toprule
+  V-free subfamily & rules & bounded & median $c$ & median $|\mathrm{Rec}|/2^N$ \\
+  \midrule
+  all-reset (the $16$ boolean $f(\ell,r)$) & $14$ & $12$ & $1$ & $1.5\times10^{-5}$ \\
+  reset $+$ identity & $64$ & $28$ & $\rho=1.3247$ & $1.3\times10^{-3}$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+  $1.5\times10^{-5}$ is $2^{-16}$: a \emph{single} recurrent state. An all-reset
+  rule keeps no memory of the previous configuration, so it collapses to a fixed
+  point. Remove those $14$ and the rest of the V-free family sits within a factor
+  of $5$ of the V+reset one. The extreme contraction is a property of
+  memorylessness, not of V-freeness.
 \end{itemize}
+
+\noindent \textbf{A warning about medians on this plot.} An earlier draft of the
+third bullet quoted the \emph{median mass base} of each family: exactly $1$ for
+V-free against $\psi=1.46557$ for V+reset. Both numbers are correct and both are
+worthless. The fitted bases are not a continuous spread --- every one of them is
+an algebraic number, and they pile up on a few atoms ($68$ V+reset rules at $1$,
+then $21$ at $\varphi$, $21$ at $\sqrt3$, $9$ at $1.887$, $8$ at $1.848$, and
+only $6$ at $\psi$). The median is a rank statistic, and rank $78$ of $155$ simply
+falls inside the six-rule $\psi$ block; landing on a named constant carries no
+information when every candidate value is one. It is also unstable exactly where
+it was being used: the $68$ rules at base $1$ are ten short of a majority, so
+moving ten rules would put the V+reset median at $1$ as well and erase the
+contrast, while the V-free median of $1$ rests on $40$ of $78$ --- a majority of
+one rule. Quantities with atoms of this size want a proportion or a rank test,
+which is what the bullet now reports; the recurrent \emph{fraction} is continuous
+and needs no such care.
 
 \noindent A caution on what F8 and F9 are. Both are statements about the
 \emph{monitored} circuit: the recurrent/transient split is a property of the

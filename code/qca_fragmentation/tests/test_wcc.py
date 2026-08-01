@@ -792,3 +792,45 @@ def test_no_dissipative_rule_keeps_a_finite_recurrent_fraction():
         if m["mass"]["base"] > 2.0 - 0.02:
             bad.append(rule)
     assert bad == [], bad
+
+
+def _mass_rows():
+    from qca_fragmentation.scaling import sectors
+    rows = [sectors.recurrent_mass(r, "obc0") for r in range(256)]
+    return [r for r in rows if r and r["mass"]["base"] is not None
+            and r["count"]["base"] is not None]
+
+
+def test_mass_base_medians_are_an_artefact_of_the_atoms():
+    """R9 sec.6.2 warning.  The fitted bases are algebraic and pile up on a few
+    values, so the family medians land on named constants by rank accident and
+    sit one handful of rules away from flipping.  Pin both facts, so that nobody
+    reads a gap of 0.47 into 1 vs psi again."""
+    rows = _mass_rows()
+    for family, n_at_one, total in (("mixed", 68, 155), ("classical", 40, 78)):
+        b = sorted(r["mass"]["base"] for r in rows if r["family"] == family)
+        assert len(b) == total, (family, len(b))
+        assert sum(1 for x in b if x < 1.0001) == n_at_one, family
+        # the atom at 1 is within a handful of rules of carrying the median
+        assert abs(n_at_one - total / 2) <= 10, family
+    # ... and psi, the "median" V+reset base, is a six-rule block
+    b = [r["mass"]["base"] for r in rows if r["family"] == "mixed"]
+    assert sum(1 for x in b if abs(x - 1.465571) < 1e-4) == 6
+
+
+def test_the_extreme_contractors_are_the_memoryless_rules():
+    """R9 sec.6.2: the V-free family's low recurrent mass is carried by the
+    all-reset rules, which keep no memory and collapse to a single state."""
+    from qca_fragmentation.core import rules as R
+    rows = [r for r in _mass_rows() if r["family"] == "classical"]
+    reset = [r for r in rows
+             if all(s in "DE" for s in R.wolfram_to_tuple(r["rule"]))]
+    rest = [r for r in rows if r not in reset]
+    assert len(reset) == 14 and len(rest) == 64
+    # all-reset: bounded recurrent set, and the median is a lone fixed point
+    assert sum(1 for r in reset if r["mass"]["base"] < 1.0001) == 12
+    med = sorted(r["recurrent_fraction"] for r in reset)[len(reset) // 2]
+    assert med == pytest.approx(2.0 ** -16, rel=1e-6)
+    # the rest of the family is nowhere near that floor
+    med_rest = sorted(r["recurrent_fraction"] for r in rest)[len(rest) // 2]
+    assert med_rest > 50 * med
