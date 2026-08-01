@@ -742,3 +742,53 @@ def test_the_degree_raising_pattern_holds_only_for_the_fibonacci_count_pair():
     assert PLASTIC_ ** 3 == pytest.approx(PLASTIC_ + 1, abs=1e-12)
     assert SUPERGOLDEN ** 3 == pytest.approx(SUPERGOLDEN ** 2 + 1, abs=1e-12)
     assert PHI ** 2 == pytest.approx(PHI + 1, abs=1e-12)
+
+
+# --- the corner view and the recurrent/transient map (R9 sec.6) ---------------
+
+def test_attractor_point_agrees_with_attractor_deficit():
+    """The corner view must not use a different convention from the map it
+    accompanies: same window, same descriptors, same bases."""
+    from qca_fragmentation.scaling import sectors
+    for rule in (22, 28, 150, 156, 201, 204):
+        p = sectors.attractor_point(rule, "obc0")
+        d = sectors.attractor_deficit(rule, "obc0", sectors.UNIFORM_N_CAP)
+        if p is None or d is None:
+            continue
+        if p["n_recurrent"]["base"] is None or p["d_max"]["base"] is None:
+            continue
+        assert p["n_recurrent"]["base"] == pytest.approx(d["a_att"])
+        assert p["d_max"]["base"] == pytest.approx(d["b_att"])
+
+
+def test_unitary_rules_have_no_transient_at_all():
+    """|Rec| = 2^N exactly for a unitary rule, so the recurrent-mass base is 2
+    and the recurrent fraction is 1.  This anchors the top of F9."""
+    from qca_fragmentation.scaling import sectors
+    from qca_fragmentation.core import rules as R
+    seen = 0
+    for rule in R.UNITARY_RULES:
+        m = sectors.recurrent_mass(rule, "obc0")
+        if m is None or m["mass"]["base"] is None:
+            continue
+        seen += 1
+        assert m["mass"]["base"] == pytest.approx(2.0, abs=1e-9), rule
+        assert m["recurrent_fraction"] == pytest.approx(1.0, abs=1e-12), rule
+    assert seen >= 5
+
+
+def test_no_dissipative_rule_keeps_a_finite_recurrent_fraction():
+    """R9 sec.6.2: one reset is enough to make the recurrent set an
+    exponentially vanishing share of the basis."""
+    from qca_fragmentation.scaling import sectors
+    from qca_fragmentation.core import rules as R
+    bad = []
+    for rule in range(256):
+        if R.is_unitary(R.wolfram_to_tuple(rule)):
+            continue
+        m = sectors.recurrent_mass(rule, "obc0")
+        if m is None or m["mass"]["base"] is None:
+            continue
+        if m["mass"]["base"] > 2.0 - 0.02:
+            bad.append(rule)
+    assert bad == [], bad

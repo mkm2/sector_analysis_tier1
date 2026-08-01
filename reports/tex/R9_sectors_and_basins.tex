@@ -472,6 +472,95 @@ attractors are $O(1)$ fixed points --- while the unitary rules sit at $0$.}
 \iftable{tab_r9_transient_obc0.tex}
 \end{center}
 
+\section{The corner view, and where the mass sits}
+\label{sec:corner}
+
+Two things the base plane alone cannot show. The first is the sub-leading power:
+a rule with one giant sector and a rule with a \emph{linear} number of them both
+sit at $a=1$ (\S\ref{sec:frontier}), and only $\alpha_{n_\wcc}$ separates them.
+The second is the transient: the sector and attractor maps both plot counts and
+sizes, and neither says what fraction of the basis is still moving at late times.
+
+\subsection{Corner plots, as in R2 fig.\ 6}
+
+R2's growth map folds the base--base plane together with the two sub-leading
+powers by putting them in the margins. The main panel is base(count) against
+base($D_{\max}$); the bottom margin shares its $x$-axis and plots
+$\alpha_{\rm count}$ beneath it; the left margin shares its $y$-axis and plots
+$\alpha_{D_{\max}}$ beside it. A rule therefore keeps its horizontal position
+between the main and bottom panels and its vertical position between the main and
+left panels, so one point carries the full $(b,\alpha)$ description of both
+series. The same layout is worth having for both Tier-1e maps.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_sector_corner_obc0.pdf}{0.86\textwidth}
+\caption{\textbf{F7, the sector map in corner form} (\rt{obc0}). Main panel: the
+map of Figure~\ref{fig:f1} with the exclusion curve. Bottom margin: the sector
+count's sub-leading power against its base --- the column at $a=1$ splits into
+$\alpha\simeq0$ (genuinely one sector) and $\alpha\simeq1$ (the pinned-frontier
+rules of \S\ref{sec:frontier}, a linear number of them), which the main panel
+cannot distinguish. Left margin: the $D_{\max}$ power, where the binomial family's
+$-\tfrac12$ is visible at $b=2$. Filled marker $=$ exact base.}
+\label{fig:f7}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_attractor_corner_obc0.pdf}{0.86\textwidth}
+\caption{\textbf{F8, the same for the monitored attractors} (\rt{obc0}), i.e.\
+terminal SCCs. \emph{Monitored only.} The dotted curve is drawn as a reference
+and is \emph{not} a bound here --- terminal SCCs do not partition the basis --- and
+most rules do lie below it. The V-free family (green) collapses onto
+$b_{D_{\max}}=1$: their attractors are single states or short cycles however many
+there are.}
+\label{fig:f8}
+\end{figure}
+
+\subsection{Terminal SCCs against transient states}
+\label{sec:rectrans}
+
+The recurrent set $\mathrm{Rec}$ is the union of the terminal SCCs; everything
+else is transient. Writing $|\mathrm{Rec}|\sim c^N$, the base $c$ answers the
+question directly: $c=2$ means a finite fraction of the basis is still recurrent,
+and anything below means the transient part wins exponentially.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_rec_transient_obc0.pdf}{\textwidth}
+\caption{\textbf{F9, where the mass sits} (\rt{obc0}, monitored). Left: growth
+base of the number of terminal SCCs against the growth base of the recurrent
+\emph{mass}. Right: the same without any fit --- the recurrent fraction at the
+largest $N$ computed, each family sorted.}
+\label{fig:f9}
+\end{figure}
+
+\noindent Three readings.
+
+\begin{itemize}
+\item \textbf{The unitary rules sit exactly at $c=2$, alone.} Every state is
+  recurrent, so $|\mathrm{Rec}|=2^N$ and the recurrent fraction is $1$. That is a
+  consistency check rather than a finding, but it fixes the top of the plot.
+\item \textbf{No dissipative rule is anywhere near it.} Not one of the $233$
+  non-unitary rules with a descriptor has $c$ within $0.02$ of $2$: adding a
+  single reset makes the recurrent set an exponentially vanishing share of the
+  basis. The median recurrent fraction at the largest $N$ is
+  $6.5\times10^{-3}$ for the V+reset family and $2.6\times10^{-4}$ for the V-free
+  one.
+\item \textbf{The V-free family is the more strongly contracting of the two},
+  which is the opposite of what one might guess from the fact that it has no
+  quantum gate. Its median mass base is exactly $1$ --- a \emph{bounded} recurrent
+  set, a handful of frozen states at any $N$ --- against $\psi=1.46557$, the
+  supergolden ratio, for the median V+reset rule. The Hadamard, by spreading a
+  state over its sector, keeps exponentially more of the basis alive.
+\end{itemize}
+
+\noindent A caution on what F8 and F9 are. Both are statements about the
+\emph{monitored} circuit: the recurrent/transient split is a property of the
+measured chain, and the unmonitored channel can keep weight on states the graph
+calls transient (R5's rule 22, R7's immortal transient). The sector map F7 is the
+one that is exact for both experiments.
+
 \section{Clustering the dissipative rules by their coherent correspondent}
 \label{sec:coherent}
 

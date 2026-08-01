@@ -61,8 +61,8 @@ dissipative children shows that for $177$ of $240$ children the resets act as th
 \emph{identity} on the recurrent set, so the child's attractors are literally
 orbits of its parent. Two corrections to the first draft are folded in: the eight
 exponential orbits are now \emph{exhibited} rather than fitted, by following a
-single orbit with a bitwise sweep that needs no $2^N$ memory --- $203$ million
-states in one orbit at $N=29$ for rule $57$, and $N=40$ for the rest --- and the
+single orbit with a bitwise sweep that needs no $2^N$ memory --- $9.9\times10^8$
+states in one orbit at $N=31$ for rule $57$, and $N=40$ for the rest --- and the
 claim that the family has no dark states is withdrawn, since $127$ of the $240$
 irreversible rules carry a decoherence-free subspace, of exponential dimension.
 Swept to $N=24$ for all $256$ rules. \rt{obc0} only; \rt{pbc} is held.
@@ -751,8 +751,13 @@ $99$, whose orbit tracks $0.4\cdot2^N$ (dotted).}
 \begin{itemize}
 \item Rules $57$ and $99$ have an orbit through a \emph{finite fraction} of the
   space at every size reached: $31.6$ million states at $N=26$ ($47\%$),
-  $66.9$ million at $N=27$ ($50\%$), $203$ million at $N=29$ ($38\%$). The
-  fit's $b_\rec=2$ is not an extrapolation; the orbit is exhibited.
+  $66.9$ million at $N=27$ ($50\%$), $203$ million at $N=29$ ($38\%$) and
+  $986\,287\,136$ at $N=31$ ($46\%$) --- close to a billion states in one orbit.
+  The fit's $b_\rec=2$ is not an extrapolation; the orbit is exhibited. The
+  fraction fluctuates between $0.15$ and $0.50$ across sizes, which is the two to
+  four draws per size occasionally missing the largest orbit rather than
+  structure: the quantity being certified is the lower bound, and it grows by a
+  factor of $117$ over six sites.
 \item The other six run from $L_{\max}=391$--$561$ at $N=24$ to $5460$--$21505$ at
   $N=40$, a factor of $13$--$38$ over sixteen sites, still on a straight line in
   Figure~\ref{fig:x7}.
@@ -937,7 +942,7 @@ artefact and not a family of offenders.
   governed by the order of a matrix over $\mathrm{GF}(2)$ and should be derivable
   rather than fitted. That derivation is not attempted here.
 \item \textbf{Rules $57$ and $99$.} A single orbit through a constant fraction of
-  the space --- $203$ million states at $N=29$ (\S\ref{sec:exhibit}) --- while
+  the space --- $9.9\times10^8$ states at $N=31$ (\S\ref{sec:exhibit}) --- while
   still having exponentially many sectors. Neither the orbit length nor the
   sector count has been derived.
 \item \textbf{The DFS dimensions.} \S\ref{sec:coherence} identifies rule $1$'s

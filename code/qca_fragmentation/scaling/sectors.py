@@ -543,6 +543,74 @@ def attractor_deficit(rule: int, bc: str,
             "product": prod, "deficit": 2.0 - prod}
 
 
+def attractor_point(rule: int, bc: str,
+                    n_cap: Optional[int] = UNIFORM_N_CAP) -> Optional[Dict]:
+    """
+    The terminal-SCC analogue of rule_point: the FULL descriptors, not just the
+    bases, so the (base, alpha) corner view can be drawn for the monitored map
+    as well as for the sector map.  Same convention and same N window as
+    attractor_deficit -- the two must not disagree.
+    """
+    from .dissipative import load_series as load_att_series
+    try:
+        s = load_att_series(rule, bc)
+    except Exception:
+        return None
+    if not s or len(s.get("N") or []) < 3:
+        return None
+    if n_cap is not None:
+        keep = [i for i, N in enumerate(s["N"]) if N <= n_cap]
+        if len(keep) < 3:
+            return None
+        s = {k: [v[i] for i in keep] for k, v in s.items()
+             if isinstance(v, list) and len(v) == len(s["N"])}
+    unitary = rules.is_unitary(rules.wolfram_to_tuple(rule))
+    ka = "n_wcc" if unitary else "n_recurrent"
+    kb = "d_max_wcc" if unitary else "d_max"
+    a = series_descriptor(rule, bc, ka, s["N"], s["n_recurrent"])
+    b = series_descriptor(rule, bc, kb, s["N"], s["d_max"])
+    if not a or not b:
+        return None
+    return {"rule": rule, "bc": bc, "n_recurrent": a, "d_max": b,
+            "family": ("unitary" if unitary else
+                       ("mixed" if rules.has_V(rules.wolfram_to_tuple(rule))
+                        else "classical"))}
+
+
+def recurrent_mass(rule: int, bc: str,
+                   n_cap: Optional[int] = UNIFORM_N_CAP) -> Optional[Dict]:
+    """
+    How much of the basis is recurrent, as a growth law.
+
+    |Rec| = (1 - transient_fraction) * 2^N from the Tier-1e records.  Its growth
+    base answers "terminal SCCs or transient states?" directly: base 2 means the
+    recurrent set is a finite fraction of the space (up to a sub-exponential
+    factor), anything below 2 means the transient part dominates exponentially.
+    A unitary rule sits at exactly 2 with no transient at all.
+    """
+    s = load_series(rule, bc, n_cap)
+    pts = [(N, tf, nr) for N, tf, nr in
+           zip(s["N"], s["transient_fraction"], s["n_recurrent"])
+           if tf is not None and nr is not None]
+    if len(pts) < 3:
+        return None
+    Ns = [N for N, _, _ in pts]
+    mass = [max(round((1.0 - tf) * (1 << N)), 1) for N, tf, _ in pts]
+    nrec = [nr for _, _, nr in pts]
+    dm = series_descriptor(rule, bc, "rec_mass", Ns, mass)
+    dn = series_descriptor(rule, bc, "n_recurrent", Ns, nrec)
+    if not dm or not dn:
+        return None
+    i = len(Ns) - 1
+    return {"rule": rule, "bc": bc, "N_max": Ns[i],
+            "mass": dm, "count": dn,
+            "recurrent_fraction": mass[i] / (1 << Ns[i]),
+            "transient_fraction": pts[i][1],
+            "family": ("unitary" if rules.is_unitary(rules.wolfram_to_tuple(rule))
+                       else ("mixed" if rules.has_V(rules.wolfram_to_tuple(rule))
+                             else "classical"))}
+
+
 def build(bc: str = "obc0", n_cap: Optional[int] = UNIFORM_N_CAP) -> Dict:
     pts, checks, deficits, finite = [], [], [], []
     for rule in range(256):

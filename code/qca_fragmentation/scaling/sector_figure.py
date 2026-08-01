@@ -463,6 +463,11 @@ def main(argv=None):
     for plane in ("sector", "attractor"):
         fig_dissipation_clusters(bc, os.path.join(
             FIGURES_DIR, f"fig_dissip_{plane}_{bc}.pdf"), plane=plane, data=d)
+    for which in ("sector", "attractor"):
+        fig_corner(bc, os.path.join(FIGURES_DIR,
+                                    f"fig_{which}_corner_{bc}.pdf"), which, d)
+    fig_recurrent_transient(bc, os.path.join(FIGURES_DIR,
+                                             f"fig_rec_transient_{bc}.pdf"))
     st = fig_validation(bc, os.path.join(FIGURES_DIR,
                                          f"fig_validation_{bc}.pdf"), d)
     with open(os.path.join(sectors.ANALYTICS,
@@ -594,3 +599,219 @@ def fig_dissipation_clusters(bc: str, out: str, plane: str = "attractor",
 
 if __name__ == "__main__":
     main()
+
+
+# --- F7/F8: the corner view, as in R2 fig.6 ----------------------------------
+#
+# R2's growth map folds a base-vs-base main panel together with the two
+# sub-leading powers in the margins: the bottom margin shares the main panel's
+# x-axis (the base of the COUNT) and plots that series' alpha beneath it; the
+# left margin shares the y-axis (the base of D_max) and plots ITS alpha beside
+# it.  A rule keeps its horizontal position between main and bottom and its
+# vertical position between main and left, so one point carries the full
+# (base, alpha) description of both series.  The same layout is worth having for
+# the Tier-1e sector map and for the monitored-attractor map, because the base
+# plane alone cannot distinguish "one giant sector" from "a linear number of
+# them" -- both sit at a = 1 (R9 sec.6.4).
+
+REF_BASES = [(2 ** 0.5, r"$\sqrt{2}$"), (1.32472, r"$\rho$"),
+             (1.46557, r"$\psi$"), ((1 + 5 ** 0.5) / 2, r"$\varphi$"),
+             (3 ** 0.5, r"$\sqrt{3}$"), (2.0, "$2$")]
+
+_CORNER_BASE_LIM = (0.955, 2.075)
+_CORNER_ACOUNT_LIM = (-0.35, 1.35)
+_CORNER_ADMAX_LIM = (-0.95, 2.05)
+
+
+def _corner_rows(bc: str, which: str, data: Optional[Dict] = None):
+    """(b_count, a_count, b_size, a_size, family, exact_count, exact_size)."""
+    out = []
+    if which == "sector":
+        d = data or sectors.load(bc) or sectors.build(bc)
+        for p in d["points"]:
+            dn, dd = p["n_wcc"], p["d_max_wcc"]
+            if dn["base"] is None or dd["base"] is None:
+                continue
+            out.append((dn["base"], dn["alpha"], dd["base"], dd["alpha"],
+                        p["family"], dn["exact"], dd["exact"], p["rule"]))
+    else:
+        for rule in range(256):
+            p = sectors.attractor_point(rule, bc)
+            if p is None:
+                continue
+            dn, dd = p["n_recurrent"], p["d_max"]
+            if dn["base"] is None or dd["base"] is None:
+                continue
+            out.append((dn["base"], dn["alpha"], dd["base"], dd["alpha"],
+                        p["family"], dn["exact"], dd["exact"], rule))
+    return out
+
+
+def _jit(rule: int, k: int) -> float:
+    """A deterministic sub-pixel nudge so coincident rules stay countable."""
+    return ((rule * (37 if k == 0 else 53)) % 7 - 3) * 0.004
+
+
+def _corner_scatter(ax, xs, ys, fams, fills, rs, s=30):
+    for x, y, f, fill, r in zip(xs, ys, fams, fills, rs):
+        c = FAMILY_COLOUR[f]
+        ax.scatter(x, y, s=s, marker="o", facecolor=c if fill else "none",
+                   edgecolor=c, linewidth=0.9, alpha=0.85 if fill else 0.6,
+                   zorder=3)
+
+
+def fig_corner(bc: str, out: str, which: str = "sector",
+               data: Optional[Dict] = None):
+    from matplotlib.gridspec import GridSpec
+    from matplotlib.lines import Line2D
+
+    rows = _corner_rows(bc, which, data)
+    bn = [r[0] + _jit(r[7], 0) for r in rows]
+    an = [r[1] + _jit(r[7], 1) for r in rows]
+    bd = [r[2] + _jit(r[7], 1) for r in rows]
+    ad = [r[3] + _jit(r[7], 0) for r in rows]
+    fam = [r[4] for r in rows]
+    en = [r[5] for r in rows]
+    ed = [r[6] for r in rows]
+    rr = [r[7] for r in rows]
+
+    fig = plt.figure(figsize=(9.8, 8.8))
+    gs = GridSpec(2, 2, width_ratios=[1.05, 3.0], height_ratios=[3.0, 1.05],
+                  wspace=0.05, hspace=0.05)
+    ax_main = fig.add_subplot(gs[0, 1])
+    ax_left = fig.add_subplot(gs[0, 0], sharey=ax_main)
+    ax_bot = fig.add_subplot(gs[1, 1], sharex=ax_main)
+    ax_leg = fig.add_subplot(gs[1, 0])
+    ax_leg.axis("off")
+    for a in (ax_main, ax_left, ax_bot):
+        _style(a)
+
+    for v, _ in REF_BASES:
+        ax_main.axvline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+        ax_main.axhline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+    if which == "sector":
+        _hyperbola(ax_main, 0.96, 2.07)
+    else:
+        a = np.linspace(0.96, 2.07, 400)
+        ax_main.plot(a, 2.0 / a, color="#444444", lw=1.0, ls=":", zorder=2,
+                     alpha=0.45)
+    _corner_scatter(ax_main, bn, bd, fam, [x and y for x, y in zip(en, ed)], rr)
+    ax_main.set_xlim(*_CORNER_BASE_LIM)
+    ax_main.set_ylim(*_CORNER_BASE_LIM)
+    ax_main.tick_params(labelbottom=False, labelleft=False)
+    for v, name in REF_BASES:
+        ax_main.annotate(name, (v, _CORNER_BASE_LIM[1]), xytext=(0, 1),
+                         textcoords="offset points", ha="center", va="bottom",
+                         fontsize=7, color=MUTED, annotation_clip=False)
+        ax_main.annotate(name, (_CORNER_BASE_LIM[1], v), xytext=(2, 0),
+                         textcoords="offset points", ha="left", va="center",
+                         fontsize=7, color=MUTED, annotation_clip=False)
+
+    for v, _ in REF_BASES:
+        ax_bot.axvline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+    ax_bot.axhline(0, color=MUTED, lw=0.8, zorder=1)
+    _corner_scatter(ax_bot, bn, an, fam, en, rr)
+    ax_bot.set_ylim(*_CORNER_ACOUNT_LIM)
+    lbl = r"n_{\rm wcc}" if which == "sector" else r"n_{\rm rec}"
+    ax_bot.set_xlabel(rf"growth base of ${lbl}$")
+    ax_bot.set_ylabel(rf"$\alpha_{{{lbl}}}$", labelpad=1)
+
+    for v, _ in REF_BASES:
+        ax_left.axhline(v, color=MUTED, lw=0.5, ls=":", alpha=0.5, zorder=1)
+    ax_left.axvline(0, color=MUTED, lw=0.8, zorder=1)
+    _corner_scatter(ax_left, ad, bd, fam, ed, rr)
+    ax_left.set_xlim(*_CORNER_ADMAX_LIM)
+    ax_left.invert_xaxis()
+    ax_left.set_ylabel(r"growth base of $D_{\max}$")
+    ax_left.set_xlabel(r"$\alpha_{D_{\max}}$")
+
+    hs = [Line2D([0], [0], marker="o", ls="none", color=FAMILY_COLOUR[k],
+                 markersize=8, label=FAMILY_LABEL[k])
+          for k in ("unitary", "classical", "mixed")]
+    hs += [Line2D([0], [0], marker="o", ls="none", color="#555",
+                  markerfacecolor="#555", markersize=7, label="exact base"),
+           Line2D([0], [0], marker="o", ls="none", color="#555",
+                  markerfacecolor="none", markersize=7, label="fitted base")]
+    leg = ax_leg.legend(handles=hs, frameon=False, fontsize=8.5,
+                        loc="center left", bbox_to_anchor=(-0.02, 0.5),
+                        title="family / base")
+    leg.get_title().set_fontsize(8.5)
+
+    tag = ("F7  sectors (WCC)" if which == "sector"
+           else "F8  monitored attractors (terminal SCC)")
+    note = ("exact for both experiments" if which == "sector"
+            else "monitored only; the dotted curve is a reference, not a bound")
+    fig.suptitle(f"{tag} ({bc}): base--base core with $\\alpha$ margins "
+                 f"--- {note}", fontsize=11, x=0.5, y=0.995, color=TEXT)
+    fig.savefig(out, bbox_inches="tight")
+    fig.savefig(out.replace(".pdf", ".png"), dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+
+
+# --- F9: terminal SCCs against transient states ------------------------------
+
+def fig_recurrent_transient(bc: str, out: str):
+    """
+    Where the mass sits.  The recurrent set is the union of the terminal SCCs;
+    everything else is transient.  Left: the growth base of the number of
+    terminal SCCs against the growth base of the recurrent MASS |Rec|.  A rule at
+    mass-base 2 keeps a finite fraction of the basis recurrent; anything below is
+    exponentially transient-dominated, and the unitary rules sit at exactly 2
+    with no transient at all.  Right: the recurrent fraction itself at the
+    largest N, which is the same statement without a fit.
+    """
+    rows = [sectors.recurrent_mass(r, bc) for r in range(256)]
+    rows = [r for r in rows if r and r["mass"]["base"] is not None
+            and r["count"]["base"] is not None]
+    fig, axes = plt.subplots(1, 2, figsize=(12.4, 5.2))
+
+    ax = axes[0]
+    _style(ax)
+    ax.axhline(2.0, color=MUTED, lw=0.9, ls="--", zorder=1)
+    ax.plot([1, 2], [1, 2], color=MUTED, lw=0.7, ls=":", alpha=0.6, zorder=1)
+    from collections import Counter
+    cells: Counter = Counter()
+    for r in rows:
+        cells[(round(r["count"]["base"], 3), round(r["mass"]["base"], 3),
+               r["family"])] += 1
+    for (x, y, f), n in cells.items():
+        ax.scatter(x, y, s=26 + 16 * np.sqrt(n), facecolor=FAMILY_COLOUR[f],
+                   edgecolor="white", lw=0.9, alpha=0.9,
+                   zorder=5 if f == "unitary" else 4)
+    ax.annotate("no transient at all ($|{\\rm Rec}|=2^N$)", (1.35, 2.0),
+                xytext=(0, 5), textcoords="offset points", fontsize=7.5,
+                color=MUTED, ha="center")
+    ax.set_xlabel(r"growth base of the number of terminal SCCs")
+    ax.set_ylabel(r"growth base of the recurrent mass $|{\rm Rec}|$")
+    ax.set_xlim(0.95, 2.08)
+    ax.set_ylim(0.95, 2.10)
+    ax.set_title("F9a  terminal SCCs against transient states:\n"
+                 "how much of the basis survives to late times", fontsize=9.5)
+    hs = [plt.Line2D([], [], marker="o", ls="", markersize=7,
+                     markerfacecolor=FAMILY_COLOUR[k], markeredgecolor="white",
+                     label=FAMILY_LABEL[k])
+          for k in ("unitary", "classical", "mixed")]
+    ax.legend(handles=hs, fontsize=7.5, loc="lower left", framealpha=0.95)
+
+    ax = axes[1]
+    _style(ax)
+    for f in ("unitary", "classical", "mixed"):
+        v = sorted(r["recurrent_fraction"] for r in rows if r["family"] == f)
+        if not v:
+            continue
+        ax.plot(np.arange(len(v)) / max(len(v) - 1, 1), v, "o", ms=3.5,
+                color=FAMILY_COLOUR[f], alpha=0.85,
+                label=f"{FAMILY_LABEL[f]}  (median {np.median(v):.2e})")
+    ax.set_yscale("log")
+    ax.set_xlabel("rules of the family, sorted")
+    ax.set_ylabel(r"recurrent fraction $|{\rm Rec}|/2^N$ at $N_{\max}$")
+    ax.set_title("F9b  the same, unfitted: the share of the basis that is\n"
+                 "recurrent at the largest $N$ computed", fontsize=9.5)
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    for p_ in (out, out.replace(".pdf", ".png")):
+        fig.savefig(p_, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+    return rows

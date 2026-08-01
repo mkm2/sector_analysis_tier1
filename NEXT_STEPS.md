@@ -338,6 +338,25 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
    - **pbc is deliberately NOT done** (user directive: obc0 first, pbc as its
      own report). Note 156-pbc Lucas(N)+1 and 22-pbc were verified in passing.
 
+15b. **R9 corner plots + the recurrent/transient map (2026-07-31).** Added on
+   request, in R2 fig.6's layout: F7 (sectors) and F8 (terminal SCCs) put the
+   base-base plane in the main panel with the two sub-leading powers in the
+   margins, sharing axes, so one point carries (base, alpha) for both series.
+   F7's bottom margin is the one that earns its place -- the column at a=1
+   splits into alpha~0 (genuinely one sector) and alpha~1 (the pinned-frontier
+   rules), which the base plane cannot distinguish.
+   F9 is the new "terminal SCCs vs transient states" map: growth base of the
+   number of terminal SCCs against the growth base of the recurrent MASS |Rec|.
+   Results: the unitary rules sit at mass base exactly 2 with recurrent fraction
+   1 (no transient at all), and **not one of the 233 non-unitary rules gets
+   within 0.02 of 2** -- a single reset makes the recurrent set exponentially
+   vanishing. Median recurrent fraction at N_max: 6.5e-3 (V+reset), 2.6e-4
+   (V-free). The V-free family is the MORE contracting of the two (median mass
+   base exactly 1, a bounded recurrent set, against psi = 1.46557 for V+reset):
+   the Hadamard keeps exponentially more of the basis alive.
+   Code: `sectors.attractor_point`, `sectors.recurrent_mass`,
+   `sector_figure.fig_corner`, `sector_figure.fig_recurrent_transient`.
+
 16. **R10 — X-gate PERMUTATION circuits — DONE (2026-07-30).** The same 256
    symbol tables with V = X instead of the Hadamard. Every symbol is then a
    FUNCTION on bits, so succ(x) is single-valued and the transition graph is a
