@@ -61,8 +61,8 @@ dissipative children shows that for $177$ of $240$ children the resets act as th
 \emph{identity} on the recurrent set, so the child's attractors are literally
 orbits of its parent. Two corrections to the first draft are folded in: the eight
 exponential orbits are now \emph{exhibited} rather than fitted, by following a
-single orbit with a bitwise sweep that needs no $2^N$ memory --- $9.9\times10^8$
-states in one orbit at $N=31$ for rule $57$, and $N=40$ for the rest --- and the
+single orbit with a bitwise sweep that needs no $2^N$ memory --- $2.1\times10^9$
+states in one orbit at $N=32$ for rule $57$, and $N=40$ for the rest --- and the
 claim that the family has no dark states is withdrawn, since $127$ of the $240$
 irreversible rules carry a decoherence-free subspace, of exponential dimension.
 Swept to $N=24$ for all $256$ rules. \rt{obc0} only; \rt{pbc} is held.
@@ -751,13 +751,20 @@ $99$, whose orbit tracks $0.4\cdot2^N$ (dotted).}
 \begin{itemize}
 \item Rules $57$ and $99$ have an orbit through a \emph{finite fraction} of the
   space at every size reached: $31.6$ million states at $N=26$ ($47\%$),
-  $66.9$ million at $N=27$ ($50\%$), $203$ million at $N=29$ ($38\%$) and
-  $986\,287\,136$ at $N=31$ ($46\%$) --- close to a billion states in one orbit.
-  The fit's $b_\rec=2$ is not an extrapolation; the orbit is exhibited. The
-  fraction fluctuates between $0.15$ and $0.50$ across sizes, which is the two to
-  four draws per size occasionally missing the largest orbit rather than
-  structure: the quantity being certified is the lower bound, and it grows by a
-  factor of $117$ over six sites.
+  $66.9$ million at $N=27$ ($50\%$), $203$ million at $N=29$ ($38\%$),
+  $986\,287\,136$ at $N=31$ ($46\%$) and $2\,078\,885\,256$ at $N=32$ ($48\%$)
+  --- over two billion states in a single orbit. The fit's $b_\rec=2$ is not an
+  extrapolation; the orbit is exhibited, and the certified lower bound grows by a
+  factor of $246$ over seven sites. ($N=32$ was run for rule $57$ only; the two
+  rules agree exactly at every smaller size.)
+\item \textbf{The fraction genuinely oscillates.} An earlier draft read the dips
+  at $N=28$ ($23\%$) and $N=30$ ($15\%$) as two to four draws occasionally
+  missing the largest orbit. Re-running those two sizes with more draws --- six
+  at $N=28$, five at $N=30$ --- reproduced the same maxima exactly
+  ($62\,326\,552$ and $159\,174\,352$), so the dips are structure, not
+  undersampling: the largest orbit is a fraction of the space that varies with
+  $N$ rather than a fixed share of it. The certificate is unaffected either way,
+  being a lower bound.
 \item The other six run from $L_{\max}=391$--$561$ at $N=24$ to $5460$--$21505$ at
   $N=40$, a factor of $13$--$38$ over sixteen sites, still on a straight line in
   Figure~\ref{fig:x7}.
@@ -941,10 +948,12 @@ artefact and not a family of offenders.
   five points; the map is $\mathrm{GF}(2)$-linear, so the orbit structure is
   governed by the order of a matrix over $\mathrm{GF}(2)$ and should be derivable
   rather than fitted. That derivation is not attempted here.
-\item \textbf{Rules $57$ and $99$.} A single orbit through a constant fraction of
-  the space --- $9.9\times10^8$ states at $N=31$ (\S\ref{sec:exhibit}) --- while
+\item \textbf{Rules $57$ and $99$.} A single orbit through a finite fraction of
+  the space --- $2.1\times10^9$ states at $N=32$ (\S\ref{sec:exhibit}) --- while
   still having exponentially many sectors. Neither the orbit length nor the
-  sector count has been derived.
+  sector count has been derived, and the derivation now has one more thing to
+  account for: the fraction oscillates with $N$ (confirmed, not a sampling
+  artefact) rather than converging to a constant.
 \item \textbf{The DFS dimensions.} \S\ref{sec:coherence} identifies rule $1$'s
   as the golden-mean shift and rules $76$/$73$'s as the no-\rt{111} shift, but
   rule $232$'s $44,117,305,798,2091$ and rule $205$'s tribonacci-base sequence are

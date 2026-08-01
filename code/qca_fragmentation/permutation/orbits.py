@@ -209,8 +209,19 @@ def merge(new: List[Dict], bc: str = "obc0") -> Dict:
     best: Dict = {}
     for r in old["rows"] + new:
         k = (r["rule"], r["N"])
-        if k not in best or (r["max"] or 0) > (best[k]["max"] or 0):
+        if k not in best:
             best[k] = r
+            continue
+        cur = best[k]
+        if (r["max"] or 0) > (cur["max"] or 0):
+            best[k] = r
+        elif (r["max"] or 0) == (cur["max"] or 0):
+            # A re-run that TIES the stored maximum is the evidence that the
+            # maximum is real, so it must not be discarded: keep the row that
+            # cost more draws.  This is what confirmed that X57's dips at N=28
+            # and N=30 are genuine structure and not a missed orbit.
+            if (r.get("samples") or 0) > (cur.get("samples") or 0):
+                best[k] = r
     out = {"bc": bc, "rows": [best[k] for k in sorted(best)]}
     os.makedirs(analysis.ANALYTICS, exist_ok=True)
     with open(ORBIT_PATH.format(bc=bc), "w") as f:
