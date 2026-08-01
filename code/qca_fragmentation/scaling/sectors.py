@@ -258,6 +258,34 @@ def _volume_fraction_base(Ns: List[int], ys: List[int], tail: int = 6):
     return None
 
 
+def _alpha_at_base(Ns: List[int], ys: List[int],
+                   base: float) -> Tuple[float, float]:
+    """
+    The sub-leading power of a series whose BASE is already pinned.
+
+    M2 fits ln y = c + alpha ln N + kappa N and returns (alpha, kappa) as a
+    PAIR: its alpha is whatever compensates its own kappa.  Every branch below
+    then replaces the base with a better estimate -- an exact recurrence, a
+    parity recurrence, the pure-exponential refit, a clamp -- and the inherited
+    alpha is left describing a base that is no longer there.  The two halves of
+    the descriptor then come from different models, which is how rule 28's
+    D_max staircase 4,4,8,8,8,16,16,16,32,32,32 (exactly c*2^{N/3}, no prefactor
+    at all) ended up reported as base 2^{1/3} with alpha = 2.34.
+
+    Holding the settled base fixed and regressing the residual on ln N gives the
+    alpha that actually goes with it: -0.03 for rule 28, 0.08 for 39, 0.03 for
+    47, all correctly flat.  The residual spread is returned alongside, because
+    for a periodic staircase it is the oscillation -- not a power of N -- that
+    dominates, and a caller may want to say so.
+    """
+    import numpy as np
+    N = np.asarray(Ns, dtype=float)
+    r = np.log(np.asarray(ys, dtype=float)) - N * math.log(base)
+    A = np.vstack([np.ones_like(N), np.log(N)]).T
+    coef, *_ = np.linalg.lstsq(A, r, rcond=None)
+    return float(coef[1]), float(np.std(r - A @ coef))
+
+
 def series_descriptor(rule: int, bc: str, key: str,
                       Ns: List[int], ys: List[int]) -> Optional[Dict]:
     """
@@ -273,6 +301,7 @@ def series_descriptor(rule: int, bc: str, key: str,
         return None
     if an is None and is_irregular(Ns, ys):
         return {"cls": "irregular", "base": None, "alpha": None, "exact": False,
+                "alpha_source": None, "alpha_resid": None,
                 "source": "non-monotone, no growth law", "parity_split": None,
                 "base_lo": None, "base_hi": None, "n_points": f["n_points"],
                 "N_range": f["N_range"], "named": None}
@@ -280,12 +309,15 @@ def series_descriptor(rule: int, bc: str, key: str,
         vf = _volume_fraction_base(Ns, ys)
         if vf is not None:
             return {"cls": "exponential", "base": vf[0], "alpha": vf[1],
+                    "alpha_source": "volume-fraction discriminator",
+                    "alpha_resid": None,
                     "exact": True, "source": vf[2], "parity_split": None,
                     "base_lo": None, "base_hi": None,
                     "n_points": f["n_points"], "N_range": f["N_range"],
                     "named": name_base(vf[0])}
         if _saturated(ys):
             return {"cls": "constant", "base": 1.0, "alpha": 0.0, "exact": True,
+                    "alpha_source": "saturated", "alpha_resid": None,
                     "source": f"saturated at {ys[-1]}", "parity_split": None,
                     "base_lo": None, "base_hi": None,
                     "n_points": f["n_points"], "N_range": f["N_range"],
@@ -367,8 +399,26 @@ def series_descriptor(rule: int, bc: str, key: str,
         cls, base = "polynomial", 1.0
         source = f"{source}; $\\kappa$ band excludes growth"
 
+    # The base has now been settled by whichever branch won.  Unless it came
+    # from M0/M1 -- where the model IS y = c N^alpha at base 1 and the pair is
+    # already coherent -- alpha is still M2's, fitted against M2's own kappa,
+    # and has to be re-derived at the base actually being reported.  See
+    # _alpha_at_base.  (The analytic override below supplies its own pair, and
+    # the volume-fraction branch returned early with a coherent one.)
+    # M0 and M1 assume base 1 and M2 assumes its own exp(kappa); the pair is
+    # coherent only while the settled base is still the one alpha was fitted
+    # against.  Rule 28 is the case that makes the M1 half matter: BIC picks M1
+    # (alpha = 2.34 at base 1) for the staircase, the integer recurrence then
+    # correctly overrides the base to 2^{1/3}, and the stale alpha survives.
+    alpha_source = {"M0": "M0", "M1": "M1 fit"}.get(model, "M2")
+    alpha_resid = None
+    if model == "M2" or abs(base - 1.0) > 1e-12:
+        alpha, alpha_resid = _alpha_at_base(Ns, ys, base)
+        alpha_source = "refit at the reported base"
+
     if an is not None:
         base, alpha, exact, source = an[0], an[1], True, an[2]
+        alpha_source, alpha_resid = "analytic", None
         lo = hi = None
 
     # Both n_wcc and D_max lie in [1, 2^N], so both bases lie in [1, 2].  A fit
@@ -385,8 +435,12 @@ def series_descriptor(rule: int, bc: str, key: str,
         clamped, base, exact = f"fit {base:.4f} clamped to 1", 1.0, False
     if clamped:
         source = f"{source}; {clamped}"
+        # the clamp moved the base, so the pair has to be made coherent again
+        alpha, alpha_resid = _alpha_at_base(Ns, ys, base)
+        alpha_source = "refit at the clamped base"
 
     return {"cls": cls, "base": float(base), "alpha": float(alpha),
+            "alpha_source": alpha_source, "alpha_resid": alpha_resid,
             "clamped": clamped,
             "exact": bool(exact), "source": source, "parity_split": parity,
             "base_lo": lo, "base_hi": hi, "n_points": f["n_points"],

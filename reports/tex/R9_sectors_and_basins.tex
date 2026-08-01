@@ -495,26 +495,26 @@ series. The same layout is worth having for both Tier-1e maps.
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/fig_sector_corner_obc0.pdf}{0.86\textwidth}
-\caption{\textbf{F7, the sector map in corner form} (\rt{obc0}). Main panel: the
+\caption{\textbf{F8, the sector map in corner form} (\rt{obc0}). Main panel: the
 map of Figure~\ref{fig:f1} with the exclusion curve. Bottom margin: the sector
 count's sub-leading power against its base --- the column at $a=1$ splits into
 $\alpha\simeq0$ (genuinely one sector) and $\alpha\simeq1$ (the pinned-frontier
 rules of \S\ref{sec:frontier}, a linear number of them), which the main panel
 cannot distinguish. Left margin: the $D_{\max}$ power, where the binomial family's
 $-\tfrac12$ is visible at $b=2$. Filled marker $=$ exact base.}
-\label{fig:f7}
+\label{fig:cornersec}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/fig_attractor_corner_obc0.pdf}{0.86\textwidth}
-\caption{\textbf{F8, the same for the monitored attractors} (\rt{obc0}), i.e.\
+\caption{\textbf{F9, the same for the monitored attractors} (\rt{obc0}), i.e.\
 terminal SCCs. \emph{Monitored only.} The dotted curve is drawn as a reference
 and is \emph{not} a bound here --- terminal SCCs do not partition the basis --- and
 most rules do lie below it. The V-free family (green) collapses onto
 $b_{D_{\max}}=1$: their attractors are single states or short cycles however many
 there are.}
-\label{fig:f8}
+\label{fig:cornerat}
 \end{figure}
 
 \subsection{Terminal SCCs against transient states}
@@ -528,11 +528,11 @@ and anything below means the transient part wins exponentially.
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/fig_rec_transient_obc0.pdf}{\textwidth}
-\caption{\textbf{F9, where the mass sits} (\rt{obc0}, monitored). Left: growth
+\caption{\textbf{F10, where the mass sits} (\rt{obc0}, monitored). Left: growth
 base of the number of terminal SCCs against the growth base of the recurrent
 \emph{mass}. Right: the same without any fit --- the recurrent fraction at the
 largest $N$ computed, each family sorted.}
-\label{fig:f9}
+\label{fig:rectrans}
 \end{figure}
 
 \noindent Three readings.
@@ -590,11 +590,68 @@ one rule. Quantities with atoms of this size want a proportion or a rank test,
 which is what the bullet now reports; the recurrent \emph{fraction} is continuous
 and needs no such care.
 
-\noindent A caution on what F8 and F9 are. Both are statements about the
+\noindent A caution on what F9 and F10 are. Both are statements about the
 \emph{monitored} circuit: the recurrent/transient split is a property of the
 measured chain, and the unmonitored channel can keep weight on states the graph
-calls transient (R5's rule 22, R7's immortal transient). The sector map F7 is the
+calls transient (R5's rule 22, R7's immortal transient). The sector map F8 is the
 one that is exact for both experiments.
+
+\subsection{Correction (2026-08-01): $\alpha$ and the base came from different
+models}
+\label{sec:alphafix}
+
+Drawing these margins next to R2's exposed a defect in the fitting layer that the
+base-only maps had hidden for the whole project. The descriptor reports a
+\emph{pair}, $y \sim c\,N^{\alpha} b^{N}$, and the two halves were being taken
+from different models. BIC fits M2, $\ln y = c + \alpha\ln N + \kappa N$, whose
+$\alpha$ is whatever compensates \emph{its own} $\kappa$. Every branch that runs
+afterwards then replaces the base --- with an exact integer recurrence, a parity
+recurrence, the pure-exponential refit of \S\ref{sec:fitting}, or a clamp --- and
+the inherited $\alpha$ was left describing a base that was no longer there.
+
+Rule $28$'s $D_{\max}$ is the cleanest case. The series is
+\[
+4,\,4,\,8,\,8,\,8,\,16,\,16,\,16,\,32,\,32,\,32 \qquad (N=6\ldots16),
+\]
+exactly $c\cdot 2^{N/3}$ --- a pure staircase with \emph{no} prefactor. The
+recurrence correctly pins the base at $2^{1/3}=1.2599$, and the descriptor then
+reported $\alpha = 2.34$ alongside it, a spurious $N^{2.34}$ produced entirely by
+M2's abandoned $\kappa$. Rules $39$ and $47$ carried a fictitious $\alpha=1.24$
+the same way.
+
+The fix is to hold the base that is actually being reported fixed and regress the
+residual on $\ln N$ (\texttt{sectors.\_alpha\_at\_base}). Rule $28$ then gives
+$\alpha = -0.03$, rule $39$ gives $0.08$, rule $47$ gives $0.03$: correctly flat,
+as the series plainly are. In the sector map $111$ of $512$ $\alpha$ values move,
+by a median of $0.10$ and a maximum of $1.99$.
+
+\noindent\textbf{Nothing else moves.} No base changes, not one, and no verdict of
+\S\ref{sec:hyper} changes; the defect was confined to the sub-leading power,
+which is why the base-only maps of R2 and \S\ref{sec:contrast} were never wrong. Both
+readings this section makes survive unchanged: the $a=1$ column still splits into
+$173$ rules at $\alpha\simeq0$ and $30$ at $\alpha>0.5$, containing all eight
+pinned-frontier rules, and the binomial family still carries $\alpha=-\tfrac12$ at
+$b=2$ (analytic for $150/105$, and $-0.43$ from the volume-fraction discriminator
+for $134$).
+
+\noindent\textbf{R2's growth map had the same defect, and worked around it.}
+Its \texttt{growth\_map.\_dissipative\_descriptor} set $\alpha=0$ by fiat for
+every rule it classed exponential, on the stated grounds that ``the sub-leading
+power is not identifiable under a period split''. The diagnosis was too
+pessimistic --- the power is perfectly identifiable once the base is pinned; what
+was unidentifiable was the \emph{stale} $\alpha$ --- but the workaround was the
+right call given the value on offer, and it is why R2's fig.\ 6 margins are a
+column of structural zeros for $440$ of $486$ series. With both sides repaired,
+the two figures agree: the $63$ disagreements above $0.15$ fall to $2$, and those
+two are rules $105$ and $150$, where R9 uses R8's derived linear sector count
+($\alpha=1$ exactly) and R2 still fits $0.83$. Derivation beats fit, so R9's
+value stands.
+
+\noindent A related defect fixed at the same time: \texttt{sector\_figure}'s
+\verb|__main__| guard sat in the middle of the module, before \texttt{fig\_corner}
+and \texttt{fig\_recurrent\_transient} were defined, so
+\verb|python -m ...sector_figure| raised \texttt{NameError} after writing F1--F6
+and left F8--F10 stale on disk. Both are now pinned by tests.
 
 \section{Clustering the dissipative rules by their coherent correspondent}
 \label{sec:coherent}

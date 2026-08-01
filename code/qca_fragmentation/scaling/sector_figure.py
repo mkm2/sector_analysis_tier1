@@ -597,8 +597,6 @@ def fig_dissipation_clusters(bc: str, out: str, plane: str = "attractor",
     plt.close(fig)
     print("wrote", out)
 
-if __name__ == "__main__":
-    main()
 
 
 # --- F7/F8: the corner view, as in R2 fig.6 ----------------------------------
@@ -815,3 +813,7 @@ def fig_recurrent_transient(bc: str, out: str):
     plt.close(fig)
     print("wrote", out)
     return rows
+
+
+if __name__ == "__main__":
+    main()

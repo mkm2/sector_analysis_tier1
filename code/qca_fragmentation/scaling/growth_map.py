@@ -154,9 +154,22 @@ def _dissipative_descriptor(rule: int, bc: str) -> Dict[str, Optional[Dict]]:
             f = fit_series(s["N"], s[key])
             alpha = float(f["params"]["M1"][1]) if f.get("ok") else 1.0
             base = 1.0
-        else:  # exponential: sub-leading power is not identifiable under a
-               # period split, so report 0 (points cluster near the base axis).
-            alpha = 0.0
+        else:
+            # Exponential.  This used to report alpha = 0 by fiat, on the
+            # grounds that "the sub-leading power is not identifiable under a
+            # period split".  The real problem was narrower: the only alpha
+            # available came from an M2 fit whose kappa had since been replaced
+            # by this branch's base, so the two halves described different
+            # models and the inherited alpha was meaningless (rule 28's exact
+            # staircase c*2^{N/3} carried alpha = 2.34).  Holding the base that
+            # is actually reported fixed and regressing on ln N gives the
+            # coherent power -- see sectors._alpha_at_base -- so the margins can
+            # show it instead of a column of structural zeros.
+            from .sectors import _alpha_at_base
+            try:
+                alpha, _ = _alpha_at_base(s["N"], s[key], base)
+            except Exception:
+                alpha = 0.0
         out[key] = {"cls": cls, "base": float(base), "alpha": float(alpha),
                     "exact": exact}
     return out

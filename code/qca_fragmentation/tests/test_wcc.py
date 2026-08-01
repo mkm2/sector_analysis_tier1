@@ -794,6 +794,63 @@ def test_no_dissipative_rule_keeps_a_finite_recurrent_fraction():
     assert bad == [], bad
 
 
+def test_alpha_and_base_describe_the_same_model():
+    """R9 sec.6.5.  The descriptor's (base, alpha) is a PAIR: y ~ c N^alpha b^N.
+    Every branch that overrides the base after M1/M2 has been fitted must
+    re-derive alpha against the base it is actually reporting, or the two halves
+    describe different models.  Rule 28's D_max is the type case: the series
+    4,4,8,8,8,16,16,16,32,32,32 is exactly c*2^{N/3} with no prefactor, and the
+    stale alpha reported it as 2^{1/3} with alpha = 2.34."""
+    from qca_fragmentation.scaling import sectors
+    bad = []
+    for rule in range(256):
+        p = sectors.attractor_point(rule, "obc0")
+        if p is None:
+            continue
+        for key in ("n_recurrent", "d_max"):
+            d = p[key]
+            # M0/M1 fit at base 1 and are coherent as they stand; the analytic,
+            # saturated and volume-fraction branches supply their own pair.
+            if d["base"] is None or d["alpha_source"] in (
+                    None, "analytic", "saturated", "M0", "M1 fit",
+                    "volume-fraction discriminator"):
+                continue
+            s = sectors.load_series(rule, "obc0", sectors.UNIFORM_N_CAP)
+            # alpha must be the one a fit at THIS base would give
+            from qca_fragmentation.scaling.dissipative import load_series as ls
+            t = ls(rule, "obc0")
+            Ns = [N for N in t["N"] if N <= sectors.UNIFORM_N_CAP]
+            ys = (t["n_recurrent"] if key == "n_recurrent"
+                  else t["d_max"])[:len(Ns)]
+            if len(Ns) < 3 or min(ys) <= 0:
+                continue
+            want, _ = sectors._alpha_at_base(Ns, ys, d["base"])
+            if abs(want - d["alpha"]) > 1e-6:
+                bad.append((rule, key, d["alpha"], want, d["alpha_source"]))
+    assert bad == [], bad[:8]
+
+
+def test_rule_28_dmax_is_a_clean_staircase_with_no_prefactor():
+    """The concrete number that the incoherent pair got wrong."""
+    from qca_fragmentation.scaling import sectors
+    d = sectors.attractor_point(28, "obc0")["d_max"]
+    assert d["base"] == pytest.approx(2 ** (1 / 3), rel=1e-6)
+    assert abs(d["alpha"]) < 0.1, d["alpha"]      # was 2.339
+
+
+def test_sector_figure_exposes_every_figure_it_draws():
+    """The __main__ guard once sat mid-module, so `python -m sector_figure`
+    raised NameError on fig_corner and silently left F7/F8/F9 stale."""
+    from qca_fragmentation.scaling import sector_figure as sf
+    for name in ("fig_corner", "fig_recurrent_transient", "fig_sector_map",
+                 "fig_dissipation_clusters"):
+        assert hasattr(sf, name), name
+    src = open(sf.__file__).read()
+    guard = src.index('if __name__ == "__main__"')
+    assert guard > src.index("def fig_recurrent_transient"), \
+        "the __main__ guard must come after every figure main() calls"
+
+
 def _mass_rows():
     from qca_fragmentation.scaling import sectors
     rows = [sectors.recurrent_mass(r, "obc0") for r in range(256)]

@@ -397,6 +397,35 @@ across the main/left panels.}
 \label{fig:growthcorner}
 \end{figure}
 
+\paragraph{Correction (2026-08-01), and a caveat on the axis names.}
+Two things about this figure were repaired after R9 drew the same layout for its
+own two maps and the margins disagreed.
+
+\emph{The margins used to be structural zeros.} For every rule classed
+exponential, \texttt{growth\_map} set $\alpha=0$ by fiat, on the grounds that the
+sub-leading power was not identifiable under a period split --- $440$ of the
+$486$ plotted $\alpha$ values were that hard-coded zero. The diagnosis was too
+pessimistic. What was unidentifiable was the $\alpha$ then \emph{available}: it
+came from an M2 fit, $\ln y = c+\alpha\ln N+\kappa N$, whose $\kappa$ this branch
+had already replaced with a better base, so the two halves of the descriptor
+described different models. Pinning the reported base and regressing the residual
+on $\ln N$ gives a perfectly identifiable power, and the margins now show it.
+R9 \S6.5 works the defect through on rule $28$, whose $D_{\max}$ staircase
+$4,4,8,8,8,16,16,16,32,32,32$ is exactly $c\,2^{N/3}$ yet carried $\alpha=2.34$.
+No base and no growth class changes anywhere in this report; with both sides
+repaired the two corner plots agree on $484$ of $486$ $\alpha$ values, the two
+exceptions being rules $105$ and $150$, where R9 uses R8's derived linear sector
+count and this report still fits it.
+
+\emph{The axis names are loose for the dissipative rules.} The series plotted as
+``$\#$sectors'' and ``$D_{\max}$'' are read from \texttt{n\_recurrent} and the
+largest \emph{recurrent} class, so for the $240$ dissipative rules this is the
+monitored terminal-SCC plane, not the sector plane --- the distinction adjudicated
+in R-T14. For the $16$ unitary rules that are this report's subject the two
+coincide exactly (R9's assertion A2), so nothing here is affected; but the
+corner readings quoted above for the classical and mixed families are attractor
+statements, and R9's Fig.~8 is the figure that plots genuine WCC sectors.
+
 \section{Broken inversion symmetry (201 vs.\ 108)}
 Rules $201=(\rt{VIII})$ and $108=(\rt{IIIV})$ are $0\!\leftrightarrow\!1$
 spin-flip partners. Because the flip conjugates the Hadamard by $X$ and
