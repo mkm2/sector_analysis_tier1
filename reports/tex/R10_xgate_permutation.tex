@@ -901,6 +901,120 @@ populations are deterministic. It is also the one place where this family is
 is identical, so these decoherence-free subspaces are exactly as present in R1--R9
 as they are here.
 
+\section{The R9 views, drawn for the X gate}
+\label{sec:r9views}
+
+R9 \S6 introduced four views of the rule space. Drawing the same four here is
+worth the pages, because for two of them the X gate turns a scatter into a
+theorem, and the other two say something the Hadamard versions do not.
+
+\emph{These figures call R9's own plotting functions}, with a different palette
+and different rows. That is deliberate. R2 and R9 drew one corner layout from two
+code paths and disagreed on $61$ of $143$ sub-leading powers until both were
+repaired (R9 \S6.5); a shared function is the cheapest guarantee that a
+cross-report comparison is a comparison of the physics.
+
+\subsection{Weak components against terminal SCCs: the diagonal, exactly}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_wcc_vs_scc_count_obc0.pdf}{\textwidth}
+\caption{\textbf{X8, weak components against cycles: raw counts} (\rt{obc0}).
+Every one of the $256$ rules sits on the diagonal at every $N$. Compare R9's
+F11, where twelve rules do not.}
+\label{fig:x8}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_wcc_vs_scc_base_obc0.pdf}{\textwidth}
+\caption{\textbf{X9, the same in growth bases} (\rt{obc0}). All $249$ rules with
+both descriptors sit on the diagonal.}
+\label{fig:x9}
+\end{figure}
+
+With $V=X$ the successor map is single-valued, so each weak component carries
+exactly one cycle and
+\[
+n_\rec(x) \;=\; n_\wcc(x) \qquad\text{identically, for every rule and every } N .
+\]
+X8 and X9 are that statement drawn: $0$ rules off the diagonal in the counts
+(all $256$), $0$ off it in the bases (all $249$ with descriptors). The figures
+are a check on the theorem rather than a measurement.
+
+The contrast with R9 is the content. Under the Hadamard the same two views put
+$237$ of $249$ rules on the diagonal and twelve off it --- rules $203$ and $217$
+carry $277$ attractors inside a \emph{single} sector. Superposition is what
+allows a sector to hold more than one attractor: the H successor is
+set-valued, so a weak component can branch into several terminal SCCs, and the
+sector count then stops being the attractor count. Under X it cannot happen.
+This is the same coarsening seen from the other side in R11 \S3: X sectors refine
+H sectors, and the refinement is exactly the splitting of these multi-attractor
+sectors.
+
+\subsection{The corner view}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_corner_sector_obc0.pdf}{0.86\textwidth}
+\caption{\textbf{X10, the X-gate sector map in corner form} (\rt{obc0}). Main
+panel: base--base. Bottom margin: the sector count's sub-leading power; left
+margin: the $D_{\max}$ power. Filled marker $=$ exact base.}
+\label{fig:x10}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_corner_attractor_obc0.pdf}{0.86\textwidth}
+\caption{\textbf{X11, the same for the cycles} (\rt{obc0}). By the identity
+above the horizontal axis is the \emph{same} axis as X10's; only the vertical
+one changes, from the largest sector to the longest cycle.}
+\label{fig:x11}
+\end{figure}
+
+X10 and X11 share a horizontal axis by theorem, which makes the pair read as a
+single figure with two vertical readings --- the property R9's F8/F9 pair does
+not have. All $\alpha$ values here come from the repaired estimator of R9
+\S6.5; rebuilding the X-gate map moved $282$ of them and no base at all.
+
+\subsection{Where the mass sits}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_xgate_rec_transient_obc0.pdf}{\textwidth}
+\caption{\textbf{X12, cycles against transient states} (\rt{obc0}). Left: growth
+base of the number of cycles against that of the recurrent mass $|\mathrm{Rec}|$.
+Right: the recurrent fraction at the largest $N$, each family sorted.}
+\label{fig:x12}
+\end{figure}
+
+\noindent Three readings, and the middle one reverses R9.
+
+\begin{itemize}
+\item \textbf{The $16$ reversible rules sit at mass base exactly $2$}, recurrent
+  fraction $1$: a bijection has no transient. As with R9's unitary rules this is
+  a consistency check that fixes the top of the plot.
+\item \textbf{The X+reset family contracts harder than the V-free one} ---
+  $111$ of $146$ X+reset rules have a \emph{bounded} recurrent set against
+  $40$ of $78$ V-free ones ($76\%$ against $51\%$), with median recurrent
+  fractions $1.2\times10^{-7}$ and $1.5\times10^{-6}$. Under the Hadamard the
+  ordering is the other way round (R9 \S6.2: $44\%$ against $51\%$ bounded, and
+  the V+reset rules keep about a decade \emph{more} of the basis alive). The
+  reason is the one X8 makes visible: the Hadamard spreads a state across its
+  sector and keeps exponentially many basis states in play, so a reset has more
+  to destroy but also more competition. Replace it with a permutation and the
+  reset drains a functional graph with nothing to spread, so adding dissipation
+  to a permutation is the more destructive of the two operations.
+\item \textbf{The floor is a single state.} The smallest recurrent fractions are
+  $2^{-24}$ at $N_{\max}=24$: one fixed point, the whole basis transient into it.
+\end{itemize}
+
+\noindent Read the family proportions rather than the family medians: these
+distributions have large atoms (a bounded recurrent set is $111$ rules at base
+exactly $1$), and a median that lands on a named constant in such a distribution
+is a rank accident, not a fact about the family. R9 \S6.2 records that trap in
+full after making the mistake.
+
 \section{Validation}
 \label{sec:valid}
 

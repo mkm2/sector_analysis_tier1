@@ -845,10 +845,15 @@ def test_sector_figure_exposes_every_figure_it_draws():
     for name in ("fig_corner", "fig_recurrent_transient", "fig_sector_map",
                  "fig_dissipation_clusters"):
         assert hasattr(sf, name), name
+    import re
     src = open(sf.__file__).read()
     guard = src.index('if __name__ == "__main__"')
-    assert guard > src.index("def fig_recurrent_transient"), \
-        "the __main__ guard must come after every figure main() calls"
+    # every figure function, not just the ones that existed when this was
+    # written -- appending a new fig_* to the end of the module re-creates the
+    # bug otherwise, which is exactly what happened once already.
+    last = max(m.start() for m in re.finditer(r"^def fig_", src, re.M))
+    assert guard > last, \
+        "the __main__ guard must come after every fig_* definition"
 
 
 def _mass_rows():

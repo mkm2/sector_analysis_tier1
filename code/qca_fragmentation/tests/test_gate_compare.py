@@ -125,3 +125,80 @@ def test_the_reversible_rules_are_the_eca_of_the_same_number():
         assert n == rule, (rule, n)
     # and rule 54 is the OR one, x_i -> x_i XOR (x_{i-1} OR x_{i+1})
     assert "".join(rules.wolfram_to_tuple(54)) == "IVVV"
+
+
+# --- WCC against SCC: the two new views (R9 F11/F12, R10 X8/X9) --------------
+
+def _h_rows():
+    from qca_fragmentation.scaling import sectors, sector_figure as sf
+    d = sectors.load("obc0") or sectors.build("obc0")
+    sec = {p["rule"]: p for p in d["points"]}
+
+    def pt(r):
+        a, b = sec.get(r), sectors.attractor_point(r, "obc0")
+        if a is None or b is None:
+            return None
+        return {"family": a["family"], "n_wcc": a["n_wcc"],
+                "n_recurrent": b["n_recurrent"]}
+
+    return sf.wcc_scc_rows(
+        range(256), lambda r: sectors.load_series(r, "obc0",
+                                                  sectors.UNIFORM_N_CAP), pt)
+
+
+def _x_rows():
+    from qca_fragmentation.permutation import analysis
+    from qca_fragmentation.scaling import sector_figure as sf
+    d = analysis.load("obc0") or analysis.build("obc0")
+    pts = {x["rule"]: x for x in d["points"]}
+    return sf.wcc_scc_rows(
+        range(256),
+        lambda r: analysis.load_series(r, "obc0", analysis.UNIFORM_N_CAP),
+        lambda r: pts.get(r))
+
+
+def test_every_weak_component_contains_a_terminal_scc():
+    """R9 F11.  n_scc >= n_wcc is exact, not fitted: a finite digraph's weak
+    component always contains at least one terminal SCC."""
+    for rows, gate in ((_h_rows(), "H"), (_x_rows(), "X")):
+        bad = [(r["rule"], r["n_wcc"], r["n_scc"]) for r in rows
+               if r["n_scc"] < r["n_wcc"]]
+        assert bad == [], (gate, bad[:6])
+
+
+def test_the_x_gate_puts_every_rule_on_the_diagonal():
+    """R10 X8/X9.  A functional graph has one cycle per weak component, so the
+    sector count IS the attractor count -- in the raw numbers and in the bases."""
+    rows = _x_rows()
+    assert len(rows) == 256
+    assert [r["rule"] for r in rows if r["n_scc"] != r["n_wcc"]] == []
+    off = [r["rule"] for r in rows
+           if r["base_wcc"] is not None and r["base_scc"] is not None
+           and abs(r["base_scc"] - r["base_wcc"]) > 1e-12]
+    assert off == []
+
+
+def test_the_hadamard_multi_attractor_sectors_are_exactly_twelve():
+    """R9 F11.  Superposition lets one sector hold several attractors; under the
+    Hadamard exactly twelve rules do, and all twelve carry a V and a reset."""
+    from qca_fragmentation.core import rules as R
+    rows = _h_rows()
+    off = sorted(r["rule"] for r in rows if r["n_scc"] != r["n_wcc"])
+    assert off == [29, 36, 44, 71, 100, 104, 203, 217, 219, 233, 235, 249]
+    for rule in off:
+        t = R.wolfram_to_tuple(rule)
+        assert "V" in t and any(c in "DE" for c in t), rule
+    # 203 and 217: one sector, 277 attractors inside it
+    for rule in (203, 217):
+        r = next(x for x in rows if x["rule"] == rule)
+        assert (r["n_wcc"], r["n_scc"]) == (1, 277)
+
+
+def test_a_constant_attractor_ratio_cancels_out_of_the_base():
+    """Why F12 exists next to F11: 235 and 249 carry two attractors per sector at
+    every N, so they are off the count diagonal and ON the base diagonal."""
+    rows = {r["rule"]: r for r in _h_rows()}
+    for rule in (235, 249):
+        r = rows[rule]
+        assert r["n_scc"] == 2 * r["n_wcc"]
+        assert r["base_scc"] == pytest.approx(r["base_wcc"])

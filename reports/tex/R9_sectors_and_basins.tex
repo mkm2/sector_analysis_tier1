@@ -13,6 +13,7 @@
 \providecommand{\ket}[1]{|#1\rangle}
 \newcommand{\wcc}{\mathrm{wcc}}
 \newcommand{\att}{\mathrm{att}}
+\newcommand{\scc}{\mathrm{scc}}
 \newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
   {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending
   (regenerate after the sweep)}}}}
@@ -595,6 +596,89 @@ and needs no such care.
 measured chain, and the unmonitored channel can keep weight on states the graph
 calls transient (R5's rule 22, R7's immortal transient). The sector map F8 is the
 one that is exact for both experiments.
+
+\subsection{Weak components against terminal SCCs, directly}
+\label{sec:wccscc}
+
+F1 puts the two planes side by side and F3 draws the move between them. Neither
+answers the blunter question: for one rule, how does the number of weak
+components compare with the number of terminal SCCs? Two views, because they are
+different claims.
+
+\begin{itemize}
+\item \textbf{Counts} (F11). The raw numbers at $N_{\max}$. Every weak component
+  contains at least one terminal SCC, so $n_\scc \ge n_\wcc$ pointwise --- an
+  exact inequality with no fit in it, and the figure is a check of it as much as
+  a display. It holds for all $249$ rules with both descriptors.
+\item \textbf{Bases} (F12). The asymptotic version. This can sit \emph{on} the
+  diagonal while the counts do not: a fixed number of attractors per sector
+  cancels out of the growth base.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_wcc_vs_scc_count_obc0.pdf}{\textwidth}
+\caption{\textbf{F11, weak components against terminal SCCs: raw counts}
+(\rt{obc0}, monitored). Left: $n_\wcc$ against $n_\scc$ at $N_{\max}$, log--log,
+with the diagonal. Nothing may fall below it. Right: the ratio
+$n_\scc/n_\wcc$ per rule, each family sorted --- how many attractors one sector
+carries.}
+\label{fig:wccsccnum}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_wcc_vs_scc_base_obc0.pdf}{\textwidth}
+\caption{\textbf{F12, the same comparison in growth bases} (\rt{obc0},
+monitored). Rules $235$ and $249$ are off the diagonal in F11 and back on it
+here, which is the distinction the two views exist to make.}
+\label{fig:wccsccbase}
+\end{figure}
+
+\noindent\textbf{The sector-to-attractor map is a bijection for $237$ of $249$
+rules.} That is the headline, and it is stronger than anything the base plane
+shows: for $95\%$ of the rule space each weak component contains \emph{exactly
+one} terminal SCC, so counting sectors and counting attractors are the same
+operation and the WCC/SCC distinction adjudicated in R-T14 is vacuous. All nine
+unitary rules are on the diagonal (forced: no transient, so each component is one
+SCC) and so are all $80$ V-free rules.
+
+\noindent\textbf{The twelve exceptions are all V+reset}, and they are where the
+distinction earns its keep:
+
+\begin{center}\small
+\begin{tabular}{lccccl}
+\toprule
+rule & tuple & $n_\wcc$ & $n_\scc$ & ratio & base $n_\wcc \to$ base $n_\scc$ \\
+\midrule
+$203$ & \rt{VEII} & $1$ & $277$ & $277$ & $1 \to \psi$ \\
+$217$ & \rt{VIEI} & $1$ & $277$ & $277$ & $1 \to \psi$ \\
+$219$ & \rt{VEEI} & $1$ & $129$ & $129$ & $1 \to \psi$ \\
+$36$  & \rt{IDDV} & $10$ & $595$ & $59.5$ & $1 \to \psi$ \\
+$44$  & \rt{IIDV} & $17$ & $595$ & $35.0$ & $1 \to \psi$ \\
+$100$ & \rt{IDIV} & $19$ & $595$ & $31.3$ & $1 \to \psi$ \\
+$104$ & \rt{DIIV} & $9$ & $181$ & $20.1$ & $1 \to 1.3803$ \\
+$233$ & \rt{VIIE} & $9$ & $148$ & $16.4$ & $1 \to 1.3803$ \\
+$29$  & \rt{EIVD} & $22$ & $86$ & $3.9$ & $1.2147 \to \rho$ \\
+$71$  & \rt{EVID} & $40$ & $86$ & $2.1$ & $1.2294 \to \rho$ \\
+$235$ & \rt{VEIE} & $1$ & $2$ & $2.0$ & $1 \to 1$ \\
+$249$ & \rt{VIEE} & $1$ & $2$ & $2.0$ & $1 \to 1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Three things to read off. Rules $203$ and $217$ are the extreme case:
+a \emph{single} sector --- the dynamics connects the whole basis --- carrying
+$277$ distinct attractors inside it. On the sector axis they are indistinguishable
+from rule $51$, which has one sector and one attractor; the monitored axis
+separates them by a factor of $277$. Second, ten of the twelve are off the
+diagonal in the bases too, and the jump is to a named constant in every case:
+six rules go from a bounded sector count to $\psi=1.46557$ attractors, two to
+$1.3803$, and $29/71$ from a fitted base to $\rho=1.32472$. The attractor count
+grows exponentially inside a sector count that does not. Third, $235$ and $249$
+are exactly the case F12 exists to catch: two attractors per sector at every $N$,
+so the counts differ by a constant factor and the \emph{bases} agree. A base-only
+comparison would have called them bijective and been wrong.
 
 \subsection{Correction (2026-08-01): $\alpha$ and the base came from different
 models}

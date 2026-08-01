@@ -11,6 +11,16 @@ X4  movement WCC -> recurrent: the same rule in the two maps, joined by an
     arrow.  The arrows are vertical, and that is a theorem, not a coincidence.
 X5  parent movement, sector plane: the 16 clusters (parent = resets off).
 X6  parent movement, cycle plane: the same clusters, same x-coordinates.
+X7  the exhibited long orbits.
+X8  weak components against cycles, raw counts -- the diagonal, by theorem.
+X9  the same in growth bases.
+X10 the sector map in R9's corner layout (base--base core, alpha margins).
+X11 the same for the cycles; its horizontal axis IS X10's, by the identity.
+X12 cycles against transient states: where the mass sits.
+
+X8-X12 call R9's own figure functions (scaling.sector_figure) with the X-gate
+palette and rows.  One implementation, two reports -- see R9 sec.6.5 for what
+happened when the corner layout had two.
 """
 
 from __future__ import annotations
@@ -444,6 +454,105 @@ def fig_orbits(bc: str, out: str):
     print("wrote", out)
 
 
+# --- X7-X11: the R9 views, drawn for the X gate ------------------------------
+#
+# These four call R9's own figure functions rather than re-implementing them.
+# That is deliberate and it is the lesson of R9 sec.6.5: R2 and R9 drew the same
+# corner layout from two code paths and disagreed on 61 of 143 alphas until both
+# were fixed.  One implementation, two palettes.
+
+#: R9's families are unitary / V-free / V+reset; R10's are reversible / V-free /
+#: V+reset.  Same three-way split, different first cell -- with V = X, "unitary"
+#: means the 16 rules whose local map is a bijection.
+XCOLOUR = {"reversible": "#1f77b4", "V-free": "#2ca02c", "V+reset": "#d62728"}
+XLABEL = {"reversible": "reversible (I/X only), 16",
+          "V-free": "V-free, 80", "V+reset": "X + reset, 160"}
+XORDER = ("reversible", "V-free", "V+reset")
+
+
+def _xgate_point(rule: int, bc: str, d: Dict):
+    p = {x["rule"]: x for x in d["points"]}.get(rule)
+    return None if p is None else p
+
+
+def fig_xgate_wcc_vs_scc(bc: str, out: str, which: str, tag: str,
+                         d: Optional[Dict] = None):
+    """
+    Weak components against terminal SCCs, for the permutation circuits.
+
+    With V = X the successor is single-valued, so each weak component carries
+    exactly one cycle and n_scc = n_wcc IDENTICALLY (R10 sec.2).  Both views
+    must therefore be the bare diagonal, with no rule off it at any N -- which
+    makes this figure a check on the theorem as much as a display of it.
+    """
+    from ..scaling import sector_figure as sf
+    d = d or analysis.load(bc) or analysis.build(bc)
+    pts = {x["rule"]: x for x in d["points"]}
+    rows = sf.wcc_scc_rows(
+        range(256),
+        lambda r: analysis.load_series(r, bc, analysis.UNIFORM_N_CAP),
+        lambda r: pts.get(r))
+    return sf.fig_wcc_vs_scc(rows, out, which=which, colours=XCOLOUR,
+                             labels=XLABEL, order=XORDER, tag=tag, gate="X")
+
+
+def fig_xgate_corner(bc: str, out: str, which: str, tag: str,
+                     d: Optional[Dict] = None):
+    """The corner layout for the X gate: base--base core, alpha in the margins."""
+    from ..scaling import sector_figure as sf
+    d = d or analysis.load(bc) or analysis.build(bc)
+    ka = ("n_wcc", "d_max_wcc") if which == "sector" else ("n_recurrent",
+                                                           "d_max_recurrent")
+    rows = []
+    for p in d["points"]:
+        dn, dd = p[ka[0]], p[ka[1]]
+        if dn["base"] is None or dd["base"] is None:
+            continue
+        rows.append((dn["base"], dn["alpha"], dd["base"], dd["alpha"],
+                     p["family"], dn["exact"], dd["exact"], p["rule"]))
+    note = ("exact for both experiments" if which == "sector" else
+            "monitored only; with V = X the count axis is the SAME as the "
+            "sector one")
+    lab = ("sectors (WCC)" if which == "sector" else "cycles (terminal SCC)")
+    return sf.fig_corner(bc, out, which=which, rows=rows, colours=XCOLOUR,
+                         labels=XLABEL, order=XORDER,
+                         tag=f"{tag}  X gate, {lab}", note=note)
+
+
+def fig_xgate_rec_transient(bc: str, out: str, tag: str,
+                            d: Optional[Dict] = None):
+    """
+    Where the mass sits, for the permutation circuits.  |Rec| is the cyclic part
+    of the functional graph; everything else drains into it.
+    """
+    from ..scaling import sector_figure as sf
+    from ..scaling import sectors as S
+    d = d or analysis.load(bc) or analysis.build(bc)
+    rows = []
+    for p in d["points"]:
+        rule = p["rule"]
+        s = analysis.load_series(rule, bc, analysis.UNIFORM_N_CAP)
+        pts = [(N, tf, nr) for N, tf, nr in
+               zip(s["N"], s["transient_fraction"], s["n_recurrent"])
+               if tf is not None and nr is not None]
+        if len(pts) < 3:
+            continue
+        Ns = [N for N, _, _ in pts]
+        mass = [max(round((1.0 - tf) * (1 << N)), 1) for N, tf, _ in pts]
+        nrec = [nr for _, _, nr in pts]
+        dm = S.series_descriptor(rule, bc, "x_rec_mass", Ns, mass)
+        dn = S.series_descriptor(rule, bc, "x_n_recurrent", Ns, nrec)
+        if not dm or not dn:
+            continue
+        i = len(Ns) - 1
+        rows.append({"rule": rule, "mass": dm, "count": dn,
+                     "recurrent_fraction": mass[i] / (1 << Ns[i]),
+                     "family": p["family"]})
+    return sf.fig_recurrent_transient(
+        bc, out, rows=rows, colours=XCOLOUR, labels=XLABEL, order=XORDER,
+        tag=tag, gate="X gate: ")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="R10 figures")
     ap.add_argument("--bc", default="obc0", choices=["obc0", "pbc"])
@@ -463,6 +572,16 @@ def main(argv=None):
             FIGURES_DIR, f"fig_xgate_parents_{plane}_{a.bc}.pdf"),
             plane=plane, d=d)
     fig_orbits(a.bc, os.path.join(FIGURES_DIR, f"fig_xgate_orbits_{a.bc}.pdf"))
+    for which, t in (("count", "X8"), ("base", "X9")):
+        fig_xgate_wcc_vs_scc(a.bc, os.path.join(
+            FIGURES_DIR, f"fig_xgate_wcc_vs_scc_{which}_{a.bc}.pdf"),
+            which=which, tag=t, d=d)
+    for which, t in (("sector", "X10"), ("attractor", "X11")):
+        fig_xgate_corner(a.bc, os.path.join(
+            FIGURES_DIR, f"fig_xgate_corner_{which}_{a.bc}.pdf"),
+            which=which, tag=t, d=d)
+    fig_xgate_rec_transient(a.bc, os.path.join(
+        FIGURES_DIR, f"fig_xgate_rec_transient_{a.bc}.pdf"), tag="X12", d=d)
 
 
 if __name__ == "__main__":
