@@ -737,6 +737,97 @@ and \texttt{fig\_recurrent\_transient} were defined, so
 \verb|python -m ...sector_figure| raised \texttt{NameError} after writing F1--F6
 and left F8--F10 stale on disk. Both are now pinned by tests.
 
+\section{The survivors, drawn}
+\label{sec:graphs}
+
+Everything so far has been a growth exponent. This section draws the objects the
+exponents describe: the actual transition graph of each survivor at $N=11$
+($2048$ basis states), one node per state and one edge per transition.
+
+\paragraph{Provenance.} The layout is a port of \fn{HSF/visualization\_V3.jl} and
+\fn{\_V4.jl}, the Julia used for the Archipelago pictures, into
+\fn{code/qca\_fragmentation/viz/dot\_sectors.py}. A port was necessary rather
+than a convenience: HSF's \fn{build\_unitary\_sparse} calls
+\fn{binary\_coefficients} without a mode, which restricts it to rules $0$--$15$,
+and the model carries no reset operator at all --- so it cannot build a single
+one of the $22$ survivors, every one of which is a V+reset rule. The conventions
+do agree where they overlap, which is what makes the port faithful: HSF's
+boundary gates read the missing neighbour as $\ket{0}$, our \rt{obc0}, and it
+applies sites $1,3,5,\dots$ then $2,4,6,\dots$, our even-then-odd brick wall.
+The files carry absolute coordinates (\fn{pos="x,y!"}) and are rendered with
+\begin{center}\fn{neato -n2 -Tpng}\end{center}
+where \fn{-n2} is what makes \fn{neato} honour the coordinates instead of
+recomputing a layout. Intra-sector geometry is stress majorization (SMACOF),
+the algorithm behind \fn{NetworkLayout}'s \fn{Stress()}.
+
+\paragraph{Three pictures per rule.} The WCC and SCC decompositions are different
+objects and this report has kept them apart throughout --- a weak component is a
+\emph{sector}, exact for both experiments; a terminal SCC is a \emph{monitored
+attractor}. So each rule gets three files:
+
+\begin{itemize}
+\item \fn{\_wcc} --- the whole basis, positioned and coloured by weak component.
+  This is the sector decomposition of \S\ref{sec:contrast}, drawn.
+\item \fn{\_scc} --- the \emph{recurrent subgraph alone}, positioned and coloured
+  by terminal SCC. Transient states are omitted deliberately: they belong to no
+  attractor, and for a dissipative rule they are almost the whole basis, so
+  including them would bury the object of interest.
+\item \fn{\_joint} --- the whole basis in the \emph{same positions} as
+  \fn{\_wcc}, coloured by which attractor each state drains to, recurrent states
+  solid and transient states faded. A sector holding one attractor is a single
+  colour; a sector holding several is visibly striped. Black marks a state whose
+  basin is shared between attractors.
+\end{itemize}
+
+\noindent The joint picture is the one that earns its place, because it makes
+\S\ref{sec:wccscc}'s count concrete. Exactly six of the $22$ survivors are among
+the twelve rules whose sectors carry more than one attractor --- $29$ and $71$
+among the exponential ones, $44$, $100$, $104$ and $233$ among the polynomial ---
+and those six are precisely the six whose joint pictures come out striped rather
+than solid. The other sixteen are one colour per island.
+
+\begin{center}
+\iftable{tab_r9_graphs_obc0.tex}
+\end{center}
+
+\noindent\textbf{The same attractors, differently enclosed.} The table contains a
+coincidence worth stating outright. Rules $29$ (\rt{EIVD}) and $157$ (\rt{EIVI})
+differ in a single symbol --- one reset switched to the identity --- and at
+$N=11$ they have \emph{literally the same $21$ attractors}, the same states in
+the same classes, totalling the same $|\mathrm{Rec}|=99$. What differs is the
+enclosure: $157$ puts them in $21$ sectors, one apiece, while $29$ puts them in
+$14$, so seven of $157$'s sectors have merged and the merged ones hold two, three
+or four attractors each. Rules $71$ (\rt{EVID}) and $199$ (\rt{EVII}) are the
+identical story. Put the two \fn{\_scc} pictures side by side and they are the
+same picture; put the two \fn{\_wcc} pictures side by side and they are not.
+That is the WCC/SCC distinction of R-T14 in its purest form: the monitored
+dynamics is unchanged and the sector structure is not, so a measurement that sees
+only attractors cannot tell $29$ from $157$.
+
+\noindent\textbf{Two more readings.} The multi-attractor rules are extreme rather
+than marginal: $44$ and $100$ pack $88$ attractors into $14$ sectors with $28$ of
+them inside a single sector, and all $88$ are fixed points ($|\mathrm{Rec}|=88$).
+And they have large \emph{shared} basins --- $980$ of $2048$ states for $44/100$,
+a full $1024$ for $233$ --- where a transient state drains to more than one
+attractor. That is worth flagging against F9's caption, which records the shared
+basin as identically zero for the rules shown there; it is zero for those rules,
+not in general, and the sixteen single-attractor survivors here are zero too. A
+shared basin needs two attractors in one sector to be possible at all, so the two
+columns switch on together.
+
+\noindent The renderings are not embedded --- $66$ pictures at this size would
+dominate the document --- and are not tracked either: they are $112$\,MB of
+\fn{.dot} and \fn{.png} that no reader needs in the history. They live in
+\fn{figures/sector\_graphs/} as
+\fn{N11\_\{rule\}\_V4\_obc0\_\{wcc,scc,joint\}.\{dot,png\}}, and the placement
+RNG is seeded per rule, so
+\begin{center}
+\fn{python -m qca\_fragmentation.viz.dot\_sectors -{}-N 11 -{}-bc obc0}
+\end{center}
+reproduces all $66$ byte-for-byte in about ten minutes. Pass
+\fn{-{}-variant V3} for the core-periphery layout instead of the archipelago
+one, and \fn{-{}-rules 29,157} to draw a chosen pair.
+
 \section{Clustering the dissipative rules by their coherent correspondent}
 \label{sec:coherent}
 

@@ -27,3 +27,10 @@ reports/tex/*.pdf
 reports/tex/*.aux
 reports/tex/*.log
 reports/tex/*.out
+
+# Sector graph renderings (R9 sec.7): 112 MB of .dot + .png for 22 rules x 3
+# diagrams.  Deterministic and regenerable in ~10 min with
+#   python -m qca_fragmentation.viz.dot_sectors --N 11 --bc obc0
+# so the generator and the summary table are tracked and the blobs are not.
+figures/sector_graphs/*.dot
+figures/sector_graphs/*.png
