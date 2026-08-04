@@ -313,10 +313,17 @@ dissipative for $157$, $109$ and $158$.
   form refines the block-diagonal form and never violates it.
 \item \textbf{For a unitary rule the triangular form \emph{is} the diagonal
   form.} Rules $156$ and $150$ have $n_{\rm scc}=n_\wcc$, every SCC terminal,
-  all $1024$ states recurrent and a drainage of exactly zero. Their third panel
-  is their second panel with the shading removed. That is R9's assertion A2 as a
-  picture: with $|U|^2$ doubly stochastic there is nowhere for weight to drain
-  to, so weak and strong components cannot differ.
+  all $1024$ states recurrent and a drainage of exactly zero. That is R9's
+  assertion A2 as a picture: with $|U|^2$ doubly stochastic there is nowhere for
+  weight to drain to, so weak and strong components cannot differ.
+
+  \emph{So their blocks are not triangular, and should not be.} Each sector is a
+  \emph{single} strong component --- irreducible --- and the Frobenius normal
+  form of an irreducible matrix is the matrix itself, a $1\times1$ block
+  structure with no strictly upper part to show. Triangularity is visible only
+  where there is drainage to make it, i.e.\ only for the dissipative rules. In
+  Figures~\ref{fig:s4} and~\ref{fig:s7} the whole of every sector is gold,
+  which is the same statement in the other notation.
 \item \textbf{For a dissipative rule they are nothing alike.} Rule $158$ has
   $6$ weak components and $936$ strong ones; $157$ has $16$ and $758$; $109$ has
   $54$ and $723$. The recurrent set is a thin gold corner --- $31$ states of
@@ -447,6 +454,15 @@ $5$, $3$, $2$, $2$ and $2$.}
 \label{fig:s11}
 \end{figure}
 
+\noindent\textbf{Reading the gold.} In the three-panel figures the recurrent
+states are shaded gold \emph{per sector}, not as one corner of the whole matrix.
+The nested ordering puts each sector's sinks at the start of \emph{its own}
+range, so the attractors of a sector are a gold square in that sector's top-left
+corner and the transient states of the same sector fill the rest of its block.
+For a unitary rule every sector is entirely gold; for rule $158$ the gold is
+$31$ states spread over six sectors and is correspondingly hard to see, which is
+itself the finding.
+
 \noindent The ordering inside the recurrent corner needs one remark. Terminal
 SCCs are sinks --- no outgoing condensation edges --- so \emph{any} order among
 them still places every component before its predecessors, and the form stays
@@ -482,6 +498,79 @@ $29$ / $157$ & the attractor set, exactly & the sectors ($7$ vs $16$ WCCs) \\
 sectors cannot separate $150$ from $158$; one that sees only attractors cannot
 separate $29$ from $157$. Both maps are needed, which is the conclusion R9
 reaches by counting and this report reaches by looking.
+
+\section{How to read a block}
+\label{sec:reading}
+
+The figures have three kinds of region and it is worth saying exactly what each
+one means, because one natural expectation about them is wrong.
+
+\paragraph{A column is a state.} Column $x$ carries a nonzero in row $y$ for
+every $y$ the one-step map can produce from $x$. Its weight --- the number of
+nonzeros --- is therefore the \emph{branching number} of that state. A site whose
+gate is a Hadamard and whose neighbours trigger it splits $\ket{x}$ into two
+successors, so $k$ simultaneously firing Hadamards give up to $2^k$ of them.
+Column weights up to $18$ occur for rule $156$ at $N=10$ and up to $243$ for rule
+$150$. Where the gate is a reset or an identity the branching is $1$ and the
+column is a single entry.
+
+\paragraph{The diagonal blocks are the strongly connected components}, and the
+strictly upper entries are \emph{drainage}: transitions that leave one SCC for
+another and can never come back. That asymmetry is the whole content of the
+triangular form.
+
+\paragraph{A recurrent block is almost never diagonal.} This is the expectation
+worth correcting. ``Recurrent'' constrains the \emph{set}: a terminal SCC is
+closed --- nothing leaves it --- and strongly connected --- everything inside
+reaches everything else. It says nothing whatever about individual states being
+fixed. A state in an attractor keeps moving; it simply never gets out. Three
+shapes are possible:
+
+\begin{center}\small
+\begin{tabular}{lll}
+\toprule
+block & shape & diagonal? \\
+\midrule
+fixed point & $1\times1$ with a self-loop & yes --- the only diagonal case \\
+pure cycle of length $L$ & $L\times L$ permutation matrix & \textbf{no}: zero on
+the diagonal for $L>1$ \\
+branching attractor & general irreducible sparse block & no \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent So a diagonal recurrent part means \emph{every attractor is a fixed
+point}, which is a special case rather than the norm. Counting the terminal
+blocks of the eight rules drawn here:
+
+\begin{center}
+\iftable{tab_r12_blocktypes_obc0.tex}
+\end{center}
+
+\noindent Two things stand out.
+
+\begin{itemize}
+\item \textbf{Only rule $100$ has a diagonal recurrent part}, and it is diagonal
+  for the strongest possible reason: \emph{every} strong component of its graph
+  is a singleton ($n_{\rm scc}=1024=\dim$), so the transition graph is acyclic
+  and all $60$ attractors are fixed points. Its gold squares are $60$ isolated
+  diagonal entries.
+\item \textbf{Not one pure cycle appears in any of the eight.} Every attractor
+  with more than one state is a \emph{branching} block --- some column inside it
+  carries several entries --- because these are Hadamard rules and a Hadamard
+  puts the state into a superposition of successors that all lie inside the
+  attractor. Rule $203$'s six two-state attractors are the smallest example:
+  each is a full $2\times2$ block, not the anti-diagonal $2$-cycle one might
+  expect. Rule $156$'s largest is $20\times20$ and about two-thirds full.
+\end{itemize}
+
+\noindent The empty ``cycles'' column is a property of the gate, not of
+recurrence. Replace the Hadamard by $X$ and every rule becomes a permutation:
+the successor map is single-valued, every column has weight exactly $1$, and
+every attractor \emph{is} a pure cycle --- an $L\times L$ permutation block with
+nothing on its diagonal. That is R10's setting, and it is the one case where the
+recurrent part of the matrix is as far from diagonal as it can be while still
+being a bijection.
 
 \section{What this does and does not show}
 

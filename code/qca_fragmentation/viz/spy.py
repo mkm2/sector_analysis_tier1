@@ -280,6 +280,70 @@ def block_size_table(rule: int, Ns=(8, 9, 10, 11, 12), bc: str = "obc0",
     return out
 
 
+def block_type_census(rule: int, N: int = 10, bc: str = "obc0") -> Dict:
+    """
+    What each terminal SCC block actually looks like.
+
+    A recurrent block is DIAGONAL only in the degenerate case of a fixed point.
+    Three kinds occur in principle:
+
+      fixed point   1x1 with a self-loop.  The only diagonal case.
+      pure cycle    LxL permutation matrix, one entry per row and column and
+                    NOTHING on the diagonal (for L > 1).  The state moves
+                    deterministically around the orbit.
+      branching     a general irreducible sparse block: some column carries
+                    several entries, because a Hadamard splits the state into a
+                    superposition of successors inside the attractor.
+
+    "Recurrent" constrains the SET (closed and strongly connected), not the
+    individual states -- a state in an attractor keeps moving, it just never
+    leaves.  So a diagonal recurrent block means every attractor is a fixed
+    point, which is special, not typical.
+    """
+    succ = wcc.make_succ(rule, N, bc)
+    sb, term = scc_blocks(rule, N, bc)
+    out = {"fixed": 0, "cycle": 0, "branching": 0,
+           "max_block": 0, "max_col_weight": 0}
+    for b, t in zip(sb, term):
+        if not t:
+            continue
+        S = set(b)
+        w = [len([y for y in succ(x) if y in S]) for x in b]
+        out["max_block"] = max(out["max_block"], len(b))
+        out["max_col_weight"] = max(out["max_col_weight"], max(w))
+        if len(b) == 1:
+            out["fixed"] += 1
+        elif max(w) == 1:
+            out["cycle"] += 1
+        else:
+            out["branching"] += 1
+    out["rule"], out["N"], out["diagonal_recurrent"] = rule, N, (
+        out["cycle"] == 0 and out["branching"] == 0)
+    return out
+
+
+def block_type_table(rules_in=None, N: int = 10, bc: str = "obc0",
+                     out: Optional[str] = None) -> str:
+    rules_in = rules_in or (list(FROBENIUS_RULES)
+                            + [r for r, _ in MULTI_ATTRACTOR_RULES])
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex",
+                              f"tab_r12_blocktypes_{bc}.tex")
+    with open(out, "w") as f:
+        f.write("\\begin{tabular}{rlrrrrrl}\n\\hline\n")
+        f.write("rule & tuple & fixed pts & cycles & branching & largest & "
+                "max col & recurrent part \\\\\n\\hline\n")
+        for r in rules_in:
+            c = block_type_census(r, N, bc)
+            t = "".join(rules_mod.wolfram_to_tuple(r))
+            f.write(f"${r}$ & \\rt{{{t}}} & ${c['fixed']}$ & ${c['cycle']}$ & "
+                    f"${c['branching']}$ & ${c['max_block']}$ & "
+                    f"${c['max_col_weight']}$ & "
+                    f"{'diagonal' if c['diagonal_recurrent'] else 'not diagonal'}"
+                    f" \\\\\n")
+        f.write("\\hline\n\\end{tabular}\n")
+    return out
+
+
 def main(argv=None):
     import argparse
     ap = argparse.ArgumentParser(description="R12 spy plots")
@@ -364,20 +428,34 @@ def scc_blocks(rule: int, N: int, bc: str = "obc0",
         for j in s:
             preds[j].append(i)
     def sweep(allowed: Optional[set] = None) -> List[int]:
-        """Kahn on the reversed dag, restricted to `allowed`, largest first."""
+        """
+        Kahn on the reversed dag, restricted to `allowed`.
+
+        The key is (is-not-a-sink, -size): ALL terminal SCCs are emitted before
+        any non-terminal one, and larger first within each group.  Sinks have no
+        successors so they are ready from the start, which makes this a valid
+        reverse-topological order -- and it is what guarantees that a sector's
+        attractors are a contiguous prefix of its range, which the per-sector
+        gold shading depends on.  Ordering by size alone does NOT: a large
+        predecessor becomes ready as soon as its successors are out and then
+        jumps ahead of a smaller remaining sink, which is what happened for
+        rules 203 and 100 and would have painted transient states gold.
+        """
         pool = range(n_comp) if allowed is None else allowed
-        heap = [(-sizes[c], c) for c in pool if remaining[c] == 0]
+        def key(c):
+            return (0 if not sc[c] else 1, -sizes[c], c)
+        heap = [key(c) for c in pool if remaining[c] == 0]
         heapq.heapify(heap)
         got: List[int] = []
         while heap:
-            _, c = heapq.heappop(heap)
+            c = heapq.heappop(heap)[2]
             got.append(c)
             for p in preds[c]:
                 if allowed is not None and p not in allowed:
                     continue
                 remaining[p] -= 1
                 if remaining[p] == 0:
-                    heapq.heappush(heap, (-sizes[p], p))
+                    heapq.heappush(heap, key(p))
         return got
 
     if nest_in_wcc:
@@ -507,9 +585,24 @@ def fig_frobenius(rule: int, N: int, bc: str = "obc0",
     # block-upper-triangular INSIDE each sector -- and drawing the sector
     # boundaries is what makes that legible.  Without them the intra-sector
     # drainage looks like flow between sectors, which cannot happen.
+    #
+    # The recurrent set is marked in gold PER SECTOR, not as one corner of the
+    # whole matrix: nesting puts each sector's sinks at the start of ITS range,
+    # so the attractors are a gold square in the top-left of every sector rather
+    # than a single block at the top-left of the picture.
+    rec_by_sector: Dict[int, int] = {}
+    for b, t in zip(sb, terminal):
+        if t:
+            rec_by_sector[wown[b[0]]] = rec_by_sector.get(wown[b[0]], 0) + len(b)
     for i, b in enumerate(wb):
         lo = int(spos[np.asarray(b)].min())
         L = len(b)
+        r = rec_by_sector.get(i, 0)
+        if r:
+            ax.add_patch(Rectangle((lo - 0.5, lo - 0.5), r, r,
+                                   facecolor="#f2c14e", alpha=0.45,
+                                   edgecolor="#b8860b", linewidth=0.6,
+                                   zorder=2))
         ax.add_patch(Rectangle((lo - 0.5, lo - 0.5), L, L, facecolor="none",
                                edgecolor=_PALETTE[i % len(_PALETTE)],
                                linewidth=0.9, zorder=6))
@@ -522,9 +615,15 @@ def fig_frobenius(rule: int, N: int, bc: str = "obc0",
         cin = "#c62828"
     ax.scatter(spos[cols][inside], spos[rows][inside], s=dot, c=cin,
                marker="s", linewidths=0, zorder=4)
-    ax.set_title(f"Frobenius order: SCCs triangular INSIDE each sector\n"
-                 f"{st['n_scc']} SCCs, {st['n_terminal']} terminal; "
-                 f"outlines are the {st['n_wcc']} sectors", fontsize=10)
+    if st["n_scc"] == st["n_wcc"]:
+        sub = ("each sector is a SINGLE SCC: irreducible,\n"
+               "nothing to triangularise (gold = recurrent = everything)")
+    else:
+        sub = (f"{st['n_scc']} SCCs, {st['n_terminal']} terminal; gold = the "
+               f"attractors\nof each sector, outlines are the "
+               f"{st['n_wcc']} sectors")
+    ax.set_title("Frobenius order: SCCs triangular INSIDE each sector\n" + sub,
+                 fontsize=9.5)
     ax.set_xlabel("state, sectors contiguous; SCCs reverse-topological within")
 
     tup = "".join(rules_mod.wolfram_to_tuple(rule))

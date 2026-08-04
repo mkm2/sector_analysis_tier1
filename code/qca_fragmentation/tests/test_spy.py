@@ -311,3 +311,96 @@ def test_29_and_157_have_the_identical_attractor_set():
         n157 = len(spy.wcc_blocks(157, N, "obc0"))
         assert n157 == len(B)          # 157: one attractor per sector
         assert n29 < n157              # 29: merged
+
+
+@pytest.mark.parametrize("rule", ALL_SPY_RULES)
+def test_each_sector_holds_its_sinks_at_the_front_of_its_own_range(rule):
+    """What the per-sector gold shading depends on.  The nested sweep runs
+    sinks-first WITHIN each sector, so a sector's terminal SCCs occupy the start
+    of its range -- not the start of the matrix.  A single gold corner at the
+    top-left would be wrong under this ordering, and was the bug that lost the
+    marking entirely when the sector outlines were added."""
+    N = 9
+    n = 1 << N
+    sb, terminal = spy.scc_blocks(rule, N, "obc0")
+    perm, _ = spy.sorted_permutation(sb)
+    pos = np.empty(n, dtype=int)
+    pos[perm] = np.arange(n)
+    wb = spy.wcc_blocks(rule, N, "obc0")
+    wown = spy.block_of(wb, n)
+    for i, sector in enumerate(wb):
+        lo = int(pos[np.asarray(sector)].min())
+        rec = sorted(pos[v] for b, t in zip(sb, terminal) if t
+                     for v in b if wown[v] == i)
+        if not rec:
+            continue
+        # contiguous, and starting exactly at the sector's first index
+        assert rec == list(range(lo, lo + len(rec))), (rule, i)
+
+
+def test_a_unitary_rule_is_irreducible_on_every_sector():
+    """Why 150's and 156's blocks are not triangular: each sector is a SINGLE
+    SCC, and the Frobenius form of an irreducible matrix is the matrix itself.
+    Triangularity is visible only where drainage exists to make it."""
+    from qca_fragmentation.core import rules as R
+    for rule in (156, 150):
+        assert R.is_unitary(R.wolfram_to_tuple(rule))
+        for N in (8, 9, 10):
+            sb, terminal = spy.scc_blocks(rule, N, "obc0")
+            wb = spy.wcc_blocks(rule, N, "obc0")
+            assert len(sb) == len(wb)
+            assert all(terminal)
+            assert {frozenset(b) for b in sb} == {frozenset(b) for b in wb}
+
+
+# --- what a recurrent block actually looks like (R12 sec.5) -------------------
+
+def test_a_recurrent_block_is_diagonal_only_when_every_attractor_is_a_fixed_point():
+    """R12 sec.5.  'Recurrent' constrains the SET -- closed and strongly
+    connected -- not the individual states.  Rule 100 is the one rule here whose
+    recurrent part is diagonal, and only because every SCC is a singleton."""
+    c = spy.block_type_census(100, 10, "obc0")
+    assert c["diagonal_recurrent"] is True
+    assert (c["fixed"], c["cycle"], c["branching"]) == (60, 0, 0)
+    assert c["max_block"] == 1
+    for rule in (156, 157, 109, 150, 158, 203, 29):
+        assert spy.block_type_census(rule, 10, "obc0")["diagonal_recurrent"] \
+            is False, rule
+
+
+def test_no_hadamard_attractor_is_a_pure_cycle():
+    """Every multi-state attractor of an H-gate rule branches: a Hadamard puts
+    the state into a superposition of successors inside the attractor.  Pure
+    permutation cycles are the X-gate case (R10), not this one."""
+    for rule in ALL_SPY_RULES:
+        assert spy.block_type_census(rule, 10, "obc0")["cycle"] == 0, rule
+
+
+def test_rule_203_two_state_attractors_are_full_blocks_not_2_cycles():
+    """The smallest concrete case: 2x2 FULL, not the anti-diagonal swap."""
+    from qca_fragmentation.graph import wcc as W
+    N = 10
+    succ = W.make_succ(203, N, "obc0")
+    sb, term = spy.scc_blocks(203, N, "obc0")
+    pairs = [b for b, t in zip(sb, term) if t and len(b) == 2]
+    assert len(pairs) == 6
+    for b in pairs:
+        S = set(b)
+        for x in b:                      # both columns carry both successors
+            assert sorted(y for y in succ(x) if y in S) == sorted(b)
+
+
+def test_column_weight_is_the_branching_number():
+    """A column's nonzero count is how many successors the state has; for a
+    unitary rule that is set by how many Hadamards fire at once."""
+    N = 9
+    rows, cols = spy.transition_pattern(156, N, "obc0")
+    from collections import Counter
+    w = Counter(cols.tolist())
+    assert min(w.values()) >= 1
+    assert max(w.values()) > 4            # genuine multi-way branching
+    # and it agrees with the successor map itself
+    from qca_fragmentation.graph import wcc as W
+    succ = W.make_succ(156, N, "obc0")
+    for x in (0, 1, 37, 255):
+        assert w[x] == len(succ(x))

@@ -630,5 +630,36 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
       Also fixed: spy.py's `__main__` guard sat mid-module, so `python -m
       ...spy` NameError'd after the first three figures -- the same defect as
       sector_figure.py had, now pinned by a test in both.
+    - **Two more corrections, both user-reported (2026-08-04).** (i) The gold
+      recurrent shading vanished when the sector outlines were added -- it was
+      replaced rather than kept -- and under the nested ordering a single
+      top-left corner would have been wrong anyway, since each sector holds its
+      own sinks at the start of ITS range. Now drawn per sector. (ii) The Kahn
+      key was `-size` alone, so a large predecessor became ready and jumped
+      ahead of a smaller remaining sink: terminal SCCs were NOT a contiguous
+      prefix of their sector for rules 203 and 100, and the gold rectangle would
+      have painted transient states as recurrent. Key is now
+      `(is-not-a-sink, -size)`, which emits every sink before any non-sink and
+      is still a valid reverse-topological order because sinks have no
+      successors. Pinned by a test asserting per-sector prefix contiguity.
+    - Also clarified: a UNITARY rule's blocks are not triangular and should not
+      be -- each sector is a single SCC, i.e. irreducible, and the Frobenius
+      form of an irreducible matrix is the matrix itself. Triangularity is
+      visible only where drainage exists to make it.
+    - **How to read a block (R12 sec.5, added on a user question).** A recurrent
+      SCC block is DIAGONAL only when the attractor is a single fixed point.
+      "Recurrent" constrains the SET (closed + strongly connected), not the
+      states: a state in an attractor keeps moving, it just never leaves. Three
+      shapes: fixed point (1x1 self-loop, the only diagonal case), pure cycle
+      (LxL permutation matrix, ZERO on the diagonal for L>1), branching (general
+      irreducible block). Census over the eight rules drawn: only rule 100 has a
+      diagonal recurrent part, and only because n_scc = 1024 = dim so the graph
+      is acyclic and all 60 attractors are fixed points. **Not one pure cycle
+      appears** -- every multi-state H-gate attractor branches, because a
+      Hadamard puts the state into a superposition of successors inside the
+      attractor. 203's six 2-state attractors are FULL 2x2 blocks, not
+      anti-diagonal swaps. Pure cycles are the X-gate case (R10), where the
+      successor is single-valued and every attractor is a permutation block.
+      Column weight = branching number (up to 18 for 156, 243 for 150 at N=10).
     - Open: pbc is held. A dissipative rule at pbc, and the amplitude-resolved
       (not support-only) version, are both undone.
