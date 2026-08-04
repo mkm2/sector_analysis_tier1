@@ -581,6 +581,27 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
       self-similar, because integer order groups states by high bits and the
       rule is local --- but the bands run ACROSS sectors. Wrong structure, not
       no structure.
-    - Open: the same pair for a DISSIPATIVE rule needs a choice, since weak
-      components block-diagonalise but strong ones only block-triangularise
-      (R-T14, R9 sec.7.3). pbc is held.
+    - **Frobenius normal form (added 2026-08-04, R12 sec.4).** The same matrix
+      reordered by SCC in reverse topological order (sinks first) for rules
+      156, 157, 109, 150, 158 -- spanning exponential sector counts (phi, rho,
+      psi) and polynomial ones, unitary and dissipative. Three panels each:
+      computational / WCC block-diagonal / Frobenius block-upper-triangular.
+      * **Nothing below the block diagonal** for any of the five, computed via
+        `spy.check_frobenius`. The block order comes from a Kahn sweep on the
+        condensation, not from Tarjan's internal numbering, so triangularity
+        does not depend on a traversal detail.
+      * **Unitary => the triangular form IS the diagonal form.** 156 and 150
+        have n_scc = n_wcc = n_terminal, all states recurrent, drainage 0.
+        This is R9's A2 as a picture.
+      * **Dissipative => they are nothing alike.** 158 has 6 WCCs and 936 SCCs;
+        157 has 16 and 758; 109 has 54 and 723. For 158, 7545 of 7919 nonzeros
+        (95%) are strictly upper -- almost the whole matrix is transient flow.
+      * **150 and 158 share the IDENTICAL sector partition** (same sets of
+        states, not just sizes: 462,330,165,55,11,1 at N=10) at N=8,10,12, yet
+        150 is unitary with 1024 recurrent states in 6 SCCs and 158 keeps 31 in
+        6 terminal SCCs out of 936. No sector observable can separate them; the
+        Frobenius form does at a glance. The sharpest concrete form of "the
+        sector axis is uninformative for the V+reset family".
+      * n_terminal == n_wcc for all five (none is among R9 sec.7.3's twelve).
+    - Open: pbc is held. A dissipative rule at pbc, and the amplitude-resolved
+      (not support-only) version, are both undone.

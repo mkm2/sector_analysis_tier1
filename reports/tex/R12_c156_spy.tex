@@ -23,8 +23,8 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 
-\title{\textbf{Report R12 --- C156 in the matrix: the sectors, drawn as
-block-diagonal form}\\
+\title{\textbf{Report R12 --- the sectors in the matrix: block-diagonal (WCC)
+and Frobenius normal (SCC) form}\\
 \large Krylov sector analysis of quantum cellular automata}
 \author{Tier 1 analysis}
 \date{2026-08-04}
@@ -48,7 +48,20 @@ $1.81\%$ to $0.24\%$ dense between $N=8$ and $N=12$ while the \emph{interior} of
 the blocks stays roughly two-thirds full, so the concentration factor grows from
 $41\times$ to $259\times$; and the computational-basis panel is emphatically not
 structureless --- it is strongly banded and self-similar --- it simply does not
-show \emph{sector} structure. \rt{obc0} only; \rt{pbc} is held.
+show \emph{sector} structure.
+
+\S\ref{sec:frobenius} then reorders the same matrix into its \emph{Frobenius
+normal form} --- strongly connected components in reverse topological order ---
+for rules $156$, $157$, $109$, $150$ and $158$, chosen to span both axes:
+exponential sector counts ($\varphi$, $\rho$, $\psi$) and polynomial ones,
+unitary and dissipative. Nothing lies below the block diagonal in any of them.
+For the two unitary rules the triangular form \emph{is} the diagonal form
+(R9's A2, drawn); for the three dissipative ones the strictly upper part is most
+of the matrix --- $95\%$ of it for rule $158$. The pair $150$/$158$ is the
+sharpest case: they share the \emph{identical sector partition} at every $N$
+tested, so no sector observable can distinguish them, while their Frobenius
+forms are $6$ strong components against $936$. \rt{obc0} only; \rt{pbc} is
+held.
 \end{abstract}
 
 \tableofcontents
@@ -223,6 +236,130 @@ global density falls by a factor of $7.5$, so essentially all of the sparsity of
 $M$ is the block structure and almost none of it is sparsity within a sector.
 That is the precise sense in which the permutation is the right change of basis:
 it accounts for the emptiness.
+
+\section{The Frobenius normal form}
+\label{sec:frobenius}
+
+The WCC permutation makes $M$ block-\emph{diagonal}. The finer SCC partition
+makes it block-\emph{triangular}, which is the Frobenius (irreducible) normal
+form of a non-negative matrix. The two coincide exactly when there are no
+transient states, and that is the same condition as unitarity --- so this
+section is where the unitary/dissipative distinction becomes a picture.
+
+\begin{definition}[Frobenius order]
+Take the strongly connected components of the transition graph and order them by
+a \emph{reverse} topological order of the condensation: sinks --- the terminal
+SCCs, i.e.\ the monitored attractors --- first, sources last, larger first among
+those free to move. An edge then runs from a higher index to a lower one, so
+every nonzero sits on or \emph{above} the block diagonal. The attractors occupy
+the top-left corner and everything drains up and to the left.
+\end{definition}
+
+\noindent The ordering is produced by a Kahn sweep on the condensation
+(\fn{spy.scc\_blocks}) rather than by trusting Tarjan's internal numbering.
+Tarjan does happen to finalise a component before its predecessors, but that is
+an implementation detail of the traversal, and the triangularity of the figure
+should not depend on it; \fn{spy.check\_frobenius} then verifies the result
+independently by counting the nonzeros below the block diagonal.
+
+\begin{center}
+\iftable{tab_r12_frobenius_obc0.tex}
+\end{center}
+
+\noindent (\rt{obc0}, $N=10$. ``in blocks'' counts nonzeros inside an SCC,
+``upper'' the strictly upper part --- the drainage --- and ``below'' is the
+number that would falsify the triangular form.)
+
+\noindent The five rules were chosen to span the two axes that matter. Sector
+count: exponential for $156$ ($\varphi$), $157$ ($\rho$) and $109$ ($\psi$);
+polynomial (linear) for $150$ and $158$. Dynamics: unitary for $156$ and $150$,
+dissipative for $157$, $109$ and $158$.
+
+\subsection{What the three panels show}
+
+\begin{itemize}
+\item \textbf{Nothing lies below the block diagonal, for any of the five.} The
+  Frobenius form is genuinely triangular, computed and not assumed.
+\item \textbf{For a unitary rule the triangular form \emph{is} the diagonal
+  form.} Rules $156$ and $150$ have $n_{\rm scc}=n_\wcc$, every SCC terminal,
+  all $1024$ states recurrent and a drainage of exactly zero. Their third panel
+  is their second panel with the shading removed. That is R9's assertion A2 as a
+  picture: with $|U|^2$ doubly stochastic there is nowhere for weight to drain
+  to, so weak and strong components cannot differ.
+\item \textbf{For a dissipative rule they are nothing alike.} Rule $158$ has
+  $6$ weak components and $936$ strong ones; $157$ has $16$ and $758$; $109$ has
+  $54$ and $723$. The recurrent set is a thin gold corner --- $31$ states of
+  $1024$ for $158$, $67$ for $157$ --- and the bulk of the matrix is the grey
+  drainage cloud filling the upper triangle. For $158$, $7545$ of $7919$
+  nonzeros ($95\%$) are strictly upper: almost the entire matrix is transient
+  flow, and only $5\%$ of it is the dynamics \emph{inside} an attractor.
+\item \textbf{One attractor per sector, in all five.} $n_{\rm terminal}=n_\wcc$
+  exactly for every rule here, which is the generic case of R9~\S7.3 --- none of
+  these five is among the twelve rules whose sectors carry more than one
+  attractor. So the coarsest partition (WCC) and the set of sinks are in
+  bijection, and everything between them is transient scaffolding.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_frobenius_156_N10_obc0.pdf}{\textwidth}
+\caption{\textbf{S4, rule $156$ (\rt{IIVI}, unitary, $\varphi$).} Left:
+computational basis. Middle: WCC order, block-diagonal. Right: Frobenius order.
+All $144$ SCCs are terminal, so the third panel is block-diagonal too and the
+drainage is empty --- for a unitary rule the two normal forms coincide.}
+\label{fig:s4}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_frobenius_157_N10_obc0.pdf}{\textwidth}
+\caption{\textbf{S5, rule $157$ (\rt{EIVI}, dissipative, $\rho$).} $16$ weak
+components but $758$ strong ones. Gold marks the recurrent corner ($67$ states);
+red are the entries inside an SCC, grey the drainage.}
+\label{fig:s5}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_frobenius_109_N10_obc0.pdf}{\textwidth}
+\caption{\textbf{S6, rule $109$ (\rt{EIIV}, dissipative, $\psi$).} The least
+contracting of the three dissipative rules: $355$ of $1024$ states recurrent and
+a largest SCC of $55$, so the gold corner is a third of the matrix and the
+diagonal blocks are visible in their own right.}
+\label{fig:s6}
+\end{figure}
+
+\subsection{Rules 150 and 158: the same sectors, different matrices}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_frobenius_150_N10_obc0.pdf}{\textwidth}
+\caption{\textbf{S7, rule $150$ (\rt{IVVI}, unitary, linear sector count).}
+Six sectors of sizes $462, 330, 165, 55, 11, 1$; every one is a single SCC.}
+\label{fig:s7}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_frobenius_158_N10_obc0.pdf}{\textwidth}
+\caption{\textbf{S8, rule $158$ (\rt{IEVI}, dissipative, linear sector count).}
+The \emph{same six sectors as rule $150$} --- middle panel --- shattered into
+$936$ strong components of which $6$ are terminal, holding $31$ states between
+them.}
+\label{fig:s8}
+\end{figure}
+
+\noindent This pair is the sharpest statement in the report. Rules $150$ and
+$158$ do not merely have the same sector \emph{count}: at $N=8$, $10$ and $12$
+they have the \emph{identical sector partition}, the same sets of states, with
+sizes $462, 330, 165, 55, 11, 1$ at $N=10$. Their middle panels are the same
+picture. Yet one is unitary with all $1024$ states recurrent in $6$ strong
+components, and the other retains $31$ recurrent states in $6$ terminal
+components out of $936$. Nothing on the sector axis --- not the count, not the
+sizes, not the partition itself --- can tell them apart; the Frobenius form
+separates them completely. That is the concrete form of R9's finding that the
+sector axis is uninformative for the V+reset family, and the reason this project
+carries two maps rather than one.
 
 \section{What this does and does not show}
 

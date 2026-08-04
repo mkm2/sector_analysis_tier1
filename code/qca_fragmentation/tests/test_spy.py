@@ -128,3 +128,82 @@ def test_the_three_constants_are_different_questions_about_one_matrix():
     assert rb["base"] == pytest.approx((1 + 5 ** 0.5) / 2, abs=1e-9)
     assert rn["base"] == pytest.approx(1 + 2 ** 0.5, abs=1e-9)
     assert abs(rb["base"] - rn["base"]) > 0.7
+
+
+# --- Frobenius normal form (R12 sec.4) ---------------------------------------
+
+@pytest.mark.parametrize("rule", spy.FROBENIUS_RULES)
+@pytest.mark.parametrize("N", [7, 9])
+def test_frobenius_form_is_upper_triangular(rule, N):
+    """The defining property: no nonzero below the block diagonal."""
+    st = spy.check_frobenius(rule, N, "obc0")
+    assert st["nnz_below_diagonal"] == 0
+    assert st["nnz_in_blocks"] + st["nnz_strictly_upper"] == st["nnz"]
+
+
+@pytest.mark.parametrize("rule", spy.FROBENIUS_RULES)
+def test_scc_blocks_partition_and_refine_the_wcc_blocks(rule):
+    """SCCs refine weak components -- each strong component lies inside one weak
+    one, which is what makes the triangular form a refinement of the diagonal
+    one rather than a different decomposition."""
+    N = 9
+    sb, _ = spy.scc_blocks(rule, N, "obc0")
+    wb = spy.wcc_blocks(rule, N, "obc0")
+    assert sorted(v for b in sb for v in b) == list(range(1 << N))
+    owner = spy.block_of(wb, 1 << N)
+    for b in sb:
+        assert len({owner[v] for v in b}) == 1, (rule, b[:4])
+
+
+@pytest.mark.parametrize("rule", [156, 150])
+def test_a_unitary_rule_has_no_drainage(rule):
+    """R9's A2, drawn: |U|^2 doubly stochastic => no transient states => weak and
+    strong components coincide and the Frobenius form IS the diagonal form."""
+    from qca_fragmentation.core import rules as R
+    assert R.is_unitary(R.wolfram_to_tuple(rule))
+    for N in (7, 8, 9):
+        st = spy.check_frobenius(rule, N, "obc0")
+        assert st["n_scc"] == st["n_wcc"] == st["n_terminal"]
+        assert st["recurrent"] == st["dim"]
+        assert st["nnz_strictly_upper"] == 0
+
+
+@pytest.mark.parametrize("rule", [157, 109, 158])
+def test_a_dissipative_rule_has_strictly_more_sccs_than_wccs(rule):
+    for N in (8, 9, 10):
+        st = spy.check_frobenius(rule, N, "obc0")
+        assert st["n_scc"] > st["n_wcc"]
+        assert st["nnz_strictly_upper"] > 0
+        assert st["recurrent"] < st["dim"]
+
+
+def test_150_and_158_have_the_identical_sector_partition():
+    """R12 sec.4.2, the sharpest case in the report: same sectors -- the same
+    SETS of states, not merely the same sizes -- yet one is unitary with every
+    state recurrent and the other retains 31 of 1024.  No sector observable can
+    separate them; the Frobenius form does at a glance."""
+    for N in (8, 10, 12):
+        a = {frozenset(b) for b in spy.wcc_blocks(150, N, "obc0")}
+        b = {frozenset(x) for x in spy.wcc_blocks(158, N, "obc0")}
+        assert a == b, N
+    s150 = spy.check_frobenius(150, 10, "obc0")
+    s158 = spy.check_frobenius(158, 10, "obc0")
+    assert s150["n_wcc"] == s158["n_wcc"] == 6
+    assert (s150["n_scc"], s158["n_scc"]) == (6, 936)
+    assert (s150["recurrent"], s158["recurrent"]) == (1024, 31)
+
+
+def test_terminal_scc_count_equals_wcc_count_for_these_five():
+    """None of the five is among R9 sec.7.3's twelve multi-attractor rules, so
+    sectors and attractors are in bijection here."""
+    for rule in spy.FROBENIUS_RULES:
+        st = spy.check_frobenius(rule, 10, "obc0")
+        assert st["n_terminal"] == st["n_wcc"], rule
+
+
+def test_frobenius_figure_writes(tmp_path):
+    out = str(tmp_path / "frob.pdf")
+    st = spy.fig_frobenius(158, 8, "obc0", out=out)
+    import os
+    assert os.path.exists(out) and os.path.getsize(out) > 0
+    assert st["nnz_below_diagonal"] == 0

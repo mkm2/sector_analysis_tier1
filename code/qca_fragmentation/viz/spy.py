@@ -292,7 +292,205 @@ def main(argv=None):
     fig_spy(a.rule, 8, a.bc)
     fig_spy_zoom(a.rule, a.N, a.bc)
     print("table:", block_size_table(a.rule, bc=a.bc))
+    for r in FROBENIUS_RULES:
+        fig_frobenius(r, a.N, a.bc)
+    print("table:", frobenius_table(N=a.N, bc=a.bc))
 
 
 if __name__ == "__main__":
     main()
+
+
+# --- Frobenius normal form: the SCC blocks, upper-triangular -----------------
+#
+# The WCC permutation makes the matrix block-DIAGONAL.  The finer SCC partition
+# makes it block-TRIANGULAR, which is the Frobenius (irreducible) normal form of
+# a non-negative matrix.  The two coincide exactly when there are no transient
+# states -- i.e. for a unitary rule (R9's A2), where |U|^2 is doubly stochastic
+# and every state is recurrent.  For a dissipative rule they are very different,
+# and the strictly-triangular part is the drainage: entries carrying weight from
+# a transient class into a class it can never leave.
+#
+# CONVENTION.  M[y, x] = 1 for x -> y, and the blocks are laid out in REVERSE
+# topological order -- sinks (terminal SCCs, i.e. the attractors) first, sources
+# last.  An edge then runs from a higher index to a lower one, so the nonzeros
+# sit on or ABOVE the block diagonal and the picture is upper-triangular with
+# the attractors in the top-left corner.  Everything drains up and to the left.
+
+def scc_blocks(rule: int, N: int, bc: str = "obc0"):
+    """
+    (blocks, terminal_flags) in Frobenius order: sinks first, larger first
+    among the ones that are free to move.
+
+    A Kahn sweep on the condensation rather than a reliance on Tarjan's internal
+    numbering: Tarjan does happen to finalise a component before its
+    predecessors, but that is an implementation detail of the traversal and the
+    triangularity of the picture should not depend on it.  check_frobenius
+    verifies the result independently.
+    """
+    import heapq
+    from ..graph import scc as scc_mod
+
+    succ = wcc.make_succ(rule, N, bc)
+    comp, sizes, _erg, _ = scc_mod.tarjan(N, succ, detect_ergodic=False)
+    n_comp = len(sizes)
+    sc = scc_mod._condensation(N, succ, comp, n_comp)
+    # Kahn on the REVERSED dag: emit a component once all of its successors have
+    # been emitted, largest first among those available.
+    remaining = [len(s) for s in sc]
+    preds: List[List[int]] = [[] for _ in range(n_comp)]
+    for i, s in enumerate(sc):
+        for j in s:
+            preds[j].append(i)
+    heap = [(-sizes[c], c) for c in range(n_comp) if remaining[c] == 0]
+    heapq.heapify(heap)
+    order: List[int] = []
+    while heap:
+        _, c = heapq.heappop(heap)
+        order.append(c)
+        for p in preds[c]:
+            remaining[p] -= 1
+            if remaining[p] == 0:
+                heapq.heappush(heap, (-sizes[p], p))
+    if len(order) != n_comp:                      # a cycle in the condensation
+        raise RuntimeError("condensation is not acyclic; SCCs are wrong")
+
+    members: List[List[int]] = [[] for _ in range(n_comp)]
+    for x in range(1 << N):
+        members[comp[x]].append(x)
+    blocks = [sorted(members[c]) for c in order]
+    terminal = [not sc[c] for c in order]
+    return blocks, terminal
+
+
+def check_frobenius(rule: int, N: int, bc: str = "obc0") -> Dict:
+    """
+    The claim the Frobenius panel makes: NOTHING below the block diagonal.
+
+    Also splits the nonzeros into the part inside an SCC (the irreducible
+    diagonal blocks) and the strictly upper part (the drainage), because for a
+    dissipative rule the second is most of the matrix and that is the finding.
+    """
+    rows, cols = transition_pattern(rule, N, bc)
+    blocks, terminal = scc_blocks(rule, N, bc)
+    n = 1 << N
+    owner = block_of(blocks, n)
+    below = int(np.count_nonzero(owner[rows] > owner[cols]))
+    diag = int(np.count_nonzero(owner[rows] == owner[cols]))
+    sizes = [len(b) for b in blocks]
+    rec = sum(s for s, t in zip(sizes, terminal) if t)
+    return {"rule": rule, "N": N, "bc": bc, "dim": n, "nnz": int(len(rows)),
+            "n_scc": len(blocks), "n_terminal": sum(terminal),
+            "n_wcc": len(wcc_blocks(rule, N, bc)),
+            "max_scc": max(sizes), "recurrent": rec,
+            "recurrent_frac": rec / float(n),
+            "nnz_below_diagonal": below,
+            "nnz_in_blocks": diag, "nnz_strictly_upper": int(len(rows)) - diag}
+
+
+def fig_frobenius(rule: int, N: int, bc: str = "obc0",
+                  out: Optional[str] = None, dot: float = 0.45):
+    """
+    Three panels of one matrix: computational basis, WCC block-diagonal, and
+    the SCC Frobenius normal form.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Rectangle
+
+    n = 1 << N
+    rows, cols = transition_pattern(rule, N, bc)
+    wb = wcc_blocks(rule, N, bc)
+    wperm, wstarts = sorted_permutation(wb)
+    wpos = np.empty(n, dtype=int)
+    wpos[wperm] = np.arange(n)
+    wown = block_of(wb, n)
+
+    sb, terminal = scc_blocks(rule, N, bc)
+    sperm, sstarts = sorted_permutation(sb)
+    spos = np.empty(n, dtype=int)
+    spos[sperm] = np.arange(n)
+    sown = block_of(sb, n)
+    st = check_frobenius(rule, N, bc)
+    n_rec = st["recurrent"]
+
+    fig, axes = plt.subplots(1, 3, figsize=(17.4, 6.4))
+
+    ax = axes[0]
+    _style(ax, n)
+    ax.scatter(cols, rows, s=dot, c=_DOT, marker="s", linewidths=0)
+    ax.set_title("computational basis", fontsize=10)
+    ax.set_xlabel("state $x$"), ax.set_ylabel("successor $y$")
+
+    ax = axes[1]
+    _style(ax, n)
+    for i, b in enumerate(wb):
+        s, L = wstarts[i], len(b)
+        ax.add_patch(Rectangle((s - 0.5, s - 0.5), L, L,
+                               facecolor=_PALETTE[i % len(_PALETTE)],
+                               alpha=0.30, edgecolor="none", zorder=1))
+    ax.scatter(wpos[cols], wpos[rows], s=dot,
+               c=[_PALETTE[i % len(_PALETTE)] for i in wown[cols]],
+               marker="s", linewidths=0, zorder=3)
+    ax.set_title(f"WCC order: block-DIAGONAL, {st['n_wcc']} blocks",
+                 fontsize=10)
+    ax.set_xlabel("state, weak components contiguous")
+
+    ax = axes[2]
+    _style(ax, n)
+    # the recurrent corner: every terminal SCC, which the ordering puts first
+    if 0 < n_rec < n:
+        ax.add_patch(Rectangle((-0.5, -0.5), n_rec, n_rec, facecolor="#f2c14e",
+                               alpha=0.35, edgecolor="#b8860b", linewidth=0.8,
+                               zorder=1))
+    inside = sown[rows] == sown[cols]
+    ax.scatter(spos[cols][~inside], spos[rows][~inside], s=dot, c="#9aa3b0",
+               marker="s", linewidths=0, zorder=2)
+    ax.scatter(spos[cols][inside], spos[rows][inside], s=dot, c="#c62828",
+               marker="s", linewidths=0, zorder=4)
+    ax.set_title(f"Frobenius order: block-UPPER-TRIANGULAR\n"
+                 f"{st['n_scc']} SCCs, {st['n_terminal']} terminal",
+                 fontsize=10)
+    ax.set_xlabel("state, SCCs in reverse topological order (sinks first)")
+
+    tup = "".join(rules_mod.wolfram_to_tuple(rule))
+    kind = "unitary" if rules_mod.is_unitary(rules_mod.wolfram_to_tuple(rule)) \
+        else "dissipative"
+    fig.suptitle(
+        f"W{rule} ({tup}, {kind}), {bc}, $N={N}$: {st['nnz']} nonzeros.  "
+        f"Recurrent states {st['recurrent']}/{n}.  "
+        f"Inside an SCC: {st['nnz_in_blocks']}; strictly upper (drainage): "
+        f"{st['nnz_strictly_upper']}.  Below the diagonal: "
+        f"{st['nnz_below_diagonal']}.", fontsize=10, y=0.98)
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    out = out or os.path.join(FIGURES_DIR,
+                              f"fig_frobenius_{rule}_N{N}_{bc}.pdf")
+    for p in (out, out.replace(".pdf", ".png")):
+        fig.savefig(p, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+    return st
+
+
+FROBENIUS_RULES = (156, 157, 109, 150, 158)
+
+
+def frobenius_table(rules_in=FROBENIUS_RULES, N: int = 10, bc: str = "obc0",
+                    out: Optional[str] = None) -> str:
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex",
+                              f"tab_r12_frobenius_{bc}.tex")
+    rows = [check_frobenius(r, N, bc) for r in rules_in]
+    with open(out, "w") as f:
+        f.write("\\begin{tabular}{rlrrrrrrr}\n\\hline\n")
+        f.write("rule & tuple & $n_\\wcc$ & $n_{\\rm scc}$ & terminal & "
+                "$|{\\rm Rec}|$ & in blocks & upper & below \\\\\n\\hline\n")
+        for r in rows:
+            t = "".join(rules_mod.wolfram_to_tuple(r["rule"]))
+            f.write(f"${r['rule']}$ & \\rt{{{t}}} & ${r['n_wcc']}$ & "
+                    f"${r['n_scc']}$ & ${r['n_terminal']}$ & "
+                    f"${r['recurrent']}$ & ${r['nnz_in_blocks']}$ & "
+                    f"${r['nnz_strictly_upper']}$ & "
+                    f"${r['nnz_below_diagonal']}$ \\\\\n")
+        f.write("\\hline\n\\end{tabular}\n")
+    return out
