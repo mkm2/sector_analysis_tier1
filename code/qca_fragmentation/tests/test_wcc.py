@@ -896,3 +896,38 @@ def test_the_extreme_contractors_are_the_memoryless_rules():
     # the rest of the family is nowhere near that floor
     med_rest = sorted(r["recurrent_fraction"] for r in rest)[len(rest) // 2]
     assert med_rest > 50 * med
+
+
+def test_highlight_rings_land_on_the_markers_they_ring():
+    """R9 F1.  _scatter_cells nudges each family sideways by _FAM_DX so the three
+    families do not hide under one another; _highlight did not, so every gold
+    ring sat 0.019 to the left of its own dot -- the ring at W29's quoted
+    (1.2147, 1.8059) was empty and W29's marker was inside W71's ring.  Reported
+    from the report's own coordinates, 2026-08-04."""
+    from qca_fragmentation.scaling import sectors, sector_figure as sf
+    d = sectors.load("obc0") or sectors.build("obc0")
+    fam = {p["rule"]: p["family"] for p in d["points"]}
+    xy = {p["rule"]: (p["n_wcc"]["base"], p["d_max_wcc"]["base"])
+          for p in d["points"] if p["n_wcc"]["base"] is not None}
+
+    class _Rec:
+        def __init__(self):
+            self.pts = []
+
+        def scatter(self, x, y, **kw):
+            self.pts.append((round(x, 6), round(y, 6)))
+
+        def annotate(self, *a, **kw):
+            pass
+
+    ax = _Rec()
+    frag = sf._highlight(ax, d, xy, fam=fam)
+    assert len(frag) == 8
+    # every ring must coincide with the nudged marker position
+    want = {(round(xy[r["rule"]][0] + sf._FAM_DX[fam[r["rule"]]], 6),
+             round(xy[r["rule"]][1], 6)) for r in frag}
+    assert set(ax.pts) == want
+    # and the nudge is real, so the ring is NOT at the raw coordinate
+    raw = {(round(xy[r["rule"]][0], 6), round(xy[r["rule"]][1], 6))
+           for r in frag}
+    assert set(ax.pts).isdisjoint(raw), "all eight are mixed, so all shift"

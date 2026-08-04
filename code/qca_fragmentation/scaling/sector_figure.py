@@ -132,8 +132,23 @@ def _panel(ax, cells, title, xlabel, ylabel):
 HALO = "#e8a33d"
 
 
-def _highlight(ax, d, xy, *, label=True, ring=210):
+def _highlight(ax, d, xy, *, label=True, ring=210, fam=None):
+    """
+    Ring and name the open-system fragmented rules.
+
+    `fam` MUST be supplied whenever the markers were drawn by _scatter_cells,
+    because that function nudges each family sideways by _FAM_DX to stop the
+    three families hiding under one another -- and a ring drawn at the true
+    coordinate then misses the dot it is meant to circle.  All eight fragmented
+    rules are "mixed" (dx = +0.019), so before this argument existed every ring
+    in F1 sat 0.019 to the LEFT of its own marker: the ring at W29's quoted
+    (1.2147, 1.8059) was empty and W29's dot was over at 1.234, inside W71's
+    ring.  Found 2026-08-04 from the report's own coordinates.
+    """
     frag = sectors.open_system_fragmented(d)
+    if fam is not None:
+        xy = {r: (x + _FAM_DX[fam[r]], y) for r, (x, y) in xy.items()
+              if r in fam}
     for r in frag:
         pt = xy.get(r["rule"])
         if pt is None:
@@ -195,15 +210,16 @@ def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
     frag = _highlight(axes[0], d,
                       {p["rule"]: (p["n_wcc"]["base"], p["d_max_wcc"]["base"])
                        for p in d["points"]
-                       if p["n_wcc"]["base"] is not None})
+                       if p["n_wcc"]["base"] is not None}, fam=fam)
     _highlight(axes[1], d,
                {x["rule"]: (x["a_att"], x["b_att"])
-                for x in d["attractor_deficits"]}, label=False)
+                for x in d["attractor_deficits"]}, label=False, fam=fam)
     for r, lab, off in ((204, "204", (-24, 6)), (51, "51", (14, 12)),
                         (150, "150", (14, -14)), (156, "156", (12, 4))):
         p = next((x for x in d["points"] if x["rule"] == r), None)
         if p and p["n_wcc"]["base"] is not None:
-            axes[0].annotate(lab, (p["n_wcc"]["base"], p["d_max_wcc"]["base"]),
+            axes[0].annotate(lab, (p["n_wcc"]["base"] + _FAM_DX[p["family"]],
+                                   p["d_max_wcc"]["base"]),
                              textcoords="offset points", xytext=off,
                              fontsize=7.5, color=TEXT, zorder=21,
                              arrowprops=dict(arrowstyle="-", lw=0.5,
