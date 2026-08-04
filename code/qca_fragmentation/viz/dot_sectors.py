@@ -58,6 +58,19 @@ EXPONENTIAL_SURVIVORS = (73, 109, 28, 70, 157, 199, 71, 29)
 #: R9 tab_r9_polysurv: the fourteen that drop to a polynomial sector count.
 POLYNOMIAL_SURVIVORS = (44, 100, 104, 110, 124, 20, 148, 158, 188, 6, 134,
                         214, 230, 233)
+#: R9 sec.7.3: the rules whose sectors carry MORE THAN ONE terminal SCC, i.e.
+#: the rules for which counting sectors is not counting attractors.  Six of them
+#: (29, 71, 44, 100, 104, 233) are also survivors, so the two groups overlap and
+#: the union is 28 rules, not 34.
+#:
+#: THE TWELVE ARE MEASURED AT N_max = 16.  That is not the same as the rules that
+#: ever have the property: rule 37 (EDDV) has one sector at every N and two
+#: attractors exactly when N = 2 (mod 3), so it is an exception at N = 8, 11, 14
+#: and invisible at N_max = 16 = 1 (mod 3).  It is listed separately rather than
+#: folded in, because the twelve are what sec.7.3's figures actually plot.
+EXCEPTIONS = (203, 217, 219, 36, 44, 100, 104, 233, 29, 71, 235, 249)
+#: multi-attractor at some N but not at N_max; see R9 sec.8.2.
+OSCILLATING_EXCEPTIONS = (37,)
 
 
 # --- the graph ---------------------------------------------------------------
@@ -483,7 +496,7 @@ def write_dot_set(rule: int, N: int, bc: str = "obc0", variant: str = "V4",
     return paths
 
 
-def survivor_table(N: int = 11, bc: str = "obc0") -> List[Dict]:
+def group_table(groups, N: int = 11, bc: str = "obc0") -> List[Dict]:
     """
     What the pictures show, as numbers: sectors, attractors, and how the two
     relate, for each R9 survivor.  `att_per_sector` > 1 is the case R9 F11
@@ -492,8 +505,7 @@ def survivor_table(N: int = 11, bc: str = "obc0") -> List[Dict]:
     """
     from collections import Counter
     rows = []
-    for kind, group in (("exponential", EXPONENTIAL_SURVIVORS),
-                        ("polynomial", POLYNOMIAL_SURVIVORS)):
+    for kind, group in groups:
         for rule in group:
             _, sectors, rec, basin, _ = decompositions(rule, N, bc)
             owner = {v: i for i, s in enumerate(sectors) for v in s}
@@ -512,11 +524,29 @@ def survivor_table(N: int = 11, bc: str = "obc0") -> List[Dict]:
     return rows
 
 
-def write_table(N: int = 11, bc: str = "obc0",
-                out: Optional[str] = None) -> str:
-    rows = survivor_table(N, bc)
+def survivor_table(N: int = 11, bc: str = "obc0") -> List[Dict]:
+    return group_table((("exponential", EXPONENTIAL_SURVIVORS),
+                        ("polynomial", POLYNOMIAL_SURVIVORS)), N, bc)
+
+
+def exception_table(N: int = 11, bc: str = "obc0") -> List[Dict]:
+    """The twelve of sec.7.3, tagged by whether the rule is also a survivor."""
+    surv = set(EXPONENTIAL_SURVIVORS) | set(POLYNOMIAL_SURVIVORS)
+    rows = group_table((("exception", EXCEPTIONS + OSCILLATING_EXCEPTIONS),),
+                       N, bc)
+    for r in rows:
+        if r["rule"] in OSCILLATING_EXCEPTIONS:
+            r["kind"] = "osc"                     # exception at this N only
+        else:
+            r["kind"] = "both" if r["rule"] in surv else "exc"
+    return rows
+
+
+def write_table(N: int = 11, bc: str = "obc0", out: Optional[str] = None,
+                rows=None, stem: str = "graphs") -> str:
+    rows = survivor_table(N, bc) if rows is None else rows
     out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex",
-                              f"tab_r9_graphs_{bc}.tex")
+                              f"tab_r9_{stem}_{bc}.tex")
     with open(out, "w") as f:
         f.write("\\begin{tabular}{rlrrrrrr}\n\\hline\n")
         f.write("rule & class & $n_{\\rm wcc}$ & $D_{\\max}$ & $n_{\\rm scc}$ "
@@ -544,6 +574,19 @@ def main(argv=None):
     if a.rules == "survivors":
         todo = ([("exp", r) for r in EXPONENTIAL_SURVIVORS]
                 + [("poly", r) for r in POLYNOMIAL_SURVIVORS])
+    elif a.rules == "exceptions":
+        todo = ([("exc", r) for r in EXCEPTIONS]
+                + [("osc", r) for r in OSCILLATING_EXCEPTIONS])
+    elif a.rules == "all":
+        seen, todo = set(), []
+        for tag, group in (("exp", EXPONENTIAL_SURVIVORS),
+                           ("poly", POLYNOMIAL_SURVIVORS),
+                           ("exc", EXCEPTIONS),
+                           ("osc", OSCILLATING_EXCEPTIONS)):
+            for r in group:
+                if r not in seen:            # six rules are in both groups
+                    seen.add(r)
+                    todo.append((tag, r))
     else:
         todo = [("custom", int(x)) for x in a.rules.split(",")]
     for kind, rule in todo:

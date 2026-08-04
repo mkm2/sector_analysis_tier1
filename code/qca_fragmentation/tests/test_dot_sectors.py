@@ -86,3 +86,78 @@ def test_self_loops_are_dropped_like_the_julia_does():
     edges, _, _ = D.sector_graph(204, 8, "obc0")     # IIII: every state frozen
     assert all(u != v for u, v in edges)
     assert edges == []                               # nothing but self-loops
+
+
+def test_the_exception_list_is_the_multi_attractor_rules_AT_N_MAX():
+    """R9 sec.7.3's twelve, and the scope of that number.
+
+    The comparison is made at the largest N computed, so the twelve are the
+    rules with a multi-attractor sector THERE -- not the rules that ever have
+    one.  Rule 37 is the difference; see the next test."""
+    from qca_fragmentation.scaling import sectors, sector_figure as sf
+    d = sectors.load("obc0") or sectors.build("obc0")
+    sec = {p["rule"]: p for p in d["points"]}
+
+    def pt(r):
+        a, b = sec.get(r), sectors.attractor_point(r, "obc0")
+        if a is None or b is None:
+            return None
+        return {"family": a["family"], "n_wcc": a["n_wcc"],
+                "n_recurrent": b["n_recurrent"]}
+
+    rows = sf.wcc_scc_rows(
+        range(256), lambda r: sectors.load_series(r, "obc0",
+                                                  sectors.UNIFORM_N_CAP), pt)
+    off = sorted(r["rule"] for r in rows if r["n_scc"] != r["n_wcc"])
+    assert off == sorted(D.EXCEPTIONS)
+
+
+def test_six_exceptions_are_also_survivors():
+    """The two groups overlap, so the union is 28 rules and not 34; a driver
+    that draws both must not draw those six twice."""
+    surv = set(D.EXPONENTIAL_SURVIVORS) | set(D.POLYNOMIAL_SURVIVORS)
+    assert sorted(set(D.EXCEPTIONS) & surv) == [29, 44, 71, 100, 104, 233]
+    assert len(set(D.EXCEPTIONS) | surv) == 28
+
+
+def test_a_multi_attractor_sector_is_what_makes_a_shared_basin_possible():
+    """Two attractors in one weak component is a NECESSARY condition for a
+    transient state to be able to drain to more than one of them."""
+    from collections import Counter
+    for rule in (44, 29, 157, 20):
+        _, sectors_, rec, basin, _ = D.decompositions(rule, 9, "obc0")
+        owner = {v: i for i, s in enumerate(sectors_) for v in s}
+        multi = max(Counter(owner[c[0]] for c in rec).values(), default=0) > 1
+        shared = any(v == -1 for v in basin.values())
+        assert shared <= multi, (rule, shared, multi)
+
+
+def test_rule_37_is_a_thirteenth_exception_at_N_congruent_2_mod_3():
+    """R9 sec.7.3/8.2.  W37 (EDDV) has one sector at every N and TWO attractors
+    exactly when N = 2 (mod 3), so it is a one-sector multi-attractor rule at
+    N = 8, 11, 14 and unremarkable elsewhere.  N_max = 16 = 1 (mod 3), which is
+    why the descriptor comparison never sees it.  This is the test that stops
+    "the twelve" being reread as a statement about the whole rule space."""
+    from collections import Counter
+    from qca_fragmentation.core import rules as R
+    from qca_fragmentation.graph import scc as S
+    t = R.wolfram_to_tuple(37)
+    assert "".join(t) == "EDDV"
+    for N in range(6, 15):
+        _, sectors, rec, _, _ = D.decompositions(37, N, "obc0")
+        assert len(sectors) == 1, (N, len(sectors))
+        owner = {v: i for i, s in enumerate(sectors) for v in s}
+        multi = max(Counter(owner[c[0]] for c in rec).values()) > 1
+        assert multi == (N % 3 == 2), (N, len(rec))
+
+
+def test_the_twelve_are_stable_across_N():
+    """The complement of the rule-37 caveat: the twelve are not artefacts of the
+    size they were measured at.  Every one has a multi-attractor sector at every
+    N in 7..12 (71 is the one that needs N > 6)."""
+    from collections import Counter
+    for rule in D.EXCEPTIONS:
+        for N in (7, 9, 12):
+            _, sectors, rec, _, _ = D.decompositions(rule, N, "obc0")
+            owner = {v: i for i, s in enumerate(sectors) for v in s}
+            assert max(Counter(owner[c[0]] for c in rec).values()) > 1, (rule, N)

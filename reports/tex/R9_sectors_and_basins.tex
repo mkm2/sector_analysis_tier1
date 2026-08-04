@@ -680,6 +680,15 @@ are exactly the case F12 exists to catch: two attractors per sector at every $N$
 so the counts differ by a constant factor and the \emph{bases} agree. A base-only
 comparison would have called them bijective and been wrong.
 
+\noindent\textbf{``Twelve'' is measured at $N_{\max}$.} Both panels compare the
+two counts at the largest $N$ computed, so the twelve are the rules with a
+multi-attractor sector \emph{there}. That is not the same as the rules that ever
+have one. Sweeping all $256$ rules at $N=11$ returns thirteen: these twelve plus
+rule $37$ (\rt{EDDV}), which has the property exactly when $N\equiv2\pmod3$ and
+therefore not at $N_{\max}=16$. The twelve are otherwise robust --- each has the
+property at every $N$ from $6$ to $14$, bar $71$ at $N=6$. \S\ref{sec:excgraphs}
+works rule $37$ through and draws it.
+
 \subsection{Correction (2026-08-01): $\alpha$ and the base came from different
 models}
 \label{sec:alphafix}
@@ -809,24 +818,134 @@ than marginal: $44$ and $100$ pack $88$ attractors into $14$ sectors with $28$ o
 them inside a single sector, and all $88$ are fixed points ($|\mathrm{Rec}|=88$).
 And they have large \emph{shared} basins --- $980$ of $2048$ states for $44/100$,
 a full $1024$ for $233$ --- where a transient state drains to more than one
-attractor. That is worth flagging against F9's caption, which records the shared
-basin as identically zero for the rules shown there; it is zero for those rules,
-not in general, and the sixteen single-attractor survivors here are zero too. A
-shared basin needs two attractors in one sector to be possible at all, so the two
-columns switch on together.
+attractor. That is worth flagging against Figure~\ref{fig:f4}'s caption, which
+records the shared basin as identically zero for the rules shown \emph{there};
+it is zero for those rules, not in general, and the sixteen single-attractor
+survivors here are zero too. A shared basin needs two attractors in one sector to
+be possible at all, so the two columns switch on together.
 
-\noindent The renderings are not embedded --- $66$ pictures at this size would
-dominate the document --- and are not tracked either: they are $112$\,MB of
-\fn{.dot} and \fn{.png} that no reader needs in the history. They live in
+\subsection{The twelve exceptions, drawn}
+\label{sec:excgraphs}
+
+The same three diagrams for the twelve rules of \S\ref{sec:wccscc} --- the rules
+whose sectors carry more than one attractor at $N_{\max}$ --- plus rule $37$,
+which has the property at $N=11$ and is explained below. Six of the twelve
+($29$, $71$, $44$, $100$, $104$, $233$) are survivors and are already drawn
+above, so this adds seven: $203$, $217$, $219$, $36$, $235$, $249$, $37$.
+
+\begin{center}
+\iftable{tab_r9_exceptions_obc0.tex}
+\end{center}
+
+\noindent\textbf{Read the $N$.} \S\ref{sec:wccscc}'s table quotes the largest $N$
+computed, $N_{\max}=16$, where $203$ and $217$ carry $277$ attractors. This table
+is at $N=11$, where they carry $41$. The two are not in conflict; the attractor
+count is growing like $\psi^N$ and the drawings are of the smaller system.
+
+\noindent\textbf{For five of the six, the sector picture is a single blob.}
+Rules $203$, $217$, $219$, $235$ and $249$ have $n_\wcc=1$ at $N=11$: the
+dynamics connects all $2048$ basis states into one weak component, so the
+\fn{\_wcc} file is one undifferentiated island and carries no information at all.
+Everything is in the other two. This is the most direct illustration in the
+report of \S\ref{sec:pileup}'s point that the sector axis is uninformative for
+the V+reset family --- here it is not merely coarse, it is a constant.
+
+\noindent\textbf{What dominates $203$ and $217$ is the shared basin.} Their
+joint picture is a single island with $41$ small colour cores scattered through
+it --- and more than half of it, $1184$ of the $2048$ states, carrying the
+shared-basin colour, black faded to grey because those states are transient. So
+the majority of the basis is not merely transient;
+it is transient to \emph{no particular attractor}, able to reach several
+depending on the measurement record. Only $50$ states are recurrent. A rule whose
+sector map reports ``one sector, nothing to see'' turns out to have most of its
+state space in ambiguous drainage.
+
+\noindent\textbf{$235$ and $249$ are the cleanest picture in the set.} One
+sector, \emph{two} attractors, both fixed points, and all $2048$ states draining
+into them with $768$ of them able to reach either. The \fn{\_wcc} picture is one
+undifferentiated blob; the \fn{\_joint} picture is that same blob resolved into
+one basin left, the other right, and a dark central third --- not a seam but
+$37.5\%$ of the basis --- that belongs to neither. That is the entire content of
+\S\ref{sec:wccscc}'s
+count-versus-base distinction in one image: the counts differ by a factor of two
+at every $N$, which is why F11 puts these rules off the diagonal, and a constant
+factor cancels out of a growth base, which is why F12 puts them back on it.
+
+\noindent\textbf{$36$ is the extreme of concentration.} Ten sectors, but one of
+them holds $1999$ of the $2048$ states and $79$ of the $88$ attractors. Its joint
+picture is a single giant island shot through with $79$ colours and nine crumbs
+around it. All $88$ attractors are fixed points ($|\mathrm{Rec}|=88$).
+
+\noindent\textbf{Equal rows are not always twin rules.} Six of the twelve appear
+as identical-looking pairs, and they are identical to different depths, so the
+table alone does not settle it. Rules $44$ (\rt{IIDV}) and $100$ (\rt{IDIV}) do
+share an attractor set exactly --- the same $88$ fixed points --- with the same
+sector \emph{sizes}, but their sector partitions and their transition graphs
+differ, and so do their shared basins despite both containing $980$ states.
+Rules $203$/$217$ and $235$/$249$ agree in every count in the table and do
+\emph{not} share an attractor set at all. Only the $29$/$157$ and $71$/$199$
+pairs of \S\ref{sec:graphs} have the strong property, and note the complement
+there: $157$ has no shared basin whatever ($0$ states), because with one
+attractor per sector a shared basin is impossible, while $29$ has $128$.
+
+\noindent\textbf{A thirteenth rule, and what ``twelve'' actually means.}
+Checking the drawings against the rule space turned up a rule the count in
+\S\ref{sec:wccscc} does not contain. Sweeping all $256$ rules at $N=11$ for a
+sector holding more than one terminal SCC returns \emph{thirteen}: the twelve,
+and rule $37$ (\rt{EDDV}). It is not an error in either place. The twelve are
+read off the descriptor comparison at $N_{\max}=16$, and $37$ has the property
+only at $N\equiv2\pmod 3$:
+\begin{center}\small
+\begin{tabular}{lccccccccccc}
+\toprule
+$N$ & $6$ & $7$ & $8$ & $9$ & $10$ & $11$ & $12$ & $13$ & $14$ & $15$ & $16$ \\
+\midrule
+$n_\scc$ of $37$ & $1$ & $1$ & $2$ & $1$ & $1$ & $2$ & $1$ & $1$ & $2$ & $1$ & $1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Since $16\equiv1\pmod 3$, rule $37$ has one attractor per sector exactly at the
+size the comparison is made, and is invisible to it. It has one sector at every
+$N$, so at $N=8,11,14$ it is a one-sector two-attractor rule --- the same shape
+as $235$ and $249$ --- and at every other $N$ it is unremarkable. Its picture is
+the extreme of the whole set: two fixed points, and $1920$ of the $2048$ states
+--- $94\%$ of the basis --- in the shared basin, so almost nothing in the space
+is committed to one attractor rather than the other.
+
+So \textbf{``the twelve'' is a statement at $N_{\max}$, not a theorem about the
+rule space}, and the honest form of \S\ref{sec:wccscc} is that twelve rules have
+a multi-attractor sector \emph{at the size where the growth comparison is made}.
+The twelve themselves are robust --- every one has the property at every $N$ from
+$6$ to $14$, with the single exception of $71$ at $N=6$ --- and $37$ is the only
+rule found that oscillates. A sweep that sampled $N\equiv2\pmod 3$ instead would
+have reported thirteen. Rule $37$ is drawn here with the others.
+
+\noindent A caveat on reading these by eye. The joint colouring gives one hue per
+attractor, which works while there are tens of them; at $41$ ($203$/$217$) the
+colours are still separable, but the palette is $277$-wide at $N_{\max}$ and its
+closest pair then differs by an RGB distance of $2$, which is no distance at all.
+So the joint picture is evidence that a sector is shattered into many basins, and
+the table is the place to read \emph{how many}. It was never going to be possible
+to distinguish $277$ colours in one image.
+
+\subsection{Files and regeneration}
+
+The renderings are not embedded --- $84$ pictures at this size would dominate the
+document --- and are not tracked either: the directory is $152$\,MB of \fn{.dot}
+and \fn{.png} that no reader needs in the history. They live in
 \fn{figures/sector\_graphs/} as
 \fn{N11\_\{rule\}\_V4\_obc0\_\{wcc,scc,joint\}.\{dot,png\}}, and the placement
 RNG is seeded per rule, so
 \begin{center}
-\fn{python -m qca\_fragmentation.viz.dot\_sectors -{}-N 11 -{}-bc obc0}
+\fn{python -m qca\_fragmentation.viz.dot\_sectors -{}-N 11 -{}-bc obc0 -{}-rules all}
 \end{center}
-reproduces all $66$ byte-for-byte in about ten minutes. Pass
-\fn{-{}-variant V3} for the core-periphery layout instead of the archipelago
-one, and \fn{-{}-rules 29,157} to draw a chosen pair.
+reproduces all $84$ byte-for-byte in about twenty minutes. \fn{-{}-rules all} is
+the union of the two groups and is $28$ rules, not $34$, because the six above
+are in both. \fn{-{}-rules survivors} and \fn{-{}-rules exceptions} draw one
+group each, \fn{-{}-variant V3} gives the core-periphery layout instead of the
+archipelago one, and \fn{-{}-rules 29,157} draws a chosen pair. (The directory
+also holds a V3 set for the $29$/$157$ and $71$/$199$ twins, hence $96$ files
+rather than $84$.)
 
 \section{Clustering the dissipative rules by their coherent correspondent}
 \label{sec:coherent}
