@@ -1,0 +1,263 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\providecommand{\ket}[1]{|#1\rangle}
+\providecommand{\bra}[1]{\langle #1|}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending
+  (regenerate after the sweep)}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending (regenerate after the sweep)}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{\textbf{Report R12 --- C156 in the matrix: the sectors, drawn as
+block-diagonal form}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-04}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Every fragmentation statement in R2 and R9 is a number: a sector count, a growth
+base, a sub-leading exponent. Those numbers describe a property of a matrix ---
+that the one-step transition matrix is block-diagonal in a basis nobody had drawn
+--- and this report draws it. Two spy plots of the \emph{same} matrix for rule
+$156$ (\rt{IIVI}) at \rt{obc0}: once in the computational basis, once with the
+basis permuted so that each weak component is contiguous. The permuted picture is
+a staircase of $144$ disjoint blocks at $N=10$, the largest holding $20$ of
+$1024$ states, and \textbf{not one nonzero lies outside a block} --- checked, at
+every $N$ from $8$ to $12$, rather than asserted. Three quantitative readings
+come out of the same computation: the block count is exactly the Fibonacci number
+$F_{N+2}$, which is where R2's golden ratio comes from; the matrix thins from
+$1.81\%$ to $0.24\%$ dense between $N=8$ and $N=12$ while the \emph{interior} of
+the blocks stays roughly two-thirds full, so the concentration factor grows from
+$41\times$ to $259\times$; and the computational-basis panel is emphatically not
+structureless --- it is strongly banded and self-similar --- it simply does not
+show \emph{sector} structure. \rt{obc0} only; \rt{pbc} is held.
+\end{abstract}
+
+\tableofcontents
+
+\section{What is plotted, and why}
+
+\begin{definition}[the matrix]
+For a rule, a length $N$ and a boundary condition, let
+\[
+M_{yx} \;=\; 1 \quad\Longleftrightarrow\quad
+\text{the one-step map carries } \ket{x} \text{ to } \ket{y}
+\text{ with nonzero amplitude.}
+\]
+$M$ is the support of the circuit unitary $U$, equivalently of the doubly
+stochastic $|U|^2$; the two have the same pattern, which is all a spy plot uses.
+Amplitudes are deliberately discarded --- the point of the figure is that the
+\emph{support alone} already carries the fragmentation.
+\end{definition}
+
+\begin{definition}[the permutation]
+Let the weak components of the transition graph be $S_1,\dots,S_K$, ordered by
+size, largest first, with states ascending inside each. Let $P$ be the
+permutation that lists the basis in that order. The second panel plots
+$P M P^{-1}$.
+\end{definition}
+
+\noindent\textbf{Why rule $156$.} It is unitary (\rt{IIVI}: two identities, a
+Hadamard, an identity), so $|U|^2$ is doubly stochastic, there are no transient
+states, and the weak, strong and forward-closure partitions all coincide --- R9's
+assertion A2. The blocks are therefore unambiguous, and there is no question of
+whether we are drawing sectors or attractors: for this rule they are the same
+objects. It is also the rule R2 solves by room-packing, so its numbers are known
+independently of anything here.
+
+\noindent\textbf{Why it is worth a figure.} ``The dynamics block-diagonalises''
+is the central claim of the whole sector programme, and until now it has appeared
+only as counts and exponents. A permutation is not a theorem, but it makes the
+claim visible in one glance, and it makes the \emph{failure} of the computational
+basis to reveal it equally visible.
+
+\section{The two panels}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_spy_156_N10_obc0.pdf}{\textwidth}
+\caption{\textbf{S1, the same matrix in two bases} (rule $156$, \rt{obc0},
+$N=10$; $1024\times1024$, $6930$ nonzeros, $0.66\%$ dense).
+\textbf{Left:} computational basis, i.e.\ states ordered by their integer value.
+\textbf{Right:} basis permuted so each weak component is contiguous, largest
+first; the shaded squares are the components and the dots are coloured by which
+component they belong to. The two panels contain \emph{identical} data. The
+right panel's caption number --- off-block nonzeros $=0$ --- is computed, not
+assumed.}
+\label{fig:s1}
+\end{figure}
+
+\noindent Three things to read off Figure~\ref{fig:s1}.
+
+\begin{itemize}
+\item \textbf{The sorted panel is exactly block-diagonal.} Every one of the
+  $6930$ nonzeros lies inside one of the $144$ shaded squares. Nothing is
+  off-diagonal, at any $N$ tested (\S\ref{sec:table}).
+\item \textbf{The blocks are small and there are many of them.} The largest holds
+  $20$ of $1024$ states, so the staircase is a thin diagonal thread rather than a
+  few fat blocks. That is $D_{\max}/2^N \approx 0.02$ and falling --- the
+  quantitative form of ``strong fragmentation'', and the reason R2's $b=4^{1/5}$
+  sits so far below the ergodic $b=2$.
+\item \textbf{The left panel is \emph{not} structureless.} It is strongly banded,
+  with a self-similar block-of-blocks pattern at several scales. That is real and
+  has an explanation --- the integer order groups states by their high bits, and
+  the rule is local, so states that agree on most sites sit near one another ---
+  but the bands run \emph{across} sectors. Ordering by integer value reveals
+  locality, not conservation. The contrast between the panels is not
+  structure-versus-noise; it is the wrong structure versus the right one.
+\end{itemize}
+
+\subsection{A closer look}
+
+At $N=10$ the largest block is $20$ states wide, which is about four pixels in
+Figure~\ref{fig:s1}, so the interior of a block cannot be seen there.
+Figure~\ref{fig:s2} takes the first $140$ rows and columns.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_spy_zoom_156_N10_obc0.pdf}{0.72\textwidth}
+\caption{\textbf{S2, the top-left corner of the sorted matrix} (rule $156$,
+\rt{obc0}, $N=10$), block sizes annotated. The largest sectors are $20$, $20$,
+$18$, $18$, $18$, $18$, $18$, $16,\dots$ states. Each block has its own internal
+sparsity pattern, itself visibly self-similar.}
+\label{fig:s2}
+\end{figure}
+
+\noindent The blocks are \emph{not} full: within a block the fill is about
+two-thirds (\S\ref{sec:table}), and the interior pattern is itself structured
+rather than random. So a sector is not a featureless invariant subspace --- it
+has its own sparse combinatorics, which is what the room-packing derivation of
+R2 is about. A smaller system makes the same point without a zoom:
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_spy_156_N8_obc0.pdf}{\textwidth}
+\caption{\textbf{S3, the same pair at $N=8$} ($256\times256$, $55$ blocks,
+largest $12$). Small enough that the block structure is legible in the full
+matrix.}
+\label{fig:s3}
+\end{figure}
+
+\section{Numbers}
+\label{sec:table}
+
+\begin{center}
+\iftable{tab_r12_spy_obc0.tex}
+\end{center}
+
+\noindent\textbf{Off-block nonzeros are zero at every size.} That column is the
+whole content of the sorted panel, and it is a computation
+(\fn{spy.check\_block\_diagonal}), not a restatement of the definition: the
+blocks are found by weak connectivity on the transition graph, and the check then
+asks independently whether any matrix entry crosses between them. A nonzero
+there would mean the partition and the matrix disagree.
+
+\noindent\textbf{The block count is Fibonacci.} For $N=6\dots12$ the number of
+sectors is
+\[
+21,\;34,\;55,\;89,\;144,\;233,\;377 \;=\; F_{N+2},
+\]
+exactly, with $F_1=F_2=1$. Hence the growth base $\varphi=1.618034$ that R2
+reports for this rule's sector count at \rt{obc0}. (Under \rt{pbc} the same rule
+gives $L_N+1$ with $L$ the Lucas numbers --- a different sequence with the same
+base, which is why the boundary condition has to be stated with the constant.)
+
+\noindent\textbf{The nonzero count is a third constant, exactly.} Counting the
+edges rather than the sectors gives, for $N=6\dots14$,
+\[
+204,\;493,\;1189,\;2870,\;6930,\;16731,\;40391,\;97512,\;235416,
+\]
+which satisfies the integer recurrence
+\[
+a_N \;=\; 2a_{N-1} + 2a_{N-3} + a_{N-4},
+\]
+whose characteristic polynomial factors as
+\[
+x^4-2x^3-2x-1 \;=\; (x^2-2x-1)(x^2+1).
+\]
+The dominant root is the \emph{silver ratio} $1+\sqrt2 = 2.414214$, and the
+$\pm i$ from the second factor is a pure period-$4$ modulation --- which is
+exactly the $-1,-1,+1,+1$ pattern by which $a_N$ misses $2a_{N-1}+a_{N-2}$. So
+this one rule carries three different algebraic constants at once, one for each
+question asked of the same matrix: $\varphi$ for how many blocks there are,
+$4^{1/5}$ for how big the largest gets (R2), and $1+\sqrt2$ for how many nonzeros
+the matrix has. None of the three is a fit; all are exact recurrences or
+derivations.
+
+\noindent\textbf{Thinning globally, not locally.} As $N$ grows the matrix becomes
+rapidly sparser in absolute terms, but the blocks do not hollow out:
+
+\begin{center}\small
+\begin{tabular}{rrrr}
+\toprule
+$N$ & density of $M$ & fill \emph{inside} the blocks & ratio \\
+\midrule
+$8$  & $1.81\%$ & $74.1\%$ & $41\times$ \\
+$10$ & $0.66\%$ & $68.0\%$ & $103\times$ \\
+$12$ & $0.24\%$ & $62.3\%$ & $259\times$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The middle column is the nonzero count divided by $\sum_k |S_k|^2$, the
+total area available inside the diagonal blocks. It drifts down slowly while the
+global density falls by a factor of $7.5$, so essentially all of the sparsity of
+$M$ is the block structure and almost none of it is sparsity within a sector.
+That is the precise sense in which the permutation is the right change of basis:
+it accounts for the emptiness.
+
+\section{What this does and does not show}
+
+\begin{itemize}
+\item \textbf{It is support, not dynamics.} A spy plot cannot distinguish a
+  sector that the dynamics explores ergodically from one it merely fails to
+  leave. The block structure is a statement about which amplitudes can be
+  nonzero, and nothing here measures how the weight moves inside a block.
+\item \textbf{It is one rule and one boundary condition.} Rule $156$ was chosen
+  because unitarity makes the partition unambiguous (A2). For a dissipative rule
+  the same picture would need a choice --- weak components block-\emph{diagonal},
+  strong components only block-\emph{triangular} --- which is the distinction
+  adjudicated in R-T14 and quantified in R9~\S7.3. \rt{pbc} is held pending
+  caveats and is not drawn.
+\item \textbf{The permutation is not canonical.} Blocks are ordered by size and
+  states ascending within a block; any other order inside a sector gives an
+  equally valid block-diagonal picture with a different interior pattern. What
+  is canonical is the \emph{partition}, and therefore the block sizes.
+\item \textbf{It does not prove the asymptotics.} The figure is a finite-$N$
+  object. That the block count is $F_{N+2}$ is checked to $N=12$ here and derived
+  in R2; the picture illustrates it and does not establish it.
+\end{itemize}
+
+\section{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.viz.spy --rule 156 --N 10 --bc obc0
+\end{verbatim}
+
+\noindent writes \fn{fig\_spy\_156\_N10\_obc0}, \fn{fig\_spy\_156\_N8\_obc0},
+\fn{fig\_spy\_zoom\_156\_N10\_obc0} (each as \fn{.pdf} and \fn{.png}) and
+\fn{reports/tex/tab\_r12\_spy\_obc0.tex}. The module is
+\fn{code/qca\_fragmentation/viz/spy.py}; its tests are in
+\fn{code/qca\_fragmentation/tests/test\_spy.py}, and they pin the zero off-block
+count, the Fibonacci block count, the partition agreeing with the Tier-1e
+\fn{weak\_components} pass, and the permutation being a genuine permutation.
+
+\end{document}

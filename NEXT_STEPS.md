@@ -557,3 +557,30 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
     The 2-to-1 wall map gives the bond frame a Z2 gauge redundancy.
 12. **N=33 at the reduction frontier** needs a uint64 label array (68.7 GB), or
     a two-pass compact relabelling to stay inside 32 GB.
+
+## R12 (C156 spy plots, 2026-08-04) --- DONE
+17. **Report R12** draws the sector claim instead of counting it: two spy plots
+    of the SAME rule-156 transition matrix at obc0, computational basis vs a
+    basis permuted so each weak component is contiguous.
+    - **Off-block nonzeros = 0** at N = 6..12, computed rather than asserted
+      (`spy.check_block_diagonal`) --- the blocks are found by weak connectivity
+      and the check then asks independently whether any matrix entry crosses.
+    - **n_wcc = F_{N+2} exactly** (21, 34, 55, 89, 144, 233, 377), which is where
+      R2's phi comes from. Under pbc the same rule gives Lucas + 1: same base,
+      different sequence, so the bc must be stated with the constant.
+    - **nnz obeys an exact order-4 recurrence** a_N = 2a_{N-1} + 2a_{N-3} +
+      a_{N-4}, char poly (x^2-2x-1)(x^2+1), so base **1+sqrt2** (silver ratio)
+      with a period-4 modulation from the +-i roots. So one rule carries three
+      exact constants for three questions about one matrix: phi (how many
+      blocks), 4^(1/5) (how big the largest, R2), 1+sqrt2 (how many nonzeros).
+    - **The sparsity IS the block structure**: global density falls 1.81% ->
+      0.24% from N=8 to N=12 while fill inside the blocks only drifts 74% ->
+      62%, so the concentration factor grows 41x -> 259x.
+    - Correction made while drawing: the computational-basis panel is NOT
+      structureless (an earlier caption said so). It is strongly banded and
+      self-similar, because integer order groups states by high bits and the
+      rule is local --- but the bands run ACROSS sectors. Wrong structure, not
+      no structure.
+    - Open: the same pair for a DISSIPATIVE rule needs a choice, since weak
+      components block-diagonalise but strong ones only block-triangularise
+      (R-T14, R9 sec.7.3). pbc is held.
