@@ -1,0 +1,222 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\scc}{\mathrm{scc}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+
+\title{\textbf{Report R13 --- nested fragmentation: can a rule fragment
+twice?}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-04}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A rule fragments once when its number of sectors grows exponentially in $N$. It
+fragments a \emph{second} time when a single sector contains exponentially many
+attractors. Only thirteen rules can do the second thing at all --- every other
+rule of the $256$ has exactly one attractor per sector (R9~\S7.3) --- so the
+question is decidable by inspecting thirteen sequences. The answer is
+\textbf{partly}. Eight rules fragment exponentially \emph{inside} a sector while
+their sector count stays constant or linear, and that half is settled by exact
+integer recurrences rather than fits. Three constants appear, all
+``Narayana-like'': the supergolden $\psi=1.465571$, the plastic number
+$\rho=1.324718$, and the root $1.380278$ of $x^4=x^3+1$. The distribution of
+attractors across sectors for rules $44$ and $100$ is, exactly, a run of
+\emph{consecutive Narayana numbers}. The fully nested case --- exponential both
+ways --- has two candidates, rules $29$ and $71$, and \textbf{both are left
+open}. For rule $29$, on the even-$N$ branch up to $N=20$ a quadratic and an
+exponential of base $1.12$ fit its in-sector count to within $6\%$ with
+essentially equal BIC, and they do not separate by a full attractor until
+$N\simeq26$, which is $6.7\times10^{7}$ states. Its near-twin rule $71$ is exactly linear inside a sector for
+$N=6\dots18$ and then breaks upward at $N=19$, so it is open too rather than a
+clean negative. \rt{obc0} only.
+\end{abstract}
+
+\section{The two exponents}
+
+Every rule has two numbers here:
+\[
+n_\wcc(N)\ \ \text{---\ how many sectors,}\qquad
+m(N)=\max_{\text{sector}}\#\{\text{terminal SCCs in it}\}\ \ \text{---\ how many
+attractors the busiest sector holds.}
+\]
+$m\equiv1$ for $243$ of the $256$ rules, so only the thirteen of R9~\S7.3 can
+contribute. Nested fragmentation means both grow exponentially.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_nested_plane_obc0.pdf}{0.72\textwidth}
+\caption{\textbf{The two fragmentation exponents.} Horizontal: growth base of the
+sector count. Vertical: growth base of the attractors inside one sector. The
+shaded strips are ``exponential''. Eight rules sit in the upper-left band ---
+all the fragmentation is inside the sectors --- and two ($29$, $71$) in the
+lower-right --- all of it in the sector count. The upper-right corner is nested
+fragmentation. \emph{Drawn from $N\le16$ only}: at that size $29$ and $71$ look
+linear inside a sector and sit on the lower-right axis, but \S\ref{sec:open}
+shows both break upward by $N=19$--$20$, so their vertical positions here are
+lower bounds and the corner is not reliably empty.}
+\end{figure}
+
+\section{Settled: exponential inside a constant or polynomial sector count}
+
+\begin{center}\small
+\begin{tabular}{rlllr}
+\toprule
+rule & tuple & sector count $n_\wcc$ & attractors in one sector & total base \\
+\midrule
+$203$, $217$ & \rt{VEII}, \rt{VIEI} & constant, $=1$ at every $N$ & exponential $\psi$ & $\psi$ \\
+$219$ & \rt{VEEI} & constant, $=1$ & exponential $\psi$ & $\psi$ \\
+$36$ & \rt{IDDV} & constant, $\to10$ & exponential $\psi$ & $\psi$ \\
+$44$, $100$ & \rt{IIDV}, \rt{IDIV} & \textbf{polynomial} (linear) & exponential $\psi$ & $\psi$ \\
+$104$, $233$ & \rt{DIIV}, \rt{VIIE} & \textbf{polynomial} (linear) & exponential & $1.380278$ \\
+\midrule
+$29$, $71$ & \rt{EIVD}, \rt{EVID} & \textbf{exponential} & linear then breaks --- \S\ref{sec:open} & $\rho$ \\
+$235$, $249$, $37$ & \rt{VEIE}, \rt{VIEE}, \rt{EDDV} & constant, $=1$ & constant ($\le2$) & constant \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Rules $203$ and $217$ are the extreme: \emph{one} sector at every $N$,
+holding $277$ attractors at $N=16$ and growing like $\psi^N$. The sector
+observable returns the constant $1$ however large the system gets, while the
+attractor count runs away exponentially --- all of the structure is invisible to
+it. Rules $44$ and $100$ are the polynomial version: $n_\wcc=N+3$ exactly for
+$100$, with $\psi^N$ attractors inside the largest of those sectors.
+
+\subsection{Three exact constants, all Narayana-like}
+
+The \emph{total} attractor counts obey exact integer recurrences --- found by
+recurrence search, not fitted:
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+rules & recurrence & characteristic root & name \\
+\midrule
+$203$, $217$, $219$, $36$, $44$, $100$ & $a_N=a_{N-1}+a_{N-3}$ & $x^3=x^2+1$ & supergolden $\psi=1.465571$ \\
+$104$, $233$ & $a_N=a_{N-1}+a_{N-4}$ & $x^4=x^3+1$ & $1.380278$ \\
+$29$, $71$ & $a_N=a_{N-2}+a_{N-3}$ & $x^3=x+1$ & plastic $\rho=1.324718$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The first is Narayana's cows sequence
+$1,1,1,2,3,4,6,9,13,19,28,41,60,88,129,189,277,406,595$; rules $203/217$ enter it
+at $6$, rule $219$ at $3$, and $36/44/100$ at $13$. So six rules share one
+sequence at four different offsets.
+
+\subsection{The prettiest fact}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_nested_staircase_N16_obc0.pdf}{0.86\textwidth}
+\caption{\textbf{How the attractors distribute across sectors} ($N=16$). For
+rules $44$ and $100$ the sorted per-sector attractor counts are, exactly, a run
+of \emph{consecutive Narayana numbers} --- the same sequence that gives the
+total. Rule $36$ has the same total, $595$, but piles $586$ of them into one
+sector and leaves nine singletons. Rule $203$ is a single point: one sector,
+$277$ attractors. Rule $29$ spreads $86$ attractors thinly over $22$ sectors,
+none holding more than $9$.}
+\end{figure}
+
+\noindent At $N=16$ rules $44$ and $100$ give
+\[
+189,\;129,\;88,\;60,\;41,\;28,\;19,\;13,\;9,\;6,\;\dots
+\]
+which is the Narayana sequence read backwards from its largest term below the
+total. Three rules --- $36$, $44$, $100$ --- have the \emph{identical} total of
+$595$ attractors at $N=16$ and distribute them completely differently: one giant
+sector, or a Narayana staircase.
+
+\section{Open: the fully nested case}
+\label{sec:open}
+
+Only $29$ and $71$ have an exponential sector count, so only they can be nested.
+
+\noindent\textbf{Both are undecided, and in the same way.} Each looks exactly
+linear inside a sector for as far as one first computes, and each then breaks
+upward at the largest $N$ reached. Rule $71$'s in-sector count is
+\[
+1,2,2,3,3,4,4,5,5,6,6,7,7,\mathbf{9} \qquad (N=6\dots19),
+\]
+which is $\lceil N/2\rceil-2$ \emph{exactly} for $N=6\dots18$ and then returns
+$9$ where the formula says $8$. Its even branch $1,2,3,4,5,6,7$ is still a
+perfect line; the break is on the odd branch, at the last point available. Rule
+$29$ breaks earlier and further. So the tidy statement ``$71$ is linear, $29$ is
+not'' --- which an earlier draft of this report made after stopping at $N=16$ ---
+is an artefact of stopping too soon.
+
+\noindent\textbf{Rule 29, quantified.} Its in-sector count oscillates with
+parity; the even branch is
+\[
+3,\;4,\;5,\;6,\;7,\;9,\;12,\;16 \qquad (N=6,8,\dots,20),
+\]
+which is clearly superlinear --- a line would give $8$ at $N=18$ and $9$ at
+$N=20$. But superlinear is not exponential, and the second differences are
+$0,0,0,1,1,1$, which is what a \emph{quadratic} looks like. Fitting both:
+
+\begin{center}\small
+\begin{tabular}{lrrrr}
+\toprule
+model & rss & BIC & predicts $N=22$ & predicts $N=26$ \\
+\midrule
+quadratic in $N$ & $1.571$ & $-6.78$ & $19.2$ & $28.1$ \\
+exponential, base $1.1206$ & $1.672$ & $-8.37$ & $18.8$ & $29.7$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_nested_rule29_obc0.pdf}{0.72\textwidth}
+\caption{\textbf{The undecided case.} Rule $29$'s attractors in the largest
+sector, even $N$, with both models. They agree to within $6\%$ everywhere data
+exists and separate by less than one attractor at $N=22$.}
+\end{figure}
+
+\noindent A BIC gap of $1.6$ is nothing, and the two models differ by $0.4$
+attractors at $N=22$ and $1.6$ at $N=26$. Settling it needs $N\gtrsim26$, i.e.
+$6.7\times10^{7}$ states --- feasible only with a bitwise successor and a
+compact union-find, not the present path. \textbf{Verdict: open.} The
+automated classifier calls it exponential (base $1.111$) and that verdict is
+recorded, but it rests on a short, parity-oscillating series and should not be
+quoted as a result.
+
+\section{What this says}
+
+The eight settled rules answer the second half of the question affirmatively and
+sharply: \emph{a constant or polynomial sector count is fully compatible with
+exponentially many attractors inside a single sector.} Rules $203$ and $217$ are
+the cleanest statement of it --- one sector, forever, containing $\psi^N$
+attractors --- and they are the reason R9~\S7.3 insists that counting sectors is
+not counting attractors.
+
+Whether a rule can do \emph{both} at once remains open on \emph{two} rules, $29$
+and $71$, by a margin of about one attractor at the largest size computed here.
+Both are linear inside a sector for a long stretch and both break upward at the
+end of it, which is the least conclusive shape a finite series can have: it is
+equally the onset of a slow exponential and a finite-size wobble on a line.
+
+\section*{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.viz.nested --bc obc0 --rebuild
+\end{verbatim}
+
+\noindent writes \fn{analytics/nested\_fragmentation\_obc0.json} and the three
+figures. The module is \fn{code/qca\_fragmentation/viz/nested.py};
+\fn{rule29\_model\_comparison()} reproduces the table of \S\ref{sec:open}.
+
+\end{document}
