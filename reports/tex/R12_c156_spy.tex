@@ -51,8 +51,10 @@ structureless --- it is strongly banded and self-similar --- it simply does not
 show \emph{sector} structure.
 
 \S\ref{sec:frobenius} then reorders the same matrix into its \emph{Frobenius
-normal form} --- strongly connected components in reverse topological order ---
-for rules $156$, $157$, $109$, $150$ and $158$, chosen to span both axes:
+normal form} --- strongly connected components in reverse topological order,
+\emph{nested inside} the sector blocks, so the picture is block-diagonal at the
+sector level and block-upper-triangular within each sector --- for rules $156$,
+$157$, $109$, $150$ and $158$, chosen to span both axes:
 exponential sector counts ($\varphi$, $\rho$, $\psi$) and polynomial ones,
 unitary and dissipative. Nothing lies below the block diagonal in any of them.
 For the two unitary rules the triangular form \emph{is} the diagonal form
@@ -249,11 +251,37 @@ section is where the unitary/dissipative distinction becomes a picture.
 \begin{definition}[Frobenius order]
 Take the strongly connected components of the transition graph and order them by
 a \emph{reverse} topological order of the condensation: sinks --- the terminal
-SCCs, i.e.\ the monitored attractors --- first, sources last, larger first among
-those free to move. An edge then runs from a higher index to a lower one, so
-every nonzero sits on or \emph{above} the block diagonal. The attractors occupy
-the top-left corner and everything drains up and to the left.
+SCCs, i.e.\ the monitored attractors --- before their predecessors. An edge then
+runs from a higher index to a lower one, so every nonzero sits on or
+\emph{above} the block diagonal and weight drains up and to the left.
 \end{definition}
+
+\noindent\textbf{The two forms nest, and the figure is drawn so that they do.}
+A reverse-topological order is not unique, and the choice matters here. Every
+condensation edge joins two SCCs of the \emph{same} weak component --- an edge
+is itself a witness of weak connectivity --- so the condensation is a disjoint
+union of DAGs, one per sector, with no edges between them at all. Consequently
+any order that is reverse-topological \emph{within each sector} is
+reverse-topological globally, whatever order the sectors are placed in. Taking
+that freedom to keep each sector contiguous, laid out largest first exactly as in
+the WCC panel, gives the \textbf{nested} form:
+\[
+\text{block-diagonal at the sector level,\quad block-upper-triangular inside
+each sector.}
+\]
+The third panel therefore carries the second panel's block structure --- the
+sector outlines are drawn on it --- with each block resolved into its internal
+triangular refinement. \emph{Nothing ever crosses between sectors}; that is a
+theorem, not an artefact of the layout.
+
+A global sweep that interleaves SCCs from different sectors by size is an
+equally valid Frobenius form and equally triangular, but it scatters each
+sector's states across the index range, so intra-sector drainage lands far from
+the diagonal and reads as though weight were crossing between sectors --- which
+cannot happen. An earlier version of these figures did exactly that and was
+misleading; \fn{spy.scc\_blocks} now nests by default
+(\fn{nest\_in\_wcc=True}) and the option to sweep globally survives only for
+\S\ref{sec:multiatt}'s corner figures, which want every sink at the front.
 
 \noindent The ordering is produced by a Kahn sweep on the condensation
 (\fn{spy.scc\_blocks}) rather than by trusting Tarjan's internal numbering.
@@ -278,8 +306,11 @@ dissipative for $157$, $109$ and $158$.
 \subsection{What the three panels show}
 
 \begin{itemize}
-\item \textbf{Nothing lies below the block diagonal, for any of the five.} The
-  Frobenius form is genuinely triangular, computed and not assumed.
+\item \textbf{Nothing lies below the block diagonal, for any of the five}, and
+  \textbf{nothing crosses between sectors either} --- both computed, not assumed.
+  The sector outlines drawn on the third panel are the same blocks as the second
+  panel's, so the two can be read against each other directly: the Frobenius
+  form refines the block-diagonal form and never violates it.
 \item \textbf{For a unitary rule the triangular form \emph{is} the diagonal
   form.} Rules $156$ and $150$ have $n_{\rm scc}=n_\wcc$, every SCC terminal,
   all $1024$ states recurrent and a drainage of exactly zero. Their third panel
@@ -330,6 +361,7 @@ diagonal blocks are visible in their own right.}
 \end{figure}
 
 \subsection{Rules 150 and 158: the same sectors, different matrices}
+\label{sec:150v158}
 
 \begin{figure}[htbp]
 \centering
@@ -360,6 +392,96 @@ sizes, not the partition itself --- can tell them apart; the Frobenius form
 separates them completely. That is the concrete form of R9's finding that the
 sector axis is uninformative for the V+reset family, and the reason this project
 carries two maps rather than one.
+
+\subsection{Multi-attractor rules: one sector, several sinks}
+\label{sec:multiatt}
+
+All five rules above have $n_{\rm terminal}=n_\wcc$, one attractor per sector,
+which is the generic case: R9~\S7.3 finds it holds for $237$ of $249$ rules.
+The remaining twelve are the ones where the Frobenius form is strictly finer
+than the block-diagonal one in a way no sector count can report --- a single
+weak component containing several terminal SCCs. All three sector-count classes
+occur among them, so here is one of each.
+
+\begin{center}
+\iftable{tab_r12_multiatt_obc0.tex}
+\end{center}
+
+\noindent (\rt{obc0}, $N=10$; ``upper'' is the drainage as a percentage of all
+nonzeros.) At full scale these rules' attractors are a few dozen states inside a
+$1024$-wide matrix, so the grouping cannot be seen in a three-panel figure.
+Figures~\ref{fig:s9}--\ref{fig:s11} therefore show only the recurrent corner:
+the $|\mathrm{Rec}|\times|\mathrm{Rec}|$ top-left block, with each terminal SCC
+outlined and \emph{coloured by the weak component that contains it}. Blocks
+sharing a colour inside a dashed bracket are several attractors inside one
+sector.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_reccorner_203_N10_obc0.pdf}{0.62\textwidth}
+\caption{\textbf{S9, constant sector count: rule $203$ (\rt{VEII}).} $n_\wcc=1$
+at \emph{every} $N$ --- the dynamics connects the whole basis --- and that one
+sector holds $28$ attractors: six $2$-cycles and $22$ fixed points, $34$ states
+in all. The sector observable returns $1$ here whatever $N$ is; the attractor
+count grows. This is the maximal degeneracy of the sector axis.}
+\label{fig:s9}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_reccorner_100_N10_obc0.pdf}{0.62\textwidth}
+\caption{\textbf{S10, polynomial sector count: rule $100$ (\rt{IDIV}).}
+$n_\wcc=N+3$ exactly ($9,10,\dots,15$ for $N=6\dots12$), so $13$ sectors at
+$N=10$ --- holding $60$ attractors between them, one sector taking $19$. Every
+strong component is a singleton ($n_{\rm scc}=1024=\dim$), so the graph has no
+cycles at all and every attractor is a fixed point.}
+\label{fig:s10}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_reccorner_29_N10_obc0.pdf}{0.62\textwidth}
+\caption{\textbf{S11, exponential sector count: rule $29$ (\rt{EIVD}).}
+$16$ attractors in $7$ sectors, five of them multi-attractor, with brackets of
+$5$, $3$, $2$, $2$ and $2$.}
+\label{fig:s11}
+\end{figure}
+
+\noindent The ordering inside the recurrent corner needs one remark. Terminal
+SCCs are sinks --- no outgoing condensation edges --- so \emph{any} order among
+them still places every component before its predecessors, and the form stays
+triangular. These three figures use that freedom to group each sector's
+attractors together, which is what lets the brackets be drawn without
+overlapping; \fn{spy.check\_frobenius} confirms the below-diagonal count is
+still zero with the regrouping applied.
+
+\subsubsection*{Rules 29 and 157: the same attractors, different sectors}
+
+Rule $157$ already appears above (Figure~\ref{fig:s5}) with $16$ attractors in
+$16$ sectors, one apiece. Rule $29$ has $16$ attractors in $7$ sectors. They are
+\emph{the same $16$ attractors} --- the identical sets of states, holding the
+identical $67$ recurrent states --- verified at $N=9$, $10$ and $11$ ($12$
+attractors/$41$ states, $16$/$67$, $21$/$99$). The two rules differ by a single
+symbol, \rt{EIVD} against \rt{EIVI}, and what the reset changes is not which
+attractors exist but how many sectors enclose them.
+
+Set beside \S\ref{sec:150v158}, this gives a matched pair of blind spots:
+
+\begin{center}\small
+\begin{tabular}{lll}
+\toprule
+pair & agree on & differ in \\
+\midrule
+$150$ / $158$ & the sector partition, exactly & the attractors ($6$ vs $936$ SCCs) \\
+$29$ / $157$ & the attractor set, exactly & the sectors ($7$ vs $16$ WCCs) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Neither observable dominates the other. A measurement that sees only
+sectors cannot separate $150$ from $158$; one that sees only attractors cannot
+separate $29$ from $157$. Both maps are needed, which is the conclusion R9
+reaches by counting and this report reaches by looking.
 
 \section{What this does and does not show}
 

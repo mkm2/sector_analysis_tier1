@@ -207,3 +207,107 @@ def test_frobenius_figure_writes(tmp_path):
     import os
     assert os.path.exists(out) and os.path.getsize(out) > 0
     assert st["nnz_below_diagonal"] == 0
+
+
+# --- the nesting of the two normal forms (R12 sec.4, corrected 2026-08-04) ----
+
+ALL_SPY_RULES = list(spy.FROBENIUS_RULES) + [r for r, _ in
+                                             spy.MULTI_ATTRACTOR_RULES]
+
+
+@pytest.mark.parametrize("rule", ALL_SPY_RULES)
+def test_no_nonzero_ever_crosses_a_sector(rule):
+    """The fact that makes the nesting possible, and the reason an apparent
+    inter-sector transition in a Frobenius picture is always a layout artefact:
+    an edge is a witness of weak connectivity, so it cannot join two sectors."""
+    N = 9
+    rows, cols = spy.transition_pattern(rule, N, "obc0")
+    wb = spy.wcc_blocks(rule, N, "obc0")
+    own = spy.block_of(wb, 1 << N)
+    assert int(np.count_nonzero(own[rows] != own[cols])) == 0
+
+
+@pytest.mark.parametrize("rule", ALL_SPY_RULES)
+def test_the_frobenius_order_nests_inside_the_sector_blocks(rule):
+    """Default ordering: each sector's states are CONTIGUOUS, so the third panel
+    carries the second panel's blocks and merely refines them.  Without this the
+    intra-sector drainage is drawn far from the diagonal and reads as flow
+    between sectors -- which the test above shows is impossible."""
+    N = 9
+    n = 1 << N
+    sb, _ = spy.scc_blocks(rule, N, "obc0")
+    perm, _ = spy.sorted_permutation(sb)
+    pos = np.empty(n, dtype=int)
+    pos[perm] = np.arange(n)
+    for b in spy.wcc_blocks(rule, N, "obc0"):
+        idx = pos[np.asarray(b)]
+        assert idx.max() - idx.min() + 1 == len(b), (rule, len(b))
+
+
+@pytest.mark.parametrize("rule", ALL_SPY_RULES)
+def test_both_orderings_are_triangular(rule):
+    """Nesting is a choice among valid reverse-topological orders, not a
+    weakening of one: the global sweep and the nested sweep are both exactly
+    triangular."""
+    N = 9
+    rows, cols = spy.transition_pattern(rule, N, "obc0")
+    for nest in (False, True):
+        sb, _ = spy.scc_blocks(rule, N, "obc0", nest_in_wcc=nest)
+        own = spy.block_of(sb, 1 << N)
+        assert int(np.count_nonzero(own[rows] > own[cols])) == 0, (rule, nest)
+
+
+def test_nesting_does_not_change_any_count():
+    """Only the layout moves; every quantity in the tables is order-independent."""
+    for rule in ALL_SPY_RULES:
+        a, ta = spy.scc_blocks(rule, 9, "obc0", nest_in_wcc=False)
+        b, tb = spy.scc_blocks(rule, 9, "obc0", nest_in_wcc=True)
+        assert {frozenset(x) for x in a} == {frozenset(x) for x in b}
+        assert sum(ta) == sum(tb)
+
+
+def test_spy_module_exposes_every_figure_main_draws():
+    """The __main__ guard once sat mid-module here too, so `python -m ...spy`
+    NameError'd on FROBENIUS_RULES after writing only the first three figures."""
+    import re
+    src = open(spy.__file__).read()
+    guard = src.index('if __name__ == "__main__"')
+    assert guard > max(m.start() for m in re.finditer(r"^def ", src, re.M))
+    for name in ("fig_spy", "fig_spy_zoom", "fig_frobenius",
+                 "fig_recurrent_corner", "frobenius_table",
+                 "multi_attractor_table"):
+        assert hasattr(spy, name), name
+
+
+@pytest.mark.parametrize("rule,cls", spy.MULTI_ATTRACTOR_RULES)
+def test_the_multi_attractor_examples_have_a_sector_with_several_sinks(rule, cls):
+    """One example per sector-count class, and each must actually exhibit the
+    property it is there to illustrate."""
+    from collections import Counter
+    from qca_fragmentation.scaling import sectors as S
+    st = spy.check_frobenius(rule, 10, "obc0")
+    assert st["n_terminal"] > st["n_wcc"]
+    sb, term = spy.scc_blocks(rule, 10, "obc0")
+    wb = spy.wcc_blocks(rule, 10, "obc0")
+    own = spy.block_of(wb, 1 << 10)
+    per = Counter(own[b[0]] for b, t in zip(sb, term) if t)
+    assert max(per.values()) > 1
+    d = S.load("obc0")
+    got = {p["rule"]: p for p in d["points"]}[rule]["n_wcc"]["cls"]
+    assert got == cls, (rule, got, cls)
+
+
+def test_29_and_157_have_the_identical_attractor_set():
+    """The dual of the 150/158 pair: same attractors, different sectors.  157 has
+    one per sector, 29 merges them, so an attractor-only observable cannot tell
+    them apart just as a sector-only one cannot separate 150 from 158."""
+    for N in (9, 10, 11):
+        a, ta = spy.scc_blocks(29, N, "obc0")
+        b, tb = spy.scc_blocks(157, N, "obc0")
+        A = {frozenset(x) for x, t in zip(a, ta) if t}
+        B = {frozenset(x) for x, t in zip(b, tb) if t}
+        assert A == B, N
+        n29 = len(spy.wcc_blocks(29, N, "obc0"))
+        n157 = len(spy.wcc_blocks(157, N, "obc0"))
+        assert n157 == len(B)          # 157: one attractor per sector
+        assert n29 < n157              # 29: merged

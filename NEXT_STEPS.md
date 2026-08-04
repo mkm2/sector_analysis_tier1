@@ -603,5 +603,32 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
         Frobenius form does at a glance. The sharpest concrete form of "the
         sector axis is uninformative for the V+reset family".
       * n_terminal == n_wcc for all five (none is among R9 sec.7.3's twelve).
+    - **Multi-attractor examples (added 2026-08-04, R12 sec.4.3).** One per
+      sector-count class from R9 sec.7.3's twelve: 203 (VEII, constant, n_wcc=1
+      at every N, holding 28 attractors), 100 (IDIV, polynomial, n_wcc=N+3, 60
+      attractors with 19 in one sector, and n_scc = 1024 = dim so every SCC is a
+      singleton and every attractor a fixed point), 29 (EIVD, exponential, 16
+      attractors in 7 sectors). Drawn as recurrent-corner figures: the
+      |Rec|x|Rec| block with each terminal SCC coloured by its parent sector,
+      bracketed where a sector holds several.
+    - **29/157 is the DUAL of 150/158.** 29 and 157 have the IDENTICAL attractor
+      set (same states, verified N=9,10,11: 12/41, 16/67, 21/99) but 157 has one
+      attractor per sector and 29 merges them (16 attractors in 7 sectors). So:
+      150/158 agree on the sector partition and differ in attractors; 29/157
+      agree on the attractors and differ in sectors. Neither observable
+      dominates -- both maps are needed.
+    - **CORRECTION (user-reported, same day).** The first Frobenius figures used
+      a GLOBAL Kahn sweep ordered by size, which interleaves SCCs from different
+      sectors. Since no edge ever crosses a weak component, that scattered each
+      sector's states across the index range and made intra-sector drainage look
+      like flow BETWEEN sectors. Fixed: `spy.scc_blocks(nest_in_wcc=True)` is
+      now the default -- one sweep per sector, sectors contiguous and largest
+      first as in the WCC panel -- so the form is block-diagonal at the sector
+      level and block-upper-triangular INSIDE each sector, with the sector
+      outlines drawn on the panel. Both orderings are valid Frobenius forms and
+      both are exactly triangular (tested); only the nested one is legible.
+      Also fixed: spy.py's `__main__` guard sat mid-module, so `python -m
+      ...spy` NameError'd after the first three figures -- the same defect as
+      sector_figure.py had, now pinned by a test in both.
     - Open: pbc is held. A dissipative rule at pbc, and the amplitude-resolved
       (not support-only) version, are both undone.

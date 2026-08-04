@@ -295,10 +295,12 @@ def main(argv=None):
     for r in FROBENIUS_RULES:
         fig_frobenius(r, a.N, a.bc)
     print("table:", frobenius_table(N=a.N, bc=a.bc))
+    for r, _cls in MULTI_ATTRACTOR_RULES:
+        fig_frobenius(r, a.N, a.bc, terminals_by_wcc=True)
+        fig_recurrent_corner(r, a.N, a.bc)
+    print("table:", multi_attractor_table(N=a.N, bc=a.bc))
 
 
-if __name__ == "__main__":
-    main()
 
 
 # --- Frobenius normal form: the SCC blocks, upper-triangular -----------------
@@ -317,16 +319,35 @@ if __name__ == "__main__":
 # sit on or ABOVE the block diagonal and the picture is upper-triangular with
 # the attractors in the top-left corner.  Everything drains up and to the left.
 
-def scc_blocks(rule: int, N: int, bc: str = "obc0"):
+def scc_blocks(rule: int, N: int, bc: str = "obc0",
+               group_terminals: bool = False, nest_in_wcc: bool = True):
     """
-    (blocks, terminal_flags) in Frobenius order: sinks first, larger first
-    among the ones that are free to move.
+    (blocks, terminal_flags) in Frobenius order: a reverse-topological order of
+    the condensation, so sinks precede their predecessors and the permuted
+    matrix is block UPPER triangular.
 
     A Kahn sweep on the condensation rather than a reliance on Tarjan's internal
     numbering: Tarjan does happen to finalise a component before its
     predecessors, but that is an implementation detail of the traversal and the
     triangularity of the picture should not depend on it.  check_frobenius
     verifies the result independently.
+
+    NEST_IN_WCC (default, and the right choice for a figure).  Every
+    condensation edge joins two SCCs of the SAME weak component -- an edge is
+    itself a witness of weak connectivity -- so the condensation is a disjoint
+    union of DAGs, one per sector.  Any order that is reverse-topological within
+    each sector is therefore reverse-topological globally, whatever order the
+    sectors themselves are placed in.  Taking that freedom to keep each sector's
+    states contiguous (largest sector first, as in the WCC panel) gives the
+    nested form: block-diagonal at the sector level, block-upper-triangular
+    inside each sector.
+
+    With nest_in_wcc=False the sweep runs globally and interleaves SCCs from
+    different sectors by size.  That is still a valid Frobenius form and still
+    triangular, but it scatters each sector's states across the index range, so
+    its internal drainage is drawn far from the diagonal and reads as though
+    weight were crossing between sectors -- which is impossible.  The option is
+    kept only because fig_recurrent_corner wants all sinks at the front.
     """
     import heapq
     from ..graph import scc as scc_mod
@@ -342,16 +363,33 @@ def scc_blocks(rule: int, N: int, bc: str = "obc0"):
     for i, s in enumerate(sc):
         for j in s:
             preds[j].append(i)
-    heap = [(-sizes[c], c) for c in range(n_comp) if remaining[c] == 0]
-    heapq.heapify(heap)
-    order: List[int] = []
-    while heap:
-        _, c = heapq.heappop(heap)
-        order.append(c)
-        for p in preds[c]:
-            remaining[p] -= 1
-            if remaining[p] == 0:
-                heapq.heappush(heap, (-sizes[p], p))
+    def sweep(allowed: Optional[set] = None) -> List[int]:
+        """Kahn on the reversed dag, restricted to `allowed`, largest first."""
+        pool = range(n_comp) if allowed is None else allowed
+        heap = [(-sizes[c], c) for c in pool if remaining[c] == 0]
+        heapq.heapify(heap)
+        got: List[int] = []
+        while heap:
+            _, c = heapq.heappop(heap)
+            got.append(c)
+            for p in preds[c]:
+                if allowed is not None and p not in allowed:
+                    continue
+                remaining[p] -= 1
+                if remaining[p] == 0:
+                    heapq.heappush(heap, (-sizes[p], p))
+        return got
+
+    if nest_in_wcc:
+        # one sweep per sector, sectors laid out largest first as in the WCC
+        # panel, so each sector's states stay contiguous
+        wb = wcc_blocks(rule, N, bc)
+        order = []
+        for sector in wb:
+            allowed = {comp[v] for v in sector}
+            order.extend(sweep(allowed))
+    else:
+        order = sweep()
     if len(order) != n_comp:                      # a cycle in the condensation
         raise RuntimeError("condensation is not acyclic; SCCs are wrong")
 
@@ -360,6 +398,23 @@ def scc_blocks(rule: int, N: int, bc: str = "obc0"):
         members[comp[x]].append(x)
     blocks = [sorted(members[c]) for c in order]
     terminal = [not sc[c] for c in order]
+
+    if group_terminals:
+        # Terminal SCCs are sinks: they have no outgoing condensation edges, so
+        # ANY order among them still puts every component before its
+        # predecessors and the form stays triangular.  Grouping them by the weak
+        # component that contains them makes each sector's attractors
+        # contiguous, which is what lets the recurrent-corner figure bracket
+        # them without the brackets overlapping.
+        wb = wcc_blocks(rule, N, bc)
+        wown = block_of(wb, 1 << N)
+        term_idx = [i for i, t in enumerate(terminal) if t]
+        rest = [i for i, t in enumerate(terminal) if not t]
+        term_idx.sort(key=lambda i: (wown[blocks[i][0]], -len(blocks[i]),
+                                     blocks[i][0]))
+        new = term_idx + rest
+        blocks = [blocks[i] for i in new]
+        terminal = [terminal[i] for i in new]
     return blocks, terminal
 
 
@@ -389,10 +444,18 @@ def check_frobenius(rule: int, N: int, bc: str = "obc0") -> Dict:
 
 
 def fig_frobenius(rule: int, N: int, bc: str = "obc0",
-                  out: Optional[str] = None, dot: float = 0.45):
+                  out: Optional[str] = None, dot: float = 0.45,
+                  terminals_by_wcc: bool = False):
     """
     Three panels of one matrix: computational basis, WCC block-diagonal, and
     the SCC Frobenius normal form.
+
+    `terminals_by_wcc` colours each terminal SCC by the WEAK component that
+    contains it, instead of a single red.  For the generic rule that changes
+    nothing visible -- one attractor per sector means every terminal block gets
+    its own colour anyway -- but for the multi-attractor rules of R9 sec.7.3 it
+    is the whole point: several attractor blocks sharing a colour in the
+    recurrent corner are several attractors inside ONE sector.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -439,20 +502,30 @@ def fig_frobenius(rule: int, N: int, bc: str = "obc0",
 
     ax = axes[2]
     _style(ax, n)
-    # the recurrent corner: every terminal SCC, which the ordering puts first
-    if 0 < n_rec < n:
-        ax.add_patch(Rectangle((-0.5, -0.5), n_rec, n_rec, facecolor="#f2c14e",
-                               alpha=0.35, edgecolor="#b8860b", linewidth=0.8,
-                               zorder=1))
+    # The WCC super-blocks.  With the nested ordering each sector is contiguous,
+    # so the Frobenius panel is block-diagonal at the sector level and
+    # block-upper-triangular INSIDE each sector -- and drawing the sector
+    # boundaries is what makes that legible.  Without them the intra-sector
+    # drainage looks like flow between sectors, which cannot happen.
+    for i, b in enumerate(wb):
+        lo = int(spos[np.asarray(b)].min())
+        L = len(b)
+        ax.add_patch(Rectangle((lo - 0.5, lo - 0.5), L, L, facecolor="none",
+                               edgecolor=_PALETTE[i % len(_PALETTE)],
+                               linewidth=0.9, zorder=6))
     inside = sown[rows] == sown[cols]
     ax.scatter(spos[cols][~inside], spos[rows][~inside], s=dot, c="#9aa3b0",
                marker="s", linewidths=0, zorder=2)
-    ax.scatter(spos[cols][inside], spos[rows][inside], s=dot, c="#c62828",
+    if terminals_by_wcc:
+        cin = [_PALETTE[wown[c] % len(_PALETTE)] for c in cols[inside]]
+    else:
+        cin = "#c62828"
+    ax.scatter(spos[cols][inside], spos[rows][inside], s=dot, c=cin,
                marker="s", linewidths=0, zorder=4)
-    ax.set_title(f"Frobenius order: block-UPPER-TRIANGULAR\n"
-                 f"{st['n_scc']} SCCs, {st['n_terminal']} terminal",
-                 fontsize=10)
-    ax.set_xlabel("state, SCCs in reverse topological order (sinks first)")
+    ax.set_title(f"Frobenius order: SCCs triangular INSIDE each sector\n"
+                 f"{st['n_scc']} SCCs, {st['n_terminal']} terminal; "
+                 f"outlines are the {st['n_wcc']} sectors", fontsize=10)
+    ax.set_xlabel("state, sectors contiguous; SCCs reverse-topological within")
 
     tup = "".join(rules_mod.wolfram_to_tuple(rule))
     kind = "unitary" if rules_mod.is_unitary(rules_mod.wolfram_to_tuple(rule)) \
@@ -475,6 +548,13 @@ def fig_frobenius(rule: int, N: int, bc: str = "obc0",
 
 FROBENIUS_RULES = (156, 157, 109, 150, 158)
 
+#: R9 sec.7.3's multi-attractor rules, one per sector-count class.  These are the
+#: rules where a single weak component holds several terminal SCCs, so the
+#: Frobenius form is strictly finer than the block-diagonal one in a way the
+#: sector count cannot report.
+MULTI_ATTRACTOR_RULES = ((203, "constant"), (100, "polynomial"),
+                         (29, "exponential"))
+
 
 def frobenius_table(rules_in=FROBENIUS_RULES, N: int = 10, bc: str = "obc0",
                     out: Optional[str] = None) -> str:
@@ -494,3 +574,121 @@ def frobenius_table(rules_in=FROBENIUS_RULES, N: int = 10, bc: str = "obc0",
                     f"${r['nnz_below_diagonal']}$ \\\\\n")
         f.write("\\hline\n\\end{tabular}\n")
     return out
+
+
+def fig_recurrent_corner(rule: int, N: int, bc: str = "obc0",
+                         out: Optional[str] = None):
+    """
+    The top-left |Rec| x |Rec| corner of the Frobenius form, with each terminal
+    SCC outlined and coloured by the WEAK component that contains it.
+
+    This is the figure for R9 sec.7.3's multi-attractor rules.  At full scale
+    their attractors are a handful of states in a 1024-wide matrix and the
+    grouping cannot be seen; here several blocks sharing a colour are several
+    attractors inside ONE sector, which is exactly the property the sector count
+    cannot report.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Rectangle
+
+    n = 1 << N
+    rows, cols = transition_pattern(rule, N, bc)
+    # A LOCAL index over the recurrent states only, so this figure does not
+    # depend on where the global Frobenius order happens to put the sinks.
+    # Terminal SCCs grouped by their sector, larger first inside a sector.
+    sb, terminal = scc_blocks(rule, N, bc)
+    wb = wcc_blocks(rule, N, bc)
+    wown = block_of(wb, n)
+    term = [b for b, t in zip(sb, terminal) if t]
+    term.sort(key=lambda b: (wown[b[0]], -len(b), b[0]))
+    n_rec = sum(len(b) for b in term)
+    spos = np.full(n, -1, dtype=int)
+    sstarts, k = [], 0
+    for b in term:
+        sstarts.append(k)
+        for v in sorted(b):
+            spos[v] = k
+            k += 1
+    keep = (spos[rows] >= 0) & (spos[cols] >= 0)
+    sb, terminal = term, [True] * len(term)
+
+    fig, ax = plt.subplots(figsize=(7.6, 7.6))
+    _style(ax, n_rec)
+    ax.set_ylim(n_rec - 0.5, -max(2.5, 0.06 * n_rec))
+    seen_w = {}
+    for i, (b, t) in enumerate(zip(sb, terminal)):
+        if not t:
+            continue
+        s, L = sstarts[i], len(b)
+        w = wown[b[0]]
+        c = _PALETTE[w % len(_PALETTE)]
+        seen_w.setdefault(w, []).append(i)
+        ax.add_patch(Rectangle((s - 0.5, s - 0.5), L, L, facecolor=c,
+                               alpha=0.30, edgecolor=c, linewidth=0.9,
+                               zorder=1))
+    ax.scatter(spos[cols][keep], spos[rows][keep], s=14,
+               c=[_PALETTE[wown[c] % len(_PALETTE)] for c in cols[keep]],
+               marker="s", linewidths=0, zorder=3)
+    # bracket the sectors that hold more than one attractor
+    for w, idxs in seen_w.items():
+        if len(idxs) < 2:
+            continue
+        lo = min(sstarts[i] for i in idxs)
+        hi = max(sstarts[i] + len(sb[i]) for i in idxs)
+        ax.add_patch(Rectangle((lo - 0.5, lo - 0.5), hi - lo, hi - lo,
+                               facecolor="none",
+                               edgecolor=_PALETTE[w % len(_PALETTE)],
+                               linewidth=1.6, linestyle="--", zorder=5))
+        ax.annotate(f"{len(idxs)} attractors, 1 sector",
+                    ((lo + hi) / 2 - 0.5, lo - 0.5), ha="center", va="bottom",
+                    xytext=(0, 3), textcoords="offset points", fontsize=7,
+                    color=_PALETTE[w % len(_PALETTE)], zorder=6)
+    tup = "".join(rules_mod.wolfram_to_tuple(rule))
+    multi = sum(1 for v in seen_w.values() if len(v) > 1)
+    ax.set_title(f"W{rule} ({tup}), {bc}, $N={N}$: the recurrent corner\n"
+                 f"{sum(terminal)} terminal SCCs holding {n_rec} states, in "
+                 f"{len(seen_w)} sectors ({multi} of them multi-attractor)",
+                 fontsize=10)
+    ax.set_xlabel("recurrent states, SCC order"), ax.set_ylabel("successor")
+    fig.tight_layout()
+    out = out or os.path.join(FIGURES_DIR,
+                              f"fig_reccorner_{rule}_N{N}_{bc}.pdf")
+    for p in (out, out.replace(".pdf", ".png")):
+        fig.savefig(p, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+    print("wrote", out)
+    return {"rule": rule, "N": N, "n_rec": n_rec, "n_terminal": sum(terminal),
+            "n_sectors_with_attractors": len(seen_w), "multi_sectors": multi}
+
+
+def multi_attractor_table(N: int = 10, bc: str = "obc0",
+                          out: Optional[str] = None) -> str:
+    """R9 sec.7.3's multi-attractor rules, one per sector-count class."""
+    from collections import Counter
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex",
+                              f"tab_r12_multiatt_{bc}.tex")
+    with open(out, "w") as f:
+        f.write("\\begin{tabular}{rllrrrrrr}\n\\hline\n")
+        f.write("rule & tuple & $n_\\wcc$ class & $n_\\wcc$ & $n_{\\rm scc}$ & "
+                "terminal & $|{\\rm Rec}|$ & max att/sector & upper \\\\\n"
+                "\\hline\n")
+        for rule, cls in MULTI_ATTRACTOR_RULES:
+            st = check_frobenius(rule, N, bc)
+            sb, term = scc_blocks(rule, N, bc)
+            wb = wcc_blocks(rule, N, bc)
+            own = block_of(wb, 1 << N)
+            per = Counter(own[b[0]] for b, t in zip(sb, term) if t)
+            t = "".join(rules_mod.wolfram_to_tuple(rule))
+            f.write(f"${rule}$ & \\rt{{{t}}} & {cls} & ${st['n_wcc']}$ & "
+                    f"${st['n_scc']}$ & ${st['n_terminal']}$ & "
+                    f"${st['recurrent']}$ & ${max(per.values())}$ & "
+                    f"${100 * st['nnz_strictly_upper'] / st['nnz']:.0f}\\%$ "
+                    f"\\\\\n")
+        f.write("\\hline\n\\end{tabular}\n")
+    return out
+
+
+if __name__ == "__main__":
+    main()
