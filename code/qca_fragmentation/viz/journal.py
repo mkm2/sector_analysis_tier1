@@ -62,6 +62,31 @@ def moves(bc: str = "obc0", data: Optional[Dict] = None):
     return [(k[0], k[1], k[2], k[3], k[4], n) for k, n in c.items()]
 
 
+def off_axis(bc: str = "obc0", data: Optional[Dict] = None):
+    """
+    The rules whose move is NOT vertical, i.e. whose sector count and attractor
+    count have different growth bases.
+
+    These are not an arbitrary handful.  One attractor per sector forces
+    n_scc = n_wcc and hence a_att = a, so a horizontal component exists ONLY for
+    a rule with a multi-attractor sector -- R9 sec.7.3's twelve.  Ten of the
+    twelve appear here; 235 and 249 are excluded because their ratio is a
+    constant 2, which cancels out of a growth base and leaves both at 1.
+    """
+    d = data or sectors.load(bc) or sectors.build(bc)
+    pts = {p["rule"]: p for p in d["points"]}
+    out = []
+    for x in d["attractor_deficits"]:
+        p = pts.get(x["rule"])
+        if not p or p["n_wcc"]["base"] is None:
+            continue
+        a, b = p["n_wcc"]["base"], p["d_max_wcc"]["base"]
+        if abs(a - x["a_att"]) > 1e-6:
+            out.append({"rule": x["rule"], "family": p["family"],
+                        "a": a, "b": b, "aa": x["a_att"], "bb": x["b_att"]})
+    return sorted(out, key=lambda r: r["rule"])
+
+
 def _style(ax, *, xlabel=None, ylabel=None, curve=True, ticks=True):
     ax.grid(True, color="#ececea", linewidth=0.6)
     ax.set_axisbelow(True)
@@ -305,7 +330,10 @@ STYLES = {"twin_h": lambda bc, d: style_twin(bc, orient="h", data=d),
           "twin_v": lambda bc, d: style_twin(bc, orient="v", data=d),
           "overlay": lambda bc, d: style_overlay(bc, data=d),
           "slope": lambda bc, d: style_slope(bc, data=d),
-          "inset": lambda bc, d: style_inset(bc, data=d)}
+          "inset": lambda bc, d: style_inset(bc, data=d),
+          # the two refined candidates -- see R14
+          "overlay2": lambda bc, d: style_overlay2(bc, data=d),
+          "stack": lambda bc, d: style_stack(bc, data=d)}
 
 
 def main(argv=None):
@@ -317,6 +345,163 @@ def main(argv=None):
     d = sectors.load(a.bc) or sectors.build(a.bc)
     for name, fn in STYLES.items():
         fn(a.bc, d)
+
+
+
+
+# --- refined A: overlay, exceptions only --------------------------------------
+
+OFF = "#d95f0e"
+
+
+def style_overlay2(bc="obc0", out=None, data=None, label=True):
+    """
+    Overlay, second pass.
+
+    The first version drew all 230 arrows and the 220 vertical ones swamped the
+    ten that are not.  Since verticality is forced -- one attractor per sector
+    means n_scc = n_wcc, so a_att = a -- those 220 arrows carry no information
+    beyond "this rule moved", which the paired markers already say.  So they are
+    reduced to a hairline stem and only the EXCEPTIONS are drawn as arrows: the
+    ten rules with a multi-attractor sector, which are the only ones that can
+    move sideways at all.
+    """
+    mv = moves(bc, data)
+    ex = off_axis(bc, data)
+    exset = {(round(r["a"], 3), round(r["b"], 3),
+              round(r["aa"], 3), round(r["bb"], 3)) for r in ex}
+    fig, ax = plt.subplots(figsize=(5.6, 5.2))
+    _style(ax, xlabel=r"base of the count  ($a$, or $a_{\rm att}$)",
+           ylabel=r"base of the largest block  ($b$, or $b_{\rm att}$)")
+
+    # the forced vertical moves: a hairline, no head
+    for a, b, aa, bb, f, n in mv:
+        if abs(a - aa) < 1e-9 and abs(b - bb) < 1e-9:
+            continue
+        if (a, b, aa, bb) in exset:
+            continue
+        ax.plot([a, aa], [b, bb], color="#c3c7cd", lw=0.5, zorder=1,
+                solid_capstyle="round")
+    for (x, y, f), n in _wcc_cells(mv).items():
+        ax.scatter(x, y, s=12 + 10 * np.sqrt(n), facecolor="none",
+                   edgecolor=FAM[f], linewidth=0.9, alpha=0.8, zorder=3)
+    _scatter(ax, _att_cells(mv), base=12.0, per=10.0)
+
+    # the exceptions
+    for r in ex:
+        ax.annotate("", xy=(r["aa"], r["bb"]), xytext=(r["a"], r["b"]),
+                    arrowprops=dict(arrowstyle="-|>", color=OFF, linewidth=1.5,
+                                    alpha=0.95, shrinkA=3, shrinkB=3,
+                                    mutation_scale=10), zorder=8)
+    seen: Dict[Tuple[float, float], List[int]] = {}
+    for r in ex:
+        seen.setdefault((round(r["aa"], 3), round(r["bb"], 3)), []).append(r["rule"])
+    if label:
+        # All three arrow tips land in 1.32 < x < 1.47, so labels placed next to
+        # them either collide or attach to the wrong arrow.  The band
+        # 1.03 < x < 1.30, 1.0 < y < 1.35 is empty apart from the stem at x = 1,
+        # so the labels are stacked there and joined to their tips by leaders.
+        anchors = [(1.055, 1.30), (1.055, 1.17), (1.055, 1.045)]
+        for (x, y), rs in sorted(seen.items(), key=lambda kv: -kv[0][1]):
+            ax_, ay = anchors.pop(0)
+            v = sorted(rs)
+            txt = "W" + ", ".join(str(k) for k in v)
+            if len(v) > 3:
+                txt = ("W" + ", ".join(str(k) for k in v[:3]) + ",\n"
+                       + ", ".join(str(k) for k in v[3:]))
+            ax.annotate(txt, xy=(x, y), xytext=(ax_, ay), ha="left",
+                        va="center", fontsize=6.8, color=OFF,
+                        fontweight="bold", zorder=10,
+                        arrowprops=dict(arrowstyle="-", lw=0.6, color=OFF,
+                                        alpha=0.75, shrinkA=2, shrinkB=4))
+    extra = [Line2D([], [], marker="o", ls="", markersize=5.5,
+                    markerfacecolor="none", markeredgecolor="#444",
+                    label="sectors (WCC)"),
+             Line2D([], [], marker="o", ls="", markersize=5.5,
+                    markerfacecolor="#444", markeredgecolor="white",
+                    label="attractors (SCC)"),
+             Line2D([], [], color=OFF, lw=1.5,
+                    label=f"multi-attractor rules ({len(ex)})")]
+    _legend(ax, loc="upper right", extra=extra, fontsize=6.9)
+    _save(fig, out, bc, "overlay2")
+    return ex
+
+
+# --- refined D: stacked, one x-axis, split y ----------------------------------
+
+def style_stack(bc="obc0", out=None, data=None):
+    """
+    Two panels stacked on ONE shared x-axis with a split y-axis.
+
+    The x-coordinate means the same thing in both planes -- the growth base of
+    the count -- so it is drawn once, at the bottom.  The y-axes are separate
+    and the gap between them is left completely empty: no spine, no ticks, no
+    titles, so an arrow from the upper panel to the lower one never crosses a
+    line or a label.  Because a_att = a for every rule but ten, almost every
+    arrow is then exactly vertical, and the ten that lean are the
+    multi-attractor rules.
+    """
+    mv = moves(bc, data)
+    ex = off_axis(bc, data)
+    exset = {(round(r["a"], 3), round(r["b"], 3),
+              round(r["aa"], 3), round(r["bb"], 3)) for r in ex}
+
+    fig, (axU, axL) = plt.subplots(
+        2, 1, figsize=(5.0, 6.4), sharex=True,
+        gridspec_kw={"height_ratios": [1, 1], "hspace": 0.30})
+
+    for ax in (axU, axL):
+        ax.grid(True, color="#ececea", linewidth=0.6)
+        ax.set_axisbelow(True)
+        ax.set_xlim(*LIM)
+        ax.set_ylim(0.93, 2.11)
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+    axU.spines["bottom"].set_visible(False)          # keep the gap empty
+    axU.tick_params(axis="x", which="both", length=0, labelbottom=False)
+    axL.spines["top"].set_visible(False)
+
+    a = np.linspace(*LIM, 400)
+    for ax in (axU, axL):
+        ax.plot(a, 2.0 / a, color="#555555", lw=0.9, ls=":", zorder=2)
+    _scatter(axU, _wcc_cells(mv), base=12.0, per=10.0)
+    _scatter(axL, _att_cells(mv), base=12.0, per=10.0)
+
+    for a0, b0, aa, bb, f, n in mv:
+        if abs(a0 - aa) < 1e-9 and abs(b0 - bb) < 1e-9:
+            continue
+        isex = (a0, b0, aa, bb) in exset
+        con = ConnectionPatch(
+            xyA=(a0, b0), coordsA=axU.transData,
+            xyB=(aa, bb), coordsB=axL.transData,
+            arrowstyle="-|>", mutation_scale=8 if isex else 5,
+            linewidth=1.4 if isex else 0.30 + 0.22 * np.sqrt(n),
+            color=OFF if isex else ARROW, alpha=0.95 if isex else 0.30,
+            zorder=9 if isex else 1, shrinkA=2.5, shrinkB=2.5)
+        fig.add_artist(con)
+
+    # broken-axis marks on the left spine, so the split y is explicit
+    kw = dict(transform=fig.transFigure, color="#555", lw=0.9,
+              clip_on=False, zorder=20)
+    x0 = axU.get_position().x0
+    yU, yL = axU.get_position().y0, axL.get_position().y1
+    for yy in (yU, yL):
+        fig.lines.append(plt.Line2D([x0 - 0.012, x0 + 0.012],
+                                    [yy - 0.008, yy + 0.008], **kw))
+
+    axU.set_ylabel(r"$b$   (sectors)", fontsize=9)
+    axL.set_ylabel(r"$b_{\rm att}$   (attractors)", fontsize=9)
+    axL.set_xlabel(r"base of the count:  $a$ above,  $a_{\rm att}$ below",
+                   fontsize=9)
+    for ax in (axU, axL):
+        ax.tick_params(labelsize=7.5, length=2)
+    extra = [Line2D([], [], color=OFF, lw=1.5,
+                    label=f"multi-attractor rules ({len(ex)})")]
+    # the arrows sweep down-right from (1,2); the upper panel's right side is
+    # the only region none of them crosses
+    _legend(axU, loc="upper right", extra=extra, fontsize=6.6)
+    _save(fig, out, bc, "stack")
+    return ex
 
 
 if __name__ == "__main__":
