@@ -1,0 +1,108 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+
+\title{\textbf{Report R14 --- one figure for the WCC/SCC planes and the flow
+between them}\\
+\large Five candidate layouts}
+\author{Tier 1 analysis}
+\date{2026-08-04}
+
+\begin{document}
+\maketitle
+
+\noindent R9 spends three figures on a single idea: every rule has a position in
+the sector plane, a position in the monitored-attractor plane, and dissipation
+moves it from the first to the second. Five condensed layouts follow, all from
+the same data (\rt{obc0}, $254$ rules with both descriptors) and the same design
+rules --- marker area grows with the number of rules stacked in a cell, colour is
+the family, arrows are light and thicken with the number of rules making the same
+move, and a rule that does not move gets no arrow. Only the layout differs.
+
+\vspace{1em}
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_journal_overlay_obc0.pdf}{0.60\textwidth}
+\caption{\textbf{A --- overlay.} One plane; each rule appears twice, hollow where
+its sectors put it and filled where its attractors do, joined by an arrow. The
+only layout in which both coordinates live on \emph{the same axes}, so the move
+reads as a displacement rather than a mapping between two spaces --- and the one
+that makes the dominant fact visible: of the $230$ rules that move, $96\%$ move
+\textbf{straight down} --- $a$ unchanged, $b$ collapsed --- and \emph{all} $230$
+decrease $b$. Not one moves horizontally. Dissipation destroys block size and
+leaves the count alone. Most compact of the five.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_journal_slope_obc0.pdf}{0.42\textwidth}
+\caption{\textbf{B --- slopegraph.} Neither coordinate, but the product $ab$ that
+the exclusion curve constrains. Sectors left, attractors right, one line per
+rule. Discards the $a/b$ split and keeps only what the theorem is about, which
+makes the theorem the picture: everything starts on or above $2$, the unitary
+rules run exactly horizontal, and almost everything else drops below.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_journal_twin_h_obc0.pdf}{\textwidth}
+\caption{\textbf{C --- twin panels, horizontal.} The literal reading: sectors
+left, attractors right, arrows across the gap. Easiest to caption and the least
+ambiguous about which plane is which, but the arrows bundle in the gutter and
+the gap costs about a third of the width.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_journal_twin_v_obc0.pdf}{0.44\textwidth}
+\caption{\textbf{D --- twin panels, vertical.} The same, stacked. Fits a
+single-column format and the downward arrows read naturally as ``what dissipation
+does'', at the cost of a tall aspect ratio.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_journal_inset_obc0.pdf}{0.78\textwidth}
+\caption{\textbf{E --- inset.} The sector plane full size, the attractor plane as
+an inset, the deficit distribution below it. Reflects the asymmetry of the two
+maps rather than pretending they are equals --- the sector plane is exact for
+both experiments, the attractor plane is monitored-only --- so it gets less space
+and a caveat instead of half the figure.}
+\end{figure}
+
+\clearpage
+\section*{Recommendation}
+
+\noindent \textbf{A (overlay)} for a journal figure, with \textbf{B
+(slopegraph)} as a panel beside it if space allows.
+
+A is the most compact, and it is the only one that earns its compactness with a
+finding: putting both coordinates on one set of axes shows that the arrows are
+overwhelmingly \emph{vertical}. That is not visible in C, D or E, where the two
+planes are drawn separately and the eye cannot compare positions directly. B then
+adds the one thing A cannot show cleanly, which is where each rule sits relative
+to $ab=2$ before and after.
+
+C and D are the safest if the audience has not seen the two planes before, since
+nothing has to be explained about hollow-versus-filled markers. E is the right
+choice only if the asymmetry between the two maps is itself the point of the
+section.
+
+\section*{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.viz.journal --bc obc0
+\end{verbatim}
+
+\noindent writes all five as \fn{figures/fig\_journal\_\{style\}\_obc0.\{pdf,png\}};
+the module is \fn{code/qca\_fragmentation/viz/journal.py}.
+
+\end{document}
