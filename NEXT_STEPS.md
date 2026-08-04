@@ -661,5 +661,23 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
       anti-diagonal swaps. Pure cycles are the X-gate case (R10), where the
       successor is single-valued and every attractor is a permutation block.
       Column weight = branching number (up to 18 for 156, 243 for 150 at N=10).
+    - **Frobenius normal form defined properly (R12 sec.4.1, 2026-08-04).**
+      Reducible/irreducible, Frobenius' criterion (irreducible iff the digraph
+      is strongly connected), and the normal form with irreducible diagonal
+      blocks = the SCCs. Two criteria that decide what the figures can show:
+      * NOTHING TO TRIANGULARISE when there is one component: an irreducible
+        matrix has no strictly upper part and no permutation can give it one.
+        Same block by block -- each M_ii is irreducible, so it has no internal
+        triangular structure either. That is why the unitary panels look
+        untriangular.
+      * STRICTLY UPPER NONZERO is NOT the same as k >= 2. Two components with no
+        edge between them give a block-DIAGONAL form. The criterion is that the
+        condensation has an edge, i.e. some state is TRANSIENT. Verified as an
+        equivalence over all eight rules. 156 and 150 have ZERO condensation
+        edges at N=8,9,10.
+      * Trivial blocks (1x1 zero = singleton SCC with no self-loop) dominate the
+        dissipative rules: 669/758 for 157, 880/1024 for 100. And a self-loop is
+        NOT recurrence -- rule 100 has 144 states with x->x but only 60 terminal
+        components, the other 84 can also step away and never return.
     - Open: pbc is held. A dissipative rule at pbc, and the amplitude-resolved
       (not support-only) version, are both undone.

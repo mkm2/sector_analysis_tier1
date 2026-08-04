@@ -404,3 +404,69 @@ def test_column_weight_is_the_branching_number():
     succ = W.make_succ(156, N, "obc0")
     for x in (0, 1, 37, 255):
         assert w[x] == len(succ(x))
+
+
+# --- R12 sec.4.1: when the normal form is triangular and when it is not -------
+
+def _condensation_edges(rule, N, bc="obc0"):
+    """Number of nonzeros joining two DIFFERENT strong components."""
+    rows, cols = spy.transition_pattern(rule, N, bc)
+    sb, _ = spy.scc_blocks(rule, N, bc)
+    own = spy.block_of(sb, 1 << N)
+    return int(np.count_nonzero(own[rows] != own[cols]))
+
+
+@pytest.mark.parametrize("rule", ALL_SPY_RULES)
+def test_strictly_upper_is_nonzero_exactly_when_a_state_is_transient(rule):
+    """R12 sec.4.1.  k >= 2 is NOT the criterion -- components with no edge
+    between them give a block-DIAGONAL form.  The strictly upper part is nonzero
+    precisely when the condensation has an edge, i.e. when some state can leave
+    its component and never return."""
+    N = 9
+    st = spy.check_frobenius(rule, N, "obc0")
+    has_transient = st["recurrent"] < st["dim"]
+    assert (st["nnz_strictly_upper"] > 0) == has_transient, rule
+    assert (_condensation_edges(rule, N) > 0) == has_transient, rule
+
+
+@pytest.mark.parametrize("rule", [156, 150])
+def test_a_unitary_rule_has_no_condensation_edge_at_all(rule):
+    """So its Frobenius form is block-DIAGONAL, and each block is irreducible:
+    there is nothing a permutation could triangularise."""
+    for N in (8, 9, 10):
+        assert _condensation_edges(rule, N) == 0
+        st = spy.check_frobenius(rule, N, "obc0")
+        assert st["nnz_strictly_upper"] == 0
+        assert st["n_scc"] == st["n_terminal"]        # every component a sink
+
+
+@pytest.mark.parametrize("rule", [157, 109, 158, 203, 100, 29])
+def test_a_dissipative_rule_is_genuinely_triangular(rule):
+    for N in (8, 9, 10):
+        assert _condensation_edges(rule, N) > 0
+        assert spy.check_frobenius(rule, N, "obc0")["nnz_strictly_upper"] > 0
+
+
+def test_trivial_blocks_dominate_the_dissipative_pictures():
+    """A singleton component with no self-loop is a 1x1 ZERO block; these are
+    why the dissipative pictures carry so little on the diagonal."""
+    from qca_fragmentation.graph import wcc as W
+    N = 10
+    for rule, want_trivial, want_total in ((157, 669, 758), (100, 880, 1024)):
+        succ = W.make_succ(rule, N, "obc0")
+        sb, _ = spy.scc_blocks(rule, N, "obc0")
+        trivial = sum(1 for b in sb if len(b) == 1 and b[0] not in succ(b[0]))
+        assert (trivial, len(sb)) == (want_trivial, want_total), rule
+
+
+def test_a_self_loop_does_not_make_a_state_recurrent():
+    """R12 sec.4.1's warning.  Rule 100 has 144 states with x -> x but only 60
+    terminal components: the other 84 can also step away and never return."""
+    from qca_fragmentation.graph import wcc as W
+    N = 10
+    succ = W.make_succ(100, N, "obc0")
+    loops = sum(1 for x in range(1 << N) if x in succ(x))
+    assert loops == 144
+    st = spy.check_frobenius(100, N, "obc0")
+    assert st["n_terminal"] == 60 and st["recurrent"] == 60
+    assert loops > st["n_terminal"]

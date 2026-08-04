@@ -248,6 +248,78 @@ form of a non-negative matrix. The two coincide exactly when there are no
 transient states, and that is the same condition as unitarity --- so this
 section is where the unitary/dissipative distinction becomes a picture.
 
+\subsection{The normal form, and when it is triangular}
+\label{sec:frobdef}
+
+\begin{definition}[reducible, irreducible]
+A non-negative $n\times n$ matrix $M$ is \emph{reducible} if some permutation
+$P$ brings it to
+$PMP^{-1}=\left(\begin{smallmatrix} A & B \\ 0 & C\end{smallmatrix}\right)$
+with $A$ and $C$ square and non-empty, and \emph{irreducible} otherwise.
+Frobenius' criterion: $M$ is irreducible iff its directed graph --- an edge
+$x\to y$ whenever $M_{yx}\neq0$ --- is \emph{strongly connected}.
+\end{definition}
+
+\begin{proposition}[Frobenius normal form]
+Every non-negative $M$ admits a permutation $P$ with
+\[
+PMP^{-1}\;=\;\begin{pmatrix}
+M_{11} & M_{12} & \cdots & M_{1k}\\
+0 & M_{22} & \cdots & M_{2k}\\
+\vdots & & \ddots & \vdots\\
+0 & 0 & \cdots & M_{kk}
+\end{pmatrix},
+\]
+where each diagonal block $M_{ii}$ is irreducible or is a $1\times1$ zero. The
+diagonal blocks are exactly the strongly connected components of the graph and
+are unique up to relabelling; the freedom in $P$ is the choice of a topological
+order of the condensation, plus the order of states inside each block.
+\end{proposition}
+
+\noindent Two consequences decide what the figures can show.
+
+\paragraph{When there is nothing to triangularise.} If the graph is strongly
+connected there is a single component, $k=1$, and the normal form is $M$ itself.
+No permutation can split an irreducible matrix into two blocks with a zero
+corner --- that is precisely what irreducible means. The same holds block by
+block: an individual $M_{ii}$ is irreducible, so it has no internal
+block-triangular structure either.
+
+Note what this does \emph{not} say. An irreducible block still has plenty of
+nonzeros above its main diagonal in the elementwise sense --- rule $150$'s
+$462\times462$ block is one --- and the figures show them. Triangularity here is
+always a statement about \emph{blocks}: whether the states can be split into two
+groups with no way back from the second to the first. Inside one irreducible
+block there is always a way back, by definition, so the elementwise pattern above
+the diagonal carries no drainage information at all. This is why
+Figures~\ref{fig:s4} and~\ref{fig:s7} look untriangular: for a unitary rule
+each sector \emph{is} one component.
+
+\paragraph{When the strictly upper part is nonzero.} Not merely when $k\ge2$.
+Two components with no edge between them give a block-\emph{diagonal} form, not
+a triangular one. The strictly upper part is nonzero precisely when the
+condensation has at least one edge, i.e.\ precisely when some state is
+\emph{transient} --- it can leave its component and never return. So
+\[
+\text{genuinely triangular}\iff\text{transient states exist}\iff\text{the rule is
+dissipative here,}
+\]
+the last step because a unitary rule has $|U|^2$ doubly stochastic, which forbids
+a state from being unable to return. At $N=10$ rules $156$ and $150$ have
+\emph{zero} condensation edges and are block-diagonal; the other six have many.
+
+\paragraph{Trivial blocks, and a warning about the diagonal.} A singleton
+component with no self-loop gives a $1\times1$ \emph{zero} block. These dominate
+the dissipative rules --- $669$ of $758$ components for rule $157$, $880$ of
+$1024$ for rule $100$ --- and they are why those pictures have so little on the
+diagonal and so much above it. Conversely a nonzero \emph{on} the diagonal means
+only $x\to x$, not recurrence: rule $100$ has $144$ states with a self-loop but
+only $60$ terminal components, because the other $84$ can also step elsewhere and
+never come back. A self-loop makes a state a fixed point of one branch, not an
+attractor.
+
+\subsection{The ordering used here}
+
 \begin{definition}[Frobenius order]
 Take the strongly connected components of the transition graph and order them by
 a \emph{reverse} topological order of the condensation: sinks --- the terminal
