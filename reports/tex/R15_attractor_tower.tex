@@ -39,12 +39,28 @@ attractor \emph{is} the largest sector of the coherent parent, state for state,
 and all twelve sit at $\varphi$. For the other fifty-six the resets do work at
 $\Theta(N)$ sites --- the count of firing sites grows linearly with system size,
 so this is not a boundary effect --- and the exponential growth survives
-dissipation rather than avoiding it. Nine rules reach $\varphi$ \emph{with}
-firing resets, so the constant does not determine the mechanism. \rt{obc0},
-$N=10$ for the census.
+dissipation rather than avoiding it.
+
+\textbf{The mechanism common to both} is a subshift. The largest attractor is a
+subshift of finite type over the two-site brick-wall unit cell: membership is
+decided by which pairs of adjacent $2$-site blocks occur, and
+$b_\att=\sqrt{\lambda_{\max}(T)}$ for the $4\times4$ block-transition matrix
+$T$. Verified exactly --- the grammar learned from the attractor regenerates the
+attractor and nothing else --- for $62$ of the $68$ at two sizes, plus one more
+with an extra block of memory. A reset is a \emph{local} map, so the set it
+leaves invariant is locally constrained, so it is counted by a transfer matrix
+whatever the map does to individual states; unitarity is sufficient for an
+algebraic base, not necessary. The five block Perron roots are
+$2$, $1+\sqrt2$, $\varphi^2$, $3$, $2+\sqrt2$ and $(3+\sqrt{17})/2$, all roots
+of quadratics. This also names a constant the numerics had left open,
+$\sqrt{1+\sqrt2}=1.5537740$, and leaves exactly one unidentified: the $1.718005$
+of rules $169$ and $225$, now bounded above by $\sqrt3$. Nine rules reach
+$\varphi$ \emph{with} firing resets, so the constant does not determine which
+of the two mechanisms is at work. \rt{obc0}, $N=10$ for the census.
 \end{abstract}
 
 \section{The tower}
+\label{sec:tower}
 
 A rule is in the tower if it is V+reset, its attractor \emph{count} is flat
 ($a_\att=1$ to within $0.02$) and its largest attractor grows exponentially
@@ -143,7 +159,7 @@ $0\leftrightarrow1$ and \rt{E} for \rt{D}. The surviving set is the parent's
 Fibonacci-counted sector, hence $\varphi$ --- and indeed \textbf{every one of the
 twelve sits at $\varphi$}, none at any other constant.
 
-\subsection{The fifty-six, and why the hypothesis fails for them}
+\subsection{The fifty-six: the resets fire throughout}
 
 For these the resets fire, and not marginally: the number of \emph{sites} at
 which some reset does work on the largest attractor grows linearly with $N$
@@ -152,11 +168,113 @@ rescued as a boundary effect or as a bounded set of defect sites --- dissipation
 acts throughout the bulk of the attractor, and the exponential growth survives
 it rather than avoiding it.
 
-What these rules share with the twelve is only the \emph{form} of the answer:
-an algebraic Perron root. A reset that fires deterministically given its
-neighbourhood is still a local constraint, and a set of words cut out by local
-constraints is still counted by a transfer matrix. The constant does not
-require the dynamics to be unitary on the attractor --- only local.
+\subsection{So what \emph{is} the mechanism? A subshift on the unit cell}
+\label{sec:sft}
+
+The attractor is a \textbf{subshift of finite type over the two-site brick-wall
+unit cell}. Write a state as $N/2$ blocks of two sites. Then membership in the
+largest attractor is decided entirely by \emph{which pairs of adjacent blocks
+occur} --- nothing longer-range is needed --- and the growth base is
+\[
+b_\att \;=\; \sqrt{\lambda_{\max}(T)},
+\]
+with $T$ the $4\times4$ zero-one matrix of allowed block-to-block transitions.
+The square root is because one block is two sites.
+
+This is checked, not assumed. \fn{tower.sft\_check} learns the grammar
+\emph{from} the attractor --- the first blocks, the allowed adjacent pairs, the
+last blocks --- regenerates every state the grammar permits, and asks whether
+that reproduces the attractor exactly. It does for \textbf{62 of the 68} at
+$N=10$ and $N=12$ simultaneously, and one more (rule $118$) with a single extra
+block of memory. For all of them $\sqrt{\lambda_{\max}}$ matches the reported
+base, with no exceptions.
+
+\begin{center}\small
+\begin{tabular}{rlrrl}
+\toprule
+$\lambda_{\max}(T)$ & minimal polynomial & rules & $b_\att=\sqrt{\lambda}$ & constant \\
+\midrule
+$2$ & $x-2$ & $3$ & $1.414214$ & $\sqrt2$ \\
+$1+\sqrt2 = 2.414214$ & $x^2-2x-1$ & $2$ & $1.553774$ & $\sqrt{1+\sqrt2}$ \\
+$\varphi^2 = 2.618034$ & $x^2-3x+1$ & $20$ & $1.618034$ & $\varphi$ \\
+$3$ & $x-3$ & $19$ & $1.732051$ & $\sqrt3$ \\
+$2+\sqrt2 = 3.414214$ & $x^2-4x+2$ & $9$ & $1.847759$ & $2\cos(\pi/8)$ \\
+$(3+\sqrt{17})/2 = 3.561553$ & $x^2-3x-2$ & $9$ & $1.887208$ & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{The grammars, explicitly.} Writing a block as its two site values
+and indexing $T$ by $00,10,01,11$:
+
+\begin{center}\small
+\begin{tabular}{rlrll}
+\toprule
+rule & $b_\att$ & allowed pairs & blocks used & the constraint \\
+\midrule
+$3$   & $\sqrt3$ & $9/16$ & $00,10,01$ & \textbf{the block $11$ never occurs; the other three are free} \\
+$11$  & $\varphi$ & $8/16$ & $00,10,01$ & as above, and $00$ cannot be followed by $10$ \\
+$191$ & $\sqrt2$ & $6/16$ & $10,01,11$ & $00$ never occurs, and only two successors survive \\
+$167$ & $\sqrt{1+\sqrt2}$ & $10/16$ & all four & \\
+$35$  & $2\cos(\pi/8)$ & $14/16$ & all four & only $11\to10$ and $11\to11$ forbidden \\
+$19$  & $\sqrt{(3+\sqrt{17})/2}$ & $14/16$ & all four & only $11\to00$ and $11\to01$ forbidden \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Rule $3$ is the cleanest and it covers the whole $\sqrt3$ group of
+$19$: the surviving states are exactly those in which \emph{the block $11$ never
+appears}, with no further condition, so the attractor is all words over a
+three-letter block alphabet and $|A|=3^{N/2}$ exactly --- $729$ at $N=12$, as
+computed. At the other extreme rules $35$ and $19$ forbid only two of the
+sixteen block pairs each, and the difference between which two is the whole
+difference between $2\cos(\pi/8)$ and $\sqrt{(3+\sqrt{17})/2}$.
+
+\noindent \textbf{This is why the firing resets do not spoil anything.} A reset
+is a \emph{local} map, so the set it leaves invariant is cut out by local
+constraints, and a locally-constrained set of words is counted by a transfer
+matrix regardless of what the map does to individual states. Unitarity on the
+attractor is \emph{sufficient} for an algebraic base --- that is the twelve ---
+but it is not necessary. Locality is what does the work, and every rule in the
+tower is local by construction.
+
+Seen this way the two mechanisms are one mechanism at different strengths. The
+twelve inherit the parent's transfer matrix outright because the resets write
+nothing; the fifty-six get a \emph{different} transfer matrix, because the
+resets forbid block pairs the parent allowed. Both are subshifts on the same
+unit cell.
+
+\subsection{The two constants this identifies}
+
+The transfer matrix supplies exact values where the numerical fit gave only four
+digits. Of the seven tower bases that \S\ref{sec:tower} lists as fits rather
+than exact recurrences, four are now pinned:
+
+\begin{center}\small
+\begin{tabular}{rrrl}
+\toprule
+rules & fitted $b_\att$ & $\sqrt{\lambda_{\max}}$ & identification \\
+\midrule
+$167$, $181$ & $1.553861$, $1.553687$ & $1.5537740$ & $\sqrt{1+\sqrt2}$ \quad(new) \\
+$41$ & $1.847632$ & $1.8477590$ & $2\cos(\pi/8)$ \\
+$183$ & $1.732051$ & $1.7320508$ & $\sqrt3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $\sqrt{1+\sqrt2}=1.5537740$ was one of the two unidentified pairs in
+\S\ref{sec:tower}; it is now named.
+
+\subsection{Five rules that are not subshifts at this order}
+
+Rules $97$, $117$, $123$, $169$ and $225$ are not SFTs on blocks at order $1$ or
+$2$: the learned grammar regenerates \emph{more} than the attractor. Since the
+grammar is learned from the attractor, the closure always contains it, so
+$\sqrt{\lambda_{\max}}$ is an \emph{upper bound} on the true base and the
+attractor is a proper subshift of it --- sofic, or of longer range. Rules $169$
+and $225$ are the sharpest case: closure base $\sqrt3=1.732051$, measured
+$1.718005$. That pair remains the one genuinely unidentified constant in the
+tower, now with a bound rather than nothing.
 
 \subsection{The constant does not identify the mechanism}
 
@@ -175,11 +293,18 @@ temptation to do so is exactly what this report set out to test.
 \item \textbf{Settled.} For the other $56$ the resets act on $\Theta(N)$ sites of
   the attractor, so no version of ``the channel is secretly unitary there''
   survives.
-\item \textbf{Open.} The transfer matrices themselves. $\sqrt3$, $2\cos(\pi/8)$
-  and $\sqrt{(3+\sqrt{17})/2}$ each take $8$--$21$ rules, and the constraint
-  each one counts has not been identified here; that would need the wall grammar
-  of Tier 2 applied to the recurrent set rather than to the sector.
-\item \textbf{Open.} The two unidentified pairs, at $1.5537$ and $1.7180$.
+\item \textbf{Settled} (\S\ref{sec:sft}). The transfer matrices, for $63$ of
+  the $68$: the attractor is a subshift on the $2$-site unit cell and
+  $b_\att=\sqrt{\lambda_{\max}(T)}$, with the five Perron roots all quadratic
+  irrationals. This is the mechanism for the firing rules and it subsumes the
+  idle ones.
+\item \textbf{Settled.} One of the two unidentified pairs:
+  $1.5537$ is $\sqrt{1+\sqrt2}$.
+\item \textbf{Open.} The $1.7180$ pair (rules $169$, $225$), which is not a
+  subshift at order $1$ or $2$ on blocks. Its SFT closure gives the bound
+  $b_\att<\sqrt3$, and the true value is $1.718005$.
+\item \textbf{Open.} Rules $97$, $117$, $123$ likewise fail the subshift test
+  at this order; their attractors are sofic or longer-range.
 \item \textbf{Caveat.} \rt{obc0}, and the census is at $N=10$ with the
   firing-site scaling checked at $N=8,10,12$. Attractors are monitored-only
   objects, so everything here is a statement about the measured chain.

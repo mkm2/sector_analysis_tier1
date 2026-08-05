@@ -707,9 +707,29 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
       constraints), not from unitarity.
     - **The constant does not identify the mechanism**: 9 rules reach phi WITH
       firing resets (11, 47, 81, 117, 139, 161, 171, 209, 241).
-    - Open: identify the transfer matrices behind sqrt3, 2cos(pi/8) and
-      sqrt((3+sqrt17)/2), which would need Tier 2's wall grammar applied to the
-      recurrent set rather than the sector.
+    - **THE MECHANISM (R15 sec.3.4).** The largest attractor is a SUBSHIFT OF
+      FINITE TYPE over the 2-site brick-wall unit cell: membership is decided
+      by which pairs of adjacent 2-site blocks occur, and
+      b_att = sqrt(lambda_max(T)) for the 4x4 block-transition matrix T. The
+      square root is because a block is two sites. Verified exactly -- the
+      grammar learned FROM the attractor regenerates it and nothing else -- for
+      62 of 68 at N=10 AND 12, plus W118 with one extra block of memory.
+      sqrt(Perron) matches the reported base with zero mismatches.
+      * Why firing resets do not spoil it: a reset is a LOCAL map, so the set it
+        leaves invariant is locally constrained, so a transfer matrix counts it
+        whatever the map does to individual states. Unitarity is SUFFICIENT for
+        an algebraic base, not necessary; locality does the work.
+      * The two mechanisms are one at different strengths: the 12 idle rules
+        inherit the parent's transfer matrix outright, the 56 get a different
+        one because the resets forbid block pairs the parent allowed.
+      * The five block Perron roots are all quadratic irrationals:
+        2 (x-2), 1+sqrt2 (x^2-2x-1), phi^2 (x^2-3x+1), 3 (x-3),
+        2+sqrt2 (x^2-4x+2), (3+sqrt17)/2 (x^2-3x-2).
+      * **Identifies a constant the numerics left open**: the 1.5537 pair
+        (rules 167, 181) is sqrt(1+sqrt2) = 1.5537740.
+    - Open: the 1.7180 pair (169, 225) is NOT a subshift at order 1 or 2 on
+      blocks; its SFT closure bounds it by sqrt3 and the true value is 1.718005.
+      Rules 97, 117, 123 likewise fail at this order -- sofic or longer-range.
     - Fixed on the way: `fits.name_base` emitted "\\sqrt2" for 2cos(pi/8),
       valid LaTeX but NOT valid matplotlib mathtext, so the constant crashed any
       figure that tried to draw it. Braced.

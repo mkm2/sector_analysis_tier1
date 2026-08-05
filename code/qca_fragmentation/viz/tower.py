@@ -284,3 +284,79 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+
+
+# --- the mechanism for the rules whose resets DO fire -------------------------
+#
+# The largest attractor turns out to be a SUBSHIFT OF FINITE TYPE over the
+# two-site brick-wall unit cell: whether a state belongs to it is decided by
+# which pairs of ADJACENT 2-site blocks occur, nothing longer.  The growth base
+# is then sqrt(Perron root of the 4x4 block-transition matrix) -- the square
+# root because one block is two sites.
+#
+# That is why the resets firing does not spoil the algebraic constant.  A reset
+# is a LOCAL map, so the set it leaves invariant is cut out by local
+# constraints, and a locally-constrained set of words is counted by a transfer
+# matrix whatever the map does.  Unitarity is sufficient for an algebraic base,
+# not necessary; locality is what is doing the work.
+
+def blocks_of(x: int, N: int) -> Tuple[int, ...]:
+    """The state as N/2 two-site blocks, low bits first."""
+    return tuple((x >> (2 * i)) & 3 for i in range(N // 2))
+
+
+def learn_grammar(A: Sequence[int], N: int):
+    """(first blocks, allowed adjacent pairs, last blocks) observed in A."""
+    S: Set[int] = set()
+    T: Set[Tuple[int, int]] = set()
+    E: Set[int] = set()
+    for x in A:
+        b = blocks_of(x, N)
+        S.add(b[0])
+        E.add(b[-1])
+        T |= set(zip(b, b[1:]))
+    return S, T, E
+
+
+def sft_closure(S, T, E, N: int) -> Set[int]:
+    """Every state the grammar allows.  A is always a SUBSET of this."""
+    out: Set[int] = set()
+    m = N // 2
+
+    def walk(seq):
+        if len(seq) == m:
+            if seq[-1] in E:
+                out.add(sum(b << (2 * i) for i, b in enumerate(seq)))
+            return
+        for nb in range(4):
+            if (seq[-1], nb) in T:
+                walk(seq + (nb,))
+
+    for b0 in S:
+        walk((b0,))
+    return out
+
+
+def block_perron(T) -> float:
+    M = np.zeros((4, 4))
+    for a, b in T:
+        M[a, b] = 1.0
+    return float(max(e.real for e in np.linalg.eigvals(M)))
+
+
+def sft_check(rule: int, N: int, bc: str = "obc0") -> Dict:
+    """
+    Is the largest attractor an SFT over 2-site blocks, and what does the
+    transfer matrix predict for the growth base?
+
+    `exact` is the whole claim: the grammar learned from A regenerates A and
+    nothing else.  When it fails the closure is strictly larger, so
+    sqrt(perron) is only an UPPER BOUND on the true base.
+    """
+    A = set(largest_attractor(rule, N, bc))
+    S, T, E = learn_grammar(A, N)
+    R = sft_closure(S, T, E, N)
+    pr = block_perron(T)
+    return {"rule": rule, "N": N, "size": len(A), "closure": len(R),
+            "exact": R == A, "perron": pr, "base": pr ** 0.5,
+            "n_transitions": len(T), "transitions": sorted(T)}
