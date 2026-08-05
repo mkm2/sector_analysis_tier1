@@ -681,3 +681,35 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
         components, the other 84 can also step away and never return.
     - Open: pbc is held. A dissipative rule at pbc, and the amplitude-resolved
       (not support-only) version, are both undone.
+
+## R15 (the attractor tower, 2026-08-05) --- DONE
+18. **Report R15** chases the column in R9 F1's RIGHT panel: V+reset rules with
+    a bounded attractor COUNT whose largest attractor still grows
+    exponentially. 68 of the 160 V+reset rules.
+    - **Bases cluster hard on named constants**, 61 of 68 exact (from integer
+      recurrences, not fits): sqrt2 (3), phi (21), sqrt3 (20/21),
+      2cos(pi/8)=sqrt(2+sqrt2) (8), sqrt((3+sqrt17)/2) (9). Seven are fits; two
+      of those sit 1.3e-4 from 2cos(pi/8) and are probably the same constant.
+      Unidentified pairs remain at 1.5537/1.5539 and 1.7180.
+    - **The idle-reset hypothesis** (resets never fire inside the largest
+      attractor, so what grows is the underlying unitary) is TRUE for exactly
+      **12 of 68** and false for the other 56.
+    - The 12 are the strongest form: the child's successor map COINCIDES with
+      the coherent parent's on the whole attractor, and |A| equals the parent's
+      D_max. Two families of six -- V at r00 with resets from {D,I} -> parent
+      W201, |A| = 144 = F_12; V at r11 with resets from {E,I} -> parent W108,
+      |A| = 55 = F_10. The reset target agrees with what those sites already
+      carry, so it writes nothing. **All twelve sit at phi.**
+    - The 56 fire at **Theta(N) sites** -- the firing-site count grows linearly
+      with N, reaching N-1 or N -- so it is not a boundary effect and no
+      "secretly unitary there" reading survives. The algebraic constant comes
+      from locality (a transfer matrix counting words cut out by local
+      constraints), not from unitarity.
+    - **The constant does not identify the mechanism**: 9 rules reach phi WITH
+      firing resets (11, 47, 81, 117, 139, 161, 171, 209, 241).
+    - Open: identify the transfer matrices behind sqrt3, 2cos(pi/8) and
+      sqrt((3+sqrt17)/2), which would need Tier 2's wall grammar applied to the
+      recurrent set rather than the sector.
+    - Fixed on the way: `fits.name_base` emitted "\\sqrt2" for 2cos(pi/8),
+      valid LaTeX but NOT valid matplotlib mathtext, so the constant crashed any
+      figure that tried to draw it. Braced.

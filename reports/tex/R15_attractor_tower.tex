@@ -1,0 +1,198 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\att}{\mathrm{att}}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\title{\textbf{Report R15 --- the tower in the attractor plane, and whether the
+resets are idle inside it}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-05}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In the right-hand panel of R9's F1 a column of V+reset rules stands at
+$a_\att=1$ with $b_\att$ running from $1.41$ to $1.89$: a bounded number of
+attractors, the largest of which still grows exponentially. There are $68$ such
+rules of the $160$ V+reset ones. Their growth bases are not spread out --- $61$
+of the $68$ sit on five \emph{exact} algebraic constants, $\varphi$ and $\sqrt3$
+taking $21$ each. The natural explanation is that the dissipative channels never
+act inside the largest attractor, so what grows there is really the underlying
+unitary. \textbf{That is true for exactly $12$ of the $68$, and false for the
+other $56$.} For the twelve it is true in the strongest sense: the largest
+attractor \emph{is} the largest sector of the coherent parent, state for state,
+and all twelve sit at $\varphi$. For the other fifty-six the resets do work at
+$\Theta(N)$ sites --- the count of firing sites grows linearly with system size,
+so this is not a boundary effect --- and the exponential growth survives
+dissipation rather than avoiding it. Nine rules reach $\varphi$ \emph{with}
+firing resets, so the constant does not determine the mechanism. \rt{obc0},
+$N=10$ for the census.
+\end{abstract}
+
+\section{The tower}
+
+A rule is in the tower if it is V+reset, its attractor \emph{count} is flat
+($a_\att=1$ to within $0.02$) and its largest attractor grows exponentially
+($b_\att>1.02$). That is $68$ rules.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_tower_obc0.pdf}{\textwidth}
+\caption{\textbf{Left:} the tower, one bar per distinct $b_\att$, gold marking
+the rules on which no reset ever fires. \textbf{Right:} the hypothesis tested
+--- the number of sites at which some reset does work on the largest attractor,
+against $N$. Flat at zero for twelve rules; linear in $N$ for the rest, tracking
+the dotted ``all $N$ sites'' line.}
+\end{figure}
+
+\subsection{Where the bases sit}
+
+\begin{center}
+\iftable{tab_r15_bases_obc0.tex}
+\end{center}
+
+\noindent Five constants absorb $61$ of the $68$, and for those the base comes
+from an exact integer recurrence rather than a fit:
+$\sqrt2$ ($3$ rules), $\varphi$ ($21$), $\sqrt3$ ($20$ of $21$),
+$2\cos(\pi/8)=\sqrt{2+\sqrt2}$ ($8$) and $\sqrt{(3+\sqrt{17})/2}$ ($9$). The
+remaining seven are fits. Two of them, at $1.847632$, are within
+$1.3\times10^{-4}$ of $2\cos(\pi/8)$ and are almost certainly that constant
+imperfectly fitted; the pair at $1.5537/1.5539$ and the pair at $1.7180$ have no
+identification here and are left as fits rather than rounded into a name.
+
+These are the constants of \emph{constrained binary words} --- Perron roots of
+small transfer matrices --- which is exactly the company the unitary rules keep.
+That is what makes the idle-reset hypothesis so natural.
+
+\section{The hypothesis, tested}
+
+\begin{quote}
+\emph{The dissipative channels never fire on the largest attractor, so what
+grows there is the underlying unitary.}
+\end{quote}
+
+\noindent A reset \rt{D} writes $0$ and \rt{E} writes $1$; either does
+\emph{work} only when the target bit is not already at that value, and
+otherwise acts as the identity on that state. \fn{tower.firing\_sites} runs the
+brick-wall sweep by hand, following every Hadamard branch, and returns the sites
+at which some branch had a reset do work. (The hand sweep is validated against
+the engine's successor map in the tests: it must reproduce \fn{wcc.make\_succ}
+exactly, over all states of $37$ rules at three sizes, or the firing flags mean
+nothing.)
+
+\begin{center}\small
+\begin{tabular}{lrl}
+\toprule
+& rules & \\
+\midrule
+no reset ever fires on the largest attractor & $\mathbf{12}$ & hypothesis holds \\
+some reset fires & $\mathbf{56}$ & hypothesis fails \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The twelve, and why they work}
+
+\begin{center}
+\iftable{tab_r15_idle_obc0.tex}
+\end{center}
+
+\noindent For all twelve the statement holds in the strongest available form:
+the child's successor map \emph{coincides} with the coherent parent's on every
+state of the largest attractor, and the attractor has exactly the size of the
+parent's largest sector. It is not merely that the resets happen to be idle ---
+the attractor \emph{is} a sector of the parent, state for state.
+
+They fall into two families of six, and the mechanism is visible in the tuple:
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+family & tuples & parent & $|A|$ at $N=10$ \\
+\midrule
+\rt{V} at $r_{00}$, rest from $\{$\rt{D},\rt{I}$\}$ &
+  \rt{VDDD}, \rt{VIDD}, \rt{VDID}, \rt{VDDI}, \rt{VIDI}, \rt{VDII} &
+  $W201$ & $144=F_{12}$ \\
+\rt{V} at $r_{11}$, rest from $\{$\rt{E},\rt{I}$\}$ &
+  \rt{IEIV}, \rt{EEIV}, \rt{IIEV}, \rt{EIEV}, \rt{IEEV}, \rt{EEEV} &
+  $W108$ & $55=F_{10}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The reset's target value agrees with what those sites already carry.
+In the first family the Hadamard fires only on the neighbourhood $00$, and every
+\rt{D} sits at a neighbourhood that occurs only when the site is already $0$, so
+writing $0$ changes nothing. The second family is the same statement with
+$0\leftrightarrow1$ and \rt{E} for \rt{D}. The surviving set is the parent's
+Fibonacci-counted sector, hence $\varphi$ --- and indeed \textbf{every one of the
+twelve sits at $\varphi$}, none at any other constant.
+
+\subsection{The fifty-six, and why the hypothesis fails for them}
+
+For these the resets fire, and not marginally: the number of \emph{sites} at
+which some reset does work on the largest attractor grows linearly with $N$
+(right panel of the figure), typically reaching $N-1$ or $N$. So it cannot be
+rescued as a boundary effect or as a bounded set of defect sites --- dissipation
+acts throughout the bulk of the attractor, and the exponential growth survives
+it rather than avoiding it.
+
+What these rules share with the twelve is only the \emph{form} of the answer:
+an algebraic Perron root. A reset that fires deterministically given its
+neighbourhood is still a local constraint, and a set of words cut out by local
+constraints is still counted by a transfer matrix. The constant does not
+require the dynamics to be unitary on the attractor --- only local.
+
+\subsection{The constant does not identify the mechanism}
+
+Twenty-one rules sit at $\varphi$; twelve are idle and \textbf{nine are not}
+--- rules $11$, $47$, $81$, $117$, $139$, $161$, $171$, $209$ and $241$ reach
+the same golden ratio with resets firing at $\Theta(N)$ sites. So one cannot
+read the mechanism off the growth base, which is worth saying because the
+temptation to do so is exactly what this report set out to test.
+
+\section{What this settles and what it does not}
+
+\begin{itemize}
+\item \textbf{Settled.} The idle-reset explanation is a real mechanism and it is
+  a minority one: $12$ of $68$, all at $\varphi$, all inheriting a parent sector
+  outright.
+\item \textbf{Settled.} For the other $56$ the resets act on $\Theta(N)$ sites of
+  the attractor, so no version of ``the channel is secretly unitary there''
+  survives.
+\item \textbf{Open.} The transfer matrices themselves. $\sqrt3$, $2\cos(\pi/8)$
+  and $\sqrt{(3+\sqrt{17})/2}$ each take $8$--$21$ rules, and the constraint
+  each one counts has not been identified here; that would need the wall grammar
+  of Tier 2 applied to the recurrent set rather than to the sector.
+\item \textbf{Open.} The two unidentified pairs, at $1.5537$ and $1.7180$.
+\item \textbf{Caveat.} \rt{obc0}, and the census is at $N=10$ with the
+  firing-site scaling checked at $N=8,10,12$. Attractors are monitored-only
+  objects, so everything here is a statement about the measured chain.
+\end{itemize}
+
+\section*{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.viz.tower --bc obc0 --N 10
+\end{verbatim}
+
+\noindent writes \fn{fig\_tower\_obc0} and the two tables. The module is
+\fn{code/qca\_fragmentation/viz/tower.py}; \fn{idle\_census(rule, N)} returns the
+per-rule verdict and \fn{firing\_sites(x, N, t)} the raw site set for one state.
+
+\end{document}

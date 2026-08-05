@@ -154,7 +154,9 @@ _NAMED_BASES = [
     # (a(n) = c_2 a(n-2) + c_4 a(n-4)): the characteristic polynomial is a
     # quadratic in x^2, so the base is the square root of a quadratic surd.
     (1.8872076761, "$\\sqrt{(3+\\sqrt{17})/2}$"),
-    (1.8477590650, "$\\sqrt{2+\\sqrt2}=2\\cos(\\pi/8)$"),
+    # braces on the inner sqrt: "\\sqrt2" is valid LaTeX but NOT valid
+    # matplotlib mathtext, and this string is consumed by both
+    (1.8477590650, "$\\sqrt{2+\\sqrt{2}}=2\\cos(\\pi/8)$"),
     (1.8392867552, "tribonacci $\\psi$"),
     (1.7989074399, "$\\sqrt{1+\\sqrt5}$"),
     (1.7548776662, "root of $x^3=2x^2-x+1$"),
