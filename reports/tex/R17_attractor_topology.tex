@@ -1,0 +1,365 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\att}{\mathrm{att}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\title{\textbf{Report R17 --- what the exponential-exponential attractors
+actually look like: dense, compact, and borrowed}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-07}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Four classes in R9's F1 right panel have both coordinates above $1$:
+exponentially many monitored attractors, each of which also grows
+exponentially. This report asks whether those attractors are simply long cycles
+--- all a V-free rule can offer, its map being a function --- or something more
+connected. Neither alternative survives contact with the graphs. Of the
+$22\,945$ terminal SCCs the twelve rules have between them at $N=16$, not one
+with more than a single state is a cycle. They are \textbf{not cycles} and they
+are \textbf{not extended}: every one has a self-loop on every state, an edge
+density of order $1/2$, and a directed diameter of $2$ at every size measured
+but one (a single $3$), up to $2584$ states and $2.9\times10^6$ edges. The state count grows like $\varphi^N$; the
+graph distance does not grow at all. The extreme case is the plastic-number class
+($28$, $29$, $70$, $71$, $157$, $199$), whose every terminal SCC, for all six
+rules at every $N$, is a \emph{complete} digraph $K_n$ with all $n^2$ edges
+including loops --- a uniform transition matrix, second eigenvalue exactly $0$,
+memoryless after one period. Its size is $2^{\lfloor (N+1)/3\rfloor}$ exactly,
+which supplies a derivation for the base $2^{1/3}$ that R9 fitted. Underneath
+all four classes sits one fact: there are not four structures but \textbf{two}.
+The twelve rules are two coherent reflection pairs, $W_{108}/W_{201}$ and
+$W_{156}/W_{198}$, plus their eight dissipative children, and for every child
+the terminal SCCs are Krylov sectors of the parent with the same vertex set
+\emph{and} the same induced edges. The reset never fires on its own attractor;
+it is a selection rule, and which sectors it selects is the entire difference
+between the classes. On the graph-theoretic measures: the graphs are not too
+small, but clustering and connectivity are uninformative \emph{because of the
+density} --- both sit at their generic values --- and we report them with their
+nulls rather than as findings.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question and the twelve rules}
+
+R9's F1 places every rule at $(a_\att, b_\att)$: the growth base of the number of
+terminal SCCs against that of the largest one. Most of the map lies on
+$b_\att=1$ --- many attractors, each of bounded size --- and R15 accounted for
+the column at $a_\att=1$. Four classes sit off both axes:
+
+\begin{center}
+\begin{tabular}{llllll}
+\toprule
+class & rules & tuples & $a_\att$ & $b_\att$ & family \\
+\midrule
+1 & $W_{108}$, $W_{201}$ & \rt{IIIV}, \rt{VIII} & $\rho^2=1.7549$ &
+  $\varphi=1.6180$ & unitary \\
+2 & $W_{156}$, $W_{198}$ & \rt{IIVI}, \rt{IVII} & $\varphi=1.6180$ &
+  $4^{1/5}=1.3195$ & unitary \\
+3 & $W_{73}$, $W_{109}$ & \rt{VIID}, \rt{EIIV} & $\psi=1.4656$ &
+  $\varphi=1.6180$ & V+reset \\
+4 & $W_{28},W_{29},W_{70},W_{71},W_{157},W_{199}$ & --- & $\rho=1.3247$ &
+  $2^{1/3}=1.2599$ & V+reset \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent with $\varphi$ the golden ratio ($x^2=x+1$), $\psi=1.465571$ the
+supergolden ratio ($x^3=x^2+1$) and $\rho=1.324718$ the plastic number
+($x^3=x+1$). Class 1's constant is not a fifth number: $\rho^2=1.754878$
+exactly, a coincidence that turns out to be structural rather than numerical
+(\S\ref{sec:parents}).
+
+The question put to this report was whether these attractors are simply cycles,
+or have a more connected and extended structure distinct from the V-free
+circuits --- and whether graph-theoretic measures can say anything at these
+sizes, or whether the objects are still too small.
+
+\paragraph{Why ``cycle'' is the natural null.} A V-free rule has a
+\emph{deterministic} update: out-degree $1$ at every state, so its transition
+graph is a functional graph and a terminal SCC can only be a cycle. That is not
+an observation, it is a definition, and we check the premise rather than assume
+it: all $81$ V-free rules have out-degree $1$ everywhere. What they do not have
+is length. At $N=12$, $75$ of the $81$ have nothing but fixed points, two have
+cycles of length $2$, two of length $3$, and the longest cycle anywhere in the
+V-free half of rule space is $63$ (rules $90$ and $165$, the two whose series R9
+classifies as irregular).
+
+\begin{center}
+\small
+\iftable{tab_r17_vfree_obc0.tex}
+\end{center}
+
+\section{None of them is a cycle}
+
+\subsection{The measurements}
+
+Table~\ref{tab:topology} gives the largest terminal SCC of one representative
+per class at $N=16$.
+
+\begin{center}
+\small
+\iftable{tab_r17_topology_obc0.tex}
+\label{tab:topology}
+\end{center}
+
+\noindent A cycle on $n$ nodes has $m=n$ edges, density $1/n$, and diameter
+$n-1$. These have $m$ of order $n^2/2$, density that never falls below $0.43$,
+and diameter $2$ --- with one exception across all twenty measurements, class 2
+at $N=10$, where it is $3$. $W_{201}$ at $N=16$ is a graph on $2584$ states with
+$2\,875\,072$ edges: every state has a self-loop, the mean out-degree is $1112$,
+and any state reaches any other in at most two brick-wall periods.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_attractor_topology_obc0.pdf}{\textwidth}
+\caption{\textbf{The four classes against the cycle they are not.}
+(a) Edge density against attractor size, with the $1/n$ a cycle would give as a
+dashed reference and $1$ (a complete digraph) as a dotted one; the plastic class
+sits \emph{on} the upper line. (b) Directed diameter, against the $\sim n/2$ of a
+cycle: it is $2$ everywhere and $1$ for the complete class, over two decades in
+$n$. (c) The second-largest eigenvalue modulus of the row-normalised adjacency
+--- the mixing rate of the monitored walk inside the attractor. It does not
+drift towards $1$ as the attractor grows; the complete class sits at exactly
+$0$. (d) The out-degree profile, sorted and normalised by $n$: flat at $1$ for
+the complete class, a structured staircase for the others, and nowhere the
+constant $1/n$ of a cycle.}
+\label{fig:topology}
+\end{figure}
+
+\subsection{The plastic class is a complete digraph, exactly}
+
+\begin{proposition}
+For each of $W_{28}$, $W_{29}$, $W_{70}$, $W_{71}$, $W_{157}$, $W_{199}$ at open
+boundaries, \emph{every} terminal SCC --- not merely the largest --- is the
+complete digraph on its states, all $n^2$ edges present including every
+self-loop. Verified exhaustively for $N=8,10,12,14,16$.
+\end{proposition}
+
+\noindent Two consequences follow immediately and neither needs a fit. First,
+the transition matrix restricted to such an attractor is uniform, so all its
+non-Perron eigenvalues are $0$: the monitored dynamics inside the attractor is
+\emph{memoryless after a single period}, and the diameter is $1$. Second, the
+attractor sizes are exactly powers of two,
+\begin{equation}
+D^\att_{\max}(N) \;=\; 2^{\lfloor (N+1)/3\rfloor},
+\qquad N=6,\ldots,16:\quad 4,4,8,8,8,16,16,16,32,32,32 ,
+\end{equation}
+which gives $b_\att=2^{1/3}$ \emph{exactly} rather than as R9's fitted value.
+The attractor counts run $11,15,20,27,36,48,64,85,113,150,199$ for $W_{28}$ and
+$5,7,9,12,16,21,28,37,49,65,86$ for $W_{199}$; both ratios settle at $\rho^2$
+per two sites.
+
+\begin{center}
+\small
+\iftable{tab_r17_shapes_obc0.tex}
+\end{center}
+
+\noindent That table also settles the headline question far more strongly than
+the largest attractor alone can. It classifies \emph{every} terminal SCC of all
+twelve rules at $N=16$ --- $22\,945$ of them --- and the ``cycles'' column is
+$\mathbf{0}$ in every row. Not one attractor with more than a single state, in
+any of the four classes, is a cycle. (Fixed points are broken out separately
+because a lone state with a self-loop is trivially both a cycle and a complete
+digraph, and counting it as either would be bookkeeping dressed as evidence.)
+The complete count also closes the parent argument numerically: $W_{156}$ and
+$W_{198}$ have $190$ complete non-trivial sectors at $N=16$, and $W_{28}$ and
+$W_{70}$ have exactly $190$ non-trivial attractors, all of them complete.
+
+\subsection{The spectral gap does not close}
+
+The informative dynamical statement is not the diameter --- a dense graph has a
+small diameter for cheap reasons --- but the mixing rate. For the
+$\varphi$-classes $|\lambda_2|$ of the row-normalised adjacency runs
+\[
+0.2786,\; 0.2899,\; 0.2949,\; 0.2973,\; 0.2986,\; 0.2993
+\]
+as the attractor grows through $21, 55, 144, 377, 987, 2584$ states: flat to
+three digits over two decades in $n$, and creeping \emph{up} rather than towards
+$1$. The mixing time inside the attractor is $O(1)$ while the attractor itself is
+$\Theta(\varphi^N)$. For the plastic class the gap is maximal --- $|\lambda_2|=0$
+exactly. Class 2 is the one that does not settle to a single number: $W_{156}$
+reads $0.5, 0.597, 0.5, 0.5, 0.5$ and $W_{198}$ reads
+$0.333, 0.597, 0.333, 0.5, 0.333$ over $N=8\ldots16$, oscillating inside
+$[1/3, 3/5]$ with $N \bmod 4$. It is worth noting that the two differ at all:
+they are a reflection pair with identical sizes, densities and reciprocities, and
+their out- and in-degree distributions are exact mirrors of each other --- but
+$P$ is row-normalised, which is not a reflection-covariant operation, so the
+mixing rate of the forward walk need not agree. In none of the four classes does
+the gap close as the system grows, which is the point.
+
+\subsection{What grows, and what does not}
+
+The density does fall, and slowly: $0.735, 0.661, 0.594, 0.534, 0.479, 0.431$
+over $N=8\ldots16$, a factor $0.900$ per two sites, i.e.\ $\sim0.9487^N$. So the
+graphs thin asymptotically, while the mean out-degree grows like $1.534^N$ and
+the edge count like $2.481^N$. We report those two bases as fitted; a search over
+minimal polynomials of degree $\le3$ with small integer coefficients does not
+identify either, unlike every base R9 reports for these rules, and we leave that
+open rather than assert an algebraic form we cannot exhibit.
+
+\section{There are two structures here, not four}
+\label{sec:parents}
+
+Every one of the twelve rules has a coherent parent obtained by replacing each
+reset symbol with the identity, and there are only two parents:
+\[
+W_{73}\to W_{201},\quad W_{109}\to W_{108};\qquad
+W_{28},W_{29},W_{157}\to W_{156},\quad W_{70},W_{71},W_{199}\to W_{198}.
+\]
+Classes 1 and 2 \emph{are} those parents. The content of this section is that
+classes 3 and 4 are as well.
+
+\begin{proposition}
+For each of the eight dissipative rules and for $N=8,10,12$, every terminal SCC
+of the child is a Krylov sector of its coherent parent --- the same set of
+states --- and the graph the child induces on it has \emph{the same edge set} as
+the parent's. The reset writes nothing anywhere on its own attractors.
+\end{proposition}
+
+\begin{center}
+\small
+\iftable{tab_r17_parents_obc0.tex}
+\end{center}
+
+\noindent Set equality alone would be the weak version of this claim: a child
+could inherit the states and still have different edges, since a reset that
+fires merges branches. It does not. So the dissipation here creates no new
+structure at all; it acts purely as a \textbf{selection rule} on the parent's
+sector list, and the whole difference between the four classes is which sectors
+survive:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+class & what it keeps & $a_\att$ & $b_\att$ \\
+\midrule
+$108$, $201$ & every sector & $\rho^2$ & $\varphi$ \\
+$73$, $109$ & a $\psi$-sized subfamily, including the largest & $\psi$ &
+  $\varphi$ \\
+$156$, $198$ & every sector & $\varphi$ & $4^{1/5}$ \\
+$28,29,70,71,157,199$ & the sectors that are already complete digraphs & $\rho$ &
+  $2^{1/3}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The last row is exact for the pure-\rt{D} children: $W_{28}$'s
+attractors are \emph{precisely} $W_{156}$'s complete sectors, $36$, $64$ and
+$113$ of them at $N=10,12,14$, matching its attractor count series
+term for term. The children carrying an \rt{E} keep a strict subset --- $W_{199}$
+retains $16$, $28$, $49$ of $W_{198}$'s $36$, $64$, $113$ --- and both still
+count at $\rho$ per site. Recording that difference rather than smoothing it is
+the honest version: ``the plastic class is the complete-sector subfamily'' is
+exactly right for two of the six rules and one containment short for the other
+four.
+
+This also explains the coincidence noted in \S1. $b_\att=\varphi$ is shared by
+classes 1 and 3 because the largest surviving sector is the same object; the two
+classes differ only in $a_\att$, i.e.\ in how many sectors the reset spares, and
+$\rho^2$ against $\psi$ is a counting difference within one family of graphs
+rather than two different kinds of dynamics.
+
+\section{Which graph measures earn their place}
+
+The question included whether the objects are still too small for
+graph-theoretic measures. They are not: $n$ reaches $2584$ with $2.9$M edges,
+which is ample for degree distributions, distances, connectivity and spectra.
+But two standard measures are uninformative here, and the reason is the density
+rather than the size. We would rather say so than present a saturated number as
+a result.
+
+\paragraph{Clustering says nothing.} At density $p$, a random digraph already has
+transitivity $\approx p$. $W_{201}$ at $N=16$ measures $0.805$ against a
+density-matched null of $0.723$: a real but small excess on a scale that is
+nearly full. The module therefore never reports transitivity without its null
+beside it, and a regression test enforces that.
+
+\paragraph{Connectivity says nothing either.} In every case small enough to
+compute it exactly ($n\le200$, since it is $n$ max-flow solves and costs two
+minutes already at $n=377$), the vertex and edge connectivities are equal to
+each other \emph{and} to the minimum degree: $\kappa_v=\kappa_e=\delta=37$ for
+$W_{108}$ at $N=10$, $7$ for $W_{156}$, $7$ for $W_{199}$. That is the generic
+value for a dense graph; it describes the sparsest vertex, not the structure.
+
+\paragraph{What does discriminate.} Four things, all of which appear in
+Fig.~\ref{fig:topology}: the density and its scaling, the degree profile (a
+structured staircase taking $O(\log n)$ distinct values, with the maximum
+out-degree equal to $n$ itself --- some states reach the entire attractor in one
+period), the reciprocity, which falls steadily from $0.605$ at $n=21$ to $0.319$
+at $n=2584$ and so certifies that these graphs are genuinely directed rather
+than symmetrised walks, and the spectral gap.
+
+\section{Answering the question as asked}
+
+\begin{enumerate}
+\item \textbf{Are they simply cycles?} No, and not marginally. Of the $22\,945$
+terminal SCCs the twelve rules have between them at $N=16$, \emph{none} with more
+than one state is a cycle. Every one carries a self-loop on every state, has
+density of order $1/2$ or exactly $1$, and has diameter $2$ or $1$ (once $3$). A
+cycle has density $1/n$ and diameter $n-1$.
+
+\item \textbf{Are they a more connected and extended structure?} More connected,
+yes --- dramatically. \emph{Extended}, no: that is the surprise. The number of
+states grows exponentially and the graph diameter stays at $2$. These are
+compact, densely wired objects, and the monitored walk inside one mixes in $O(1)$
+periods no matter how large it is.
+
+\item \textbf{Distinct from the V-free circuits?} Distinct in kind, not in
+degree. A V-free rule cannot produce anything but a cycle, because its map is a
+function; the branching that makes these graphs two-dimensional is exactly the
+Hadamard. And the V-free circuits are not even long: $75$ of $81$ rules have only
+fixed points.
+
+\item \textbf{Are they too small for graph measures?} No --- but clustering and
+connectivity are uninformative on graphs this dense, and we report both against
+their null values rather than as findings. Density scaling, degree profile,
+reciprocity and the spectral gap are the measures that separate these graphs
+from a random one.
+
+\item \textbf{Unlooked-for, and the main result.} The four classes are two
+coherent structures. All eight dissipative rules inherit their parent's sectors
+whole, edges included, and differ only in which sectors the reset spares ---
+which for the plastic class is exactly the complete ones, and which turns
+$b_\att=2^{1/3}$ from a fitted constant into $2^{\lfloor(N+1)/3\rfloor}$.
+\end{enumerate}
+
+\section{Reproduction}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.attractor_topology --bc obc0 --rebuild
+python -m pytest qca_fragmentation/tests/test_attractor_topology.py -q
+\end{verbatim}
+
+\noindent Everything in this report comes from
+\fn{analytics/attractor\_topology\_obc0.json}. Two implementation notes, because
+both changed what was feasible to measure. All-pairs distances are computed by
+boolean matrix powers rather than by BFS from every node: networkx's $O(nm)$ pass
+is $\sim10^{10}$ Python steps at $n=2584$, $m=2.9$M, whereas the diameter being
+$2$ means the matrix loop runs twice, each step one BLAS product on a $26$\,MB
+\fn{float32} array --- a trade that is only right \emph{because} the answer is
+small, and a long-diameter graph would want BFS. Transitivity is likewise taken
+as $\operatorname{tr}(B^3)/\sum_i d_i(d_i-1)$ rather than by enumerating
+triangles. Connectivity has no such shortcut and is the one measure that is
+capped by size rather than computed everywhere.
+
+\end{document}

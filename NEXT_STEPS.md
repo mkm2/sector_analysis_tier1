@@ -795,3 +795,63 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
     - Code: `scaling/below_curve.py` (new), `sectors.R16_OVERRIDES` +
       `without_r16_override` so the module can still reconstruct what it
       corrected, `tests/test_below_curve.py` (21 tests).
+
+## R17 (attractor topology, 2026-08-07) --- DONE
+
+20. **Report R17** asks whether the terminal SCCs of the four
+    exponential-exponential classes in R9 F1's RIGHT panel -- (108,201),
+    (156,198), (73,109), (28,29,70,71,157,199) -- are simply cycles or something
+    more connected, and whether graph measures work at these sizes.
+    - **NONE of them is a cycle, and not marginally.** Of the **22,945** terminal
+      SCCs the twelve rules have between them at N=16, **not one** with more than
+      a single state is a cycle. Every one has a self-loop on every state,
+      density ~1/2, and **diameter 2** (one 3, at class 2 / N=10). The state
+      count grows like phi^N; the graph distance does not grow at all. They are
+      dense and COMPACT -- "extended" is exactly what they are not.
+    - **The plastic class is COMPLETE digraphs.** Every terminal SCC of all six
+      of 28/29/70/71/157/199, at N=8,10,12,14,16, is K_n with all n^2 edges
+      including loops. Uniform transition matrix => |lambda_2| = 0 exactly, so
+      the monitored walk is memoryless after ONE period; diameter 1.
+      Size = **2^floor((N+1)/3) exactly** (4,4,8,8,8,16,16,16,32,32,32 for
+      N=6..16), which DERIVES R9's fitted b_att = 2^(1/3).
+    - **The spectral gap does not close.** |lambda_2| of the row-normalised
+      adjacency for the phi classes: 0.2786, 0.2899, 0.2949, 0.2973, 0.2986,
+      0.2993 as n runs 21 -> 2584. O(1) mixing inside a Theta(phi^N) attractor.
+      Class 2 oscillates in [1/3, 3/5] with N mod 4, and W156 != W198 there even
+      though they are a reflection pair -- P is row-normalised, which is not
+      reflection-covariant.
+    - **THE MAIN RESULT: there are TWO structures, not four.** The twelve rules
+      are two coherent reflection pairs (W108/W201, W156/W198) plus their eight
+      dissipative children, and for **every** child the terminal SCCs are Krylov
+      sectors of the parent with the SAME states AND the SAME induced edges
+      (checked at N=8,10,12). The reset never fires on its own attractor; it is
+      a pure SELECTION RULE, and which sectors survive is the entire difference:
+      * 108/201 keep everything -> a=rho^2, b=phi
+      * 73/109 keep a psi-sized subfamily incl. the largest -> a=psi, b=phi
+      * 156/198 keep everything -> a=phi, b=4^(1/5)
+      * 28/70 keep EXACTLY the parent's complete sectors (190 of W156's at
+        N=16, matching their 190 non-trivial attractors); 29/71/157/199 carry an
+        E and keep a strict subset (85). Both count at rho per site.
+      This also explains why classes 1 and 3 share b_att = phi: same object.
+      And rho^2 = 1.754878 is not a fifth constant, it is the plastic number
+      squared.
+    - **V-free contrast is by definition**: all 81 V-free rules have out-degree
+      1, so their terminal SCCs are cycles -- and short ones: at N=12, 75 of 81
+      have only fixed points and the longest cycle anywhere is 63 (W90, W165).
+    - **On "are they too small?"** No -- n reaches 2584 with 2.9M edges. But two
+      standard measures are uninformative BECAUSE OF THE DENSITY and the report
+      says so instead of reporting them as findings: clustering (0.805 vs a
+      density-matched null of 0.723 -- saturated scale) and vertex/edge
+      connectivity (equals min degree in every case computed). What DOES
+      discriminate: density scaling (m/n^2 ~ 0.948^N while mean degree ~ 1.53^N),
+      the degree staircase (max out-degree = n itself), reciprocity
+      (0.605 -> 0.319), and the spectral gap.
+    - Open: the edge-count base 2.4812^N and the adjacency Perron base 1.5030^N
+      are reported as FITTED -- no minimal polynomial of degree <=3 with small
+      integer coefficients matches, unlike every base R9 reports here.
+    - Perf: all-pairs distances by boolean matrix powers, not BFS (networkx is
+      O(n*m) ~ 10^10 Python steps at n=2584); transitivity as
+      tr(B^3)/sum d_i(d_i-1); sparse Arnoldi for the spectra above n=700.
+      Connectivity has no shortcut and is capped at n<=200.
+    - Code: `scaling/attractor_topology.py` (new),
+      `tests/test_attractor_topology.py` (56 tests).
