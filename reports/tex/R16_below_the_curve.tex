@@ -1,0 +1,408 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\att}{\mathrm{att}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\title{\textbf{Report R16 --- the rules that sit under the $ab\ge2$ hyperbola,
+and why}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-07}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A handful of markers in the left panel of R9's Fig.~F1 lie below the exclusion
+curve $ab=2$, which the partition of the computational basis forbids. This report
+identifies them and finds \textbf{two unrelated causes}. The larger effect is a
+\emph{rendering artefact}: F1 nudges the three families sideways by $\pm0.019$ in
+$a$ so that none hides under another, and because $b=2/a$ rises as $a$ falls, the
+$40$ V-free rules sitting exactly \emph{on} the curve at $(1,2)$ are drawn where
+the curve is $2.0387$ --- under it. They are the biggest marker in the panel. The
+smaller effect is real arithmetic: \textbf{seven} rules --- $W_6$, $W_{14}$,
+$W_{20}$, $W_{74}$, $W_{84}$, $W_{88}$, $W_{229}$ --- had a fitted product
+$ab=1.919$--$1.937$. The answer to ``is it simply a fitting problem?'' is
+\emph{yes, but the fix is a theorem rather than a better fit}. Their sector
+counts are exact quasi-linear staircases, $\lceil N/2\rceil+1$ and
+$\lfloor(N+4)/3\rfloor$, verified at every $N\le22$; so $a=1$, pigeonhole gives
+$D_{\max}\ge2^N/n_\wcc$ and hence $b\ge2$, while $D_{\max}\le2^N$ gives $b\le2$.
+The pair $(1,1.92)$ is not a violated theorem but an \emph{internally
+inconsistent descriptor}. No better estimator rescues the fit on this window: the
+certified control $W_{134}$, whose $D_{\max}$ \emph{is} the central binomial and
+whose base is $2$ by derivation, is itself fitted at $1.9244$ and has a rolling
+base of $1.904$--$1.938$, squarely inside the band spanned by the seven. We
+extended the sweep to $N=22$, installed derived $(a,b)=(1,2)$ overrides with a
+refitted prefactor power, and the sector map now reports $204$ rules on the
+curve, $50$ above, $2$ irregular, and \textbf{zero} below.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question}
+
+R9~\S``The hyperbola'' derives the only inequality in this project that
+constrains the sector map from outside the data. The weak components partition
+the $2^N$ basis states, so the largest one cannot be smaller than the average:
+\begin{equation}
+n_\wcc(N)\,D_{\max}(N)\;\ge\;2^N ,
+\label{eq:finite}
+\end{equation}
+and writing $n_\wcc\sim a^N$, $D_{\max}\sim b^N$ and taking $N$-th roots,
+\begin{equation}
+a\,b\;\ge\;2 .
+\label{eq:hyper}
+\end{equation}
+Equality holds when the sectors are comparable in size. The curve is drawn in the
+left panel of R9's F1 and it excludes the region below it. Some markers are down
+there. This report asks which, and why.
+
+The short answer is that ``some markers are down there'' conflates two things
+that have nothing to do with each other, and separating them is most of the work.
+
+\section{Cause one: a rendering artefact, and it is the biggest marker}
+\label{sec:artefact}
+
+F1 stacks $256$ rules into few cells --- $77\%$ of the sector map is a single
+point --- so \fn{sector\_figure} offsets the three families horizontally to stop
+one hiding under another:
+\[
+\Delta a = \begin{cases}
++0.019 & \text{V+reset}\\
+\phantom{+}0.000 & \text{unitary}\\
+-0.019 & \text{V-free.}
+\end{cases}
+\]
+This is documented in F1's caption as a caveat about reading absolute bases off
+the axis. At the top-left corner it is more than that. The exclusion curve is
+\emph{steep} there: $\mathrm{d}b/\mathrm{d}a=-2/a^2=-2$ at $a=1$, so a leftward
+nudge of $0.019$ raises the curve by $0.0387$ while leaving the marker at
+$b=2$. Every V-free rule at exactly $(1,2)$ --- one sector of size $2^N$, on the
+curve to machine precision --- is therefore \emph{drawn} at $(0.981,2.000)$ with
+the curve passing above it at $2.0387$.
+
+There are $40$ such rules after the correction of \S\ref{sec:seven} ($35$ before
+it; five of the seven are V-free and join this cell). They are the single largest
+marker in the panel, and they account for more visual ``violation'' than the real
+effect does. The verdict table has always reported them correctly --- their
+product is $2.000000$ --- so nothing downstream was ever wrong; only the picture
+was misleading. F1's caption and figure header now say so.
+
+\section{Cause two: seven rules whose fitted product really was below $2$}
+\label{sec:seven}
+
+\subsection{Who they are}
+
+Lifting the overrides described below and re-running the $256$-rule fit inside
+the uniform window $N\le16$ gives exactly seven rules with $ab<2$:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+group & rules & tuples & family \\
+\midrule
+A & $W_6$, $W_{14}$, $W_{20}$, $W_{84}$ & \rt{IVDD}, \rt{IEDD}, \rt{IDVD},
+  \rt{IDED} & $6,20$ mixed; $14,84$ V-free \\
+B & $W_{74}$, $W_{88}$, $W_{229}$ & \rt{DEID}, \rt{DIED}, \rt{EDIE} & all V-free \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The grouping is not cosmetic: within each group the rules share an
+\emph{identical} $n_\wcc$ series and an identical $D_{\max}$ series at every $N$
+computed, so there are four distinct series among the seven, not seven. Group A
+is fitted at $b=1.922559$ and group B at $1.932218$ ($W_{74}$), $1.936760$
+($W_{88}$), $1.918755$ ($W_{229}$); all seven have $a=1$.
+
+\subsection{The sector counts are exact, not fitted}
+
+\begin{proposition}
+For every $N$ on record ($6\le N\le22$, computed at open boundaries),
+\[
+n_\wcc(N)=\Big\lceil \tfrac{N}{2}\Big\rceil+1 \quad\text{(group A)},
+\qquad
+n_\wcc(N)=\Big\lfloor \tfrac{N+4}{3}\Big\rfloor \quad\text{(group B)} .
+\]
+\end{proposition}
+
+\noindent This is checked exhaustively rather than fitted, and it is also
+recovered independently by a residue-class solver
+(\fn{below\_curve.quasilinear\_formula}) that looks for an affine form in $N$ on
+each class modulo $m\le4$ using exact rational arithmetic; it returns period $2$
+with common slope $1/2$ for group A and period $3$ with common slope $1/3$ for
+group B. So $n_\wcc=\Theta(N)$ and, unambiguously, $a=1$.
+
+\subsection{The squeeze}
+
+\begin{proposition}[$b=2$ exactly]
+If $n_\wcc(N)=\Theta(N)$ then
+\[
+b \;=\; \lim_{N\to\infty} D_{\max}(N)^{1/N} \;=\; 2 .
+\]
+\end{proposition}
+
+\begin{proof}
+Pigeonhole on the partition gives $D_{\max}\ge 2^N/n_\wcc \ge 2^N/(cN)$ for some
+constant $c$, hence $b\ge\lim (2^N/cN)^{1/N}=2$. A single sector cannot exceed
+the whole basis, so $D_{\max}\le2^N$ and $b\le2$.
+\end{proof}
+
+\noindent Both halves are elementary; the point is that \emph{once $a=1$ is
+established, $b$ is not a free parameter at all}. The fitted pair $(1,1.92)$ does
+not violate \eqref{eq:hyper} so much as contradict itself: the same partition
+argument that draws the curve fixes the second coordinate given the first.
+
+It is worth stating plainly why the finite-$N$ version of the bound never bites.
+Equation \eqref{eq:finite} holds comfortably --- the smallest value of
+$n_\wcc D_{\max}/2^N$ across the seven is $2.19$ (group A), $1.31$ ($W_{74}$,
+$W_{88}$) and $1.59$ ($W_{229}$), and across all $256$ rules the tightest case
+anywhere is $W_0$ at $N=6$ with ratio exactly $1.0000$. But the induced bound on
+the base, $(2^N/n_\wcc)^{1/N}$, converges to $2$ at the glacial rate
+$(cN)^{-1/N}$: at $N=22$ it is still only $1.79$--$1.82$. The theorem is exact
+and the finite-$N$ shadow of it is useless. That is the whole difficulty.
+
+\section{Why the fitter missed it}
+
+\subsection{The branch that was supposed to catch this}
+
+\fn{sectors.series\_descriptor} contains a branch, \fn{\_volume\_fraction\_base},
+whose entire job is this case: it asks whether the residual $D_{\max}/2^N$ is
+better explained by a power of $N$ (in which case the base is exactly $2$ and
+$\alpha$ comes from that fit) or by an exponential in $N$ (in which case the base
+is genuinely below $2$). It requires the power model to win on the last six
+points \emph{and} on the full series, and refuses if the series falls back down
+or if $|\alpha|>8$.
+
+It refused here, and it refused by a hair. Table~\ref{tab:below} reports the
+relative margin of the tail comparison:
+
+\begin{center}
+\small
+\iftable{tab_below_curve_obc0.tex}
+\label{tab:below}
+\end{center}
+
+\noindent Group A loses the six-point tail test by $1.3\%$ in residual sum ---
+$0.00682$ against $0.00673$ --- while \emph{winning} the full-series test by
+$18.9\%$. $W_{74}$ loses the tail by $0.2\%$ and $W_{229}$ by $1.0\%$. Only
+$W_{88}$ loses both, and it loses the full test by $14.7\%$. Five of the seven
+would have been caught by a rule that asked the full series alone.
+
+The reason the two windows disagree is a genuine near-degeneracy, not a bug:
+\begin{equation}
+c\cdot 2^N N^{-0.41} \quad\text{and}\quad 1.9226^N
+\end{equation}
+agree to better than $2\%$ over $N=6\ldots16$, because $\ln N$ is very nearly
+affine in $N$ over a window that short. Loosening the tail test until it accepted
+group A would be tuning a threshold to a known answer, and it would then have to
+be defended against every other rule in the sweep.
+
+\subsection{The certified control settles that no estimator would do better}
+
+The decisive check is a rule whose base is known by derivation rather than by
+fit. $W_{134}$'s $D_{\max}$ is exactly rule $150$'s central binomials
+$924, 1716, 3003, 6435, 12870, 24310,\ldots$, i.e.\ $\binom{N}{\lfloor N/2\rfloor}
+\sim 2^N/\sqrt{\pi N/2}$, so its base is $2$ with $\alpha=-1/2$ and there is
+nothing to discover. Fitted with a pure exponential over the same window it
+returns $1.9244$, and its rolling six-point base runs $1.904$--$1.938$ ---
+\emph{inside} the range $1.858$--$2.039$ that the seven span over the same
+window. There is no residual signal in the fit that separates the two cases.
+
+\begin{center}
+\small
+\iftable{tab_below_controls_obc0.tex}
+\end{center}
+
+\noindent The complementary control is $W_{28}$, whose base really is below $2$:
+it sits flat at $1.68$--$1.73$ and never approaches the band. So the estimator is
+not broken --- it separates a real sub-$2$ base from base $2$ perfectly well ---
+it simply cannot separate $2$-with-a-power-law-prefactor from $1.92$ on $N\le16$.
+Deriving $b$ is not a workaround for a weak fit; it is the only thing that can
+settle the question at these sizes.
+
+\section{The extended sweep to $N=22$}
+\label{sec:extended}
+
+The seven were re-run to $N=22$ (background sweep, \fn{wcc\_sweep --lax}), giving
+a lever arm two-thirds longer than the uniform window. Three things came out of
+it, and one of them cuts against the tidiest version of the story.
+
+\paragraph{The staircases survive.} Both closed forms hold at every new $N$. This
+is the load-bearing fact --- everything else rests on $a=1$ --- and it is now
+checked over $17$ system sizes rather than $11$.
+
+\paragraph{Group A's fitted base climbs like the control's.} The pure-exponential
+base fitted on $N=6\ldots M$ rises monotonically with $M$ for $W_6$, $W_{14}$,
+$W_{20}$, $W_{84}$: $1.8951$ at $M=10$ to $1.9345$ at $M=22$, tracking the
+analytically continued central binomial ($1.8867\to1.9291$) almost step for step,
+while a synthetic series with a genuine base $1.9226$ is flat at $1.9226$ by
+construction. That is the signature of a power-law prefactor on base $2$.
+
+\paragraph{Group B's does not, and we should not pretend otherwise.} For
+$W_{74}$, $W_{88}$ and $W_{229}$ the same estimator wanders or drifts
+\emph{down}: $W_{74}$ goes $1.9884\to1.9313$. The cause is visible in the data
+--- their $n_\wcc$ staircase has period $3$ and $D_{\max}$ inherits a strong
+modulation from it ($W_{74}$'s residual alternates by nearly $50\%$ between odd
+and even $N$) --- and a base fitted across residue classes absorbs part of the
+modulation. The climbing argument is therefore corroboration for group A only.
+Panel (c) of Fig.~\ref{fig:below} is titled accordingly.
+
+\paragraph{A model-free refutation, for one rule.} Restricting to a residue class
+removes the modulation and enables a diagnostic that needs no model at all. For a
+pure exponential $c\,b^N$, \emph{every} secant
+\[
+\left(\frac{D_{\max}(N_2)}{D_{\max}(N_1)}\right)^{1/(N_2-N_1)},
+\qquad N_1\equiv N_2 \pmod m ,
+\]
+equals $b$ exactly. All seven exceed their own fitted base over the tail. And
+$W_{229}$'s odd branch \emph{stops decaying} relative to $2^N$ at $N=11$ and then
+rises --- $D_{\max}/2^N = 0.3867, 0.3965, 0.4219, 0.4341, 0.4355, 0.4286$ at
+$N=11,13,15,17,19,21$ --- giving a secant of $\mathbf{2.0052}$ over
+$N=15\ldots21$. A base below $2$ forces $D_{\max}/2^N=c(b/2)^N$ to decay
+geometrically forever, so this single branch refutes the fitted model for
+$W_{229}$ from the data alone, with no asymptotics and no theorem. The same
+diagnostic returns $1.7321$ for $W_{28}$, so it is not firing on noise.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_below_curve_obc0.pdf}{\textwidth}
+\caption{\textbf{Two ways to sit under the curve.} (a) The corner of R9's F1.
+The green cell is $40$ V-free rules at exactly $(1,2)$ --- on the curve --- drawn
+at $a=0.981$ where the curve is $2.0387$, and so \emph{below} it: a rendering
+artefact (\S\ref{sec:artefact}). The open red markers are the seven as fitted;
+the arrow is the correction to the derived $(1,2)$. (b) The residual
+$D_{\max}/2^N$ on log--log axes, normalised at $N=6$, even branch: a power-law
+prefactor is a straight line, a genuine base bends. The certified control
+$W_{134}$ (blue squares, base $2$ by derivation) and the null (grey dashed, a
+genuine base $1.9226$) bracket the question, and over this window they barely
+separate. The purple branch is $W_{229}$ at \emph{odd} $N$, which stops decaying
+--- the model-free refutation of \S\ref{sec:extended}. (c) The pure-exponential
+base fitted on $N=6\ldots M$ against $M$. The null is flat by construction; the
+continued central binomial climbs; group A climbs with it; group B wanders,
+because its period-$3$ modulation contaminates a base fitted across residues.}
+\label{fig:below}
+\end{figure}
+
+\section{The correction}
+
+Seven \fn{ANALYTIC} entries were installed in
+\fn{scaling/sectors.py}, keyed \verb|(rule, "obc0")|:
+\[
+n_\wcc:\;(a,\alpha)=(1,1),\qquad D_{\max}:\;b=2,\;\alpha=\texttt{None}.
+\]
+The \verb|None| is deliberate and required a small extension to
+\fn{series\_descriptor}. An analytic entry may derive the \emph{base} without
+deriving the prefactor power that goes with it; writing a fitted number into a
+table headed ``derived rather than fitted'' would be worse than refitting it
+openly. When $\alpha$ is \verb|None| the power is now refitted with the derived
+base held fixed, via the existing \fn{\_alpha\_at\_base}, and the descriptor
+records \fn{alpha\_source = "refit at the derived base"}. The results are
+$\alpha=-0.413$ (group A), $-0.295$ ($W_{74}$), $-0.326$ ($W_{88}$), $-0.437$
+($W_{229}$) --- all comfortably inside the $|\alpha|\le8$ guard and all of the
+size a prefactor power should be.
+
+\paragraph{Effect on the sector map.}
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+verdict & before & after \\
+\midrule
+on the curve, $ab=2$ & $197$ & $204$ \\
+above, $ab>2$ & $50$ & $50$ \\
+sub-exponential factor, test degenerate & $7$ & $0$ \\
+irregular series, no growth law & $2$ & $2$ \\
+\midrule
+\textbf{rules with $ab<2$} & $\mathbf{7}$ & $\mathbf{0}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The anchors are untouched: $W_{204}$, $W_{51}$ and $W_{150}$ remain at
+$ab=2.000000$ and the six room-packing rules remain at
+$\varphi\cdot4^{1/5}=2.1350$. The full validation pass reports
+\verb|hyperbola_violations: 0| and \verb|sum_rule_max_abs_residual: 0| over
+$2926$ rule--$N$ units.
+
+\paragraph{Corroborating structure.} The hyperbola is tight when the sectors are
+comparable in size, which is what these rules look like. $W_{14}$ at $N=16$ has nine
+sectors of sizes $23234, 18250, 13456, 5666, 3830, 550, 511, 38, 1$, summing to
+$2^{16}$: the top five are within a factor of six of each other and carry $98.3\%$
+of the basis. That is the equality condition of \eqref{eq:hyper} --- comparable
+sectors, a bounded number of them --- not the profile of a rule with a smaller
+base.
+
+\section{Answering the question as asked}
+
+\begin{enumerate}
+\item \textbf{Which rules?} Seven have a genuinely sub-$2$ fitted product:
+$W_6$, $W_{14}$, $W_{20}$, $W_{74}$, $W_{84}$, $W_{88}$, $W_{229}$, in two groups
+of four and three sharing identical series. Separately, $40$ V-free rules that
+are exactly on the curve are \emph{drawn} below it by F1's family offset; that
+marker is larger than the real effect and is the first thing a reader sees.
+
+\item \textbf{Is it simply a fitting problem?} Yes --- in the precise sense that
+no sector count and no sector size is wrong, the finite-$N$ bound
+\eqref{eq:finite} holds at every $N$ for all $256$ rules, and only the summary
+pair $(a,b)$ was wrong. But ``simply'' would be misleading if it suggested a
+better fit is the remedy. The certified control shows that on $N\le16$ (indeed on
+$N\le22$) no pure-exponential estimator can separate base $2$ with an $N^{-0.4}$
+prefactor from a genuine base $1.92$. The remedy is the theorem: $a=1$ is exact
+from the staircase, and $a=1$ forces $b=2$.
+
+\item \textbf{What changed?} Seven derived overrides, one new refit path for
+analytic entries that fix a base but not a power, a corrected note in F1's
+caption and header, and a sector map with nothing below the curve.
+\end{enumerate}
+
+\section{Reproduction}
+
+\begin{verbatim}
+# the analysis, its figure and its two tables
+python -m qca_fragmentation.scaling.below_curve --bc obc0 --rebuild
+
+# the sector map and R9's figures/tables, which consume the overrides
+python -m qca_fragmentation.scaling.sector_figure --bc obc0 --rebuild
+python -m qca_fragmentation.scaling.r9_tables     --bc obc0
+
+# the extension sweep behind Section 5 (already on disk to N=22)
+python -m qca_fragmentation.wcc_sweep --rules 6,14,20,74,84,88,229 \
+       --bc obc0 --n-min 17 --n-max 22 --lax
+
+# the regression tests
+python -m pytest qca_fragmentation/tests/test_below_curve.py -q
+\end{verbatim}
+
+\noindent \fn{scaling/below\_curve.py} is written so that it can still explain
+what it corrected after the correction is in place: \fn{sectors.R16\_OVERRIDES}
+names exactly the entries R16 added, and the context manager
+\fn{without\_r16\_override} lifts them so the pre-correction fit is recomputed
+from the series rather than hard-coded into the prose. Every number in this
+report comes out of \fn{analytics/below\_curve\_obc0.json}.
+
+The regression suite pins the parts that could rot silently: that
+\fn{R16\_OVERRIDES} still matches the set of rules actually below the curve, that
+lifting the override is reversible, that both closed forms still hold at every
+$N$, that \fn{below\_curve.FAM\_DX} still equals \fn{sector\_figure.\_FAM\_DX}
+(otherwise \S\ref{sec:artefact} would be explaining a figure that no longer
+exists), that group A still climbs and group B still does not, and that the
+$\alpha$ overrides parse under matplotlib's mathtext as well as under \LaTeX{}
+--- a test which caught a real defect, \verb|\ge| being valid \LaTeX{} but not
+valid mathtext.
+
+\end{document}

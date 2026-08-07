@@ -733,3 +733,65 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
     - Fixed on the way: `fits.name_base` emitted "\\sqrt2" for 2cos(pi/8),
       valid LaTeX but NOT valid matplotlib mathtext, so the constant crashed any
       figure that tried to draw it. Braced.
+
+## R16 (below the ab>=2 hyperbola, 2026-08-07) --- DONE
+
+19. **Report R16** answers "a few rules in R9 F1's WCC panel sit under the
+    ab>=2 hyperbola -- which, why, and is it simply a fitting problem?"
+    There are TWO unrelated causes.
+    - **Cause 1, a rendering artefact, and it is the BIGGEST marker.** F1 nudges
+      families sideways by _FAM_DX = {unitary 0, mixed +0.019, classical
+      -0.019}. b = 2/a RISES as a falls, so the V-free rules sitting exactly ON
+      the curve at (1,2) are drawn at a = 0.981 where the curve is 2.0387 --
+      i.e. under it. **40 rules** (35 before the correction below; five of the
+      seven are V-free and join that cell). Their product was always reported as
+      2.000000; only the picture misled. F1's caption + figure header now say so.
+    - **Cause 2, seven rules with a genuinely sub-2 FITTED product:**
+      W6 (IVDD), W14 (IEDD), W20 (IDVD), W84 (IDED) at b = 1.922559;
+      W74 (DEID) 1.932218; W88 (DIED) 1.936760; W229 (EDIE) 1.918755; all a = 1.
+      Two groups of 4 and 3, each sharing an IDENTICAL n_wcc and D_max series --
+      four distinct series among the seven.
+    - **Is it a fitting problem? Yes -- and the THEOREM, not a better fit, is
+      the remedy.** The sector counts are exact quasi-linear staircases,
+      **ceil(N/2)+1** (6/14/20/84) and **floor((N+4)/3)** (74/88/229), verified
+      at every N <= 22 and re-derived independently by an exact-rational
+      residue-class solver. So a = 1. Pigeonhole gives D_max >= 2^N/n_wcc hence
+      b >= 2; D_max <= 2^N gives b <= 2. **b = 2 exactly.** (1, 1.92) is not a
+      violated theorem, it is an INTERNALLY INCONSISTENT descriptor.
+    - Why the fitter missed it: `_volume_fraction_base` refuses on the 6-point
+      tail by 1.3% (group A), 0.2% (W74), 1.0% (W229), 13.0% (W88) -- while the
+      FULL series favours the power model for 5 of the 7. The degeneracy is
+      real: c*2^N*N^-0.41 and 1.9226^N agree to better than 2% over N = 6..16.
+    - **The certified control settles it.** W134's D_max IS the central binomial
+      (base 2 by derivation); fitted it returns 1.9244 with a rolling base of
+      1.904-1.938, INSIDE the 1.858-2.039 band of the seven. The complementary
+      control W28 (a real sub-2 base) sits flat at 1.68-1.73. So the estimator
+      is not broken -- it just cannot separate 2-with-a-prefactor from 1.92 on
+      N <= 22. Deriving b is the only thing that can.
+    - **Extension sweep to N=22** (all seven). Staircases survive. Group A's
+      cumulative base climbs monotonically with the continued central binomial
+      (1.8951 -> 1.9345 vs 1.8867 -> 1.9291) against a flat synthetic null.
+      **Group B's does NOT** -- its period-3 modulation contaminates a base
+      fitted across residues -- so the climbing argument is group-A only and the
+      report says so.
+    - **A model-free refutation, for one rule.** Same-residue secants: a pure
+      exponential has EVERY secant equal to b. All seven exceed their own fitted
+      base over the tail, and **W229's odd branch STOPS DECAYING relative to 2^N
+      at N=11 and then rises** (D/2^N = 0.3867, 0.3965, 0.4219, 0.4341, 0.4355,
+      0.4286 at N=11..21), giving a secant of **2.0052** over N=15..21. No base
+      below 2 can do that. W28 returns 1.7321, so it is not firing on noise.
+    - **Correction**: seven ANALYTIC overrides at (a,b) = (1,2), with
+      alpha = None -- a NEW path in `series_descriptor` for entries that derive
+      the base but not the prefactor power, which then refits alpha at the
+      derived base (-0.413 group A, -0.295 W74, -0.326 W88, -0.437 W229).
+      Sector map verdicts 197/50/7/2 -> **204 on curve, 50 above, 2 irregular,
+      0 below**. Anchors untouched (204/51/150 at 2.000000, room-packing 2.1350).
+    - Corroborating structure: W14 at N=16 has sizes 23234, 18250, 13456, 5666,
+      3830, 550, 511, 38, 1 -- the top five within a factor of six, 98.3% of the
+      basis. That is the hyperbola's EQUALITY condition.
+    - Fixed on the way: `\ge` is valid LaTeX but NOT valid matplotlib mathtext
+      (it wants `\geq`), and ANALYTIC source strings are rendered by both. A
+      test now parses every one of them with the mathtext parser.
+    - Code: `scaling/below_curve.py` (new), `sectors.R16_OVERRIDES` +
+      `without_r16_override` so the module can still reconstruct what it
+      corrected, `tests/test_below_curve.py` (21 tests).

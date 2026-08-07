@@ -81,6 +81,47 @@ for _r in (140, 156, 196, 198, 206, 220):
     ANALYTIC.setdefault((_r, "obc0"), {})["d_max_wcc"] = (
         _ROOM_BASE, -0.5, "R2 sec.3: room-packing saddle point, $4^{1/5}$")
 
+# R16: the seven rules whose FITTED product fell under the hyperbola.  Their
+# sector count is an exact quasi-linear staircase -- ceil(N/2)+1 for the first
+# group, floor((N+4)/3) for the second, checked at every N computed -- so
+# n_wcc = Theta(N) and a = 1.  Pigeonhole then gives D_max >= 2^N / n_wcc, hence
+#
+#     b = lim D_max^(1/N) >= lim (2^N / cN)^(1/N) = 2,
+#
+# and D_max <= 2^N gives b <= 2, so b = 2 EXACTLY with a power-law prefactor.
+# The pair (a, b) = (1, 1.92) that the two independent fits produced is not a
+# violated theorem, it is an internally inconsistent descriptor: the same
+# partition argument that draws the curve fixes b once a = 1 is established.
+#
+# _volume_fraction_base is the branch meant to catch this, and it refuses here by
+# a hair -- the tail residual sums differ by 1.3% for the first group -- because
+# c*2^N*N^-0.41 and 1.9226^N agree to better than 2% over N = 6..16.  The
+# certified control settles that it is not a fixable estimator: rule 134's D_max
+# IS the central binomial, base 2 by derivation, and its rolling base over the
+# same window (1.904 -> 1.938) lies inside the spread of these seven.
+# See scaling/below_curve.py and R16.  alpha is refitted at the derived base.
+#: source strings are rendered by LaTeX in the tables AND by matplotlib mathtext
+#: in the figures, so they stay inside the intersection of the two dialects --
+#: \mathrm, \lceil, \lfloor, \max, \geq are safe; \ge is NOT (mathtext only knows
+#: the long spelling), and report macros like \wcc are not.  test_below_curve
+#: parses every one of these with the mathtext parser for exactly this reason.
+_STAIRCASE_SECTORS = {
+    (6, 14, 20, 84): r"$n_{\mathrm{wcc}}=\lceil N/2\rceil+1$ exactly",
+    (74, 88, 229): r"$n_{\mathrm{wcc}}=\lfloor (N+4)/3\rfloor$ exactly",
+}
+for _group, _form in _STAIRCASE_SECTORS.items():
+    for _r in _group:
+        _e = ANALYTIC.setdefault((_r, "obc0"), {})
+        _e["n_wcc"] = (1.0, 1.0, "R16: " + _form + ", linear")
+        _e["d_max_wcc"] = (
+            2.0, None,
+            r"R16: $a=1$ and $D_{\max}\geq 2^N/n_{\mathrm{wcc}}$ force $b=2$")
+
+#: exactly the entries R16 added, so scaling/below_curve.py can reconstruct the
+#: pre-correction fit and show what it corrected without hard-coding numbers.
+R16_OVERRIDES = frozenset((_r, "obc0")
+                          for _g in _STAIRCASE_SECTORS for _r in _g)
+
 
 #: Largest N reached for EVERY rule.  The headline map fits inside this uniform
 #: window so the bases are comparable across the whole rule space; rules that
@@ -420,6 +461,13 @@ def series_descriptor(rule: int, bc: str, key: str,
         base, alpha, exact, source = an[0], an[1], True, an[2]
         alpha_source, alpha_resid = "analytic", None
         lo = hi = None
+        # An analytic entry may derive the BASE without deriving the prefactor
+        # power that goes with it; alpha = None says so, and the power is then
+        # refitted with the derived base held fixed.  Writing a fitted number
+        # into a table headed "derived rather than fitted" would be worse.
+        if alpha is None:
+            alpha, alpha_resid = _alpha_at_base(Ns, ys, base)
+            alpha_source = "refit at the derived base"
 
     # Both n_wcc and D_max lie in [1, 2^N], so both bases lie in [1, 2].  A fit
     # outside that window contradicts a theorem, so the theorem wins and the

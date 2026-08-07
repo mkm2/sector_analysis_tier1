@@ -235,8 +235,15 @@ def fig_sector_map(bc: str, out: str, data: Optional[Dict] = None):
                          markeredgewidth=2.0,
                          label=f"fragmented open systems ({len(frag)})"))
     axes[0].legend(handles=hs, fontsize=7.5, loc="lower left", framealpha=0.95)
+    # R16: the sideways nudge is cosmetic, but at the top-left corner it is also
+    # misleading -- b = 2/a rises as a falls, so the V-free cell that sits exactly
+    # ON the curve at (1, 2) is drawn at a = 0.981, where the curve is 2.0387, and
+    # therefore appears under it.  Say so rather than let a reader count it as a
+    # violation; the verdict table reports zero.
     fig.suptitle("Marker area grows with the number of rules stacked in a cell; "
-                 "the count is printed inside crowded cells.  "
+                 "the count is printed inside crowded cells.  Families are nudged "
+                 r"by $\pm0.019$ in $a$, so the V-free cell at the top left is "
+                 "exactly ON the curve, not below it (R16).  "
                  f"({bc})", fontsize=9, x=0.01, ha="left", color=TEXT)
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     for p_ in (out, out.replace(".pdf", ".png")):
