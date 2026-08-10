@@ -855,3 +855,64 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
       Connectivity has no shortcut and is capped at n<=200.
     - Code: `scaling/attractor_topology.py` (new),
       `tests/test_attractor_topology.py` (56 tests).
+
+## R18 (walls vs conservation laws, 2026-08-10) --- DONE
+
+21. **Report R18** tests the standard HSF story -- fragmentation from the
+    interaction of two conservation laws (charge+dipole, or domain walls +
+    magnetisation; Khemani/Hermele/Nandkishore arXiv:1912.04300) -- against
+    108/201 and 156/198. **Verdict: fully constructive from frozen domain
+    walls; the conservation laws are CONSEQUENCES of the wall grammar.**
+    - All four are one-Hadamard rules: W201 VIII flips x_i iff neighbours =
+      (0,0) (the PXP constraint), W108 IIIV iff (1,1) (its spin-flip image),
+      W156 IIVI iff (1,0), W198 IVII iff (0,1) (reflection pair).
+    - **No charge at all in the computational basis** (r=1 null space empty):
+      magnetisation is NOT conserved, so the charge/dipole ladder never starts.
+    - **Exactly one conserved domain-wall charge each, and the families
+      differ**: with b_i = x_i XOR x_{i+1},
+      * 108/201 conserve the STAGGERED wall number S = sum (-1)^i b_i; D is not.
+      * 156/198 conserve the TOTAL wall number D = sum b_i; S is not.
+      Both at pbc and obc0, all N. Tier-2's null-space detector puts the rank of
+      certified local charges at 3 incl. the constant = **2 independent** ones;
+      the second is the wall count |W|.
+    - **The charges cannot explain it -- wrong cardinality.** Joint level sets of
+      (S, |W|) for W108: 10, 15, 21, 28, 36 at N=6..14 (quadratic) vs sectors
+      37, 114, 351, 1081, 3329. Ratio **3.7 -> 92.5**. For 156/198 D = 2|W| so
+      the two coincide and our count is a LOWER bound; Tier-2's full certified
+      set gives 12/17/23 levels vs 48/124/323 sectors (pbc) -> 4.0/7.3/14.0,
+      diverging just the same.
+    - **One minimal wall word per rule** -- 108:'00', 201:'11', 156:'01',
+      198:'10' -- found by an INDEPENDENT Tier-1 detector that reproduces
+      Tier-2's qca/walls.py exactly (pinned by test).
+    - **The wall-occurrence set is a COMPLETE invariant**: same wall positions
+      <=> same Krylov sector, exhaustively to N=14, at obc0 for all four and at
+      pbc for 108/201. Constant AND injective, and computed from a single state
+      with no reference to the sector (unlike the "frozen-site signature", which
+      is also complete but nearly vacuous since it is defined FROM the sector).
+    - **Both exponents fall out of the grammar**, from exact integer
+      recurrences, not fits: #wallsets obeys a(N)=2a(N-1)-a(N-2)+a(N-3) with
+      root **1.754878 = rho^2** (108/201) and Fibonacci with root **phi**
+      (156/198) -- matching R9's fitted sector bases to six digits. The wall
+      partition also reproduces the FULL sector-size multiset, so D_max too
+      (Fibonacci; and the 6,9,12,16,20,27,36,48,64 room-packing series).
+    - **The charge is a FUNCTION of the wall set** at every N and both bc --
+      explicitly **D = 2|W|** for the chiral pair (on a ring #01 = #10 and D
+      counts both). So the symmetry carries strictly LESS information than the
+      grammar: constructive account subsumes the symmetry account. Opposite of
+      the dipole picture, where charges are given and shattering is emergent.
+    - **obc0 must search the PADDED chain** (frozen 0 outside each end). Not a
+      detail: W108's word is '00', the padding supplies 0s, and the bare search
+      finds only 616 of 1081 sectors at N=12. An earlier pass wrongly concluded
+      from the bare search that 156/198 needed the charge in ADDITION to walls.
+    - **One defect, on the ring**: for 156/198 at pbc, 0^N and 1^N are both
+      frozen singletons with no '01', so they share the empty wall set and
+      n_sectors = n_wallsets + 1 exactly (48/47, 124/123, 323/322, 844/843).
+      108/201 have no such defect.
+    - **Tier-2 provenance**: wall grammar + charge null-space detector are
+      Tier-2 modules (qca/walls.py, qca/charges.py), run READ-ONLY (copied to
+      scratch; its worktree is locked by another session). The two engines were
+      cross-validated on n_wcc and d_max for all four rules over N=6..14 --
+      they agree term for term.
+    - Code: `scaling/wall_charges.py` (new), `tests/test_wall_charges.py`
+      (36 tests). Self-contained apart from core.cycle/core.rules/graph.wcc, so
+      it can move to Tier-2 if wanted.

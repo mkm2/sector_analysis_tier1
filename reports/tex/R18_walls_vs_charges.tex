@@ -1,0 +1,311 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\att}{\mathrm{att}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\title{\textbf{Report R18 --- two conservation laws, or frozen domain walls?
+Rules 108/201 and 156/198}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-10}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Hilbert-space fragmentation is often explained by the interaction of two
+conservation laws --- charge and dipole moment, or domain walls and
+magnetisation (Khemani, Hermele and Nandkishore, arXiv:1912.04300). We test that
+account against the four rules R9 places off both axes of its map. The verdict is
+that the fragmentation is \textbf{fully constructive from frozen domain walls},
+and that the conservation laws, which do exist and are exactly of the promised
+type, are \emph{consequences} of the wall grammar rather than an independent
+ingredient. In detail: (i) there is no charge at all in the computational basis
+--- magnetisation is not conserved, so the charge/dipole ladder never starts;
+(ii) there is exactly one conserved domain-wall charge per rule, and the two
+families differ in which one --- $W_{108}/W_{201}$ conserve the \emph{staggered}
+wall number $S=\sum_i(-1)^i b_i$ while $W_{156}/W_{198}$ conserve the
+\emph{total} wall number $D=\sum_i b_i$, with the other broken in each case;
+(iii) taking both independent charges together their joint level sets number
+$36$ at $N=14$ against $3329$ Krylov sectors, so they are short of the required
+cardinality by an exponentially growing factor and cannot be the explanation; (iv) each rule has exactly \emph{one} minimal wall word ---
+\rt{00}, \rt{11}, \rt{01}, \rt{10} --- and the \emph{set of its occurrences} is a
+complete invariant, verified exhaustively to $N=14$; (v) the wall partition
+reproduces not merely the sector count but the entire multiset of sector sizes,
+so both of R9's exponents fall out of it, $\rho^2=1.754878$ from an exact
+order-3 integer recurrence and $\varphi$ from Fibonacci; and (vi) the conserved
+charge is a \emph{function} of the wall set --- for the chiral pair simply
+$D=2|W|$ --- so it carries strictly less information than the walls do.
+\end{abstract}
+
+\tableofcontents
+
+\section{The four rules and the question}
+
+All four rules are unitary, so by R17 their terminal SCCs are their Krylov
+sectors, and all four carry a single Hadamard whose gate fires on one neighbour
+pattern:
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+rule & tuple & fires when $(x_{i-1},x_{i+1})=$ & family \\
+\midrule
+$W_{201}$ & \rt{VIII} & $(0,0)$ & the PXP constraint \\
+$W_{108}$ & \rt{IIIV} & $(1,1)$ & its spin-flip image \\
+$W_{156}$ & \rt{IIVI} & $(1,0)$ & chiral \\
+$W_{198}$ & \rt{IVII} & $(0,1)$ & its reflection \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent R9 reports sector-count bases $\rho^2=1.754878$ for the first pair and
+$\varphi$ for the second, with $\rho$ the plastic number. The question is whether
+that fragmentation is the shadow of two conserved densities, as in the
+dipole-conserving models, or whether it is generated constructively by frozen
+walls.
+
+\paragraph{A note on where the tools came from.} The wall grammar and the
+charge null-space detector are Tier-2 modules (\fn{qca/walls.py},
+\fn{qca/charges.py}); they were run read-only for this report. The wall detector
+in \fn{scaling/wall\_charges.py} is an \emph{independent} Tier-1
+reimplementation, and a regression test pins its output against the four words
+Tier-2 reports, so the central claim rests on two separate implementations
+agreeing. The two engines were also checked against each other on the sector
+counts and largest-sector sizes of all four rules across $N=6\ldots14$: they
+agree term for term.
+
+\section{The conservation laws exist, and they are domain-wall numbers}
+
+Write $b_i = x_i \oplus x_{i+1}$ for the bond (domain-wall) variables, and
+\[
+D \;=\; \sum_i b_i , \qquad S \;=\; \sum_i (-1)^i b_i .
+\]
+
+\begin{proposition}
+For $W_{108}$ and $W_{201}$, $S$ is conserved on every sector and $D$ is not.
+For $W_{156}$ and $W_{198}$, $D$ is conserved and $S$ is not. This holds at both
+\rt{obc0} and \rt{pbc} for every $N$ tested.
+\end{proposition}
+
+\noindent Two further facts frame these. First, Tier-2's null-space detector
+finds \textbf{no charge at all at range $1$ in the computational basis} for any
+of the four rules: single-site magnetisation is not conserved, which is
+immediate once one notices that the gate flips a site outright. So the ``charge
+plus dipole'' construction has nothing to build on here; the only conserved
+densities live in the bond basis. Second, the rank of the certified charge
+values on the full $2^N$ space is $3$ including the constant, i.e.\ there are
+exactly \textbf{two} independent local conserved quantities per rule --- the
+right number for the two-conservation-law story, which is precisely why the
+story deserves testing rather than dismissal.
+
+\section{But they are far too coarse to explain the fragmentation}
+
+\begin{center}
+\small
+\iftable{tab_r18_resolving_obc0.tex}
+\end{center}
+
+\noindent Testing the hypothesis fairly means using \emph{both} independent
+charges, not just the domain-wall one: the second is the wall count $|W|$, a
+range-$2$ charge in the computational basis. For $W_{108}$ their joint level sets
+number $10, 15, 21, 28, 36$ over $N=6,8,10,12,14$ --- visibly quadratic --- while
+the sectors number $37, 114, 351, 1081, 3329$. The ratio is therefore not merely
+large but \emph{exponentially growing}: $3.7, 7.6, 16.7, 38.6, 92.5$.
+
+For $W_{156}/W_{198}$ the two charges coincide, since $D=2|W|$ identically
+(\S5), so the table's level count for them is a \emph{lower} bound on what the
+symmetry resolves and the second independent charge Tier-2's detector reports is
+not identified here. It does not matter for the conclusion: running Tier-2's full
+certified charge set on the chiral pair gives $12, 17, 23$ level sets at
+$N=8,10,12$ against $48, 124, 323$ sectors, i.e.\ ratios $4.0, 7.3, 14.0$ ---
+diverging just the same.
+
+This is the standard diagnostic of fragmentation --- exponentially many Krylov
+sectors inside polynomially many symmetry sectors --- and it is exactly what
+rules out the two-conservation-law account as an \emph{explanation}. Two charges
+of this kind can label $O(N^2)$ things. They cannot label $\rho^{2N}$ things.
+Whatever is doing the shattering is not them.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_wall_charges_obc0.pdf}{\textwidth}
+\caption{\textbf{Walls explain the sectors; the charges cannot.}
+(a) Sector count (thick line) against the number of distinct wall-occurrence
+sets (hollow markers) --- they coincide exactly at every $N$ --- and against the
+number of joint level sets of the conserved charges (dotted), which stays in
+single figures. (b) Krylov sectors per symmetry sector: exponentially growing,
+so the symmetry cannot be the explanation; the dotted line at $1$ is where a
+purely symmetry-resolved model would sit. (c) The dominant root of the exact
+integer recurrence satisfied by the number of wall sets, against the growth base
+R9 fitted for the sector count --- agreement to six digits, with the exponent
+derived rather than fitted.}
+\label{fig:walls}
+\end{figure}
+
+\section{The wall grammar is enough}
+
+\subsection{One word per rule}
+
+Detection is the Tier-2 criterion: a word $w$ is a wall if, placed on the chain
+at either sublattice offset, its sites are invariant under one full cycle for
+\emph{every} exterior configuration. Since one cycle has light cone $2$, two
+context sites on each side exhaust the exterior dependence and the sixteen
+configurations of those four sites are the whole test. Each of the four rules has
+exactly one minimal wall word:
+\[
+W_{108}:\ \rt{00}, \qquad W_{201}:\ \rt{11}, \qquad
+W_{156}:\ \rt{01}, \qquad W_{198}:\ \rt{10} .
+\]
+For $W_{201}$ this is transparent: a site flips only when both its neighbours are
+$0$, so two adjacent $1$s can never move, and neither can anything they flank.
+
+\subsection{The occurrence set is a complete invariant}
+
+\begin{proposition}
+Two states lie in the same Krylov sector if and only if the rule's wall word
+occurs at the same set of positions. Verified exhaustively for all four rules at
+\rt{obc0} for $N \le 14$, and at \rt{pbc} for $W_{108}$ and $W_{201}$.
+\end{proposition}
+
+\noindent Both halves matter and are reported separately in
+\fn{wall\_completeness}: the wall set is \emph{constant} on each sector (it is
+conserved) and \emph{injective} across sectors (it separates them). What makes
+this a constructive account rather than a restatement is that the label is
+computed from a single state, with no reference to the sector it lies in. By
+contrast the ``frozen-site signature'' --- the positions and values of the sites
+that happen to be constant across a sector --- is also a complete invariant for
+all four rules, but it is nearly vacuous, because it is defined \emph{from} the
+sector. We record it only to note that it is not the content of this section.
+
+\begin{center}
+\small
+\iftable{tab_r18_walls_obc0.tex}
+\end{center}
+
+\subsection{Both exponents fall out of it}
+
+The number of realisable wall sets satisfies an exact homogeneous linear
+recurrence with integer coefficients, found by exact rational elimination rather
+than by fitting:
+\[
+\begin{aligned}
+W_{108}, W_{201}:&\quad a(N) = 2a(N-1) - a(N-2) + a(N-3),
+  &&\text{dominant root } 1.754878 = \rho^2, \\
+W_{156}, W_{198}:&\quad a(N) = a(N-1) + a(N-2),
+  &&\text{dominant root } 1.618034 = \varphi .
+\end{aligned}
+\]
+These reproduce R9's fitted sector-count bases to six digits
+(Fig.~\ref{fig:walls}c). Moreover the wall partition gives the \emph{whole} size
+distribution, not just the count: the multiset of preimage sizes of the map
+$x \mapsto W(x)$ equals the multiset of sector sizes at every $N$ tested, so
+$D_{\max}$ comes out too --- Fibonacci for $W_{108}/W_{201}$, and R9's
+room-packing series $6,9,12,16,20,27,36,48,64,\ldots$ for $W_{156}/W_{198}$.
+
+\subsection{Two details that are not decoration}
+
+\paragraph{The boundary is wall material.} At \rt{obc0} the chain is padded with
+a frozen $0$ outside each end, and the wall word must be searched on the padded
+string. This is not bookkeeping: $W_{108}$'s word is \rt{00}, the padding
+supplies \rt{0}s, and searching the bare chain finds only $616$ of the $1081$
+sectors at $N=12$. An earlier pass of this analysis concluded from the bare
+search that $W_{156}/W_{198}$ needed the charge \emph{in addition} to the walls;
+that was an artefact of the missing padding and is not the case.
+
+\paragraph{One defect, on the ring.} For $W_{156}/W_{198}$ at \rt{pbc} the wall
+set is complete except for a single collision at every $N$: the two uniform
+states $0^N$ and $1^N$ are both frozen singletons and neither contains \rt{01},
+so they share the empty wall set and $n_{\text{sectors}} = n_{\text{wall sets}}
++ 1$ exactly ($48$ vs $47$, $124$ vs $123$, $323$ vs $322$, $844$ vs $843$).
+$W_{108}/W_{201}$ have no such defect, because for them $0^N$ and $1^N$ are not
+both frozen.
+
+\section{The charge is a shadow of the grammar}
+
+The decisive step is not that the walls suffice but that the charges are
+\emph{downstream} of them.
+
+\begin{proposition}
+For all four rules, at both boundary conditions and every $N$ tested, the
+conserved charge is a function of the wall set. For $W_{156}$ and $W_{198}$ it is
+explicitly
+\[
+D \;=\; 2\,|W| ,
+\]
+$|W|$ being the number of occurrences of the wall word.
+\end{proposition}
+
+\noindent The relation for the chiral pair is transparent once stated: on a ring
+the \rt{01} and \rt{10} occurrences are equinumerous, and $D$ counts both, so the
+total domain-wall number is exactly twice the number of walls. For
+$W_{108}/W_{201}$ the staggered charge $S$ is likewise determined by the wall set
+but is not affine in $|W|$ --- it depends on the parities of the wall positions,
+which is what ``staggered'' means.
+
+So the implication runs one way only: the wall configuration determines the
+charge, the charge does not determine the wall configuration, and the sectors are
+the level sets of the former. The conservation law is a coarse-grained readout of
+the wall data, not a second ingredient interacting with it.
+
+\section{Answering the question as asked}
+
+\begin{enumerate}
+\item \textbf{Is it explained by the interaction of two conservation laws?} No.
+There are exactly two independent local conserved quantities, which is the right
+number, and one of them is genuinely a domain-wall charge, which is the right
+kind. But their joint level sets number $O(N^2)$ --- $36$ of them at $N=14$ ---
+against $3329$ Krylov sectors, and the ratio grows from $3.7$ to $92.5$ over
+$N=6\ldots14$. They do not have the cardinality to be the explanation.
+
+\item \textbf{Is it fully constructive from the frozen domain walls?} Yes. One
+minimal wall word per rule; the set of its occurrences is a complete invariant,
+computed locally from a single state; the induced partition reproduces the sector
+count, the full size distribution and both of R9's exponents, with the exponents
+coming from exact integer recurrences rather than fits. The single exception is
+the two uniform states on the ring for the chiral pair.
+
+\item \textbf{And the relation between the two accounts?} The charges are
+functions of the wall set --- $D = 2|W|$ for the chiral pair --- so the
+constructive account strictly subsumes the symmetry account. This is the
+opposite of the dipole-conserving picture, where the charges are given and the
+shattering is an emergent extra; here the walls are given and the charges are
+the emergent extra.
+
+\item \textbf{An incidental contrast worth keeping.} Which wall-number charge
+survives is exactly what separates the two families: the PXP-like pair conserves
+the staggered wall number and the chiral pair the total one, and that difference
+tracks the difference in their exponents ($\rho^2$ against $\varphi$).
+\end{enumerate}
+
+\section{Reproduction}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.wall_charges --bc obc0 --rebuild
+python -m pytest qca_fragmentation/tests/test_wall_charges.py -q
+\end{verbatim}
+
+\noindent Everything here comes from \fn{analytics/wall\_charges\_obc0.json}.
+The Tier-2 detectors used for the cross-checks in \S2 --- the null-space charge
+detector, its gate-local certificate, and the wall grammar --- live in the Tier-2
+repository and were not modified; only read. If this analysis is to be adopted
+there, \fn{scaling/wall\_charges.py} depends on Tier-1 only for
+\fn{core.cycle.succ}, \fn{core.rules} and the union-find in
+\fn{graph.wcc.make\_succ}, all of which Tier-2 has equivalents for.
+
+\end{document}

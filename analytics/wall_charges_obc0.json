@@ -1,0 +1,788 @@
+{
+ "bc": "obc0",
+ "Ns": [
+  6,
+  8,
+  10,
+  12,
+  14
+ ],
+ "rules": [
+  {
+   "rule": 108,
+   "tuple": "IIIV",
+   "bc": "obc0",
+   "wall_words": [
+    "00"
+   ],
+   "word": "00",
+   "rows": [
+    {
+     "N": 6,
+     "n_sectors": 37,
+     "n_wall_sets": 37,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 8,
+     "d_max_predicted": 8,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 8,
+     "n_sectors": 114,
+     "n_wall_sets": 114,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 21,
+     "d_max_predicted": 21,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 10,
+     "n_sectors": 351,
+     "n_wall_sets": 351,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 55,
+     "d_max_predicted": 55,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 12,
+     "n_sectors": 1081,
+     "n_wall_sets": 1081,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 144,
+     "d_max_predicted": 144,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 14,
+     "n_sectors": 3329,
+     "n_wall_sets": 3329,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 377,
+     "d_max_predicted": 377,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    }
+   ],
+   "resolving": [
+    {
+     "N": 6,
+     "n_sectors": 37,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 10,
+     "n_levels_one_charge": 4,
+     "sectors_per_level": 3.7
+    },
+    {
+     "N": 8,
+     "n_sectors": 114,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 15,
+     "n_levels_one_charge": 5,
+     "sectors_per_level": 7.6
+    },
+    {
+     "N": 10,
+     "n_sectors": 351,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 21,
+     "n_levels_one_charge": 6,
+     "sectors_per_level": 16.714285714285715
+    },
+    {
+     "N": 12,
+     "n_sectors": 1081,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 28,
+     "n_levels_one_charge": 7,
+     "sectors_per_level": 38.607142857142854
+    },
+    {
+     "N": 14,
+     "n_sectors": 3329,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 36,
+     "n_levels_one_charge": 8,
+     "sectors_per_level": 92.47222222222223
+    }
+   ],
+   "charge_from_walls": {
+    "D": null,
+    "S": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": null
+    }
+   },
+   "wall_set_counts": {
+    "N": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "counts": [
+     12,
+     21,
+     37,
+     65,
+     114,
+     200,
+     351,
+     616,
+     1081,
+     1897,
+     3329
+    ]
+   },
+   "recurrence": {
+    "order": 3,
+    "coefficients": [
+     "1",
+     "-1",
+     "2"
+    ],
+    "dominant_root": 1.7548776662466943
+   },
+   "r9_sector_base": 1.754878
+  },
+  {
+   "rule": 201,
+   "tuple": "VIII",
+   "bc": "obc0",
+   "wall_words": [
+    "11"
+   ],
+   "word": "11",
+   "rows": [
+    {
+     "N": 6,
+     "n_sectors": 21,
+     "n_wall_sets": 21,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 21,
+     "d_max_predicted": 21,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 8,
+     "n_sectors": 65,
+     "n_wall_sets": 65,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 55,
+     "d_max_predicted": 55,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 10,
+     "n_sectors": 200,
+     "n_wall_sets": 200,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 144,
+     "d_max_predicted": 144,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 12,
+     "n_sectors": 616,
+     "n_wall_sets": 616,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 377,
+     "d_max_predicted": 377,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    },
+    {
+     "N": 14,
+     "n_sectors": 1897,
+     "n_wall_sets": 1897,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 987,
+     "d_max_predicted": 987,
+     "charges": {
+      "D": false,
+      "S": true
+     }
+    }
+   ],
+   "resolving": [
+    {
+     "N": 6,
+     "n_sectors": 21,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 9,
+     "n_levels_one_charge": 4,
+     "sectors_per_level": 2.3333333333333335
+    },
+    {
+     "N": 8,
+     "n_sectors": 65,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 14,
+     "n_levels_one_charge": 5,
+     "sectors_per_level": 4.642857142857143
+    },
+    {
+     "N": 10,
+     "n_sectors": 200,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 20,
+     "n_levels_one_charge": 6,
+     "sectors_per_level": 10.0
+    },
+    {
+     "N": 12,
+     "n_sectors": 616,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 27,
+     "n_levels_one_charge": 7,
+     "sectors_per_level": 22.814814814814813
+    },
+    {
+     "N": 14,
+     "n_sectors": 1897,
+     "conserved": [
+      "S",
+      "|W|"
+     ],
+     "n_charge_levels": 35,
+     "n_levels_one_charge": 8,
+     "sectors_per_level": 54.2
+    }
+   ],
+   "charge_from_walls": {
+    "D": null,
+    "S": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": null
+    }
+   },
+   "wall_set_counts": {
+    "N": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "counts": [
+     7,
+     12,
+     21,
+     37,
+     65,
+     114,
+     200,
+     351,
+     616,
+     1081,
+     1897
+    ]
+   },
+   "recurrence": {
+    "order": 3,
+    "coefficients": [
+     "1",
+     "-1",
+     "2"
+    ],
+    "dominant_root": 1.7548776662466943
+   },
+   "r9_sector_base": 1.754878
+  },
+  {
+   "rule": 156,
+   "tuple": "IIVI",
+   "bc": "obc0",
+   "wall_words": [
+    "01"
+   ],
+   "word": "01",
+   "rows": [
+    {
+     "N": 6,
+     "n_sectors": 21,
+     "n_wall_sets": 21,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 6,
+     "d_max_predicted": 6,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 8,
+     "n_sectors": 55,
+     "n_wall_sets": 55,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 12,
+     "d_max_predicted": 12,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 10,
+     "n_sectors": 144,
+     "n_wall_sets": 144,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 20,
+     "d_max_predicted": 20,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 12,
+     "n_sectors": 377,
+     "n_wall_sets": 377,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 36,
+     "d_max_predicted": 36,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 14,
+     "n_sectors": 987,
+     "n_wall_sets": 987,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 64,
+     "d_max_predicted": 64,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    }
+   ],
+   "resolving": [
+    {
+     "N": 6,
+     "n_sectors": 21,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 4,
+     "n_levels_one_charge": 4,
+     "sectors_per_level": 5.25
+    },
+    {
+     "N": 8,
+     "n_sectors": 55,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 5,
+     "n_levels_one_charge": 5,
+     "sectors_per_level": 11.0
+    },
+    {
+     "N": 10,
+     "n_sectors": 144,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 6,
+     "n_levels_one_charge": 6,
+     "sectors_per_level": 24.0
+    },
+    {
+     "N": 12,
+     "n_sectors": 377,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 7,
+     "n_levels_one_charge": 7,
+     "sectors_per_level": 53.857142857142854
+    },
+    {
+     "N": 14,
+     "n_sectors": 987,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 8,
+     "n_levels_one_charge": 8,
+     "sectors_per_level": 123.375
+    }
+   ],
+   "charge_from_walls": {
+    "D": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": [
+      2.0,
+      0.0
+     ]
+    },
+    "S": null
+   },
+   "wall_set_counts": {
+    "N": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "counts": [
+     8,
+     13,
+     21,
+     34,
+     55,
+     89,
+     144,
+     233,
+     377,
+     610,
+     987
+    ]
+   },
+   "recurrence": {
+    "order": 2,
+    "coefficients": [
+     "1",
+     "1"
+    ],
+    "dominant_root": 1.618033988749895
+   },
+   "r9_sector_base": 1.618034
+  },
+  {
+   "rule": 198,
+   "tuple": "IVII",
+   "bc": "obc0",
+   "wall_words": [
+    "10"
+   ],
+   "word": "10",
+   "rows": [
+    {
+     "N": 6,
+     "n_sectors": 21,
+     "n_wall_sets": 21,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 6,
+     "d_max_predicted": 6,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 8,
+     "n_sectors": 55,
+     "n_wall_sets": 55,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 12,
+     "d_max_predicted": 12,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 10,
+     "n_sectors": 144,
+     "n_wall_sets": 144,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 20,
+     "d_max_predicted": 20,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 12,
+     "n_sectors": 377,
+     "n_wall_sets": 377,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 36,
+     "d_max_predicted": 36,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    },
+    {
+     "N": 14,
+     "n_sectors": 987,
+     "n_wall_sets": 987,
+     "constant_on_sectors": true,
+     "complete": true,
+     "n_collisions": 0,
+     "defect": 0,
+     "sizes_match": true,
+     "d_max_actual": 64,
+     "d_max_predicted": 64,
+     "charges": {
+      "D": true,
+      "S": false
+     }
+    }
+   ],
+   "resolving": [
+    {
+     "N": 6,
+     "n_sectors": 21,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 4,
+     "n_levels_one_charge": 4,
+     "sectors_per_level": 5.25
+    },
+    {
+     "N": 8,
+     "n_sectors": 55,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 5,
+     "n_levels_one_charge": 5,
+     "sectors_per_level": 11.0
+    },
+    {
+     "N": 10,
+     "n_sectors": 144,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 6,
+     "n_levels_one_charge": 6,
+     "sectors_per_level": 24.0
+    },
+    {
+     "N": 12,
+     "n_sectors": 377,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 7,
+     "n_levels_one_charge": 7,
+     "sectors_per_level": 53.857142857142854
+    },
+    {
+     "N": 14,
+     "n_sectors": 987,
+     "conserved": [
+      "D",
+      "|W|"
+     ],
+     "n_charge_levels": 8,
+     "n_levels_one_charge": 8,
+     "sectors_per_level": 123.375
+    }
+   ],
+   "charge_from_walls": {
+    "D": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": [
+      2.0,
+      0.0
+     ]
+    },
+    "S": null
+   },
+   "wall_set_counts": {
+    "N": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "counts": [
+     8,
+     13,
+     21,
+     34,
+     55,
+     89,
+     144,
+     233,
+     377,
+     610,
+     987
+    ]
+   },
+   "recurrence": {
+    "order": 2,
+    "coefficients": [
+     "1",
+     "1"
+    ],
+    "dominant_root": 1.618033988749895
+   },
+   "r9_sector_base": 1.618034
+  }
+ ]
+}
