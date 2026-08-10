@@ -23,19 +23,41 @@ consequence of the wall grammar rather than an independent ingredient.
          W_108, W_201:  the STAGGERED wall number  S = sum_i (-1)^i b_i
          W_156, W_198:  the TOTAL wall number      D = sum_i b_i
 
-     and in each case the other one is NOT conserved.  There is no charge at all
-     in the computational basis: the single-site null space is empty, so
-     magnetisation is not conserved and the "charge + dipole" ladder never
-     starts.  Exactly two independent local charges exist per rule (the rank of
-     the certified charge values on 2^N is 3, including the constant).
+     and in each case the other one is NOT conserved.  Exactly two independent
+     local charges exist per rule (the rank of the certified charge values on
+     2^N is 3, including the constant), and they are the SUBLATTICE-RESOLVED
+     WALL COUNTS |W_even| and |W_odd|.  D and S are functions of that pair:
+     D = 2(|W_even| + |W_odd|) for the chiral rules, S their difference up to
+     sign.  So even the "two conservation laws" are wall data in disguise.
 
-  2. The charges are nowhere near enough.  They take O(N) values each -- 5 to 7
-     over N = 8..12 -- so their joint level sets number O(N^2), against
-     rho^2 ^N or phi^N Krylov sectors.  The ratio of sectors to symmetry sectors
-     grows 6.9 -> 15.4 -> 34.1 over N = 8, 10, 12 for W_108.  This is the
-     standard fragmentation signature: exponentially many Krylov sectors inside
-     polynomially many symmetry sectors.  Two conservation laws cannot be the
-     explanation, because they do not have the cardinality to be one.
+     TERMINOLOGY, because it is easy to get wrong and this module got it wrong
+     once.  ALL of these are diagonal in the computational basis: b_i is
+     (1 - Z_i Z_{i+1})/2, a two-site diagonal operator, and the whole sector
+     decomposition is a statement about basis states, so nothing here is
+     off-diagonal.  Bond variables are a change of VARIABLES, not of basis.
+     What is actually true is a statement about RANGE: there is no conserved
+     quantity of the form sum_i q(x_i), i.e. no single-site charge, so
+     magnetisation is not conserved.  The conserved densities are range 2 and
+     are certified as such directly in the site basis -- each of the four rules
+     has a 6-dimensional space of certified range-2 site-basis charges, and D
+     (chiral pair) or S (PXP-like pair) is among them.  Tier-2's
+     `bond=True/False` flag selects which local variables the ansatz is built
+     from; its docstring's "computational OR bond basis" is the same shorthand.
+
+  1b. The reason the charge/dipole mechanism does not apply is therefore NOT a
+     missing diagonal charge.  It is that the DIPOLE of the conserved density is
+     not conserved: P = sum_i i*b_i fails for all four rules at both boundary
+     conditions, because a move hops a wall by one site -- leaving the wall
+     number fixed and shifting its dipole by +-1.  Forbidding exactly that hop
+     is what a dipole-conserving model does.
+
+  2. The charges are nowhere near enough.  Their joint level sets number O(N^2)
+     against rho^2 ^N or phi^N Krylov sectors: for W_108 the sectors-per-level
+     ratio grows 3.7 -> 7.6 -> 16.7 -> 38.6 -> 92.5 over N = 6..14.  This is the
+     standard fragmentation signature -- exponentially many Krylov sectors
+     inside polynomially many symmetry sectors -- and two conservation laws
+     cannot be the explanation, because they do not have the cardinality to be
+     one.
 
   3. The wall grammar IS enough.  Each rule has exactly ONE minimal wall word,
 
@@ -105,6 +127,11 @@ RULES: Tuple[int, ...] = (108, 201, 156, 198)
 R9_SECTOR_BASE = {108: 1.754878, 201: 1.754878, 156: 1.618034, 198: 1.618034}
 
 NS_DEFAULT = (6, 8, 10, 12, 14)
+
+#: The two independent charges, spelled for LaTeX and for matplotlib mathtext.
+#: A bare "|W_even|" is neither -- the underscore subscripts a single character
+#: and the bars are not delimiters outside math mode.
+_TEX_CHARGE = r"$|W_{\rm even}|,\ |W_{\rm odd}|$"
 
 
 # --- 1. an independent wall detector -----------------------------------------
@@ -186,7 +213,34 @@ def charge_staggered(x: int, N: int, bc: str) -> int:
     return sum((-1) ** i * b for i, b in enumerate(bond_bits(x, N, bc)))
 
 
-CHARGES = {"D": charge_total, "S": charge_staggered}
+def charge_dipole(x: int, N: int, bc: str) -> int:
+    """P = sum_i i * b_i, the DIPOLE MOMENT of the domain-wall density.
+
+    This is the charge the reference construction would need alongside D.  It is
+    not conserved for any of the four rules: a move hops a wall by one site, so
+    D survives and P shifts by +-1.  That, and not any absence of a diagonal
+    charge, is why the charge/dipole mechanism does not apply here.
+    """
+    return sum(i * b for i, b in enumerate(bond_bits(x, N, bc)))
+
+
+def n_word(word: str):
+    """Count of a given 2-site pattern -- the two wall TYPES separately.
+
+    For the chiral pair both n01 and n10 are conserved: '01' counts the frozen
+    walls and '10' the mobile ones, which is where the second independent charge
+    lives.  D = n01 + n10, and on a ring n01 = n10, whence D = 2|W|.
+    """
+    return lambda x, N, bc: len(wall_set(x, N, word, bc))
+
+
+CHARGES = {"D": charge_total, "S": charge_staggered, "P": charge_dipole,
+           "n01": n_word("01"), "n10": n_word("10")}
+
+#: The charges whose joint level sets are the "symmetry sectors" the
+#: two-conservation-law hypothesis would have to work with.  P is included so
+#: that its failure is recorded rather than assumed.
+_ORDER = ("D", "S", "P", "n01", "n10")
 
 
 # --- 3. sectors ---------------------------------------------------------------
@@ -221,10 +275,11 @@ def _groups(rule: int, N: int, bc: str) -> Dict[int, List[int]]:
 # --- 4. the three questions ---------------------------------------------------
 
 def charge_status(rule: int, N: int, bc: str) -> Dict[str, bool]:
-    """Which of D, S is constant on every sector."""
+    """Which candidate charges are constant on every sector."""
     g = _groups(rule, N, bc)
-    return {name: all(len({fn(x, N, bc) for x in mem}) == 1 for mem in g.values())
-            for name, fn in CHARGES.items()}
+    return {name: all(len({CHARGES[name](x, N, bc) for x in mem}) == 1
+                      for mem in g.values())
+            for name in _ORDER}
 
 
 def resolving_power(rule: int, N: int, bc: str,
@@ -235,30 +290,37 @@ def resolving_power(rule: int, N: int, bc: str,
 
     Tier-2's null-space detector finds the rank of the certified local charges to
     be 3 including the constant, i.e. exactly TWO independent conserved
-    quantities.  One is the domain-wall charge below; the other is the wall
-    COUNT, a range-2 charge in the computational basis.  Testing the
-    two-conservation-law hypothesis on the wall charge alone would be testing a
-    straw man -- it understates what the symmetry can do by a factor of N -- so
-    both are used, and the one-charge figure is reported alongside for contrast.
+    quantities.  They are the SUBLATTICE-RESOLVED WALL COUNTS,
 
-    CAVEAT for W156/W198: there D = 2|W| identically, so these two charges are
-    the SAME charge and the count below is a LOWER bound on what the symmetry
-    resolves; Tier-2's second independent charge for the chiral pair is not
-    identified here.  Its full certified set gives 12, 17, 23 level sets at
-    N = 8, 10, 12 (pbc) against 48, 124, 323 sectors -- ratios 4.0, 7.3, 14.0,
-    still diverging, which is why the conclusion does not turn on this.
+        |W_even| = #{i in W : i even},   |W_odd| = #{i in W : i odd},
+
+    for all four rules and both boundary conditions -- which is why Tier-2's
+    detector needs its parity split to see two of them.  Every other charge in
+    play is a function of this pair: D = 2(|W_even| + |W_odd|) for the chiral
+    rules, and S is (up to sign) their difference.  Using the pair rather than
+    one of its shadows is the point: testing the two-conservation-law hypothesis
+    against a single charge would understate the symmetry by a factor of N.
+
+    These joint level sets reproduce Tier-2's full certified charge set exactly
+    -- 13, 18, 25 at N = 8, 10, 12 (pbc) for W108, and 12, 17, 23 for W156 --
+    which is the cross-check that nothing conserved has been left out.
     """
     g = _groups(rule, N, bc)
     st = charge_status(rule, N, bc)
-    live = [n for n, ok in st.items() if ok]
     word = word or wall_words(rule)[0]
-    one = {tuple(CHARGES[n](x, N, bc) for n in live) for x in range(1 << N)}
-    two = {tuple(CHARGES[n](x, N, bc) for n in live)
-           + (len(wall_set(x, N, word, bc)),) for x in range(1 << N)}
-    return {"N": N, "n_sectors": len(g), "conserved": live + ["|W|"],
-            "n_charge_levels": len(two),
+
+    def wpar(x):
+        w = wall_set(x, N, word, bc)
+        return (sum(1 for i in w if i % 2 == 0), sum(1 for i in w if i % 2))
+
+    one = {sum(wpar(x)) for x in range(1 << N)}
+    both = {wpar(x) for x in range(1 << N)}
+    return {"N": N, "n_sectors": len(g),
+            "conserved": ["|W_even|", "|W_odd|"],
+            "also_conserved": [n for n in _ORDER if st[n]],
+            "n_charge_levels": len(both),
             "n_levels_one_charge": len(one),
-            "sectors_per_level": len(g) / max(1, len(two))}
+            "sectors_per_level": len(g) / max(1, len(both))}
 
 
 def wall_completeness(rule: int, N: int, bc: str, word: str) -> Dict:
@@ -455,7 +517,7 @@ def fig_walls(bc: str, out: str, d: Optional[Dict] = None):
         rs = e["resolving"]
         ax.plot([r["N"] for r in rs], [r["sectors_per_level"] for r in rs],
                 marker=_MK[e["rule"]], ms=5, lw=1.5, color=_COL[e["rule"]],
-                label=f"$W_{{{e['rule']}}}$ ({'+'.join(rs[0]['conserved'])})")
+                label=f"$W_{{{e['rule']}}}$")
     ax.axhline(1.0, color="#444444", ls=":", lw=1.0)
     ax.annotate("$1$ = symmetry explains everything", (0.04, 1.0),
                 xycoords=("axes fraction", "data"), fontsize=7.2,
@@ -463,7 +525,8 @@ def fig_walls(bc: str, out: str, d: Optional[Dict] = None):
     ax.set_yscale("log")
     ax.set_xlabel("$N$")
     ax.set_ylabel("Krylov sectors per charge level set")
-    ax.set_title("(b)  fragmentation beyond the symmetry", fontsize=9.5)
+    ax.set_title(r"(b)  beyond the symmetry: level sets of "
+                 r"$|W_{\rm even}|,|W_{\rm odd}|$", fontsize=9.5)
     ax.legend(fontsize=7.0, frameon=False, loc="upper left")
 
     ax = axes[2]
@@ -524,7 +587,7 @@ def write_tables(bc: str, outdir: str, d: Optional[Dict] = None):
     for e in d["rules"]:
         for r in e["resolving"]:
             rrows.append(
-                f"$W_{{{e['rule']}}}$ & {', '.join(r['conserved'])} & {r['N']} & "
+                f"$W_{{{e['rule']}}}$ & {_TEX_CHARGE} & {r['N']} & "
                 f"{r['n_levels_one_charge']} & {r['n_charge_levels']} & "
                 f"{r['n_sectors']} & {r['sectors_per_level']:.1f} \\\\")
     rtab = ("\\begin{tabular}{llrrrrr}\n\\toprule\n"

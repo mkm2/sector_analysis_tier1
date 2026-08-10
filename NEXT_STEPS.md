@@ -866,21 +866,38 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
     - All four are one-Hadamard rules: W201 VIII flips x_i iff neighbours =
       (0,0) (the PXP constraint), W108 IIIV iff (1,1) (its spin-flip image),
       W156 IIVI iff (1,0), W198 IVII iff (0,1) (reflection pair).
-    - **No charge at all in the computational basis** (r=1 null space empty):
-      magnetisation is NOT conserved, so the charge/dipole ladder never starts.
-    - **Exactly one conserved domain-wall charge each, and the families
+    - **TERMINOLOGY (a correction the user caught).** These ARE
+      computational-basis charges: b_i = (1 - Z_i Z_{i+1})/2 is a two-site
+      DIAGONAL operator, as in the C150 domain-wall count, and the whole sector
+      decomposition is about basis states. Bond variables are a change of
+      VARIABLES, not of basis; Tier-2's `bond=True/False` selects which local
+      variables the ansatz uses. What is true is about **RANGE**: the r=1 null
+      space is empty, so there is no SINGLE-SITE charge and magnetisation is not
+      conserved. The conserved densities are range 2 and are certified directly
+      in the site basis -- each rule has a **6-dimensional** space of certified
+      range-2 site-basis charges, with D or S among them.
+    - **The real reason charge/dipole does not apply: the DIPOLE is not
+      conserved.** P = sum_i i*b_i fails for all four rules at both bc. A move
+      toggles b_{i-1} and b_i oppositely, i.e. a wall HOPS by one site, leaving
+      the wall number fixed and shifting P by +-1. Forbidding that hop is
+      exactly what a dipole-conserving model does.
+    - **Exactly one conserved domain-wall number each, and the families
       differ**: with b_i = x_i XOR x_{i+1},
       * 108/201 conserve the STAGGERED wall number S = sum (-1)^i b_i; D is not.
       * 156/198 conserve the TOTAL wall number D = sum b_i; S is not.
-      Both at pbc and obc0, all N. Tier-2's null-space detector puts the rank of
-      certified local charges at 3 incl. the constant = **2 independent** ones;
-      the second is the wall count |W|.
+      Both at pbc and obc0, all N.
+    - **The two independent charges are the SUBLATTICE-RESOLVED WALL COUNTS**
+      |W_even| and |W_odd|, for all four rules and both bc -- which is why
+      Tier-2's detector needs its parity split to see two. Everything else is a
+      function of that pair: D = 2(|W_even|+|W_odd|) for the chiral rules, S is
+      their difference up to sign. So even the two conservation laws are wall
+      data coarse-grained by sublattice.
     - **The charges cannot explain it -- wrong cardinality.** Joint level sets of
-      (S, |W|) for W108: 10, 15, 21, 28, 36 at N=6..14 (quadratic) vs sectors
-      37, 114, 351, 1081, 3329. Ratio **3.7 -> 92.5**. For 156/198 D = 2|W| so
-      the two coincide and our count is a LOWER bound; Tier-2's full certified
-      set gives 12/17/23 levels vs 48/124/323 sectors (pbc) -> 4.0/7.3/14.0,
-      diverging just the same.
+      (|W_even|,|W_odd|) for W108: 10, 15, 21, 28, 36 at N=6..14 (quadratic) vs
+      sectors 37, 114, 351, 1081, 3329. Ratio **3.7 -> 92.5**; for 156/198
+      2.1 -> 27.4. These level counts reproduce Tier-2's FULL certified set
+      exactly at pbc (13/18/25 for W108, 12/17/23 for W156), which is the
+      cross-check that nothing conserved was left out.
     - **One minimal wall word per rule** -- 108:'00', 201:'11', 156:'01',
       198:'10' -- found by an INDEPENDENT Tier-1 detector that reproduces
       Tier-2's qca/walls.py exactly (pinned by test).

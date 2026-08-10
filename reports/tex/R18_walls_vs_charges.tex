@@ -36,15 +36,20 @@ account against the four rules R9 places off both axes of its map. The verdict i
 that the fragmentation is \textbf{fully constructive from frozen domain walls},
 and that the conservation laws, which do exist and are exactly of the promised
 type, are \emph{consequences} of the wall grammar rather than an independent
-ingredient. In detail: (i) there is no charge at all in the computational basis
---- magnetisation is not conserved, so the charge/dipole ladder never starts;
-(ii) there is exactly one conserved domain-wall charge per rule, and the two
+ingredient. In detail: (i) the conserved densities are perfectly diagonal in the
+computational basis --- $b_i = (1-Z_iZ_{i+1})/2$ --- and what fails is
+\emph{range}, not basis: there is no single-site charge, so magnetisation is not
+conserved, and separately the \emph{dipole} $P=\sum_i i\,b_i$ is not conserved
+either, which is the real reason the charge/dipole mechanism does not apply here;
+(ii) there is exactly one conserved domain-wall number per rule, and the two
 families differ in which one --- $W_{108}/W_{201}$ conserve the \emph{staggered}
-wall number $S=\sum_i(-1)^i b_i$ while $W_{156}/W_{198}$ conserve the
-\emph{total} wall number $D=\sum_i b_i$, with the other broken in each case;
-(iii) taking both independent charges together their joint level sets number
-$36$ at $N=14$ against $3329$ Krylov sectors, so they are short of the required
-cardinality by an exponentially growing factor and cannot be the explanation; (iv) each rule has exactly \emph{one} minimal wall word ---
+$S=\sum_i(-1)^i b_i$ while $W_{156}/W_{198}$ conserve the \emph{total}
+$D=\sum_i b_i$, with the other broken in each case;
+(iii) there are exactly two independent local charges, the sublattice-resolved
+wall counts $|W_{\rm even}|$ and $|W_{\rm odd}|$, whose joint level sets number
+$36$ at $N=14$ against $3329$ Krylov sectors --- short of the required
+cardinality by an exponentially growing factor; (iv) each rule has exactly
+\emph{one} minimal wall word ---
 \rt{00}, \rt{11}, \rt{01}, \rt{10} --- and the \emph{set of its occurrences} is a
 complete invariant, verified exhaustively to $N=14$; (v) the wall partition
 reproduces not merely the sector count but the entire multiset of sector sizes,
@@ -103,16 +108,68 @@ For $W_{156}$ and $W_{198}$, $D$ is conserved and $S$ is not. This holds at both
 \rt{obc0} and \rt{pbc} for every $N$ tested.
 \end{proposition}
 
-\noindent Two further facts frame these. First, Tier-2's null-space detector
-finds \textbf{no charge at all at range $1$ in the computational basis} for any
-of the four rules: single-site magnetisation is not conserved, which is
-immediate once one notices that the gate flips a site outright. So the ``charge
-plus dipole'' construction has nothing to build on here; the only conserved
-densities live in the bond basis. Second, the rank of the certified charge
-values on the full $2^N$ space is $3$ including the constant, i.e.\ there are
-exactly \textbf{two} independent local conserved quantities per rule --- the
-right number for the two-conservation-law story, which is precisely why the
-story deserves testing rather than dismissal.
+\subsection{These are computational-basis charges; what fails is range}
+
+It is worth being careful here, because the loose phrase ``bond basis'' invites
+a wrong reading. Everything in this report is diagonal in the computational
+basis. The bond variable is
+\[
+b_i \;=\; \tfrac{1}{2}\bigl(1 - Z_i Z_{i+1}\bigr),
+\]
+a two-site diagonal operator, exactly as in the rule-150 domain-wall count of
+R8; and the entire sector decomposition is a statement about basis states, so
+nothing off-diagonal could enter. Bond variables are a change of \emph{variables},
+not of basis, and Tier-2's \fn{bond=True/False} flag merely selects which local
+variables the charge ansatz is built from.
+
+What is actually true is a statement about \textbf{range}. Tier-2's detector
+finds an empty null space at range $1$: there is no conserved quantity of the
+form $\sum_i q(x_i)$, so magnetisation is not conserved --- immediate once one
+notices that the gate flips a site outright. The conserved densities are range
+$2$, and they are certified as such \emph{directly in the site basis}: each of
+the four rules has a six-dimensional space of certified range-$2$ site-basis
+charges, and $D$ (chiral pair) or $S$ (PXP-like pair) is among them, written as
+a function of the two-site pattern $(x_i, x_{i+1})$.
+
+\subsection{The dipole is the thing that is missing}
+
+The charge/dipole mechanism needs a conserved density \emph{and} a conserved
+first moment of it. The first exists here. The second does not:
+
+\begin{proposition}
+$P=\sum_i i\,b_i$, the dipole moment of the domain-wall density, is not
+conserved for any of the four rules, at either boundary condition.
+\end{proposition}
+
+\noindent The reason is transparent from the moves. A single flip of $x_i$
+toggles the two bonds $b_{i-1}$ and $b_i$; on the sectors where the wall number
+is conserved they toggle oppositely, so a wall \emph{hops by one site}, leaving
+$D$ fixed and shifting $P$ by $\pm1$. Forbidding exactly that hop is what a
+dipole-conserving model does, and it is what these rules do not do. So the
+correct statement is not that a diagonal charge is missing, but that the
+conserved wall number comes without a conserved dipole.
+
+\subsection{Exactly two independent charges, and they are wall counts}
+
+The rank of the certified charge values on the full $2^N$ space is $3$ including
+the constant, i.e.\ there are exactly \textbf{two} independent local conserved
+quantities per rule --- the right number for the two-conservation-law story,
+which is precisely why the story deserves testing rather than dismissal. They can
+be named: the \textbf{sublattice-resolved wall counts}
+\[
+|W_{\rm even}| = \#\{i \in W : i \text{ even}\}, \qquad
+|W_{\rm odd}|  = \#\{i \in W : i \text{ odd}\},
+\]
+for all four rules and both boundary conditions, which is why the detector needs
+its parity split to see two of them. Every other charge in play is a function of
+this pair: $D = 2(|W_{\rm even}|+|W_{\rm odd}|)$ for the chiral rules, and $S$ is
+their difference up to sign. Their joint level sets reproduce Tier-2's full
+certified charge set exactly --- $13, 18, 25$ at $N=8,10,12$ (pbc) for $W_{108}$
+and $12, 17, 23$ for $W_{156}$ --- which is the cross-check that nothing
+conserved has been left out of the comparison below.
+
+Note already what this says: the two conservation laws are themselves wall data,
+coarse-grained by sublattice.
 
 \section{But they are far too coarse to explain the fragmentation}
 
@@ -121,20 +178,13 @@ story deserves testing rather than dismissal.
 \iftable{tab_r18_resolving_obc0.tex}
 \end{center}
 
-\noindent Testing the hypothesis fairly means using \emph{both} independent
-charges, not just the domain-wall one: the second is the wall count $|W|$, a
-range-$2$ charge in the computational basis. For $W_{108}$ their joint level sets
-number $10, 15, 21, 28, 36$ over $N=6,8,10,12,14$ --- visibly quadratic --- while
-the sectors number $37, 114, 351, 1081, 3329$. The ratio is therefore not merely
-large but \emph{exponentially growing}: $3.7, 7.6, 16.7, 38.6, 92.5$.
-
-For $W_{156}/W_{198}$ the two charges coincide, since $D=2|W|$ identically
-(\S5), so the table's level count for them is a \emph{lower} bound on what the
-symmetry resolves and the second independent charge Tier-2's detector reports is
-not identified here. It does not matter for the conclusion: running Tier-2's full
-certified charge set on the chiral pair gives $12, 17, 23$ level sets at
-$N=8,10,12$ against $48, 124, 323$ sectors, i.e.\ ratios $4.0, 7.3, 14.0$ ---
-diverging just the same.
+\noindent The comparison uses \emph{both} independent charges, since testing the
+hypothesis against one of them would understate the symmetry by a factor of $N$.
+For $W_{108}$ the joint level sets of $(|W_{\rm even}|, |W_{\rm odd}|)$ number
+$10, 15, 21, 28, 36$ over $N=6,8,10,12,14$ --- visibly quadratic --- while the
+sectors number $37, 114, 351, 1081, 3329$. The ratio is therefore not merely
+large but \emph{exponentially growing}: $3.7, 7.6, 16.7, 38.6, 92.5$. For
+$W_{156}/W_{198}$ it runs $2.1, 3.7, 6.9, 13.5, 27.4$ over the same window.
 
 This is the standard diagnostic of fragmentation --- exponentially many Krylov
 sectors inside polynomially many symmetry sectors --- and it is exactly what
@@ -268,10 +318,12 @@ the wall data, not a second ingredient interacting with it.
 \begin{enumerate}
 \item \textbf{Is it explained by the interaction of two conservation laws?} No.
 There are exactly two independent local conserved quantities, which is the right
-number, and one of them is genuinely a domain-wall charge, which is the right
-kind. But their joint level sets number $O(N^2)$ --- $36$ of them at $N=14$ ---
-against $3329$ Krylov sectors, and the ratio grows from $3.7$ to $92.5$ over
-$N=6\ldots14$. They do not have the cardinality to be the explanation.
+number, and they are genuinely domain-wall charges, which is the right kind. But
+their joint level sets number $O(N^2)$ --- $36$ of them at $N=14$ --- against
+$3329$ Krylov sectors, and the ratio grows from $3.7$ to $92.5$ over
+$N=6\ldots14$. They do not have the cardinality to be the explanation. Nor is
+the missing ingredient a dipole: $\sum_i i\,b_i$ is not conserved, because the
+walls hop.
 
 \item \textbf{Is it fully constructive from the frozen domain walls?} Yes. One
 minimal wall word per rule; the set of its occurrences is a complete invariant,

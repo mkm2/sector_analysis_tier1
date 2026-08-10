@@ -30,7 +30,10 @@
      "d_max_predicted": 8,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -46,7 +49,10 @@
      "d_max_predicted": 21,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -62,7 +68,10 @@
      "d_max_predicted": 55,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -78,7 +87,10 @@
      "d_max_predicted": 144,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -94,7 +106,10 @@
      "d_max_predicted": 377,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     }
    ],
@@ -103,55 +118,70 @@
      "N": 6,
      "n_sectors": 37,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 10,
-     "n_levels_one_charge": 4,
+     "n_levels_one_charge": 7,
      "sectors_per_level": 3.7
     },
     {
      "N": 8,
      "n_sectors": 114,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 15,
-     "n_levels_one_charge": 5,
+     "n_levels_one_charge": 9,
      "sectors_per_level": 7.6
     },
     {
      "N": 10,
      "n_sectors": 351,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 21,
-     "n_levels_one_charge": 6,
+     "n_levels_one_charge": 11,
      "sectors_per_level": 16.714285714285715
     },
     {
      "N": 12,
      "n_sectors": 1081,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 28,
-     "n_levels_one_charge": 7,
+     "n_levels_one_charge": 13,
      "sectors_per_level": 38.607142857142854
     },
     {
      "N": 14,
      "n_sectors": 3329,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 36,
-     "n_levels_one_charge": 8,
+     "n_levels_one_charge": 15,
      "sectors_per_level": 92.47222222222223
     }
    ],
@@ -160,7 +190,10 @@
     "S": {
      "determined_by_walls": true,
      "affine_in_wall_count": null
-    }
+    },
+    "P": null,
+    "n01": null,
+    "n10": null
    },
    "wall_set_counts": {
     "N": [
@@ -223,7 +256,10 @@
      "d_max_predicted": 21,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -239,7 +275,10 @@
      "d_max_predicted": 55,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -255,7 +294,10 @@
      "d_max_predicted": 144,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -271,7 +313,10 @@
      "d_max_predicted": 377,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     },
     {
@@ -287,7 +332,10 @@
      "d_max_predicted": 987,
      "charges": {
       "D": false,
-      "S": true
+      "S": true,
+      "P": false,
+      "n01": false,
+      "n10": false
      }
     }
    ],
@@ -296,55 +344,70 @@
      "N": 6,
      "n_sectors": 21,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 9,
-     "n_levels_one_charge": 4,
+     "n_levels_one_charge": 6,
      "sectors_per_level": 2.3333333333333335
     },
     {
      "N": 8,
      "n_sectors": 65,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 14,
-     "n_levels_one_charge": 5,
+     "n_levels_one_charge": 8,
      "sectors_per_level": 4.642857142857143
     },
     {
      "N": 10,
      "n_sectors": 200,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 20,
-     "n_levels_one_charge": 6,
+     "n_levels_one_charge": 10,
      "sectors_per_level": 10.0
     },
     {
      "N": 12,
      "n_sectors": 616,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 27,
-     "n_levels_one_charge": 7,
+     "n_levels_one_charge": 12,
      "sectors_per_level": 22.814814814814813
     },
     {
      "N": 14,
      "n_sectors": 1897,
      "conserved": [
-      "S",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
+     ],
+     "also_conserved": [
+      "S"
      ],
      "n_charge_levels": 35,
-     "n_levels_one_charge": 8,
+     "n_levels_one_charge": 14,
      "sectors_per_level": 54.2
     }
    ],
@@ -353,7 +416,10 @@
     "S": {
      "determined_by_walls": true,
      "affine_in_wall_count": null
-    }
+    },
+    "P": null,
+    "n01": null,
+    "n10": null
    },
    "wall_set_counts": {
     "N": [
@@ -416,7 +482,10 @@
      "d_max_predicted": 6,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -432,7 +501,10 @@
      "d_max_predicted": 12,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -448,7 +520,10 @@
      "d_max_predicted": 20,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -464,7 +539,10 @@
      "d_max_predicted": 36,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -480,7 +558,10 @@
      "d_max_predicted": 64,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     }
    ],
@@ -489,56 +570,81 @@
      "N": 6,
      "n_sectors": 21,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 4,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 10,
      "n_levels_one_charge": 4,
-     "sectors_per_level": 5.25
+     "sectors_per_level": 2.1
     },
     {
      "N": 8,
      "n_sectors": 55,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 5,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 15,
      "n_levels_one_charge": 5,
-     "sectors_per_level": 11.0
+     "sectors_per_level": 3.6666666666666665
     },
     {
      "N": 10,
      "n_sectors": 144,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 6,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 21,
      "n_levels_one_charge": 6,
-     "sectors_per_level": 24.0
+     "sectors_per_level": 6.857142857142857
     },
     {
      "N": 12,
      "n_sectors": 377,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 7,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 28,
      "n_levels_one_charge": 7,
-     "sectors_per_level": 53.857142857142854
+     "sectors_per_level": 13.464285714285714
     },
     {
      "N": 14,
      "n_sectors": 987,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 8,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 36,
      "n_levels_one_charge": 8,
-     "sectors_per_level": 123.375
+     "sectors_per_level": 27.416666666666668
     }
    ],
    "charge_from_walls": {
@@ -549,7 +655,22 @@
       0.0
      ]
     },
-    "S": null
+    "S": null,
+    "P": null,
+    "n01": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": [
+      1.0,
+      0.0
+     ]
+    },
+    "n10": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": [
+      1.0,
+      0.0
+     ]
+    }
    },
    "wall_set_counts": {
     "N": [
@@ -611,7 +732,10 @@
      "d_max_predicted": 6,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -627,7 +751,10 @@
      "d_max_predicted": 12,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -643,7 +770,10 @@
      "d_max_predicted": 20,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -659,7 +789,10 @@
      "d_max_predicted": 36,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     },
     {
@@ -675,7 +808,10 @@
      "d_max_predicted": 64,
      "charges": {
       "D": true,
-      "S": false
+      "S": false,
+      "P": false,
+      "n01": true,
+      "n10": true
      }
     }
    ],
@@ -684,56 +820,81 @@
      "N": 6,
      "n_sectors": 21,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 4,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 10,
      "n_levels_one_charge": 4,
-     "sectors_per_level": 5.25
+     "sectors_per_level": 2.1
     },
     {
      "N": 8,
      "n_sectors": 55,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 5,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 15,
      "n_levels_one_charge": 5,
-     "sectors_per_level": 11.0
+     "sectors_per_level": 3.6666666666666665
     },
     {
      "N": 10,
      "n_sectors": 144,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 6,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 21,
      "n_levels_one_charge": 6,
-     "sectors_per_level": 24.0
+     "sectors_per_level": 6.857142857142857
     },
     {
      "N": 12,
      "n_sectors": 377,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 7,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 28,
      "n_levels_one_charge": 7,
-     "sectors_per_level": 53.857142857142854
+     "sectors_per_level": 13.464285714285714
     },
     {
      "N": 14,
      "n_sectors": 987,
      "conserved": [
-      "D",
-      "|W|"
+      "|W_even|",
+      "|W_odd|"
      ],
-     "n_charge_levels": 8,
+     "also_conserved": [
+      "D",
+      "n01",
+      "n10"
+     ],
+     "n_charge_levels": 36,
      "n_levels_one_charge": 8,
-     "sectors_per_level": 123.375
+     "sectors_per_level": 27.416666666666668
     }
    ],
    "charge_from_walls": {
@@ -744,7 +905,22 @@
       0.0
      ]
     },
-    "S": null
+    "S": null,
+    "P": null,
+    "n01": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": [
+      1.0,
+      0.0
+     ]
+    },
+    "n10": {
+     "determined_by_walls": true,
+     "affine_in_wall_count": [
+      1.0,
+      0.0
+     ]
+    }
    },
    "wall_set_counts": {
     "N": [

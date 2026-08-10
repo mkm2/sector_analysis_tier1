@@ -25,10 +25,14 @@ def test_the_wall_detector_agrees_with_tier2(rule, word):
 
 
 @pytest.mark.parametrize("rule", WC.RULES)
-def test_there_is_no_charge_in_the_computational_basis(rule):
-    """Magnetisation is not conserved -- the Hadamard flips a site outright --
-    so the charge/dipole ladder never starts. Checked directly rather than via
-    the null-space detector."""
+def test_there_is_no_single_site_charge(rule):
+    """Magnetisation is not conserved -- the Hadamard flips a site outright.
+
+    This is a statement about RANGE, not about basis: the conserved densities
+    below are two-site and perfectly diagonal, b_i = (1 - Z_i Z_{i+1})/2. An
+    earlier draft of this module said "no charge in the computational basis",
+    which was wrong, and the name of this test is the correction.
+    """
     for N in (8, 10):
         g = {}
         for x, cid in enumerate(WC.sector_ids(rule, N, BC)):
@@ -36,6 +40,46 @@ def test_there_is_no_charge_in_the_computational_basis(rule):
         moved = any(len({bin(x).count("1") for x in mem}) > 1
                     for mem in g.values())
         assert moved, (rule, N)
+
+
+@pytest.mark.parametrize("rule", WC.RULES)
+def test_the_dipole_of_the_wall_density_is_not_conserved(rule):
+    """The actual reason the charge/dipole mechanism does not apply. A move hops
+    a wall by one site, so the wall number survives and its first moment does
+    not -- and forbidding that hop is exactly what a dipole-conserving model
+    does."""
+    for N in (8, 10):
+        for bc in ("obc0", "pbc"):
+            assert WC.charge_status(rule, N, bc)["P"] is False, (rule, N, bc)
+
+
+@pytest.mark.parametrize("rule", WC.RULES)
+def test_the_two_independent_charges_are_the_sublattice_wall_counts(rule):
+    """Both are conserved, and together they resolve exactly what Tier-2's full
+    certified charge set resolves -- so nothing conserved is being left out of
+    the comparison that the report's conclusion rests on."""
+    for N in (8, 10):
+        for bc in ("obc0", "pbc"):
+            g = {}
+            for x, cid in enumerate(WC.sector_ids(rule, N, bc)):
+                g.setdefault(cid, []).append(x)
+            w = WC.wall_words(rule)[0]
+            for par in (0, 1):
+                def q(x, par=par):
+                    return sum(1 for i in WC.wall_set(x, N, w, bc)
+                               if i % 2 == par)
+                assert all(len({q(x) for x in mem}) == 1
+                           for mem in g.values()), (rule, N, bc, par)
+
+
+@pytest.mark.parametrize("rule,levels", [(108, [13, 18, 25]),
+                                         (156, [12, 17, 23])])
+def test_the_charge_levels_match_tier2s_full_certified_set(rule, levels):
+    """Cross-check against the independent Tier-2 detector at pbc, N = 8, 10, 12.
+    If these drift apart, one of the two charge accounts is incomplete."""
+    got = [WC.resolving_power(rule, N, "pbc")["n_charge_levels"]
+           for N in (8, 10, 12)]
+    assert got == levels, (rule, got)
 
 
 @pytest.mark.parametrize("rule,expect", [(108, "S"), (201, "S"),
