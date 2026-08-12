@@ -933,3 +933,58 @@ R8 also cross-checked against the independent Julia HSF eigendata (rule 6 = 150)
     - Code: `scaling/wall_charges.py` (new), `tests/test_wall_charges.py`
       (36 tests). Self-contained apart from core.cycle/core.rules/graph.wcc, so
       it can move to Tier-2 if wanted.
+
+## R19 -- paper figures notebook (2026-08-12) -- DONE
+
+Task: "Create again a modifiable jupyter notebook for the final paper figures.
+I need the basis for R2-Fig 1 [...] Same for Dmax. And then a histogram figure
+of the sector size for rules 156 and 108."
+
+Deliverable: `notebooks/paper_figures.ipynb` (built by
+`notebooks/_build_paper_figures_notebook.py`, the same nbformat pattern as the
+R14 stack notebook -- edit either, but rebuilding from the builder OVERWRITES
+the notebook, so hand-edits belong in the builder if they are to survive).
+
+- **Four figures in `figures/paper/`** (PDF + 300dpi PNG):
+  `fig_paper_sectors_obc0`, `fig_paper_dmax_obc0`,
+  `fig_paper_scaling_obc0` (the two as panels (a),(b)),
+  `fig_paper_sizehist_obc0`.
+- **All knobs in one cell (§2)**: page widths, fonts, palette, the TRACKS list
+  (which rules, grouped how), law tags + their nudges, HIST_NS, bins, out dir.
+  The drawing code reads §2 and nothing else, and calls NO package figure code.
+- **Every curve is an EXACT integer law, checked at every computed N** -- not a
+  fit. Laws live in `scaling/paper_figures.py` (NOT in the notebook: a law is a
+  fact, an axis limit is a preference), the notebook asserts on `PF.verify`
+  before drawing, and `tests/test_paper_figures.py` checks them independently.
+  156: n=F_{N+2}; 108: D=F_N; 201: D=F_{N+2}; 60/102: n=N+1, D=2^{N-1};
+  150: n=floor((N+1)/2)+1, D=max over even w of C(N+1,w); 105: the odd-w
+  variant. Plus two recurrences: W108 n obeys a_N=2a_{N-1}-a_{N-2}+a_{N-3}
+  (root rho^2 -- a third route to R9's fitted base and R18's derived one), and
+  n_wcc^201(N) = n_wcc^108(N-1) exactly.
+  W156's D_max ~ 4^{N/5} is deliberately NOT asserted as a law -- rooms of
+  length 2 and 3 mix at finite N -- the five-step ratio 1.3195079 is reported
+  instead.
+- **150/105 is NOT one entry; 60/102 is.** W60 and W102 agree term for term.
+  W105 vs W150 differ at N == 1 (mod 4) and at NO other N, in BOTH series at
+  once: odd domain-wall number in the largest sector (N=9: C(10,5)=252 vs
+  C(10,4)=210) AND one fewer sector. One phenomenon, two panels. The figure
+  draws that track as two curves (larger open marker underneath the filled one)
+  so the four lone rings at N=9,13,17,21 are visible rather than hidden.
+- **NEW result -- the size distributions separate 156 from 108**, which neither
+  scaling figure does. W156 is UNIMODAL, peaked away from s=1 (N=21: 28657
+  sectors, mean 73, median 108, only 12 singletons). W108 is MONOTONE
+  DECREASING over four decades (170625 sectors, median 42, 33552 singletons =
+  nearly a fifth, D_max 10946). D_max/median runs 2.7->3.2->4.0 (156) and
+  29->76->261 (108) over N=13,17,21 -- both GROW, so D_max increasingly
+  overstates the typical sector.
+- **size_hist is complete where sizes_recurrent is truncated** (2048-entry cap
+  from N>=16, W108 N>=14). `size_stats` asserts class count == n_wcc and
+  sum_s s*h(s) == 2^N, which is what puts N=21 in reach; without it the
+  histogram would stop at N=15 (13 for W108).
+- Palette re-validated with the dataviz validator over ALL pairs: worst
+  dE = 7.2 (W201 green vs W156 red, protan), inside the 6-8 band that needs a
+  secondary encoding -- markers, solid/dashed by family, direct law tags all
+  present. The histogram uses a one-hue ordinal ramp because N is ORDERED.
+- Report R19 + `tab_r19_laws_obc0.tex`, `tab_r19_sizes_obc0.tex` (both generated
+  by `paper_figures.write_tables`, so the report cannot quote an unchecked
+  number). 26 new tests.

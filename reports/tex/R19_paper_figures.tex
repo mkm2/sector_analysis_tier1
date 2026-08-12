@@ -1,0 +1,265 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+%% This report is mostly filenames, which are long unbreakable words; stretch
+%% the interword space rather than either running into the margin or hyphenating
+%% a path at an arbitrary character.
+\sloppy
+\newcommand{\wcc}{\mathrm{wcc}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\title{\textbf{Report R19 --- the paper figures: sector counts, $D_{\max}$,
+and how big the sectors actually are}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-12}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report accompanies \fn{notebooks/paper\_figures.ipynb}, an editable
+rebuild of R2's Figure~1 --- the number of Krylov sectors against $N$ at
+\rt{obc0} --- together with the matching $D_{\max}$ figure and a new one: the
+\emph{distribution} of sector sizes for the two exponentially fragmented rules
+W156 and W108. Three things are worth recording beyond the pictures. First,
+every curve in the two scaling figures is an \textbf{exact integer law}, checked
+at every computed $N$ rather than fitted, so the annotations the figures carry
+($F_{N+2}$, $2^{N-1}$, $\lfloor(N{+}1)/2\rfloor+1$, \dots) are certificates;
+they are listed in Table~\ref{tab:r19laws} and guarded by the test suite.
+Second, W105 and W150 --- routinely quoted as one entry ``$150/105$'' --- differ
+at $N\equiv1\pmod 4$ and at no other $N$, in \emph{both} series at once, one
+extra level of the domain-wall number being exactly one fewer sector; W60 and
+W102 by contrast agree term for term. Third, the size distribution separates the
+two exponential rules in a way neither scaling figure does: W156's is
+\textbf{unimodal}, peaked well away from $1$, while W108's is
+\textbf{monotone decreasing} with $33\,552$ singletons out of $170\,625$ sectors
+at $N=21$. In both, the sector a random computational-basis state lands in is
+far smaller than $D_{\max}$ --- a factor $4$ for W156 and a factor $261$ for
+W108 at $N=21$ --- so $D_{\max}$ alone is a poor description of the typical
+sector, and the gap widens with $N$.
+\end{abstract}
+
+\tableofcontents
+
+\section{What this report is}
+
+R2 introduced the two scaling figures and R9 the growth-base plane built on
+them. What was missing was a version of the figures that can be \emph{edited}:
+the package figure code in \fn{scaling/figure.py} draws all 256 rules on a fixed
+template, which is the right tool for a sweep and the wrong one for a paper
+plate. \fn{notebooks/paper\_figures.ipynb} is the replacement. All the drawing
+code is inline in the notebook, all the adjustable parameters are collected in
+one cell at the top, and no cell calls the package's figure module.
+
+What the notebook does \emph{not} own is the arithmetic. The closed forms
+annotated on the curves live in \fn{scaling/paper\_figures.py}, and the notebook
+imports and re-verifies them before it draws anything. That split is deliberate:
+a law is a fact about the data, an axis limit is a preference, and only the
+second should be casually editable.
+
+\paragraph{Outputs.} \fn{figures/paper/}: \fn{fig\_paper\_sectors\_obc0.pdf},
+\fn{fig\_paper\_dmax\_obc0.pdf}, \fn{fig\_paper\_scaling\_obc0.pdf} (the two as
+panels (a) and (b) of one plate), \fn{fig\_paper\_sizehist\_obc0.pdf}. Each with
+a 300\,dpi PNG beside it.
+
+\section{Every curve is an exact law}
+\label{sec:laws}
+
+\iftable{tab_r19_laws_obc0.tex}
+
+None of the entries in Table~\ref{tab:r19laws} is a regression. Each was read
+off the integer series and then evaluated at every $N$ in the sweep --- $16$ or
+$17$ points --- and the last column reports that comparison, not a residual.
+\fn{scaling/paper\_figures.verify} performs it, the notebook asserts on it
+before drawing, and \fn{tests/test\_paper\_figures.py} runs it independently of
+either.
+
+Two claims in the figures are recurrences rather than formulae, and are checked
+the same way:
+\begin{itemize}
+  \item W108's sector count satisfies
+    $a_N = 2a_{N-1} - a_{N-2} + a_{N-3}$ exactly, whose dominant root is
+    $\rho^2 = 1.754878\ldots$, the square of the plastic number. R9 obtained
+    that base by fitting and R18 derived it from the wall grammar; the
+    recurrence is a third and purely arithmetic route to it.
+  \item W201's sector count is W108's evaluated one site shorter,
+    $n_\wcc^{201}(N) = n_\wcc^{108}(N-1)$, at every overlapping $N$. The two are
+    spin-flip partners, which is why both curves carry the same $\rho^{2N}$ tag
+    and run parallel a constant factor apart.
+\end{itemize}
+
+\paragraph{The one asymptotic statement.} W156's $D_{\max}$ tag reads $4^{N/5}$
+and is deliberately \emph{not} in Table~\ref{tab:r19laws}. At finite $N$ the
+largest sector is a mixture of rooms of length $2$ and $3$ (R2 sec.\,3), so no
+exact recurrence holds over the computed range. What is reported instead is the
+five-step ratio, which needs no fit: $\bigl(D_{\max}(21)/D_{\max}(16)\bigr)^{1/5}
+= 1.3195079$ against $4^{1/5} = 1.3195079$. Six digits by $N=21$ is evidence for
+the derived base; an exact-law assertion would be the wrong claim to make.
+
+\subsection{$150/105$ is not one entry, and $60/102$ is}
+
+The two polynomial tracks are usually written as pairs, but they are not pairs
+in the same sense.
+
+W60 and W102 agree \emph{term for term} in both series, so the figure labels
+that track with an equals sign.
+
+W105 and W150 do not. At $N\equiv 1 \pmod 4$ --- and, over the whole computed
+range, at no other $N$ --- W105's largest sector carries \textbf{odd}
+domain-wall number where W150's carries even ($N=9$: $\binom{10}{5} = 252$
+against $\binom{10}{4} = 210$), and at exactly those $N$ W105 has one sector
+fewer. It is one phenomenon appearing in both panels: an extra accessible level
+of the wall number is precisely one fewer sector. The figure therefore labels
+that track with a comma and draws it as two curves --- the second rule as a
+larger open marker underneath the first, so that where the two coincide the
+reader sees a filled mark inside a ring and where they part sees a lone ring.
+The four lone rings in the sector panel are at $N = 9, 13, 17, 21$.
+
+\section{Figures 1 and 2 --- the scaling}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/paper/fig_paper_scaling_obc0.pdf}{\linewidth}
+\caption{Sector count (a) and largest sector (b) against chain length
+($\rt{obc0}$, log $y$). Three rules fragment exponentially --- W156 into $F_{N+2}$
+sectors, W108 and W201 into $\Theta(\rho^{2N})$ --- while W60/W102 and W150/W105
+produce only $\Theta(N)$ sectors and correspondingly huge ones: W60's largest
+sector is exactly $2^{N-1}$, half the entire Hilbert space, and the dotted line
+is the $2^N$ ceiling it runs parallel to. Every tag is an exact law
+(Table~\ref{tab:r19laws}) except W156's $4^{N/5}$, which is the derived
+asymptote. Panels (a) and (b) are near mirror images because
+$n_\wcc \cdot D_{\max} \ge 2^N$.}
+\label{fig:r19scaling}
+\end{figure}
+
+The two panels are also available separately as
+\fn{fig\_paper\_sectors\_obc0.pdf} (Figure~\ref{fig:r19sectors}) and
+\fn{fig\_paper\_dmax\_obc0.pdf} (Figure~\ref{fig:r19dmax}), at single-column
+proportions, for a paper that wants them apart.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/paper/fig_paper_sectors_obc0.pdf}{0.78\linewidth}
+\caption{Number of Krylov sectors vs $N$ (\rt{obc0}), log scale --- the R2
+Figure~1 content, rebuilt. Exponential fragmentation ($156$, $108$, $201$)
+against the linear and central-binomial families ($60/102$, $150/105$).}
+\label{fig:r19sectors}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/paper/fig_paper_dmax_obc0.pdf}{0.78\linewidth}
+\caption{Largest sector $D_{\max}$ vs $N$ (\rt{obc0}), log scale. The dotted
+line is $2^N$. The ordering is the reverse of
+Figure~\ref{fig:r19sectors}: the rules with the fewest sectors have the
+biggest ones.}
+\label{fig:r19dmax}
+\end{figure}
+
+\paragraph{On the drawing.} The $y$ axis is a true logarithmic axis with decade
+ticks rather than $\ln(\cdot)$ on a linear axis, as in the original R2 figures.
+A straight line still means an exponential, and the reader additionally gets to
+read the actual sector counts off the axis. The five hues are the CVD-validated
+categorical order used across the reports, re-checked over all pairs; the worst
+separation is $\Delta E = 7.2$ (W201 green against W156 red, protanopia), which
+is admissible only with a secondary encoding, and three are present --- distinct
+markers, a solid/dashed split by family, and a direct law tag at every line end.
+
+\section{Figure 3 --- how big are the sectors?}
+
+Neither scaling figure says anything about the \emph{distribution} of sector
+sizes: $n_\wcc$ counts them and $D_{\max}$ reports one extreme. Figure
+\ref{fig:r19hist} fills that in for the two exponentially fragmented rules, and
+the two columns turn out to look nothing alike.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/paper/fig_paper_sizehist_obc0.pdf}{\linewidth}
+\caption{Sector-size distribution of W156 (left) and W108 (right) at
+$N = 13, 17, 21$ (\rt{obc0}), light to dark. \textbf{Top:} number of sectors per
+log-spaced size bin. W156 is unimodal and peaked well away from $s=1$; W108 is
+monotone decreasing over four decades. \textbf{Bottom:} the fraction of the
+$2^N$ computational-basis states lying in sectors of size $\le s$ --- read the
+median sector size off where a curve crosses the dotted line at $1/2$. The
+dashed vertical rule is $D_{\max}$ at $N=21$; in both rules the typical sector
+is far to the left of it. The sawtooth in the top-left panel is real and not
+noise: at small $s$ a bin holds one or two integer sizes, and even sizes are
+much commoner than odd.}
+\label{fig:r19hist}
+\end{figure}
+
+\iftable{tab_r19_sizes_obc0.tex}
+
+\paragraph{Two different kinds of exponential fragmentation.} W156 and W108 sit
+close together in the growth-base plane --- both exponential in both
+coordinates --- and Figure~\ref{fig:r19hist} shows that this hides a
+qualitative difference. W156's sectors are all of comparable size: at $N=21$ its
+$28\,657$ sectors have mean $73$ and median $108$, and only $12$ of them are
+singletons. W108's are not: the same $N$ gives $170\,625$ sectors of which
+$33\,552$, nearly a fifth, are frozen single states, the distribution falls
+monotonically, and the median is $42$ against a $D_{\max}$ of $10\,946$.
+
+\paragraph{$D_{\max}$ overstates the typical sector, increasingly.} The ratio
+$D_{\max}/\text{median}$ runs $2.7 \to 3.2 \to 4.0$ for W156 over
+$N = 13, 17, 21$ and $29 \to 76 \to 261$ for W108. Both grow, so the gap is not
+a small-$N$ artefact. This matters wherever $D_{\max}$ stands in for ``how much
+of the Hilbert space is dynamically connected'': for W108 at $N = 21$ the
+largest sector holds $0.5\%$ of the space, but a state drawn uniformly at random
+sits in a sector of about $42$ states out of two million.
+
+\paragraph{Why this can be computed at all.} The stored \fn{sizes\_recurrent}
+list is truncated at $2048$ entries for these rules once $N \ge 16$ (W108:
+$N \ge 14$), which would cap Figure~\ref{fig:r19hist} at $N = 15$, or $13$ for
+W108. The
+\fn{size\_hist} field is \emph{not} truncated --- it carries every class --- and
+\fn{size\_stats} asserts both that its class count equals $n_\wcc$ and that
+$\sum_s s\,h(s) = 2^N$ before returning, so relying on it is checked rather than
+assumed. That is what puts $N = 21$ within reach.
+
+\section{Using and editing the notebook}
+
+Open \fn{notebooks/paper\_figures.ipynb} and run all cells; it writes into
+\fn{figures/paper/} and takes a few seconds. Section~2 of the notebook holds
+every adjustable parameter --- page widths, font sizes, the palette, the
+\rt{TRACKS} list that decides which rules appear and how they are grouped, the
+law tags and their nudges, the histogram's $N$ values and bin count, the output
+directory. The drawing code reads that cell and nothing else.
+
+To add a rule to the scaling figures, append a dict to \rt{TRACKS}. To change
+which $N$ the histograms show, edit \rt{HIST\_NS}. To change a \emph{law}, edit
+\fn{scaling/paper\_figures.py} instead --- and expect the test suite to have an
+opinion.
+
+\section{Caveats}
+
+\begin{itemize}
+  \item \textbf{\rt{obc0} only.} The \rt{pbc} sweep is held pending caveats
+    (\fn{NEXT\_STEPS.md}); under \rt{pbc} at odd $N$ the brick-wall layers stop
+    commuting, so those points would need even $N$ only.
+  \item \textbf{These are WCC sectors}, which for the unitary rules shown
+    coincide with the strongly connected components, so the decomposition is
+    exact for the monitored and the unmonitored chain alike. That coincidence is
+    a property of unitarity and does not survive dissipation --- see R-T14 on
+    the recurrent-class/WCC distinction.
+  \item \textbf{One representative per symmetry partner.} W198 is W156 under
+    reflection and W108/W201 are spin-flip partners; the partner is omitted
+    rather than drawn on top of its twin.
+  \item \textbf{Nothing here is new dynamics.} The sweep data is R2's; what is
+    new is the certification of the laws, the $150/105$ distinction, and the
+    size distributions.
+\end{itemize}
+
+\end{document}

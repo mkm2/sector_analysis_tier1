@@ -1,0 +1,23 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{rllp{0.34\textwidth}lc}
+\toprule
+rule & tuple & series & closed form & $N$ range & holds \\
+\midrule
+60 & \rt{IIVV} & $D_{\max}$ & $2^{N-1}$ & $6$--$21$ & yes \\
+102 & \rt{IVIV} & $D_{\max}$ & $2^{N-1}$ & $6$--$21$ & yes \\
+105 & \rt{VIIV} & $D_{\max}$ & $\max_{w}\binom{N+1}{w}$, odd $w$ at $N\equiv1\ (4)$ & $6$--$21$ & yes \\
+108 & \rt{IIIV} & $D_{\max}$ & $F_{N}$ & $6$--$21$ & yes \\
+150 & \rt{IVVI} & $D_{\max}$ & $\max_{w\ \mathrm{even}}\binom{N+1}{w}$ & $6$--$22$ & yes \\
+201 & \rt{VIII} & $D_{\max}$ & $F_{N+2}$ & $6$--$21$ & yes \\
+60 & \rt{IIVV} & $n_{\wcc}$ & $N+1$ & $6$--$21$ & yes \\
+102 & \rt{IVIV} & $n_{\wcc}$ & $N+1$ & $6$--$21$ & yes \\
+105 & \rt{VIIV} & $n_{\wcc}$ & $\lfloor N/2\rfloor+1+[N\equiv3\ (4)]$ & $6$--$21$ & yes \\
+150 & \rt{IVVI} & $n_{\wcc}$ & $\lfloor (N{+}1)/2\rfloor+1$ & $6$--$22$ & yes \\
+156 & \rt{IIVI} & $n_{\wcc}$ & $F_{N+2}$ & $6$--$21$ & yes \\
+\bottomrule
+\end{tabular}
+\caption{The exact laws annotated on Figures~\ref{fig:r19sectors} and~\ref{fig:r19dmax} (\rt{obc0}). Each was read off the integer series and then evaluated at \emph{every} computed $N$; the last column is that check, not a goodness of fit. $F_k$ is the Fibonacci number with $F_1=F_2=1$.}
+\label{tab:r19laws}
+\end{table}
