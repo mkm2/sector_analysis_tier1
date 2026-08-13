@@ -1,23 +1,28 @@
 \begin{table}[htbp]
 \centering
-\small
-\begin{tabular}{rllp{0.34\textwidth}lc}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lll p{0.155\textwidth} p{0.165\textwidth} p{0.165\textwidth} lc}
 \toprule
-rule & tuple & series & closed form & $N$ range & holds \\
+rules & tuple & class & $n_{\wcc}$ & $D_{\max}$ & frozen $n_1$ & $N$ & holds \\
 \midrule
-60 & \rt{IIVV} & $D_{\max}$ & $2^{N-1}$ & $6$--$21$ & yes \\
-102 & \rt{IVIV} & $D_{\max}$ & $2^{N-1}$ & $6$--$21$ & yes \\
-105 & \rt{VIIV} & $D_{\max}$ & $\max_{w}\binom{N+1}{w}$, odd $w$ at $N\equiv1\ (4)$ & $6$--$21$ & yes \\
-108 & \rt{IIIV} & $D_{\max}$ & $F_{N}$ & $6$--$21$ & yes \\
-150 & \rt{IVVI} & $D_{\max}$ & $\max_{w\ \mathrm{even}}\binom{N+1}{w}$ & $6$--$22$ & yes \\
-201 & \rt{VIII} & $D_{\max}$ & $F_{N+2}$ & $6$--$21$ & yes \\
-60 & \rt{IIVV} & $n_{\wcc}$ & $N+1$ & $6$--$21$ & yes \\
-102 & \rt{IVIV} & $n_{\wcc}$ & $N+1$ & $6$--$21$ & yes \\
-105 & \rt{VIIV} & $n_{\wcc}$ & $\lfloor N/2\rfloor+1+[N\equiv3\ (4)]$ & $6$--$21$ & yes \\
-150 & \rt{IVVI} & $n_{\wcc}$ & $\lfloor (N{+}1)/2\rfloor+1$ & $6$--$22$ & yes \\
-156 & \rt{IIVI} & $n_{\wcc}$ & $F_{N+2}$ & $6$--$21$ & yes \\
+51 & \rt{VVVV} & ergodic & $1$ & $2^{N}$ & $0$ & $6$--$22$ & yes \\
+57, 99 & \rt{VIVV} & ergodic & $1$ & $2^{N}$ & $0$ & $6$--$22$ & yes \\
+147 & \rt{VVVI} & ergodic & $1$ & $2^{N}$ & $0$ & $6$--$22$ & yes \\
+153, 195 & \rt{VIVI} & ergodic & $1$ & $2^{N}$ & $0$ & $6$--$22$ & yes \\
+54 & \rt{IVVV} & ergodic & $2$ & $2^{N}-1$ & $1$ & $6$--$22$ & yes \\
+\midrule
+60, 102 & \rt{IIVV} & polynomial & $N+1$ & $2^{N-1}$ & $2$ & $6$--$22$ & yes \\
+105 & \rt{VIIV} & polynomial & $\lfloor N/2\rfloor+1+[N\equiv3\ (4)]$ & $\max_{w}\binom{N+1}{w}$, odd $w$ at $N\equiv1\ (4)$ & $1,2,1,0$ for $N\equiv2,3,0,1\ (4)$ & $6$--$22$ & yes \\
+150 & \rt{IVVI} & polynomial & $\lfloor (N{+}1)/2\rfloor+1$ & $\max_{w\ \mathrm{even}}\binom{N+1}{w}$ & $1$ ($N$ even), $2$ (odd) & $6$--$22$ & yes \\
+\midrule
+108 & \rt{IIIV} & exponential & --- & $F_{N}$ & $F_{\lfloor N/2\rfloor+2}F_{\lceil N/2\rceil+2}$ & $6$--$22$ & yes \\
+156, 198 & \rt{IIVI} & exponential & $F_{N+2}$ & --- & $\lfloor (N{+}1)/2\rfloor+1$ & $6$--$22$ & yes \\
+201 & \rt{VIII} & exponential & --- & $F_{N+2}$ & $F_{m+1}^{2}$ ($N{=}2m$), $F_{m}F_{m+3}$ ($N{=}2m{+}1$) & $6$--$22$ & yes \\
+\midrule
+204 & \rt{IIII} & frozen & $2^{N}$ & $1$ & $2^{N}$ & $6$--$22$ & yes \\
 \bottomrule
 \end{tabular}
-\caption{The exact laws annotated on Figures~\ref{fig:r19sectors} and~\ref{fig:r19dmax} (\rt{obc0}). Each was read off the integer series and then evaluated at \emph{every} computed $N$; the last column is that check, not a goodness of fit. $F_k$ is the Fibonacci number with $F_1=F_2=1$.}
+\caption{Every unitary rule at \rt{obc0}, one row per reflection class (reflection is an \rt{obc0} symmetry, so the sixteen rules give twelve distinct series). Each closed form was read off the integer series and then evaluated at \emph{every} computed $N$; the last column is that check, not a goodness of fit. ``---'' marks a series with no exact law: W156/W198's largest sector mixes rooms of two lengths and only approaches $4^{N/5}$, and W108/W201's sector counts satisfy a recurrence rather than a closed form. $F_k$ is the Fibonacci number with $F_1=F_2=1$ and $m=\lfloor N/2\rfloor$.}
 \label{tab:r19laws}
 \end{table}

@@ -20,36 +20,47 @@
   {\fbox{\parbox{0.9\textwidth}{\centering\small table
   \texttt{\detokenize{#1}} pending}}}}
 
-\title{\textbf{Report R19 --- the paper figures: sector counts, $D_{\max}$,
+\title{\textbf{Report R19 --- the paper figures: the unitary census, $D_{\max}$,
 and how big the sectors actually are}\\
 \large Krylov sector analysis of quantum cellular automata}
 \author{Tier 1 analysis}
-\date{2026-08-12}
+\date{2026-08-13 (rev.~2; rev.~1 2026-08-12)}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-This report accompanies \fn{notebooks/paper\_figures.ipynb}, an editable
-rebuild of R2's Figure~1 --- the number of Krylov sectors against $N$ at
-\rt{obc0} --- together with the matching $D_{\max}$ figure and a new one: the
-\emph{distribution} of sector sizes for the two exponentially fragmented rules
-W156 and W108. Three things are worth recording beyond the pictures. First,
-every curve in the two scaling figures is an \textbf{exact integer law}, checked
-at every computed $N$ rather than fitted, so the annotations the figures carry
-($F_{N+2}$, $2^{N-1}$, $\lfloor(N{+}1)/2\rfloor+1$, \dots) are certificates;
-they are listed in Table~\ref{tab:r19laws} and guarded by the test suite.
-Second, W105 and W150 --- routinely quoted as one entry ``$150/105$'' --- differ
-at $N\equiv1\pmod 4$ and at no other $N$, in \emph{both} series at once, one
-extra level of the domain-wall number being exactly one fewer sector; W60 and
-W102 by contrast agree term for term. Third, the size distribution separates the
-two exponential rules in a way neither scaling figure does: W156's is
-\textbf{unimodal}, peaked well away from $1$, while W108's is
-\textbf{monotone decreasing} with $33\,552$ singletons out of $170\,625$ sectors
-at $N=21$. In both, the sector a random computational-basis state lands in is
-far smaller than $D_{\max}$ --- a factor $4$ for W156 and a factor $261$ for
-W108 at $N=21$ --- so $D_{\max}$ alone is a poor description of the typical
-sector, and the gap widens with $N$.
+This report accompanies \fn{notebooks/paper\_figures.ipynb}, an editable rebuild
+of R2's Figure~1 --- the number of Krylov sectors against $N$ at \rt{obc0} ---
+together with the matching $D_{\max}$ figure and the distribution of sector sizes
+for the two exponentially fragmented rules W156 and W108. Revision~2 widens the
+scaling figures from five tracks to \textbf{all sixteen unitary rules}, ergodic
+ones included, which turns them from an illustration into a census: every rule
+built from $I$ and $V$ alone does exactly one of four things, and the two trivial
+behaviours --- one sector of $2^N$, or $2^N$ sectors of one --- are the
+\emph{frame} of both panels rather than omissions from them. They are also the
+only rules that saturate $n_\wcc D_{\max} \ge 2^N$. The census is also
+\emph{uniform}: the ergodic rules had been left at $N \le 16$ by an early-exit in
+the sweep, and \fn{extend\_unitary} closed that gap with the flip reduction, so
+all sixteen rules now run to $N = 22$ on the same grid --- $93$ new units, each
+gated on the new code first reproducing every unit both sweeps had already
+stored for that rule. Four things are worth recording beyond the pictures.
+First, every curve is an \textbf{exact integer law}, checked at every computed
+$N$ rather than fitted --- $44$ of the $48$ (rule, series) slots, the other four
+being genuinely non-closed-form --- so the annotations the figures carry are
+certificates (Table~\ref{tab:r19laws}), and all of them survived the extension
+to $N=22$.
+Second, \textbf{the vacuum alone decides whether some rules fragment}: reflection
+is an \rt{obc0} symmetry and collapses sixteen rules to twelve curves, but the
+spin flip is not, and it puts the polynomially fragmented W60 and W102 opposite
+the completely ergodic W195 and W153. Third, W105 and W150 --- routinely quoted
+as one entry ``$150/105$'' --- differ at $N\equiv1\pmod 4$ and at no other $N$,
+in \emph{both} series at once, which is also the residue class at which W105 has
+no frozen state at all. Fourth, the size distribution separates the two
+exponential rules in a way neither scaling figure does: W156's is
+\textbf{unimodal}, W108's \textbf{monotone decreasing} with $33\,552$ singletons
+out of $170\,625$ sectors at $N=21$, and in both the sector a random
+computational-basis state lands in is far smaller than $D_{\max}$.
 \end{abstract}
 
 \tableofcontents
@@ -72,8 +83,95 @@ second should be casually editable.
 
 \paragraph{Outputs.} \fn{figures/paper/}: \fn{fig\_paper\_sectors\_obc0.pdf},
 \fn{fig\_paper\_dmax\_obc0.pdf}, \fn{fig\_paper\_scaling\_obc0.pdf} (the two as
-panels (a) and (b) of one plate), \fn{fig\_paper\_sizehist\_obc0.pdf}. Each with
-a 300\,dpi PNG beside it.
+panels (a) and (b) of one plate), \fn{fig\_paper\_sizehist\_obc0.pdf} and, new in
+this revision, \fn{fig\_paper\_frozen\_obc0.pdf}. Each with a 300\,dpi PNG beside
+it.
+
+\section{The census: sixteen rules, four behaviours}
+\label{sec:census}
+
+A rule is unitary exactly when none of its four local channels is a reset, i.e.\
+when its tuple lies in $\{I,V\}^4$; there are sixteen of them. Revision~1 of this
+report drew five of them. The other eleven were not missing because they are
+uninteresting but because of a loader: \fn{summary.load\_series} drops units
+flagged ergodic, which is correct when fitting a growth base and returns an
+\emph{empty} series for seven rules. The notebook now uses its own loader and
+they are all present.
+
+\iftable{tab_r19_census_obc0.tex}
+
+\paragraph{The four classes.} Every unitary rule falls into exactly one, with no
+intermediate case anywhere in the computed range:
+\begin{itemize}
+  \item \textbf{ergodic} --- W51, W57, W99, W147, W153, W195 give literally one
+    sector containing all $2^N$ states, at every computed $N$; the six series are
+    not merely similar but identical. W54 is the same with one exception: the
+    all-zero state is frozen, because $r_{00} = I$, so it has $2$ sectors of
+    sizes $2^N-1$ and $1$.
+  \item \textbf{polynomial} --- W60, W102, W105, W150 fragment into $\Theta(N)$
+    sectors that are individually enormous. W60's largest is exactly $2^{N-1}$,
+    half the Hilbert space.
+  \item \textbf{exponential} --- W108, W156, W198, W201 fragment into $a^N$
+    sectors with $1 < a < 2$.
+  \item \textbf{frozen} --- W204 is the identity circuit: $2^N$ sectors of one
+    state each.
+\end{itemize}
+
+\paragraph{The trivial classes are the frame, not the margin.} The hyperbola
+$n_\wcc D_{\max} \ge 2^N$ (R16) holds with equality exactly when every sector has
+the same size. Two behaviours manage that --- one sector of $2^N$ and $2^N$
+sectors of one --- and they are precisely the two that do not fragment. The last
+column of Table~\ref{tab:r19census} is that ratio: exactly $1$ for the six
+ergodic rules and for the identity, $2$ for W54, and up to $1.3\times10^3$ for
+W201. So the ergodic and identity curves in Figure~\ref{fig:r19scaling} are not
+extra data points on the same footing as the rest; they are the boundary of the
+region, and fragmentation is what happens strictly inside it.
+
+\section{Two symmetries, one of which the boundary breaks}
+\label{sec:symmetry}
+
+Sixteen rules do not give sixteen curves, and the reason is worth stating
+precisely because the two candidate symmetries behave oppositely at \rt{obc0}.
+
+\paragraph{No symmetry is a source of data.} Reflection \emph{is} a symmetry of
+these series, and the sweep driver offers a representatives-only mode, so
+``W198 $=$ W156'' could in principle have been a substitution rather than a
+measurement. It is not, and the report does not ask the reader to take that on
+trust. Every unitary rule carries its own records with its own runtimes ---
+W156 and W198 took $217$ and $199$ seconds at $N = 21$, W60 and W102 took
+$6982$ and $6608$ --- and \fn{tests/test\_extend\_unitary.py} recomputes
+\emph{every} stored unit of \emph{every} one of the sixteen rules from that
+rule's own gate assignment, by label propagation on its own flip graph,
+consulting no partner, and requires it to reproduce what both stores hold. Three
+unrelated algorithms, rule by rule, $33$ units each. The identities below are
+therefore results, and the figures draw both members of a pair from their own
+data rather than mirroring one onto the other.
+
+\paragraph{Reflection ($r_{01} \leftrightarrow r_{10}$) is a symmetry.} It leaves
+the sector decomposition invariant for unitary rules at both boundary
+conventions, so the sixteen rules give \textbf{twelve} distinct series and the
+pairs $\{57,99\}$, $\{60,102\}$, $\{153,195\}$, $\{156,198\}$ agree term for
+term. Table~\ref{tab:r19laws} is organised by these twelve classes.
+
+\paragraph{The spin flip ($0 \leftrightarrow 1$ on every site) is not.}
+$X^{\otimes N}$ is a basis permutation and $XHX$ has the same matrix magnitudes,
+so it preserves the transition graph --- under \rt{pbc}. At \rt{obc0} the padding
+is pinned to $|0\rangle$ and the flip sends it to $|1\rangle$. The consequence is
+sharp: of the six spin-flip pairs, the only two whose series match are
+$\{57,99\}$ and $\{156,198\}$, which are \emph{also} reflection pairs. The flip
+never preserves a series on its own account (\fn{flip\_survives\_only\_via\_%
+reflection}), and in two of the four remaining pairs it does something much
+stronger than shift a curve:
+\[
+  \text{W60 (IIVV)}: N+1 \text{ sectors}
+  \quad\longleftrightarrow\quad
+  \text{W195 (VVII)}: 1 \text{ sector},
+\]
+and likewise W102 $\leftrightarrow$ W153. Same gate set, same lattice, same
+brickwork; only the vacuum differs, and one of the pair fragments while the other
+thermalises completely. The remaining two pairs stay within their class: W54
+against W147 differ by exactly the one frozen vacuum state, and W108 against W201
+is the familiar one-site shift.
 
 \section{Every curve is an exact law}
 \label{sec:laws}
@@ -81,14 +179,16 @@ a 300\,dpi PNG beside it.
 \iftable{tab_r19_laws_obc0.tex}
 
 None of the entries in Table~\ref{tab:r19laws} is a regression. Each was read
-off the integer series and then evaluated at every $N$ in the sweep --- $16$ or
-$17$ points --- and the last column reports that comparison, not a residual.
-\fn{scaling/paper\_figures.verify} performs it, the notebook asserts on it
-before drawing, and \fn{tests/test\_paper\_figures.py} runs it independently of
-either.
+off the integer series and then evaluated at every $N$ in the sweep --- all
+seventeen points, $N = 6 \ldots 22$, for every rule --- and the last column reports that
+comparison, not a residual. \fn{scaling/paper\_figures.verify} performs it, the
+notebook asserts on it before drawing, and \fn{tests/test\_paper\_figures.py}
+runs it independently of either. Of the $16 \times 3 = 48$ (rule, series) slots,
+$44$ carry an exact closed form; the four that do not are W156/W198's $D_{\max}$
+and W108/W201's sector count, and the test suite asserts that the set of gaps is
+exactly those four, so a curve cannot quietly lose its certificate.
 
-Two claims in the figures are recurrences rather than formulae, and are checked
-the same way:
+Those four are covered by recurrences and an asymptote, checked the same way:
 \begin{itemize}
   \item W108's sector count satisfies
     $a_N = 2a_{N-1} - a_{N-2} + a_{N-3}$ exactly, whose dominant root is
@@ -96,18 +196,15 @@ the same way:
     that base by fitting and R18 derived it from the wall grammar; the
     recurrence is a third and purely arithmetic route to it.
   \item W201's sector count is W108's evaluated one site shorter,
-    $n_\wcc^{201}(N) = n_\wcc^{108}(N-1)$, at every overlapping $N$. The two are
-    spin-flip partners, which is why both curves carry the same $\rho^{2N}$ tag
-    and run parallel a constant factor apart.
+    $n_\wcc^{201}(N) = n_\wcc^{108}(N-1)$, at every overlapping $N$.
+  \item W156's $D_{\max}$ tag reads $4^{N/5}$ and is deliberately \emph{not} a
+    law. At finite $N$ the largest sector is a mixture of rooms of length $2$ and
+    $3$ (R2 sec.\,3), so no exact recurrence holds over the computed range. What
+    is reported instead is the five-step ratio, which needs no fit:
+    $\bigl(D_{\max}(21)/D_{\max}(16)\bigr)^{1/5} = 1.3195079$ against
+    $4^{1/5} = 1.3195079$. Six digits by $N=21$ is evidence for the derived base;
+    an exact-law assertion would be the wrong claim to make.
 \end{itemize}
-
-\paragraph{The one asymptotic statement.} W156's $D_{\max}$ tag reads $4^{N/5}$
-and is deliberately \emph{not} in Table~\ref{tab:r19laws}. At finite $N$ the
-largest sector is a mixture of rooms of length $2$ and $3$ (R2 sec.\,3), so no
-exact recurrence holds over the computed range. What is reported instead is the
-five-step ratio, which needs no fit: $\bigl(D_{\max}(21)/D_{\max}(16)\bigr)^{1/5}
-= 1.3195079$ against $4^{1/5} = 1.3195079$. Six digits by $N=21$ is evidence for
-the derived base; an exact-law assertion would be the wrong claim to make.
 
 \subsection{$150/105$ is not one entry, and $60/102$ is}
 
@@ -126,22 +223,27 @@ of the wall number is precisely one fewer sector. The figure therefore labels
 that track with a comma and draws it as two curves --- the second rule as a
 larger open marker underneath the first, so that where the two coincide the
 reader sees a filled mark inside a ring and where they part sees a lone ring.
-The four lone rings in the sector panel are at $N = 9, 13, 17, 21$.
+The four lone rings in the sector panel are at $N = 9, 13, 17, 21$. Section
+\ref{sec:frozen} adds a third face of the same parity obstruction.
 
 \section{Figures 1 and 2 --- the scaling}
 
 \begin{figure}[htbp]
 \centering
 \ifgraphic{../../figures/paper/fig_paper_scaling_obc0.pdf}{\linewidth}
-\caption{Sector count (a) and largest sector (b) against chain length
-($\rt{obc0}$, log $y$). Three rules fragment exponentially --- W156 into $F_{N+2}$
-sectors, W108 and W201 into $\Theta(\rho^{2N})$ --- while W60/W102 and W150/W105
-produce only $\Theta(N)$ sectors and correspondingly huge ones: W60's largest
-sector is exactly $2^{N-1}$, half the entire Hilbert space, and the dotted line
-is the $2^N$ ceiling it runs parallel to. Every tag is an exact law
-(Table~\ref{tab:r19laws}) except W156's $4^{N/5}$, which is the derived
+\caption{Sector count (a) and largest sector (b) against chain length for all
+sixteen unitary rules ($\rt{obc0}$, log $y$). Four rules fragment exponentially
+--- W156${=}$W198 into $F_{N+2}$ sectors, W108 and W201 into $\Theta(\rho^{2N})$
+--- while W60/W102 and W150/W105 produce only $\Theta(N)$ sectors and
+correspondingly huge ones: W60's largest is exactly $2^{N-1}$, half the entire
+Hilbert space. The grey and black tracks are the trivial extremes that bound
+both panels: six ergodic rules with one sector of $2^N$ (W54: plus one frozen
+vacuum state), and the identity W204 with $2^N$ sectors of one. Every tag is an
+exact law (Table~\ref{tab:r19laws}) except W156's $4^{N/5}$, the derived
 asymptote. Panels (a) and (b) are near mirror images because
-$n_\wcc \cdot D_{\max} \ge 2^N$.}
+$n_\wcc \cdot D_{\max} \ge 2^N$, and the trivial rules are exactly the ones for
+which that holds with equality. All sixteen rules span the same grid
+$N = 6\ldots22$.}
 \label{fig:r19scaling}
 \end{figure}
 
@@ -152,38 +254,97 @@ proportions, for a paper that wants them apart.
 
 \begin{figure}[htbp]
 \centering
-\ifgraphic{../../figures/paper/fig_paper_sectors_obc0.pdf}{0.78\linewidth}
+\ifgraphic{../../figures/paper/fig_paper_sectors_obc0.pdf}{0.82\linewidth}
 \caption{Number of Krylov sectors vs $N$ (\rt{obc0}), log scale --- the R2
-Figure~1 content, rebuilt. Exponential fragmentation ($156$, $108$, $201$)
-against the linear and central-binomial families ($60/102$, $150/105$).}
+Figure~1 content, rebuilt and completed. Exponential fragmentation ($156{=}198$,
+$108$, $201$) against the linear and central-binomial families ($60/102$,
+$150/105$), with the ergodic rules on the floor $n_\wcc = 1$ and the identity on
+the ceiling $n_\wcc = 2^N$.}
 \label{fig:r19sectors}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\ifgraphic{../../figures/paper/fig_paper_dmax_obc0.pdf}{0.78\linewidth}
-\caption{Largest sector $D_{\max}$ vs $N$ (\rt{obc0}), log scale. The dotted
-line is $2^N$. The ordering is the reverse of
-Figure~\ref{fig:r19sectors}: the rules with the fewest sectors have the
-biggest ones.}
+\ifgraphic{../../figures/paper/fig_paper_dmax_obc0.pdf}{0.82\linewidth}
+\caption{Largest sector $D_{\max}$ vs $N$ (\rt{obc0}), log scale. The grey track
+is the $2^N$ ceiling, traced exactly by the six ergodic rules (W54 one state
+below it). The ordering is the reverse of Figure~\ref{fig:r19sectors}: the rules
+with the fewest sectors have the biggest ones.}
 \label{fig:r19dmax}
 \end{figure}
+
+\paragraph{Where each point comes from.} Not every rule had been pushed equally
+far. The Tier-1a sweep reaches $N = 21$ on the fragmented rules and $22$ for
+W150, but stops enlarging $N$ as soon as a rule is classified ergodic, so those
+seven ended at $13$ there; the Tier-1e sweep covered all $256$ rules to $N = 16$
+(a few to $17$). Since weak and strong components coincide for unitary rules the
+two stores are merged, and \fn{wcc\_scc\_agreement} checks every overlapping unit
+before the merge is used --- there is no disagreement anywhere in the sixteen.
+
+That still left the census ragged, for a reason having nothing to do with the
+rules, so \fn{qca\_fragmentation/extend\_unitary.py} closed it
+(Section~\ref{sec:extend}). Each curve is nonetheless drawn only over its own
+range and never extrapolated, and the machinery that annotates a short track's
+$N_{\max}$ in the legend is still in place, because the ranges can diverge again
+the moment anyone pushes one rule further.
 
 \paragraph{On the drawing.} The $y$ axis is a true logarithmic axis with decade
 ticks rather than $\ln(\cdot)$ on a linear axis, as in the original R2 figures.
 A straight line still means an exponential, and the reader additionally gets to
 read the actual sector counts off the axis. The five hues are the CVD-validated
-categorical order used across the reports, re-checked over all pairs; the worst
-separation is $\Delta E = 7.2$ (W201 green against W156 red, protanopia), which
-is admissible only with a secondary encoding, and three are present --- distinct
-markers, a solid/dashed split by family, and a direct law tag at every line end.
+categorical order used across the reports, re-checked over all pairs under
+normal, protan, deutan and tritan vision; the worst separation is
+$\Delta E = 7.4$ (W201 green against W60 blue, tritanopia), which is admissible
+only with a secondary encoding, and three are present --- distinct markers, a
+line style that tracks the class, and a direct law tag at every line end. The
+green was darkened from \rt{\#008300} to \rt{\#006400} in this revision, which
+raises that worst pair from $3.9$ and improves every other pair it takes part in.
+The two trivial classes are drawn in neutrals rather than a sixth and seventh
+hue, which is a statement about the content: they are the reference lines of the
+figure, and the saturated hues belong to the rules that actually fragment.
+
+\section{Closing the $N$ gap: \fn{extend\_unitary}}
+\label{sec:extend}
+
+The seven rules the sweeps stopped early on are the cheapest of the sixteen, not
+the dearest. For a \emph{unitary} rule the sector partition is exactly the
+connected-component structure of the single-flip graph
+$x \sim x \oplus 2^i$ over the sites where the Hadamard fires --- a theorem, and
+one validated against the streamed engine for all sixteen unitary rules at both
+boundary conventions in \fn{tests/test\_flip\_graph.py}. Label propagation over
+one \rt{uint32} array of $2^N$ entries decides it: $N = 22$ is $17$\,MB and a
+quarter of a second per rule.
+
+\fn{extend\_unitary} does that for the missing units and appends them to the
+Tier-1e store in the ordinary schema, with \rt{checks.source} recording where
+they came from. It writes nothing for a rule until the same code has reproduced
+\emph{every} unit both stores already hold for it --- between $19$ and $28$ units
+per rule, computed by union-find in one store and by Tarjan in the other, so
+three unrelated algorithms have to agree before a fourth number is added. $93$
+units were added this way, taking every unitary rule to $N = 22$. The whole run
+takes well under a minute, most of it spent re-deriving the units that already
+existed rather than on the new ones; run again it adds nothing and re-verifies
+all $33$ units of each of the sixteen rules in half a minute.
+
+Two things fell out of it. Every law in Table~\ref{tab:r19laws} continues to hold
+at the new $N$, which is a real test rather than a restatement --- the extension
+could have broken any of the $44$. And the fast path reproduces the Tier-1a
+record for W150 at $N = 22$, which is the deepest unit in the whole Tier-1a
+archive at either boundary condition --- every other rule stops at $21$ --- so
+the check reaches the archive's own frontier.
+
+The same command extends any unitary rule further:
+\rt{python -m qca\_fragmentation.extend\_unitary -{}-n-max 24}. Memory is
+$4 \cdot 2^N$ bytes, so $N = 26$ is $268$\,MB and $N = 30$ is $4.3$\,GB; the
+reduction is proved only for unitary rules and refuses anything else.
 
 \section{Figure 3 --- how big are the sectors?}
 
 Neither scaling figure says anything about the \emph{distribution} of sector
-sizes: $n_\wcc$ counts them and $D_{\max}$ reports one extreme. Figure
-\ref{fig:r19hist} fills that in for the two exponentially fragmented rules, and
-the two columns turn out to look nothing alike.
+sizes: $n_\wcc$ counts them and $D_{\max}$ reports one extreme. Nor does either
+separate the two exponentially fragmented rules from each other --- both are
+straight lines of similar slope. Figure~\ref{fig:r19hist} does both, and the two
+columns turn out to look nothing alike.
 
 \begin{figure}[htbp]
 \centering
@@ -229,37 +390,96 @@ W108. The
 $\sum_s s\,h(s) = 2^N$ before returning, so relying on it is checked rather than
 assumed. That is what puts $N = 21$ within reach.
 
+\section{Figure 4 --- the frozen states}
+\label{sec:frozen}
+
+Certifying the census produced a third exact series for free. The number of
+size-one sectors is a closed form for \emph{every} unitary rule, and it is the
+sharpest single number for telling the four classes apart.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/paper/fig_paper_frozen_obc0.pdf}{0.82\linewidth}
+\caption{Number of frozen states $n_1$ vs $N$ (\rt{obc0}), symlog $y$ so that
+zero is a value rather than a gap --- which matters twice here: the six ergodic
+rules have none at all, and W105 has none at $N \equiv 1 \pmod 4$. Exponential
+rules have exponentially many (W108: a third of a million by $N=21$), the
+polynomial rules have $O(1)$, and the identity has all $2^N$.}
+\label{fig:r19frozen}
+\end{figure}
+
+Two of the laws are worth pulling out of Table~\ref{tab:r19laws}.
+
+\paragraph{W108's frozen count factorises over the sublattices.}
+\[
+  n_1^{108}(N) \;=\; F_{\lfloor N/2\rfloor+2}\, F_{\lceil N/2\rceil+2},
+\]
+exactly, at every computed $N$ --- $25, 40, 64, 104, 169, \ldots$ up to
+$54\,289 = F_{13}^2$ at $N = 22$. A state is frozen iff nothing can move on either
+sublattice, and the two decouple, so the count is a product of two Fibonacci
+numbers of nearly equal index. That is the same even/odd split that carries R18's
+two independent domain-wall charges $|W_{\mathrm{even}}|$ and
+$|W_{\mathrm{odd}}|$, seen here in a completely different observable. W201 obeys
+the same form with the indices pulled down by one: $F_{m+1}^2$ at $N=2m$ and
+$F_m F_{m+3}$ at $N = 2m+1$, the odd case being W108's value at $N-2$ off by
+$(-1)^m$ via Catalan's identity.
+
+\paragraph{W105 loses its frozen states exactly where it parts from W150.}
+$n_1^{105}$ runs $1, 2, 1, 0$ as $N$ runs through $2, 3, 0, 1 \pmod 4$, so the
+zeros fall at $N \equiv 1 \pmod 4$ --- precisely the residue class at which W105
+has one sector fewer than W150 and its largest sector jumps to odd domain-wall
+number. W150 never drops below one. Three observables, one parity obstruction.
+
 \section{Using and editing the notebook}
 
 Open \fn{notebooks/paper\_figures.ipynb} and run all cells; it writes into
 \fn{figures/paper/} and takes a few seconds. Section~2 of the notebook holds
 every adjustable parameter --- page widths, font sizes, the palette, the
 \rt{TRACKS} list that decides which rules appear and how they are grouped, the
-law tags and their nudges, the histogram's $N$ values and bin count, the output
-directory. The drawing code reads that cell and nothing else.
+law tags and their nudges, the $y$ scale per series, the legend placement, the
+histogram's $N$ values and bin count, the output directory. The drawing code
+reads that cell and nothing else.
 
-To add a rule to the scaling figures, append a dict to \rt{TRACKS}. To change
-which $N$ the histograms show, edit \rt{HIST\_NS}. To change a \emph{law}, edit
+To add or regroup rules in the scaling figures, edit \rt{TRACKS}; rules inside
+one track share a hue and the leading one is drawn filled on top of the others,
+so a track that is secretly two curves gives itself away. To change which $N$ the
+histograms show, edit \rt{HIST\_NS}. To change a \emph{law}, edit
 \fn{scaling/paper\_figures.py} instead --- and expect the test suite to have an
-opinion.
+opinion. The notebook itself is generated by
+\fn{notebooks/\_build\_paper\_figures\_notebook.py}, so a hand edit that should
+survive belongs in the builder.
 
 \section{Caveats}
 
 \begin{itemize}
   \item \textbf{\rt{obc0} only.} The \rt{pbc} sweep is held pending caveats
     (\fn{NEXT\_STEPS.md}); under \rt{pbc} at odd $N$ the brick-wall layers stop
-    commuting, so those points would need even $N$ only.
+    commuting, so those points would need even $N$ only. This matters more than
+    usual for Section~\ref{sec:symmetry}: the ergodic-versus-fragmented contrasts
+    it reports are \emph{created} by the \rt{obc0} vacuum, and under \rt{pbc} the
+    spin flip is restored and the pairs would collapse onto each other.
+  \item \textbf{The tail of every rule comes from the flip reduction}, not from
+    the sweep that produced its head: $N \ge 17$ (or $18$) was computed by
+    \fn{extend\_unitary}, and those records say so in \rt{checks.source}. The
+    reduction is a theorem for unitary rules and for no others, it is checked
+    against the engine independently, and the extension reproduces every stored
+    unit of a rule before adding to it --- but it is a different algorithm from
+    the one that produced the older points, and that is worth knowing.
   \item \textbf{These are WCC sectors}, which for the unitary rules shown
     coincide with the strongly connected components, so the decomposition is
     exact for the monitored and the unmonitored chain alike. That coincidence is
     a property of unitarity and does not survive dissipation --- see R-T14 on
-    the recurrent-class/WCC distinction.
-  \item \textbf{One representative per symmetry partner.} W198 is W156 under
-    reflection and W108/W201 are spin-flip partners; the partner is omitted
-    rather than drawn on top of its twin.
-  \item \textbf{Nothing here is new dynamics.} The sweep data is R2's; what is
-    new is the certification of the laws, the $150/105$ distinction, and the
-    size distributions.
+    the recurrent-class/WCC distinction. It is also what licenses merging the
+    Tier-1a and Tier-1e sweeps.
+  \item \textbf{Both members of a reflection pair are measured and drawn}, as a
+    filled marker inside a larger open one, rather than one being computed and
+    the other inferred; a pair that ever stopped coinciding would show as a lone
+    ring. Nothing plotted anywhere in this report is a symmetry image of another
+    number.
+  \item \textbf{Nothing here is new dynamics.} The sweep data is R2's and
+    Tier-1e's, extended along the same $N$ axis; what is new is the completion of
+    the census, the certification of the laws including the frozen-state series,
+    the spin-flip statement, and the size distributions.
 \end{itemize}
 
 \end{document}

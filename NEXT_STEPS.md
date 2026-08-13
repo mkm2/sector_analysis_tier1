@@ -988,3 +988,78 @@ the notebook, so hand-edits belong in the builder if they are to survive).
 - Report R19 + `tab_r19_laws_obc0.tex`, `tab_r19_sizes_obc0.tex` (both generated
   by `paper_figures.write_tables`, so the report cannot quote an unchecked
   number). 26 new tests.
+
+## R19 rev.2 -- the notebook covers ALL unitary rules (2026-08-13) -- DONE
+
+Task: "rework the notebook to include all unitary rules, also the 'ergodic'
+ones" + "take also into account that the maximum N might be different for
+different rules".
+
+Why eleven rules were missing in rev.1: `summary.load_series` DROPS units with
+`ergodic_flag`, which is right for fitting a growth base and returns an EMPTY
+series for seven of the sixteen unitary rules. `paper_figures.unit_series` now
+loads them, merging Tier-1a (`results/`, deeper: N=21-22) with Tier-1e
+(`results_tier1e/`, wider: all 256 rules to N=16-17). WCC = SCC for unitary
+rules, so the merge is legitimate -- `wcc_scc_agreement` checks every
+overlapping unit and finds no disagreement anywhere in the sixteen.
+
+- **Four behaviours, no intermediate case.**
+  ergodic 51,57,99,147,153,195 (n=1, D=2^N, identical series) and 54 (n=2,
+  D=2^N-1, the one frozen state is |0...0> because r00=I);
+  polynomial 60,102,105,150; exponential 108,156,198,201; frozen 204 (n=2^N).
+- **The trivial classes are the FRAME.** n_wcc*D_max >= 2^N holds with equality
+  iff every sector is the same size -- exactly the six ergodic rules and the
+  identity. Ratio is 1 for them, 2 for W54, up to 1329 for W201.
+- **Reflection is an obc0 symmetry, the spin flip is NOT.** 16 rules -> 12
+  curves under reflection ({57,99},{60,102},{153,195},{156,198}). Of the SIX
+  spin-flip pairs the only two whose series match are the two that are ALSO
+  reflection pairs -- the flip never preserves a series on its own account.
+  Two pairs cross the classification: W60 (N+1 sectors) <-> W195 (ergodic) and
+  W102 <-> W153. Same gates, same lattice, different vacuum.
+- **44 of 48 (rule, series) slots are exact closed forms**, checked at every
+  computed N. The four gaps -- W156/W198 D_max, W108/W201 n_wcc -- are asserted
+  to be exactly those four, so a curve cannot quietly lose its certificate.
+- **New third series: frozen-state counts, exact for every rule.**
+  W108: n_1 = F_{floor(N/2)+2} * F_{ceil(N/2)+2} -- the count FACTORISES over
+  the two sublattices, the same even/odd split as R18's two wall charges.
+  W201: F_{m+1}^2 (N=2m), F_m F_{m+3} (N=2m+1).
+  W105: 1,2,1,0 for N=2,3,0,1 mod 4 -- the ZERO falls at N=1 mod 4, the same
+  residue class where 105 parts from 150 in both other series. Third face of
+  one parity obstruction.
+  Optional Figure 4 (`fig_paper_frozen_obc0`) draws it on a SYMLOG axis, because
+  a log axis would silently drop both zeros.
+- **Unequal N ranges: handled AND closed.** The mechanism stays (each curve
+  spans its own range, never extrapolated; a track ending >= 2 sites short of the
+  widest carries its N_max in the legend), but the gap itself is gone. NEW
+  `code/qca_fragmentation/extend_unitary.py` computes the missing units with the
+  flip reduction (`flip_components_np`: a theorem for UNITARY rules only,
+  validated against the engine in test_flip_graph.py) -- one uint32 array of 2^N
+  entries, 0.25 s at N=22. **93 units added, all 16 unitary rules now run
+  N=6..22 on the same grid**, and every one of the 44 laws survived the
+  extension. The writer is gated: it refuses to add a unit until it has
+  reproduced EVERY stored unit of that rule in BOTH stores (19-28 per rule,
+  union-find in one and Tarjan in the other). Records carry
+  `checks.source = "extend_unitary"`. It reproduced Tier-1a's W150 N=22 record,
+  the deepest unit in the archive.
+  `python -m qca_fragmentation.extend_unitary --n-max 24` goes further;
+  memory is 4*2^N bytes (N=26 -> 268 MB, N=30 -> 4.3 GB). NOT run for the
+  dissipative rules -- the reduction is not proved for them.
+- **No symmetry is a source of data** (user instruction: "don't rely on
+  symmetries for the base data. Only actually computed values"). sweep.py's
+  `rule_set` CAN reduce to reflection representatives, so W198=W156 could in
+  principle have been a substitution -- it is not. Every unitary rule has its
+  own records with its own runtimes (156/198: 217 s vs 199 s at N=21;
+  60/102: 6982 s vs 6608 s), and `test_extend_unitary.py` now recomputes EVERY
+  stored unit of EVERY one of the sixteen from that rule's own gate assignment
+  (its own flip graph, no partner consulted) and requires agreement with both
+  stores -- 33 units x 16 rules, three unrelated algorithms. The symmetry
+  identities are results, and both members of a pair are drawn from their own
+  data.
+- Palette: W201 green darkened #008300 -> #006400. Worst all-pairs separation
+  goes from dE 3.9 (FAIL) to 7.4 (tritan, green vs blue; secondary encodings
+  present) and every other pair it takes part in improves. The two trivial
+  classes use neutrals, not a sixth and seventh hue.
+- Combined figure now has a shared legend BELOW both panels (eight entries do
+  not fit inside a half-width panel).
+- Report R19 rev.2 + new `tab_r19_census_obc0.tex`; 74 tests in
+  test_paper_figures.py (was 26).
