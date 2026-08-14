@@ -1,0 +1,450 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+
+\title{\textbf{Report R21 --- strong or weak? Grading the fragmentation of
+108/201 and 156/198}\\
+\large An addendum to R18 --- Krylov sector analysis of quantum cellular
+automata}
+\author{Tier 1 analysis}
+\date{2026-08-14}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+R9 and R19 report $D_{\max}/2^N \to 0$ for all four rules R18 is about. That is
+necessary for fragmentation but it is not the criterion in use: the literature
+grades fragmentation by the largest Krylov sector relative to the
+\emph{symmetry sector} that contains it, $D_{\max}(s)/\dim s$, and dividing by
+$2^N$ instead is the same test only when the symmetry is trivial --- which here
+it is not. We run the proper test. \textbf{All four rules are strongly
+fragmented, and the conclusion is not close.} At $N=20$ the ratio in the
+dominant symmetry sector is $5.9\times10^{-3}$ ($W_{108}$),
+$8.8\times10^{-3}$ ($W_{201}$) and $3.0\times10^{-3}$ ($W_{156}/W_{198}$),
+decaying geometrically at rates $0.841$, $0.834$ and $0.697$ against the
+predicted $\varphi/2 = 0.809$ and $4^{1/5}/2 = 0.660$. We do not take R18's
+charges on trust: a detector built here finds the \emph{complete} space of
+conserved charges $\sum_i q(x_i,\ldots,x_{i+r-1})$ by exact rational
+elimination, at ranges $r=1,2,3,4$ and on a two-site unit cell, and
+independently reproduces R18's pair at $r=2$ --- for $W_{108}$ it returns
+literally the sublattice-resolved counts of the wall word \rt{00}, with no
+notion of a wall anywhere in its input. Longer range finds \emph{more} charges
+(ten for $W_{108}$ at $r=4$, which R18 did not report) and the verdict does not
+move. Underneath the numerics there is a theorem: finitely many finite-range
+extensive charges have at most $O(N^m)$ joint level sets, so the symmetry can
+only ever remove a \emph{polynomial} factor, and any rule whose $D_{\max}$
+grows like $\lambda^N$ with $\lambda<2$ is strongly fragmented for that reason
+alone. Finally, the diagnostic is shown not to be vacuous on this project's own
+rules: $W_{60}/W_{102}$ hold exactly half the Hilbert space in one sector and
+grade \textbf{weak}, while $W_{150}$ and $W_{105}$ turn out to be
+\textbf{not fragmented at all} --- their Krylov sectors are exactly the level
+sets of a single conserved charge, the total domain-wall number $D$ for
+$W_{150}$ and the staggered one $S$ for $W_{105}$. Everything is repeated at
+\rt{pbc} to $N=18$ with the same verdict, and there the detected charge level
+sets reproduce R18's Tier-2 counts ($13,18,25$ and $12,17,23$) exactly.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question, stated carefully}
+
+\subsection{Two ratios, one of which is the criterion}
+
+Write $\mathcal{K}(x)$ for the Krylov sector of a computational basis state $x$
+and $s(x)$ for the symmetry sector containing it. The grading used in the
+literature (Sala \emph{et al.}, PRX \textbf{10}, 011047 (2020); Khemani,
+Hermele and Nandkishore, PRB \textbf{101}, 174204 (2020); Moudgalya, Bernevig
+and Regnault, Rep.\ Prog.\ Phys.\ \textbf{85}, 086501 (2022)) is
+\[
+\textbf{strong:}\quad \frac{D_{\max}(s)}{\dim s}\;\longrightarrow\;0,
+\qquad\qquad
+\textbf{weak:}\quad \frac{D_{\max}(s)}{\dim s}\;\longrightarrow\;\text{const}>0 ,
+\]
+in the thermodynamic limit, with $s$ the dominant (largest) symmetry sector.
+Weak fragmentation still has one thermal Krylov sector that fills its symmetry
+sector, with the frozen and small sectors a vanishing remainder; strong
+fragmentation has no such sector, and a typical initial state explores an
+asymptotically vanishing fraction of what its conservation laws allow.
+
+R9's $D_{\max}/2^N$ is the same quantity only if $\dim s = 2^N$, i.e.\ only if
+there is no symmetry to speak of. For these four rules there is: R18 certifies
+two independent local charges apiece. So the crude ratio understates
+$\dim s$ and therefore \emph{overstates} how strongly fragmented the model is.
+The question is whether it overstates it enough to matter.
+
+\subsection{The trap: ``all conserved quantities'' makes the question empty}
+
+Taken literally, the grading is not well posed. R18 proves that the
+\emph{wall-occurrence set} is conserved and is a \emph{complete invariant}: two
+states share a Krylov sector if and only if the rule's minimal wall word occurs
+at the same positions. If one is allowed to call that a symmetry, the symmetry
+sectors \emph{are} the Krylov sectors, the ratio is $1$ by construction, and
+every fragmented model in the world is ``weak''.
+
+The grading is therefore always relative to a \emph{declared} symmetry algebra
+--- the local charges one would write down for the model --- held at fixed
+finite range while $N\to\infty$. The honest procedure is not to declare as few
+charges as possible but as \emph{many} as exist at each range, since a larger
+symmetry makes $\dim s$ smaller and the ratio larger, and hence makes a
+``strong'' verdict harder to earn. That is what this report does, and
+Section~\ref{sec:detector} is how.
+
+\section{Finding the charges rather than assuming them}
+\label{sec:detector}
+
+\subsection{The ansatz and the elimination}
+
+\fn{scaling.hsf\_strength} detects every charge of the form
+\[
+Q(x) \;=\; \sum_i q\bigl(i \bmod p;\; s_i, s_{i+1}, \ldots, s_{i+r-1}\bigr),
+\]
+with $s$ the padded string the dynamics actually sees (\rt{obc0} pads a frozen
+$0$ outside each end, and those zeros are charge material for the same reason
+R18 found them to be wall material). The method is: label every state with its
+Krylov sector via the flip reduction (\fn{graph.flip\_graph}), form the
+count-vector difference between each state and a representative of its sector,
+and take the exact rational null space of the resulting row space. Every basis
+vector is then re-evaluated and \emph{asserted} to be constant on every sector,
+so nothing rests on floating point.
+
+Two conventions are not free choices.
+
+\paragraph{The unit cell must be two sites.} A brick-wall cycle is invariant
+under two-site translations only, so a conserved density may live on one
+sublattice. With $p=1$ the detector finds exactly \emph{one} charge for each of
+the four rules; with $p=2$ it finds \emph{two}. The second is the staggered one,
+and $p=2$ is R18's ``parity split'' --- the reason its Tier-2 detector needed
+one too.
+
+\paragraph{Detection must be parity-resolved in $N$.} On an open chain the two
+sublattices swap roles with $N \bmod 2$, so a basis found at $N=12$ need not be
+conserved at $N=13$. It happens to survive at $r=2$, which is how an earlier
+pass of this module got away with transferring one basis to every $N$; at
+$r=4$ every rule in play has at least one basis vector that breaks. The module
+detects separately for even and odd $N$, and \fn{strength} reports
+\rt{krylov\_inside\_sym} at every measured point --- the flag that caught it,
+and which is asserted throughout.
+
+\subsection{It reproduces R18, from a completely different direction}
+
+\begin{proposition}
+At $r=2$, $p=2$ the detector finds exactly two independent charges for each of
+$W_{108}, W_{201}, W_{156}, W_{198}$, and their joint level sets coincide
+exactly with R18's $(|W_{\rm even}|, |W_{\rm odd}|)$ --- the sublattice-resolved
+occurrence counts of the rule's minimal wall word. Verified for $N=10,11,12$.
+\end{proposition}
+
+\noindent For $W_{108}$ the agreement is more than a coincidence of partitions:
+the returned integer basis is, verbatim,
+\[
+q_1 = \bigl[\text{even positions: } \rt{00}\mapsto 1\bigr], \qquad
+q_2 = \bigl[\text{odd positions: } \rt{00}\mapsto 1\bigr],
+\]
+i.e.\ $|W_{\rm even}|$ and $|W_{\rm odd}|$ for the word \rt{00}, which is
+exactly the word R18 reports. The detector was given the sector partition and
+a pattern-counting ansatz and nothing else; it recovered the wall word. For the
+other three rules the basis is a different (equally valid) choice of coordinates
+on the same two-dimensional space, and the level sets agree exactly.
+
+This is the cross-check R18 could not perform on itself: its walls and its
+charges both came from Tier-2 modules, whereas this detector is Tier-1 code
+with no wall concept in it.
+
+\subsection{What R18 did not report: longer range finds more}
+
+R18's ``exactly two independent local charges'' is a statement about range 2.
+It does not survive to range 3 or 4:
+
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+& $r=1$ & $r=2$ & $r=3$ & $r=4$ \\
+\midrule
+$W_{108}$ & 0 & 2 & 6 & 10 \\
+$W_{201}$ & 0 & 2 & 4 & 8 \\
+$W_{156}$, $W_{198}$ & 0 & 2 & 3 & 7 \\
+\midrule
+$W_{60}$, $W_{102}$ & 0 & 0 & 1 & 2 \\
+$W_{150}$, $W_{105}$ & 0 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The $r=1$ column is R18's other observation, now checked
+independently: there is no single-site charge for any of them, so magnetisation
+is not conserved --- immediate once one notices the gate flips a site outright.
+
+The growth of the other columns is what makes this section necessary rather than
+decorative. Ten charges could in principle carve the Hilbert space finely enough
+to change the verdict, and the only way to know is to measure at each range
+separately. Section~\ref{sec:results} does, and Section~\ref{sec:theorem}
+explains why the answer was never in doubt.
+
+\section{The measurements}
+\label{sec:results}
+
+\begin{center}
+\footnotesize
+\iftable{tab_r21_strength_obc0.tex}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_hsf_strength_obc0.pdf}{\textwidth}
+\caption{\textbf{The crude ratio and the criterion give the same verdict, for a
+reason.} (a) $D_{\max}/2^N$, as R9 reports it. (b) The criterion,
+$D_{\max}(s^*)/\dim s^*$ in the dominant symmetry sector at range 2; the
+zig-zag on the four fragmented curves is the even/odd split of the chain.
+(c) The average over computational basis states of $D_K(x)/\dim s(x)$ --- the
+fraction of its own symmetry sector a random product state can reach --- which
+is the same statement without the parity artefact. Dashed guides are
+$(\varphi/2)^N$ and $(4^{1/5}/2)^N$. $W_{60}$ and $W_{102}$ sit flat at $1/2$
+(weak); $W_{150}$ and $W_{105}$ sit flat at $1$ (not fragmented at all).}
+\label{fig:strength}
+\end{figure}
+
+\noindent The numbers behind panel (b), at range 2:
+
+\begin{center}
+\small
+\iftable{tab_r21_ratios_obc0.tex}
+\end{center}
+
+\noindent Three things to read off.
+
+\paragraph{The symmetry matters, and does not save anything.} At $N=20$,
+$W_{156}$'s crude ratio is $3.1\times10^{-4}$ while the proper one is
+$3.0\times10^{-3}$ --- a factor of ten. So dividing by $2^N$ genuinely was the
+wrong denominator. It is also a factor of ten and not a factor of $2^{cN}$,
+which is why the verdict is unchanged. For $W_{108}$ the two ratios are
+$6.5\times10^{-3}$ and $5.9\times10^{-3}$, nearly equal.
+
+\paragraph{The dominant symmetry sector holds $\Theta(2^N/N)$ states.} The
+quantity $\dim(s^*)\,N/2^N$ sits at $1.56, 1.79, 1.83, 1.97$ for $W_{108}$ over
+$N=8,12,16,20$ and similarly for the others --- flat to within a factor, which
+is the numerical content of ``the symmetry only removes a polynomial factor''.
+The number of symmetry sectors itself runs $15, 28, 45, 66$ at $N=8,12,16,20$,
+i.e.\ $\binom{N/2+2}{2}$, visibly quadratic.
+
+\paragraph{The decay rate is the predicted one.} With no charges at all
+($r=1$) the measured rate is $0.8090$ for $W_{108}$, against $\varphi/2 =
+0.809017$, and $0.6581$ for $W_{156}$ against $4^{1/5}/2 = 0.659754$ --- six and
+three digits respectively, with the exponent derived (R18's wall recurrence,
+R19's closed forms, R20's OEIS entries) rather than fitted. Switching the
+charges on lifts the rate slightly, to $0.841$ and $0.697$, which is exactly the
+$O(N^2)$ prefactor showing up as a slower apparent decay over a finite window.
+
+\subsection{Every range, separately}
+
+\begin{center}
+\small
+\iftable{tab_r21_ranges_obc0.tex}
+\end{center}
+
+\noindent All four rules grade \textbf{strong} at $r=1,2,3$ and $4$. One caveat
+belongs with the $r=4$ rows and is stated rather than buried: with $m=10$
+charges the bound below carries an $N^{10}$ prefactor, and $N\le20$ is nowhere
+near the asymptotic regime for such a prefactor. The $r=4$ ratios are therefore
+noisy and occasionally sit at $1$ at small $N$. They are reported because
+suppressing them would be worse; the argument that settles $r=4$ is the theorem,
+not the fit.
+
+\section{Why the answer could not have been otherwise}
+\label{sec:theorem}
+
+\begin{theorem}
+Fix a range $r$ and unit cell $p$, and let $Q_1,\ldots,Q_m$ be conserved charges
+of the above form, $m \le p\,2^r$. Then the number of joint level sets is
+$O(N^m)$, and consequently
+\[
+\frac{D_{\max}(s^*)}{\dim s^*} \;=\; O\!\left(N^{m}\,\frac{D_{\max}}{2^N}\right).
+\]
+If $D_{\max} = \Theta(\lambda^N)$ with $\lambda<2$, the ratio vanishes
+exponentially, at rate $\lambda/2$ up to the polynomial factor, and the
+fragmentation is strong.
+\end{theorem}
+
+\begin{proof}
+Each $Q_j$ is a sum of at most $L = N+2$ terms drawn from the finite set of
+values of $q_j$, so $Q_j$ takes $O(N)$ distinct values and the $m$ of them have
+$O(N^m)$ joint level sets. The largest of those level sets therefore holds at
+least $2^N/O(N^m)$ states, and $D_{\max}(s^*) \le D_{\max}$.
+\end{proof}
+
+\noindent Three consequences worth stating plainly.
+
+\begin{enumerate}
+\item \textbf{The user's instinct was right, and the reason is this theorem.}
+``$D_{\max}/2^N \to 0$, so it should be strong'' is not a sloppy shortcut when
+the decay is exponential: a finite-range symmetry cannot supply more than a
+polynomial denominator, so the two criteria agree. What the theorem also shows
+is where the shortcut fails --- when the decay is only polynomial, the symmetry
+can absorb all of it, and the two criteria come apart. Both cases occur in this
+project (Section~\ref{sec:controls}).
+
+\item \textbf{Range cannot rescue the symmetry story, at any fixed $r$.} Ten
+charges give $N^{10}$, which is enormous at $N=20$ and irrelevant at $N=200$.
+The only way a symmetry could compete is if $m$ grew with $N$ --- i.e.\ if the
+declared symmetry were not of fixed finite range --- and that is precisely the
+degenerate case of Section~1.2, in which the wall set itself is the symmetry.
+
+\item \textbf{It sharpens what R18 proved.} R18 showed the charges are too
+\emph{coarse} to explain the sectors: $O(N^2)$ level sets against $\rho^{2N}$ or
+$\varphi^N$ Krylov sectors, the ratio growing exponentially. That is a statement
+about counting sectors. The theorem here is the corresponding statement about
+their \emph{sizes}, and it is what turns ``the symmetry is not the explanation''
+into ``the fragmentation is strong''.
+\end{enumerate}
+
+\section{The diagnostic is not vacuous: three grades among eight rules}
+\label{sec:controls}
+
+A test that returns ``strong'' for everything would say nothing. Running the
+same pipeline over the polynomial corner of the unitary sweep produces three
+distinct outcomes, all within this project's own rules.
+
+\paragraph{$W_{60}$, $W_{102}$ --- weak.} $D_{\max}=2^{N-1}$: half the Hilbert
+space sits in one Krylov sector, at every $N$. There is no charge at all below
+range 3, so the symmetry sector is the whole space and
+$D_{\max}(s^*)/\dim s^* = 1/2$ exactly, forever. The average explored fraction
+is exactly $1/3$. This is the textbook weak picture --- one thermal sector
+filling its symmetry sector, with $N$ small sectors beside it --- realised by a
+rule of this project rather than a model imported for the comparison.
+
+\paragraph{$W_{150}$, $W_{105}$ --- not fragmented at all.} Both have exactly
+\emph{one} conserved range-2 charge, and its level sets \emph{are} their Krylov
+sectors: $n_{\rm sym} = n_{\rm Krylov} = 11$ at $N=20$, ratio identically $1$,
+explored fraction identically $1$, at every $N$ and every range. Calling this
+``weak'' would be wrong; weak fragmentation still has small sectors beside the
+thermal one, and these rules have none. The charges are named:
+
+\begin{proposition}
+$W_{150}$ conserves the total domain-wall number $D = \sum_i b_i$ and not the
+staggered $S$; $W_{105}$ conserves $S = \sum_i (-1)^i b_i$ and not $D$. In each
+case the level sets of that single charge are exactly the Krylov sectors.
+\end{proposition}
+
+\noindent This retro-explains two things. It explains why $W_{150}$'s sector
+count is the trivial $\lfloor (N+1)/2\rfloor + 1$: the \rt{obc0} padding forces
+an even number of domain walls among the $N+1$ bonds, so $D$ takes exactly that
+many values --- connecting to R8's domain-wall count for rule 150, and matching
+R20's identification of the count as \rt{A008619}$(N+1)$. And it explains R20's identifications of their
+$D_{\max}$: $W_{105}$'s largest sector is the central binomial coefficient
+$\binom{N+1}{\lfloor (N+1)/2\rfloor}$ because that is the largest level set of a
+balanced counting statistic, and $W_{150}$'s is \rt{A214282} for the same
+reason. Those closed forms are the symmetry showing through, not accidents.
+
+\paragraph{$W_{108}$, $W_{201}$, $W_{156}$, $W_{198}$ --- strong.} The four
+rules of R18, at every range tested, by both the finite-$N$ measurement and the
+theorem.
+
+\medskip
+\noindent The interesting structural fact is that the split is exactly the split
+in $\lambda$: the strong rules are the ones with $\lambda = \varphi$ or
+$4^{1/5}$, both $<2$; the weak and unfragmented ones all have
+$\lambda = 2$, differing only in the sub-exponential correction
+($2^{N-1}$ against $2^N/\sqrt{N}$). By the theorem that is not a coincidence but
+the whole content of the classification.
+
+\section{The same question on the ring}
+
+R18 tested both boundary conditions, so this addendum does too. The pipeline is
+exhaustive enumeration to $N=18$ --- the same kind of computation R18 already ran
+at \rt{pbc}, not the production sweep.
+
+\begin{center}
+\footnotesize
+\iftable{tab_r21_strength_pbc.tex}
+\end{center}
+
+\noindent The verdict is the same: \textbf{strong for all four rules at every
+range}, with $D_{\max}(s^*)/\dim s^*$ at $7.6\times10^{-3}$ ($W_{108}$,
+$W_{201}$) and $4.7\times10^{-3}$ ($W_{156}$, $W_{198}$) at $N=18$. Three
+details are specific to the ring.
+
+\paragraph{A third confirmation of R18, on the nose.} At range 2 the detected
+charges have $13, 18, 25$ joint level sets for $W_{108}$ at $N=8,10,12$ and
+$12, 17, 23$ for $W_{156}$ --- exactly the numbers R18 quotes for Tier-2's
+\emph{full certified charge set} at \rt{pbc}. That was R18's own check that
+nothing conserved had been left out; it now reproduces from a third,
+independent detector.
+
+\paragraph{$W_{108}$ and $W_{201}$ merge.} On the ring their series coincide
+term for term (same charge counts, same sector counts, same ratios), because the
+spin flip that relates them is a \rt{pbc} symmetry and not an \rt{obc0} one ---
+consistent with R19's finding that the \rt{obc0} vacuum breaks it.
+
+\paragraph{The controls move, and in the expected direction.}
+$W_{60}$ and $W_{102}$ lose their charges entirely (none at any range up to 4)
+and collapse to \emph{two} Krylov sectors of $2^{N-1}$ each, so the ratio is
+$1$ rather than $1/2$; the periodic chain removes the boundary that split the
+smaller sectors off. $W_{105}$ stays unfragmented ($9$ sectors, $9$ level sets
+at $N=18$), while $W_{150}$ acquires a small excess ($12$ Krylov sectors inside
+$10$ level sets) and grades weak rather than unfragmented. None of this touches
+the four rules of R18.
+
+\section{Answering the question as asked}
+
+\begin{enumerate}
+\item \textbf{Does $D_{\max}/2^N\to0$ imply strong HSF?} Not in general --- but
+yes whenever the decay is exponential and the declared symmetry is of fixed
+finite range, which covers all four rules here. The two criteria come apart
+only in the polynomial case, and this project contains examples of that too.
+
+\item \textbf{Do 108, 201, 156, 198 exhibit weak or strong HSF, measured against
+the R18 charges?} \textbf{Strong}, at $N=20$, at ranges 1 through 4, with the
+ratio at $5.9\times10^{-3}$, $8.8\times10^{-3}$, $3.0\times10^{-3}$ and
+$3.0\times10^{-3}$ and decaying geometrically at the predicted rates.
+
+\item \textbf{Were $S$, $D$, $n_{01}$, $n_{10}$ the right charges to divide
+by?} They are a spanning set but not an independent one: for each rule the
+independent pair at range 2 is the sublattice-resolved wall counts, of which
+$D$ or $S$ is a function (R18, confirmed here by an independent detector).
+Dividing by fewer would have given a larger $\dim s$ and an even smaller ratio,
+so the choice made here is the conservative one. Dividing by \emph{more} --- the
+range-3 and range-4 charges R18 did not report --- also leaves the verdict
+unchanged.
+
+\item \textbf{Is there anything the symmetry could have done?} No, and the
+theorem says why: $m$ finite-range charges have $O(N^m)$ level sets, so no
+choice of local symmetry can supply an exponential denominator. The only way to
+close the gap is with the wall set itself, which is not a local charge and is
+the entire point of R18.
+\end{enumerate}
+
+\section{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.hsf_strength \
+       --bc obc0 --rebuild --n-max 20
+python -m qca_fragmentation.scaling.hsf_strength \
+       --bc pbc  --rebuild --n-max 18
+python -m pytest qca_fragmentation/tests/test_hsf_strength.py -q
+\end{verbatim}
+
+\noindent Everything here comes from \fn{analytics/hsf\_strength\_\{bc\}.json}.
+The Krylov labels use the flip reduction of \fn{graph.flip\_graph}, valid
+because all eight rules are unitary; the charge detector, the ratios and the
+figure are \fn{scaling/hsf\_strength.py}, which depends on R18's
+\fn{scaling/wall\_charges.py} only for the cross-check in \S2.2 and for naming
+$D$ and $S$ in \S5.
+
+\end{document}

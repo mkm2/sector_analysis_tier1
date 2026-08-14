@@ -1,0 +1,850 @@
+{
+ "identifications": [
+  {
+   "aid": "A023434",
+   "name": "Dying rabbits: a(n) = a(n-1) + a(n-2) - a(n-4).",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    28,
+    70
+   ],
+   "declared_shift": 2,
+   "closed": "a(N) = a(N-1) + a(N-2) - a(N-4)",
+   "note": "dying rabbits; the sequence that falsifies the phi prediction",
+   "growth": 1.324717957244746,
+   "rows": [
+    {
+     "rule": 28,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 70,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000931",
+   "name": "Padovan sequence (or Padovan numbers): a(n) = a(n-2) + a(n-3) with a(0) = 1, a(1) = a(2) = 0.",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    29,
+    71,
+    157,
+    199
+   ],
+   "declared_shift": 6,
+   "closed": "a(N) = a(N-2) + a(N-3)",
+   "note": "Padovan",
+   "growth": 1.324717957244746,
+   "rows": [
+    {
+     "rule": 29,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 6,
+     "shift_ok": true
+    },
+    {
+     "rule": 71,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 6,
+     "shift_ok": true
+    },
+    {
+     "rule": 157,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 6,
+     "shift_ok": true
+    },
+    {
+     "rule": 199,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 6,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000930",
+   "name": "Narayana's cows sequence: a(0) = a(1) = a(2) = 1; thereafter a(n) = a(n-1) + a(n-3).",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    73
+   ],
+   "declared_shift": 1,
+   "closed": "a(N) = a(N-1) + a(N-3)",
+   "note": "Narayana's cows",
+   "growth": 1.465571231876768,
+   "rows": [
+    {
+     "rule": 73,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 1,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A179070",
+   "name": "a(1)=a(2)=a(3)=1, a(4)=3; thereafter a(n) = a(n-1) + a(n-3).",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    109
+   ],
+   "declared_shift": 2,
+   "closed": "a(N) = a(N-1) + a(N-3)",
+   "note": "same recurrence as 73, different seed",
+   "growth": 1.465571231876768,
+   "rows": [
+    {
+     "rule": 109,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A173862",
+   "name": "a(n) = A158772(n-1)/21.",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    28,
+    29,
+    70,
+    71,
+    157,
+    199
+   ],
+   "declared_shift": 2,
+   "closed": "2^floor((N+1)/3)",
+   "note": "the only OEIS home for 2^floor(n/3), and an obscure one",
+   "growth": 1.2599210498948732,
+   "rows": [
+    {
+     "rule": 28,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 29,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 70,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 71,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 157,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 199,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000045",
+   "name": "Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    73
+   ],
+   "declared_shift": 2,
+   "closed": "F(N+2)",
+   "note": "Fibonacci",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 73,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000045",
+   "name": "Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    109
+   ],
+   "declared_shift": 0,
+   "closed": "F(N)",
+   "note": "Fibonacci",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 109,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A001609",
+   "name": "a(1) = a(2) = 1, a(3) = 4; thereafter a(n) = a(n-1) + a(n-3).",
+   "bc": "pbc",
+   "key": "n_recurrent",
+   "rules": [
+    73,
+    109
+   ],
+   "declared_shift": 0,
+   "closed": "a(N) = a(N-1) + a(N-3)",
+   "note": "the two coincide on the ring",
+   "growth": 1.465571231876768,
+   "rows": [
+    {
+     "rule": 73,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    },
+    {
+     "rule": 109,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A169985",
+   "name": "Round phi^n to the nearest integer.",
+   "bc": "pbc",
+   "key": "d_max",
+   "rules": [
+    73,
+    109
+   ],
+   "declared_shift": 0,
+   "closed": "round(phi^N)",
+   "note": "Lucas numbers, shifted",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 73,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    },
+    {
+     "rule": 109,
+     "n_terms": 17,
+     "N_lo": 1,
+     "N_hi": 17,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A005251",
+   "name": "a(0) = 0, a(1) = a(2) = a(3) = 1; thereafter, a(n) = a(n-1) + a(n-2) + a(n-4).",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    108
+   ],
+   "declared_shift": 3,
+   "closed": "a(N) = a(N-1) + a(N-2) + a(N-4)",
+   "note": "R18's wall-set recurrence, root rho^2 = 1.754878",
+   "growth": 1.754877666246693,
+   "rows": [
+    {
+     "rule": 108,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 3,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A005251",
+   "name": "a(0) = 0, a(1) = a(2) = a(3) = 1; thereafter, a(n) = a(n-1) + a(n-2) + a(n-4).",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    201
+   ],
+   "declared_shift": 2,
+   "closed": "a(N) = a(N-1) + a(N-2) + a(N-4)",
+   "note": "W108's series shifted by one",
+   "growth": 1.754877666246693,
+   "rows": [
+    {
+     "rule": 201,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000045",
+   "name": "Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    156,
+    198
+   ],
+   "declared_shift": 2,
+   "closed": "F(N+2)",
+   "note": "Fibonacci -- R18's a(N) = a(N-1) + a(N-2)",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 156,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    },
+    {
+     "rule": 198,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A008619",
+   "name": "Positive integers repeated.",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    150
+   ],
+   "declared_shift": 1,
+   "closed": "floor(N/2) + 1",
+   "note": "positive integers repeated",
+   "growth": 1.0,
+   "rows": [
+    {
+     "rule": 150,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 1,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000045",
+   "name": "Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    108
+   ],
+   "declared_shift": 0,
+   "closed": "F(N)",
+   "note": "Fibonacci",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 108,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000045",
+   "name": "Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    201
+   ],
+   "declared_shift": 2,
+   "closed": "F(N+2)",
+   "note": "Fibonacci",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 201,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A178715",
+   "name": "a(n) = solution to the \"Select All, Copy, Paste\" problem: Given the ability to type a single letter, or to type individual \"Select All\", \"Copy\" or \"Paste\" command keystrokes, what is the maximal number of letters of text that can be obtained with n keystrokes?",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    156,
+    198
+   ],
+   "declared_shift": 0,
+   "closed": "a(N) = 4 a(N-5) for N >= 16",
+   "note": "Select All, Copy, Paste -- where the 4^(N/5) comes from",
+   "growth": 1.3195079107728942,
+   "rows": [
+    {
+     "rule": 156,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    },
+    {
+     "rule": 198,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 0,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A214282",
+   "name": "Largest Euler characteristic of a downset on an n-dimensional cube.",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    150
+   ],
+   "declared_shift": 2,
+   "closed": "",
+   "note": "largest Euler characteristic of a downset on the N-cube",
+   "growth": 2.0,
+   "rows": [
+    {
+     "rule": 150,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A001405",
+   "name": "a(n) = binomial(n, floor(n/2)).",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    105
+   ],
+   "declared_shift": 1,
+   "closed": "binomial(N+1, floor((N+1)/2))",
+   "note": "central binomial coefficient",
+   "growth": 2.0,
+   "rows": [
+    {
+     "rule": 105,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 1,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A006498",
+   "name": "a(n) = a(n-1) + a(n-3) + a(n-4), a(0) = a(1) = a(2) = 1, a(3) = 2.",
+   "bc": "obc0",
+   "key": "n_frozen",
+   "rules": [
+    108
+   ],
+   "declared_shift": 2,
+   "closed": "F(floor(N/2)+2) * F(ceil(N/2)+2)",
+   "note": "the entry states the Fibonacci-product factorisation itself",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 108,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A195971",
+   "name": "Number of n X 1 0..4 arrays with each element x equal to the number its horizontal and vertical neighbors equal to 2,0,1,3,4 for x=0,1,2,3,4.",
+   "bc": "obc0",
+   "key": "n_frozen",
+   "rules": [
+    201
+   ],
+   "declared_shift": -1,
+   "closed": "F(m+1)^2 (N=2m even), F(m) F(m+3) (N=2m+1 odd)",
+   "note": "",
+   "growth": 1.618033988749895,
+   "rows": [
+    {
+     "rule": 201,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": -1,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A008619",
+   "name": "Positive integers repeated.",
+   "bc": "obc0",
+   "key": "n_frozen",
+   "rules": [
+    156,
+    198
+   ],
+   "declared_shift": 1,
+   "closed": "floor(N/2) + 1",
+   "note": "positive integers repeated",
+   "growth": 1.0,
+   "rows": [
+    {
+     "rule": 156,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 1,
+     "shift_ok": true
+    },
+    {
+     "rule": 198,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 1,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A000034",
+   "name": "Period 2: repeat [1, 2]; a(n) = 1 + (n mod 2).",
+   "bc": "obc0",
+   "key": "n_frozen",
+   "rules": [
+    150
+   ],
+   "declared_shift": -6,
+   "closed": "1 + (N mod 2)",
+   "note": "period 2",
+   "growth": 1.0,
+   "rows": [
+    {
+     "rule": 150,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": -6,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A007877",
+   "name": "Period 4 zigzag sequence: repeat [0,1,2,1].",
+   "bc": "obc0",
+   "key": "n_frozen",
+   "rules": [
+    105
+   ],
+   "declared_shift": -5,
+   "closed": "period 4: 1, 0, 1, 2 for N = 1, 2, 3, 0 (mod 4)",
+   "note": "period-4 zigzag; the zero at N = 1 (mod 4) is R19's",
+   "growth": 1.0,
+   "rows": [
+    {
+     "rule": 105,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": -5,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  }
+ ],
+ "partners": [
+  {
+   "aid": "A023434",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    28,
+    70
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A000931",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    29,
+    71,
+    157,
+    199
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A173862",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    28,
+    29,
+    70,
+    71,
+    157,
+    199
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A001609",
+   "bc": "pbc",
+   "key": "n_recurrent",
+   "rules": [
+    73,
+    109
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A169985",
+   "bc": "pbc",
+   "key": "d_max",
+   "rules": [
+    73,
+    109
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A000045",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    156,
+    198
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A178715",
+   "bc": "obc0",
+   "key": "d_max",
+   "rules": [
+    156,
+    198
+   ],
+   "identical": true,
+   "n_terms": 17
+  },
+  {
+   "aid": "A008619",
+   "bc": "obc0",
+   "key": "n_frozen",
+   "rules": [
+    156,
+    198
+   ],
+   "identical": true,
+   "n_terms": 17
+  }
+ ],
+ "no_match": [
+  {
+   "rules": [
+    28,
+    70,
+    157,
+    199
+   ],
+   "bc": "pbc",
+   "key": "n_recurrent"
+  },
+  {
+   "rules": [
+    29,
+    71
+   ],
+   "bc": "pbc",
+   "key": "n_recurrent"
+  },
+  {
+   "rules": [
+    28,
+    29,
+    70,
+    71,
+    157,
+    199
+   ],
+   "bc": "pbc",
+   "key": "d_max"
+  }
+ ],
+ "fetched": {
+  "utc": "2026-08-14"
+ }
+}

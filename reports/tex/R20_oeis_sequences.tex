@@ -1,0 +1,319 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\oeis}[1]{\href{https://oeis.org/#1}{\texttt{#1}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\title{\textbf{Report R20 --- the growth sequences have names:
+twenty-three OEIS identifications}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-14}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Every growth law in this project was derived here --- from an exact linear
+recurrence over the wall grammar (R18), from a closed form (R19), or, in the
+cases R16 flagged, from a fit. That fixes an exponent but says nothing about
+whether the underlying integer sequence is \emph{known}. We asked the On-Line
+Encyclopedia of Integer Sequences: \textbf{23 identifications, covering 37
+(rule, observable) pairs and drawing on 17 distinct entries}, each matched as an
+exact contiguous block of $17$ terms with the index shift recorded. Three of the
+identifications change what we can say. (i) The sequence that \emph{falsifies}
+the task's $\varphi$ prediction for rule 28 is \oeis{A023434}, ``dying
+rabbits'' --- Fibonacci's rabbits with a finite lifetime --- so the falsification
+is a classical combinatorial object rather than a numerical accident, and rule
+70 lands on the same entry by independent measurement. (ii) $W_{156}/W_{198}$'s
+$D_{\max}$ is \oeis{A178715}, the ``Select All, Copy, Paste'' problem, whose cost
+structure (a factor $m$ costs $m+1$) is exactly why the base is $4^{1/5}$, and
+whose own recurrence $a(n)=4a(n-5)$ reproduces our ladder term for term.
+(iii) $W_{108}$'s frozen-state count is \oeis{A006498}, whose entry states the
+Fibonacci-product factorisation R19 derived. Two further identifications are
+new results in their own right: $W_{105}$'s $D_{\max}$ is the central binomial
+coefficient \oeis{A001405}, and $W_{150}$'s is \oeis{A214282}, the largest Euler
+characteristic of a downset on the $N$-cube. We also record what is
+\emph{absent}: the four \rt{pbc} series of the dissipative $\rho$-group return
+no hits at all, so they appear to be new.
+\end{abstract}
+
+\tableofcontents
+
+\section{Why bother}
+
+An OEIS identification is not a theorem, and none of the physics below depends
+on one. It buys three specific things.
+
+\paragraph{An external oracle.} An entry carries a b-file with hundreds of
+terms. Our frontier stops at $N=17$ for the dissipative rules and $N=22$ for the
+unitary ones; the named sequence does not. When the planned extension runs on
+larger hardware, the first hundred terms of the continuation are already
+written down by someone who has never seen this code. That is the only kind of
+check on a growth law that is not produced by the thing it checks.
+
+\paragraph{A name for a falsification.} R9's task sec.~6 predicted
+$a_{\rm wcc}\ge\varphi$ for rule 28, on the grounds that it inherits rule 156's
+\rt{01} wall grammar. It does not hold, and \fn{test\_wcc.py}'s\linebreak[1]
+\fn{test\_rule\_28\_sector\_count\_}\-\fn{follows\_the\_plastic\_number\_not\_phi}
+pins why: the \rt{obc0} sector count obeys the exact recurrence
+\[
+a(N) = a(N-1) + a(N-2) - a(N-4),
+\]
+whose characteristic polynomial factors as $(x-1)(x^3-x-1)$, giving the plastic
+number $\rho = 1.324718$ --- well below $\varphi=1.618034$. That recurrence is
+the \emph{definition} of \oeis{A023434}. Section~\ref{sec:rabbits} takes this
+further than a coincidence.
+
+\paragraph{A mechanism for an exponent.} $4^{1/5}=1.319508$ is an odd-looking
+constant to fall out of a cellular automaton. \oeis{A178715} explains it, and
+Section~\ref{sec:copypaste} spells the explanation out.
+
+\section{Method, and what ``matched'' means}
+
+\subsection{Our side}
+
+Unitary series come from \fn{scaling.paper\_figures}'s merged Tier-1a $+$
+Tier-1e loader, $N=6\ldots22$ (R19). Dissipative series are assembled by
+\fn{scaling.oeis.diss\_series}: the Tier-1a archive for $N\ge6$, and a fresh
+recomputation from \fn{graph.scc} for $N\le12$, with the overlap
+\emph{asserted} to agree rather than assumed. The recomputation is what supplies
+$N=1\ldots5$, and those low terms are exactly what fixes an index shift, so they
+had to come from a code path whose agreement with the archive is checked.
+
+Two conventions matter. The ergodic early-exit is switched off during the
+recomputation, so that a small unit reports its class count instead of bailing
+out --- with it on, $W_{73}$ reads $0,0,0,4,\ldots$ instead of $1,2,3,4,\ldots$
+and the shift comes out wrong by three. And $D_{\max}$ for a dissipative rule
+means the largest \emph{recurrent} class, i.e.\ the largest key of
+\rt{size\_hist}, not the largest weakly connected component; the two differ (for
+$W_{70}$ at $N=12$ they are $16$ and $486$) and only the former is the object
+R-T14 says the renewal counts.
+
+\subsection{No sequence is inherited from a symmetry partner}
+
+Several identifications cover more than one rule. In every such case the rules
+were measured separately and found to agree; none is copied across a symmetry.
+This is not pedantry. \fn{core.rules} warns that reflection is \emph{not} a
+guaranteed sector-size symmetry for dissipative rules under the even-first
+convention, so $W_{28}=W_{70}$ and $W_{29}=W_{71}=W_{157}=W_{199}$ are
+measurements, not shortcuts.
+\fn{test\_oeis.py::test\_grouped\_rules\_were\_each\_measured\_not\_inherited}
+recomputes each member of each group and compares.
+
+\subsection{The OEIS side}
+
+Entries are fetched once and cached in \fn{analytics/oeis\_terms.json}, so the
+tests run offline and a failure means our series moved rather than that OEIS
+did. A match requires that \emph{every} term we have appears \emph{consecutively
+and in order} inside the entry's listed terms; nothing is matched on a truncated
+prefix, up to a constant factor, or on a subsequence. The shift is then read off
+against the entry's declared offset and stored, so that
+\[
+\text{ours}(N) \;=\; \texttt{Axxxxxx}(N + \text{shift})
+\]
+is a checkable statement and not a gesture. All 23 currently verify on 17 terms
+each.
+
+\section{The identifications}
+
+\begin{center}
+\small
+\iftable{tab_r20_oeis.tex}
+\end{center}
+
+\noindent and the entries themselves, with the closed form in our own index
+where we have one:
+
+\begin{center}
+\small
+\iftable{tab_r20_oeis_names.tex}
+\end{center}
+
+\section{Three that are more than bookkeeping}
+
+\subsection{Dying rabbits, and rule 28}
+\label{sec:rabbits}
+
+Rule 28 is \rt{IIVD}. Its \rt{obc0} recurrent-class count and its $D_{\max}$
+ladder are \emph{term for term identical to rule 70's} over the whole computed
+range, $N=1\ldots17$, at both boundary conditions:
+\[
+2,3,4,6,8,11,15,20,27,36,48,64,85,113,150,199,264
+\]
+\[
+D_{\max} = 1,2,2,2,4,4,4,8,8,8,16,16,16,32,32,32,64 \;=\; 2^{\lfloor (N+1)/3\rfloor}.
+\]
+The two rules are reflection partners, so the agreement is unsurprising; it is
+nonetheless \emph{measured}, for the reason given above.
+
+The class count is \oeis{A023434}$(N+2)$, ``dying rabbits'':
+$a(n)=a(n-1)+a(n-2)-a(n-4)$ --- Fibonacci's rabbits with a finite lifetime, the
+$-a(n-4)$ being the deaths. For $W_{28}$ this is not merely the right
+recurrence; it reads as the right \emph{story}. Rule 28 inherits rule 156's
+\rt{01} wall grammar, which on its own gives Fibonacci and $\varphi$ (and does,
+for $W_{156}$: see the table). What rule 28 adds is a \rt{D} channel, a reset to
+$|0\rangle$, which destroys a wall after finitely many steps. A wall with a
+finite lifetime is precisely what turns Fibonacci's recursion into the dying-
+rabbit one, and $\varphi=1.618$ into $\rho=1.325$.
+
+We flag this as an \emph{interpretation to be checked against the wall grammar
+in Tier-2}, not a result. What is a result is the arithmetic: the exact
+recurrence, the identification, and the fact that the sequence which falsifies
+the $\varphi$ prediction is a named classical object with a b-file.
+
+A second observation belongs here. For $W_{28}$ the weakly connected component
+count and the recurrent-class count coincide ($11,15,20,27,\ldots$ for both), so
+one identification covers both observables. That is not true across the whole
+$\rho$-group: $W_{29}$ and $W_{71}$ are the two rules whose WCC count differs
+from their recurrent-class count, which is why \fn{sectors.rule\_point} records
+$W_{70}$'s base as an ``integer recurrence'' at $1.32472$ but $W_{29}$'s as a
+``parity fit'' at $1.21470$. The recurrent-class series has the exact Padovan
+law; the WCC series has only a fit.
+
+\subsection{Select All, Copy, Paste, and the $4^{N/5}$}
+\label{sec:copypaste}
+
+$W_{156}/W_{198}$'s largest sector runs
+\[
+6, 9, 12, 16, 20, 27, 36, 48, 64, 81, 108, 144, 192, 256, 324, 432, 576
+\]
+over $N=6\ldots22$, with asymptotic growth $4^{N/5}=1.319508^N$. This is
+\oeis{A178715} exactly, with no shift.
+
+The entry is Rowell's ``Select All, Copy, Paste'' problem
+(\emph{J.\ Integer Seq.} \textbf{18} (2015), 15.10.7): given a budget of $n$
+keystrokes, and the ability to type one letter, or to select-all/copy/paste and
+thereby multiply the current text by a factor $m$ at a cost of $m+1$ keystrokes,
+what is the longest text obtainable? The answer maximises a product of factors
+whose \emph{costs} sum to the budget, where factor $m$ costs $m+1$. Optimising
+$m^{1/(m+1)}$ over integers gives $m=4$ at $4^{1/5}=1.319508$, beating $m=3$
+($3^{1/4}=1.316$) and $m=5$ ($5^{1/6}=1.308$) --- and the entry's own recurrence
+$a(n)=4a(n-5)$ for $n\ge16$ is the statement that the optimum is eventually all
+fours.
+
+That is where our exponent comes from. The largest Krylov sector of
+$W_{156}$ is a product over the gaps between frozen walls, each gap of length
+$\ell$ contributing a factor, and the wall itself costing sites; the optimum
+therefore has the same shape as the keystroke problem, with the same integer
+optimisation and the same answer. R18 derived the Fibonacci recurrence for the
+\emph{number} of wall sets from the grammar; A178715 supplies the matching
+account of the largest \emph{preimage}.
+
+\subsection{$W_{108}$'s frozen states, factorised by the entry itself}
+
+R19 derived
+\[
+n_{\rm frozen}(W_{108}, N) \;=\; F_{\lfloor N/2\rfloor+2}\;
+F_{\lceil N/2\rceil+2},
+\]
+a factorisation over the two sublattices. The series is \oeis{A006498}$(N+2)$,
+defined by $a(n)=a(n-1)+a(n-3)+a(n-4)$ --- and the entry's own formula section
+states the Fibonacci-product identity. So the sublattice factorisation is not
+special to this model; it is a known property of that sequence, and our
+derivation and the encyclopedia's agree.
+
+$W_{201}$'s frozen count is \oeis{A195971}$(N-1)$, whose stated combinatorial
+meaning (a count of $n\times1$ arrays over $0..4$ with a neighbour condition) has
+no evident relation to anything here. We record the match and claim nothing
+from it.
+
+\section{Two identifications that are new results}
+
+\paragraph{$W_{105}$: central binomial.} The largest sector is
+\[
+D_{\max}(W_{105}, N) \;=\; \binom{N+1}{\lfloor (N+1)/2\rfloor}
+\;=\; \oeis{A001405}(N+1),
+\]
+verified over $N=6\ldots22$. This is the maximal level set of a balanced
+counting statistic, which is exactly what R21 then confirms: $W_{105}$ has a
+single conserved range-2 charge, the staggered domain-wall number $S$, and its
+level sets \emph{are} the Krylov sectors. The central binomial coefficient is
+the largest of those level sets, so the closed form is not a coincidence but the
+symmetry showing through.
+
+\paragraph{$W_{150}$: an Euler characteristic.} $D_{\max}(W_{150},N)$ is
+\oeis{A214282}$(N+2)$, ``largest Euler characteristic of a downset on an
+$n$-dimensional cube'', a unique hit. $W_{150}$'s single conserved charge is the
+total domain-wall number $D$ (R21), whose level sets are again exactly its
+sectors, so $D_{\max}$ is the largest such level set. The two sequences agree
+over the full $17$ terms and diverge from $W_{105}$'s central binomials at
+$N=9$ ($210$ against $252$) and $N=13$ ($3003$ against $3432$) --- the two rules
+are close but not the same, and the encyclopedia separates them.
+
+\section{What is not there}
+
+Four series were searched for and returned nothing:
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+rules & bc & series \\
+\midrule
+$W_{28}, W_{70}, W_{157}, W_{199}$ & \rt{pbc} & $n_{\rm rec}$
+  $= 1,3,4,3,6,6,8,11,13,18,\ldots$ \\
+$W_{29}, W_{71}$ & \rt{pbc} & $n_{\rm rec}$
+  $= 1,2,3,2,5,5,7,10,12,17,\ldots$ \\
+$W_{28}, W_{70}, W_{157}, W_{199}$ & \rt{pbc} & $D_{\max}$
+  $= 1,1,2,1,2,4,2,4,8,4,\ldots$ \\
+$W_{29}, W_{71}$ & \rt{pbc} & $D_{\max}$
+  $= 2,1,2,1,2,4,2,4,8,4,\ldots$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The branches are listed separately because the ring splits a group
+that \rt{obc0} holds together: at \rt{obc0} all six rules share one class-count
+sequence, whereas on the ring $\{28,70,157,199\}$ and $\{29,71\}$ differ at
+every $N\ge2$. Their $D_{\max}$ ladders differ only at $N=1$, where the
+``ring'' is a single site.
+
+Absence is recorded rather than omitted, because ``we searched and there is
+nothing'' is a usable statement. It is also not the same as ``structureless'':
+the unmatched \rt{pbc} ladder satisfies $a(N)=2a(N-3)$ exactly from $N=5$, which
+\fn{test\_oeis} pins.
+
+\section{Two junk hits, so that they are not rediscovered}
+
+\paragraph{\oeis{A173862}.} The $\rho$-group's \rt{obc0} $D_{\max}$ ladder
+$2^{\lfloor (N+1)/3\rfloor}$ has exactly one OEIS home, and it is
+``$a(n)=\texttt{A158772}(n-1)/21$''. The terms are right and the match is exact,
+but nobody should cite it: the citable object is the closed form, and the
+encyclopedia simply has no primary entry for $2^{\lfloor n/3\rfloor}$. We list
+it in the table for completeness and use the closed form everywhere else.
+
+\paragraph{The trivial periodics.} $W_{150}$'s frozen count matches
+\oeis{A000034} (``period 2: repeat $1,2$''), $W_{105}$'s matches \oeis{A007877}
+(``period 4 zigzag $0,1,2,1$''), and $W_{150}/W_{156}$'s sector counts match
+\oeis{A008619} (``positive integers repeated''). These are correct and
+completely uninformative --- any period-2 or period-4 sequence matches
+something. They are kept because the shift is still a check on the closed form:
+$W_{105}$'s zero at $N\equiv1\pmod 4$, which R19 had to special-case in
+\fn{paper\_figures.\_tier1a}, is visible in A007877's phase.
+
+\section{Reproduce}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.oeis --refresh --tables
+python -m pytest qca_fragmentation/tests/test_oeis.py -q
+\end{verbatim}
+
+\noindent \fn{--refresh} is the only step that touches the network; everything
+else reads the cached entries in \fn{analytics/}. The identifications, the
+partner-agreement checks and the unmatched list are written to
+\fn{oeis\_identifications.json} in the same directory.
+
+\end{document}

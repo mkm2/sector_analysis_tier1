@@ -1063,3 +1063,111 @@ overlapping unit and finds no disagreement anywhere in the sixteen.
   not fit inside a half-width panel).
 - Report R19 rev.2 + new `tab_r19_census_obc0.tex`; 74 tests in
   test_paper_figures.py (was 26).
+
+## R20 -- the growth sequences have names (2026-08-14) -- DONE
+
+- **23 OEIS identifications, covering 37 (rule, observable) pairs from 17
+  distinct entries**, each an
+  exact contiguous block of 17 terms with the index shift recorded and pinned.
+  `scaling/oeis.py` + `tests/test_oeis.py` (41 tests). Entries are cached in
+  `analytics/oeis_terms.json` so the tests are OFFLINE; `--refresh` re-fetches.
+  (OEIS returns 403 to a bare fetch; a `User-Agent: Mozilla/5.0` header works.)
+- The three that carry weight:
+  - **A023434 "dying rabbits"** = W28/W70 obc0 n_rec(N+2). This is the sequence
+    that FALSIFIES task sec.6's `a_wcc >= phi` prediction for rule 28 --
+    `test_wcc.py::test_rule_28_sector_count_follows_the_plastic_number_not_phi`
+    already pinned the recurrence `a(n)=a(n-1)+a(n-2)-a(n-4)`, and that IS
+    A023434's definition. Fibonacci rabbits with a finite lifetime; rule 28
+    is rule 156's `01` wall grammar plus a `D` channel that kills a wall.
+    Interpretation flagged for a Tier-2 check, not claimed.
+  - **A178715 "Select All, Copy, Paste"** = W156/W198 obc0 D_max, no shift.
+    A factor m costs m+1 keystrokes, the optimum is all fours, hence
+    4^(1/5)=1.3195 and the entry's own `a(n)=4a(n-5)` for n>=16.
+  - **A006498** = W108 frozen count(N+2); the entry itself states the
+    Fibonacci-product factorisation R19 derived.
+- Two NEW closed forms found this way: **W105 D_max = C(N+1, floor((N+1)/2))**
+  (A001405) and **W150 D_max = A214282** (largest Euler characteristic of a
+  downset on the N-cube). R21 explains both -- they are the largest level sets
+  of those rules' single conserved charge.
+- Also identified: A000931 Padovan (29/71/157/199 n_rec), A000930 Narayana (73),
+  A179070 (109), A005251 (108/201 n_wcc), A000045 Fibonacci (several D_max),
+  A001609 + A169985 (73/109 pbc), A195971 (201 frozen), A008619/A000034/A007877
+  (the trivial periodics -- kept only because the shift checks R19's closed
+  forms, e.g. W105's zero at N = 1 mod 4).
+- **A173862 is a junk home.** The rho-group's obc0 D_max ladder
+  `2^floor((N+1)/3)` has exactly one OEIS entry and it is "A158772(n-1)/21".
+  Cite the closed form, not the A-number.
+- **What is NOT in OEIS**: all four pbc series of the dissipative rho-group.
+  The ring splits a group that obc0 holds together -- {28,70,157,199} and
+  {29,71} differ at every N>=2 in n_rec (and only at N=1 in D_max). Not
+  structureless though: `a(N)=2a(N-3)` exactly from N=5, pinned in the tests.
+- Dissipative series are assembled by `oeis.diss_series`: archive for N>=6,
+  recomputed from `graph.scc` for N<=12, overlap ASSERTED to agree. Two traps:
+  `detect_ergodic=False` is required or the small units report 0 instead of a
+  class count (W73 reads 0,0,0,4 and the shift comes out wrong by three); and
+  D_max means the largest RECURRENT class (max key of `size_hist`), not the
+  largest WCC (W70 at N=12: 16 vs 486).
+- No sequence is inherited from a symmetry partner. Reflection is NOT a
+  guaranteed sector-size symmetry for dissipative rules under the even-first
+  convention, so W28 = W70 is a measurement;
+  `test_grouped_rules_were_each_measured_not_inherited` recomputes each member.
+
+## R21 -- strong vs weak fragmentation, an addendum to R18 (2026-08-14) -- DONE
+
+- Question: `D_max/2^N -> 0` is R9's ratio, but the literature grades by
+  `D_max(s)/dim(s)` with s the SYMMETRY sector. Answer: **all four rules of R18
+  are STRONGLY fragmented, at every range tested, and it is not close.**
+  At N=20 the dominant-sector ratio is 5.9e-3 (W108), 8.8e-3 (W201),
+  3.0e-3 (W156/198), decaying at 0.841 / 0.834 / 0.697 against the predicted
+  phi/2 = 0.809 and 4^(1/5)/2 = 0.660.
+- `scaling/hsf_strength.py` + `tests/test_hsf_strength.py` (40 tests),
+  `analytics/hsf_strength_obc0.json`, `figures/fig_hsf_strength_obc0.*`,
+  three tables `tab_r21_{strength,ratios,ranges}_obc0.tex`.
+- **The charges are DETECTED, not assumed.** Exact rational null space of the
+  count-vector differences inside each Krylov sector, for the ansatz
+  `Q = sum_i q(i mod p; s_i..s_{i+r-1})`, r = 1..4. It independently reproduces
+  R18: exactly two independent charges at r=2, and for W108 the returned basis
+  IS `|W_even|` and `|W_odd|` for the word `00` -- the detector was given the
+  sector partition and a counting ansatz and recovered the wall word.
+- **p=2 (two-site unit cell) is mandatory** -- with p=1 only one charge shows
+  up. This is R18's "parity split".
+- **Detection must also be parity-resolved in N.** A basis found at N=12 need
+  not be conserved at N=13 (the sublattices swap roles on an open chain). It
+  survives at r=2, which is how the first pass of the module got away with it;
+  at r=4 EVERY rule has a basis vector that breaks. `strength` reports
+  `krylov_inside_sym` at every point and that flag is what caught it.
+- **R18 understated the charge count.** "Exactly two independent local charges"
+  holds at range 2 only: at r=3/r=4 there are 6/10 for W108, 4/8 for W201,
+  3/7 for W156/198. The verdict does not move.
+- **The theorem that settles it** (and why the crude ratio was right here):
+  m charges of fixed finite range have O(N^m) joint level sets -- POLYNOMIAL --
+  so `D_max(s*)/dim(s*) = O(N^m * D_max/2^N)`. Any rule with
+  `D_max = Theta(lambda^N)`, lambda < 2, is strongly fragmented. A local
+  symmetry can never supply an exponential denominator; only the wall set can,
+  and it is not a local charge. Measured: `dim(s*) * N / 2^N` is flat at ~2.
+- **The diagnostic is not vacuous -- three grades among eight rules.**
+  - W60, W102: `D_max = 2^(N-1)`, no charge below range 3, ratio = 1/2 exactly
+    forever, explored fraction exactly 1/3. **WEAK** -- the textbook picture,
+    in one of this project's own rules.
+  - W150, W105: exactly ONE range-2 charge, and its level sets ARE the Krylov
+    sectors (n_sym = n_krylov = 11 at N=20, ratio identically 1).
+    **NOT FRAGMENTED AT ALL.** The charge is the total domain-wall number D for
+    W150 and the staggered S for W105, with the other broken in each case.
+    This retro-explains W150's trivial `floor(N/2)+1` sector count (obc0 padding
+    forces an even wall number) and R20's two new D_max closed forms.
+  - W108, W201, W156, W198: **STRONG**.
+  The split is exactly the split in lambda: strong iff lambda < 2.
+- Caveat stated in the report rather than buried: at r=4 with m=10 the N^10
+  prefactor dominates the whole N<=20 window, so those ratios are noisy and
+  sometimes sit at 1 at small N. The theorem, not the fit, settles r=4.
+- **pbc, to N=18: same verdict.** All four strong at every range;
+  `Dmax(s*)/dim(s*)` = 7.6e-3 (108/201) and 4.7e-3 (156/198). Three ring-only
+  details: (i) the detected charge level sets are 13/18/25 for W108 at
+  N=8,10,12 and 12/17/23 for W156 -- **exactly R18's quoted Tier-2 certified
+  counts**, a third independent confirmation; (ii) W108 and W201 merge on the
+  ring (the spin flip is a pbc symmetry, not obc0 -- R19); (iii) the controls
+  move: W60/W102 lose their charges entirely and collapse to TWO sectors of
+  2^(N-1) so the ratio is 1 not 1/2, W105 stays unfragmented (9=9), W150 gains
+  a small excess (12 Krylov in 10 level sets) and grades weak.
+  This is exhaustive enumeration to N=18 in memory, the same kind of run R18
+  already did at pbc -- **not** the held production pbc sweep.
