@@ -458,6 +458,149 @@ def strength(rule: int, N: int, bc: str, qs: Sequence[Sequence[int]],
     }
 
 
+# --- 4b. the two unfragmented rules, in closed form ---------------------------
+#
+# W150 = IVVI fires when the two neighbours DIFFER; W105 = VIIV fires when they
+# AGREE.  In the bond variables of the padded chain,
+#
+#     u_i = s_i XOR s_{i+1},   i = 0 .. N        (N+1 bonds)
+#
+# the map x -> u is a bijection from the 2^N states onto the EVEN-WEIGHT vectors
+# of {0,1}^{N+1}, because obc0 pins s_0 = s_{N+1} = 0.  Flipping site i toggles
+# u_{i-1} and u_i, so:
+#
+#   W150  toggles (u_{i-1}, u_i) exactly when they DIFFER -- a wall HOPS, and
+#         weight(u) = D is conserved;
+#   W105  toggles (u_{i-1}, u_i) exactly when they AGREE  -- a wall PAIR is
+#         created or destroyed, and D is NOT conserved.  But in the STAGGERED
+#         bond variable v_i = u_i XOR (i mod 2) the condition u_{i-1} = u_i
+#         reads v_{i-1} != v_i, so W105 is the same hopping model in v, and
+#         weight(v) is conserved.
+#
+# Both are therefore the identical model -- adjacent transpositions on a chain
+# of N+1 bonds -- which is why in each case the level sets of the single charge
+# ARE the Krylov sectors, and why the sector sizes are binomial coefficients.
+# The only difference is WHICH residue class of weights the constraint allows:
+#
+#     weight(u) even   <=>   weight(v) = ceil(N/2)  (mod 2).
+#
+# Everything below is obc0 only; on the ring the bijection and the constraint
+# both change, and the level sets stop being the sectors (see the pbc table).
+
+def _eps(N: int) -> int:
+    """The residue class weight(v) is confined to: ceil(N/2) mod 2."""
+    return (-(-N // 2)) % 2
+
+
+def sector_distribution(rule: int, N: int) -> Dict[int, int]:
+    """{charge value: sector size} in closed form, obc0.
+
+    W150 is labelled by the domain-wall number D = weight(u), which is even:
+
+        size(D) = C(N+1, D),      D = 0, 2, 4, ..., <= N+1.
+
+    W105 is labelled by the staggered wall number S = weight(v) - ceil(N/2),
+    which is also always even:
+
+        size(S) = C(N+1, S + ceil(N/2)),
+        S + ceil(N/2) = 0 .. N+1  in steps of 2.
+
+    So both distributions are a single parity class of row N+1 of Pascal's
+    triangle; they differ only in which class.
+    """
+    from math import comb
+    if rule == 150:
+        return {w: comb(N + 1, w) for w in range(0, N + 2, 2)}
+    if rule == 105:
+        c = -(-N // 2)
+        return {k - c: comb(N + 1, k) for k in range(_eps(N), N + 2, 2)}
+    raise ValueError("closed form is for W150 and W105 only")
+
+
+def measured_distribution(rule: int, N: int) -> Dict[int, int]:
+    """The same thing from the engine: charge value -> Krylov sector size."""
+    from . import wall_charges as WC
+    charge = WC.charge_total if rule == 150 else WC.charge_staggered
+    kl = krylov_labels(rule, N, BC_DEFAULT)
+    q = np.array([charge(x, N, BC_DEFAULT) for x in range(1 << N)])
+    out: Dict[int, int] = {}
+    for k in range(int(kl.max()) + 1):
+        vals = q[kl == k]
+        assert int(vals.min()) == int(vals.max()), (rule, N, "charge not constant")
+        out[int(vals[0])] = int(vals.size)
+    return out
+
+
+def n_sectors_closed(rule: int, N: int) -> int:
+    """W150: floor((N+1)/2) + 1.  W105: the count of its parity class."""
+    if rule == 150:
+        return (N + 1) // 2 + 1
+    if rule == 105:
+        return (N + 1 - _eps(N)) // 2 + 1
+    raise ValueError("closed form is for W150 and W105 only")
+
+
+def d_max_closed(rule: int, N: int) -> int:
+    """The largest sector -- the largest binomial in the allowed parity class.
+
+    W105 always reaches the CENTRAL binomial, because floor((N+1)/2) =
+    ceil(N/2) is exactly the residue its weights are confined to.  W150 reaches
+    it too whenever N+1 is odd (the peak value then sits at two indices of
+    opposite parity, so both classes get it) or N+1 = 0 mod 4.  It misses it
+    exactly at N = 1 (mod 4), which is why the two part company at N = 9 (210
+    against 252) and N = 13 (3003 against 3432) -- the divergence R20 observed
+    between A214282 and the central binomials A001405.
+    """
+    return max(sector_distribution(rule, N).values())
+
+
+def n_frozen_closed(rule: int, N: int) -> int:
+    """Size-1 sectors: the ends of the row, w = 0 and w = N+1, when the parity
+    class admits them.  Reproduces R19's period-2 and period-4 laws."""
+    return sum(1 for v in sector_distribution(rule, N).values() if v == 1)
+
+
+def distributions_agree(rule: int, N: int) -> bool:
+    return measured_distribution(rule, N) == sector_distribution(rule, N)
+
+
+def same_multiset(N: int) -> bool:
+    """W150 and W105 have the same sector-SIZE multiset unless N = 1 (mod 4).
+
+    The reflection w -> N+1-w is a symmetry of row N+1, and it swaps the two
+    parity classes exactly when N+1 is odd.  So the multisets differ only when
+    the classes differ (eps = 1, i.e. N = 1, 2 mod 4) AND N is odd -- i.e. at
+    N = 1 (mod 4), which is precisely the residue at which R19 found W105 to
+    have NO frozen states.  It is the same fact: there the class excludes both
+    w = 0 and w = N+1.
+    """
+    a = sorted(sector_distribution(150, N).values())
+    b = sorted(sector_distribution(105, N).values())
+    return a == b
+
+
+def write_distribution_table(outdir: str, Ns: Sequence[int] = (8, 9, 10, 11)):
+    """The two distributions side by side, as the report prints them."""
+    os.makedirs(outdir, exist_ok=True)
+    rows = []
+    for N in Ns:
+        for rule in (150, 105):
+            d = sector_distribution(rule, N)
+            sizes = ", ".join(str(d[k]) for k in sorted(d))
+            lab = "$D$" if rule == 150 else "$S$"
+            keys = ", ".join(str(k) for k in sorted(d))
+            rows.append(f"$W_{{{rule}}}$ & {N} & {lab} & {keys} & {sizes} \\\\")
+        rows.append("\\addlinespace")
+    tab = ("\\setlength{\\tabcolsep}{4pt}\n"
+           "\\begin{tabular}{llll l}\n\\toprule\n"
+           "rule & $N$ & label & values & sector sizes \\\\\n\\midrule\n"
+           + "\n".join(rows[:-1]) + "\n\\bottomrule\n\\end{tabular}\n")
+    p = os.path.join(outdir, "tab_r21_distribution.tex")
+    with open(p, "w") as f:
+        f.write(tab)
+    return p
+
+
 # --- 5. sweep -----------------------------------------------------------------
 
 def _decay(Ns: Sequence[int], ys: Sequence[float]) -> Optional[float]:
@@ -827,10 +970,11 @@ def main(argv=None):
     figdir = os.path.join(results_io.REPO_ROOT, "figures")
     os.makedirs(figdir, exist_ok=True)
     fig_strength(args.bc, os.path.join(figdir, f"fig_hsf_strength_{args.bc}"), d)
-    for p in write_tables(args.bc,
-                          os.path.join(results_io.REPO_ROOT, "reports", "tex"),
-                          d):
+    texdir = os.path.join(results_io.REPO_ROOT, "reports", "tex")
+    for p in write_tables(args.bc, texdir, d):
         print("wrote", p)
+    if args.bc == BC_DEFAULT:
+        print("wrote", write_distribution_table(texdir))
 
 
 if __name__ == "__main__":

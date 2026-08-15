@@ -130,7 +130,11 @@ IDENTIFICATIONS: Tuple[Ident, ...] = (
     Ident((156, 198), "obc0", "n_recurrent", "A000045", 2, PHI,
           "F(N+2)", "Fibonacci -- R18's a(N) = a(N-1) + a(N-2)"),
     Ident((150,), "obc0", "n_recurrent", "A008619", 1, 1.0,
-          "floor(N/2) + 1", "positive integers repeated"),
+          "floor((N+1)/2) + 1", "positive integers repeated"),
+    Ident((105,), "obc0", "n_recurrent", "A004525", 2, 1.0,
+          "(N + 1 - eps)/2 + 1, eps = ceil(N/2) mod 2",
+          "one even followed by three odd; the period-4 gap is R21's parity "
+          "class"),
 
     # -- unitary, obc0: largest sector ----------------------------------------
     Ident((108,), "obc0", "d_max", "A000045", 0, PHI, "F(N)", "Fibonacci"),

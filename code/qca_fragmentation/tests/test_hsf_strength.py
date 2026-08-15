@@ -158,6 +158,58 @@ def test_w150_and_w105_are_not_fragmented_at_all():
             assert s["explored_fraction"] == 1.0
 
 
+@pytest.mark.parametrize("rule", (150, 105))
+@pytest.mark.parametrize("N", range(3, 17))
+def test_the_closed_form_gives_the_whole_sector_distribution(rule, N):
+    """Not just D_max: every sector size, keyed by its charge value.
+
+    W150: size(D) = C(N+1, D) for D even.
+    W105: size(S) = C(N+1, S + ceil(N/2)) for S even.
+    """
+    assert HS.distributions_agree(rule, N), (rule, N)
+
+
+@pytest.mark.parametrize("rule", (150, 105))
+def test_the_closed_form_reproduces_the_r19_and_r20_laws(rule):
+    """Sector count, D_max and the frozen count all fall out of the same row of
+    Pascal's triangle, so R19's closed forms and R20's OEIS entries must agree
+    with it."""
+    from math import comb
+    for N in range(3, 23):
+        d = HS.sector_distribution(rule, N)
+        assert sum(d.values()) == 1 << N, (rule, N)
+        assert len(d) == HS.n_sectors_closed(rule, N), (rule, N)
+        assert HS.d_max_closed(rule, N) == max(d.values())
+        if rule == 150:
+            assert HS.n_frozen_closed(150, N) == 1 + (N % 2), N
+        else:
+            assert HS.n_frozen_closed(105, N) == {0: 1, 1: 0, 2: 1, 3: 2}[N % 4], N
+    # W105 always reaches the central binomial; W150 misses it exactly at
+    # N = 1 (mod 4).  When N+1 is odd the peak value sits at two indices of
+    # opposite parity, so there both classes reach it.
+    for N in range(3, 23):
+        central = comb(N + 1, (N + 1) // 2)
+        assert HS.d_max_closed(105, N) == central, N
+        assert (HS.d_max_closed(150, N) == central) == (N % 4 != 1), N
+
+
+def test_the_two_distributions_differ_exactly_at_N_congruent_1_mod_4():
+    """Same parity class or not: the reflection w -> N+1-w swaps classes only
+    when N+1 is odd, so the size multisets part company precisely at
+    N = 1 (mod 4) -- the same residue at which W105 has no frozen states."""
+    for N in range(3, 25):
+        assert HS.same_multiset(N) == (N % 4 != 1), N
+        if N % 4 == 1:
+            assert HS.n_frozen_closed(105, N) == 0, N
+
+
+def test_the_divergences_R20_observed_are_the_parity_class():
+    """R20 reports W150's D_max leaving the central binomials at N = 9 (210 vs
+    252) and N = 13 (3003 vs 3432).  Both are the excluded odd centre."""
+    assert HS.d_max_closed(150, 9) == 210 and HS.d_max_closed(105, 9) == 252
+    assert HS.d_max_closed(150, 13) == 3003 and HS.d_max_closed(105, 13) == 3432
+
+
 def test_the_single_charge_is_D_for_150_and_S_for_105():
     """Total domain-wall number against staggered domain-wall number -- and in
     each case the OTHER one is not conserved."""

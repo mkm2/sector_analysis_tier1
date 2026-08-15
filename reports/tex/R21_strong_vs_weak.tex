@@ -56,9 +56,18 @@ rules: $W_{60}/W_{102}$ hold exactly half the Hilbert space in one sector and
 grade \textbf{weak}, while $W_{150}$ and $W_{105}$ turn out to be
 \textbf{not fragmented at all} --- their Krylov sectors are exactly the level
 sets of a single conserved charge, the total domain-wall number $D$ for
-$W_{150}$ and the staggered one $S$ for $W_{105}$. Everything is repeated at
-\rt{pbc} to $N=18$ with the same verdict, and there the detected charge level
-sets reproduce R18's Tier-2 counts ($13,18,25$ and $12,17,23$) exactly.
+$W_{150}$ and the staggered one $S$ for $W_{105}$. For those two we give the
+\emph{entire} sector distribution in closed form
+(\S\ref{sec:distribution}): in bond variables both rules are the same hopping
+model, and the sizes are one parity class of row $N+1$ of Pascal's triangle ---
+$\binom{N+1}{D}$ over even $D$ for $W_{150}$, and
+$\binom{N+1}{S+\lceil N/2\rceil}$ over $S + \lceil N/2\rceil \equiv
+\lceil N/2\rceil \pmod 2$ for $W_{105}$. Their $D_{\max}$, sector counts and
+frozen counts all follow, and the three separate observations R19 and R20 made
+about them collapse into one statement about which parity class is cut.
+Everything is repeated at \rt{pbc} to $N=18$ with the same verdict, and there
+the detected charge level sets reproduce R18's Tier-2 counts ($13,18,25$ and
+$12,17,23$) exactly.
 \end{abstract}
 
 \tableofcontents
@@ -342,6 +351,11 @@ staggered $S$; $W_{105}$ conserves $S = \sum_i (-1)^i b_i$ and not $D$. In each
 case the level sets of that single charge are exactly the Krylov sectors.
 \end{proposition}
 
+\noindent The mechanism, and the full sector distribution that follows from it,
+are in \S\ref{sec:distribution}: $W_{105}$'s move creates and destroys walls in
+\emph{pairs}, which is why $D$ moves, and the pairing is staggered, which is why
+$S$ does not.
+
 \noindent This retro-explains two things. It explains why $W_{150}$'s sector
 count is the trivial $\lfloor (N+1)/2\rfloor + 1$: the \rt{obc0} padding forces
 an even number of domain walls among the $N+1$ bonds, so $D$ takes exactly that
@@ -363,6 +377,136 @@ $4^{1/5}$, both $<2$; the weak and unfragmented ones all have
 $\lambda = 2$, differing only in the sub-exponential correction
 ($2^{N-1}$ against $2^N/\sqrt{N}$). By the theorem that is not a coincidence but
 the whole content of the classification.
+
+\section{$W_{150}$ and $W_{105}$ in closed form}
+\label{sec:distribution}
+
+Section~\ref{sec:controls} states that each of these two rules has a single
+conserved charge whose level sets are its Krylov sectors, and names the charges.
+That is enough to grade them, but it leaves the sector \emph{distribution}
+implicit. It is worth writing down, because both rules turn out to be the same
+model in different variables, and the whole distribution is one row of Pascal's
+triangle split by parity.
+
+\subsection{Bond variables make them the same model}
+
+Let $s = (0, x_1, \ldots, x_N, 0)$ be the padded string and
+\[
+u_i \;=\; s_i \oplus s_{i+1}, \qquad i = 0, \ldots, N
+\]
+its $N+1$ bond variables. Because \rt{obc0} pins both ends to $0$, the map
+$x \mapsto u$ is a \emph{bijection} from the $2^N$ states onto the
+\textbf{even-weight} vectors of $\{0,1\}^{N+1}$. Flipping site $i$ toggles
+exactly $u_{i-1}$ and $u_i$, and the two rules are complementary in when they
+fire:
+\[
+W_{150} = \rt{IVVI}:\ \text{fire iff } x_{i-1} \neq x_{i+1},
+\qquad
+W_{105} = \rt{VIIV}:\ \text{fire iff } x_{i-1} = x_{i+1},
+\]
+which in bond variables reads $u_{i-1} \neq u_i$ and $u_{i-1} = u_i$
+respectively. So
+
+\begin{itemize}
+\item $W_{150}$ toggles the pair $(u_{i-1}, u_i)$ exactly when they
+\emph{differ}: $01 \leftrightarrow 10$. A wall \textbf{hops}, and
+$D = \mathrm{weight}(u)$ is conserved.
+\item $W_{105}$ toggles the pair exactly when they \emph{agree}:
+$00 \leftrightarrow 11$. A wall \textbf{pair is created or destroyed}, so $D$ is
+\emph{not} conserved --- confirming the asymmetry directly. But in the
+\emph{staggered} bond variable
+\[
+v_i \;=\; u_i \oplus (i \bmod 2)
+\]
+the condition $u_{i-1} = u_i$ becomes $v_{i-1} \neq v_i$, so in $v$ the rule is
+the identical hopping model and $\mathrm{weight}(v)$ is conserved.
+\end{itemize}
+
+\noindent Both rules are therefore adjacent transpositions on a chain of $N+1$
+bonds, which is why in each case the level sets of the single charge \emph{are}
+the Krylov sectors: the hops generate the full symmetric group on the positions,
+so a fixed weight is one orbit. The only thing that distinguishes them is which
+residue class of weights the boundary constraint allows. Since
+$v$ differs from $u$ at the $\lceil N/2\rceil$ odd positions,
+\[
+\mathrm{weight}(u) \ \text{even}
+\quad\Longleftrightarrow\quad
+\mathrm{weight}(v) \equiv \lceil N/2 \rceil \pmod 2 .
+\]
+
+\subsection{The distributions}
+
+Writing the charges as R18 does --- $D = \sum_i b_i$ and
+$S = \sum_i (-1)^i b_i$, with $b_i = u_i$ --- one has $D = \mathrm{weight}(u)$
+and $S = \mathrm{weight}(v) - \lceil N/2\rceil$, and:
+
+\begin{proposition}[sector distribution at \rt{obc0}]
+\label{prop:dist}
+\[
+\boxed{\;
+W_{150}:\quad \bigl|\,\text{sector } D\,\bigr| \;=\; \binom{N+1}{D},
+\qquad D = 0, 2, 4, \ldots \le N+1 \;}
+\]
+\[
+\boxed{\;
+W_{105}:\quad \bigl|\,\text{sector } S\,\bigr| \;=\;
+\binom{N+1}{\,S + \lceil N/2\rceil\,},
+\qquad S + \lceil N/2\rceil = \varepsilon, \varepsilon+2, \ldots \le N+1 \;}
+\]
+with $\varepsilon = \lceil N/2\rceil \bmod 2$. In both cases the label is even
+--- $D$ because the padded chain has an even number of walls, $S$ because
+$S = -2\sum_{i} (-1)^i x_i x_{i+1}$. Verified against the engine for
+$N = 3 \ldots 18$: sizes, labels, sector count, and the charge being constant on
+each Krylov sector.
+\end{proposition}
+
+\noindent So the answer to ``for which $w$ is $\binom{N+1}{w}$ a sector size'':
+\textbf{$w$ even for $W_{150}$; $w \equiv \lceil N/2\rceil \pmod 2$ for
+$W_{105}$}. Both distributions are one parity class of row $N+1$, and
+$\sum_w \binom{N+1}{w} = 2^N$ over either class, as it must be.
+
+\begin{center}
+\small
+\iftable{tab_r21_distribution.tex}
+\end{center}
+
+\subsection{Everything else follows}
+
+\paragraph{Sector counts.} $W_{150}$ has $\lfloor (N+1)/2\rfloor + 1$ sectors
+(R20's \rt{A008619}$(N+1)$); $W_{105}$ has
+$\lfloor (N+1-\varepsilon)/2\rfloor + 1$, the period-4 sequence
+$\ldots,5,5,6,7,7,7,8,\ldots$ which is \rt{A004525}$(N+2)$ --- an identification
+R20 was missing and which the closed form makes obvious what to look for.
+
+\paragraph{$D_{\max}$, and why R20 saw the two rules diverge.} $W_{105}$ always
+reaches the \emph{central} binomial, because $\lfloor (N+1)/2\rfloor =
+\lceil N/2\rceil$ is precisely the class its weights live in --- so
+$D_{\max}(W_{105}) = \binom{N+1}{\lfloor (N+1)/2\rfloor}$, which is R20's
+\rt{A001405}$(N+1)$, now derived rather than matched. $W_{150}$ reaches it too
+whenever $N+1$ is odd (the peak value then sits at two indices of opposite
+parity, so both classes get it) or $N+1 \equiv 0 \pmod 4$. It misses it exactly
+at $N \equiv 1 \pmod 4$, which is why R20 observed the two parting company at
+$N=9$ ($210$ against $252$) and $N=13$ ($3003$ against $3432$) --- and $17, 21,
+\ldots$ likewise.
+
+\paragraph{Frozen states.} A sector has size $1$ iff its label is at an end of
+the row, $w = 0$ or $w = N+1$. For $W_{150}$, $w=0$ is always allowed and
+$w=N+1$ iff $N$ is odd: $n_{\rm froz} = 1 + (N \bmod 2)$, R19's period-2 law.
+For $W_{105}$ the class admits $w=0$ iff $\varepsilon = 0$ and $w=N+1$ iff
+$N+1 \equiv \varepsilon$, giving $1, 0, 1, 2$ for $N \equiv 0,1,2,3 \pmod 4$ ---
+R19's period-4 law, including the zero that had to be special-cased in
+\fn{paper\_figures}.
+
+\paragraph{One fact that ties the residues together.} The reflection
+$w \mapsto N+1-w$ is a symmetry of row $N+1$, and it swaps the two parity
+classes exactly when $N+1$ is odd. Hence $W_{150}$ and $W_{105}$ have the
+\emph{same multiset of sector sizes} for every $N$ \textbf{except}
+$N \equiv 1 \pmod 4$. That is the same residue at which $W_{105}$ has no frozen
+states at all, and the same residue at which their $D_{\max}$ differ: at
+$N \equiv 1 \pmod 4$ the allowed class excludes both ends of the row and
+contains the centre, and at every other $N$ it does the opposite or coincides.
+The three observations R19 and R20 recorded separately are one statement about
+which parity class row $N+1$ is cut into.
 
 \section{The same question on the ring}
 

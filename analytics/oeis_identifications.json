@@ -429,7 +429,7 @@
     150
    ],
    "declared_shift": 1,
-   "closed": "floor(N/2) + 1",
+   "closed": "floor((N+1)/2) + 1",
    "note": "positive integers repeated",
    "growth": 1.0,
    "rows": [
@@ -440,6 +440,31 @@
      "N_hi": 22,
      "contiguous": true,
      "shift": 1,
+     "shift_ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "aid": "A004525",
+   "name": "One even followed by three odd.",
+   "bc": "obc0",
+   "key": "n_recurrent",
+   "rules": [
+    105
+   ],
+   "declared_shift": 2,
+   "closed": "(N + 1 - eps)/2 + 1, eps = ceil(N/2) mod 2",
+   "note": "one even followed by three odd; the period-4 gap is R21's parity class",
+   "growth": 1.0,
+   "rows": [
+    {
+     "rule": 105,
+     "n_terms": 17,
+     "N_lo": 6,
+     "N_hi": 22,
+     "contiguous": true,
+     "shift": 2,
      "shift_ok": true
     }
    ],
@@ -834,17 +859,23 @@
   {
    "rules": [
     28,
-    29,
     70,
-    71,
     157,
     199
+   ],
+   "bc": "pbc",
+   "key": "d_max"
+  },
+  {
+   "rules": [
+    29,
+    71
    ],
    "bc": "pbc",
    "key": "d_max"
   }
  ],
  "fetched": {
-  "utc": "2026-08-14"
+  "utc": "2026-08-15"
  }
 }

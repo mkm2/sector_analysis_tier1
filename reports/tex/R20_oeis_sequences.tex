@@ -30,8 +30,8 @@ Every growth law in this project was derived here --- from an exact linear
 recurrence over the wall grammar (R18), from a closed form (R19), or, in the
 cases R16 flagged, from a fit. That fixes an exponent but says nothing about
 whether the underlying integer sequence is \emph{known}. We asked the On-Line
-Encyclopedia of Integer Sequences: \textbf{23 identifications, covering 37
-(rule, observable) pairs and drawing on 17 distinct entries}, each matched as an
+Encyclopedia of Integer Sequences: \textbf{24 identifications, covering 38
+(rule, observable) pairs and drawing on 18 distinct entries}, each matched as an
 exact contiguous block of $17$ terms with the index shift recorded. Three of the
 identifications change what we can say. (i) The sequence that \emph{falsifies}
 the task's $\varphi$ prediction for rule 28 is \oeis{A023434}, ``dying
@@ -252,6 +252,20 @@ sectors, so $D_{\max}$ is the largest such level set. The two sequences agree
 over the full $17$ terms and diverge from $W_{105}$'s central binomials at
 $N=9$ ($210$ against $252$) and $N=13$ ($3003$ against $3432$) --- the two rules
 are close but not the same, and the encyclopedia separates them.
+
+R21~\S6 now derives both. $W_{150}$'s sector sizes are $\binom{N+1}{D}$ over
+\emph{even} $D$ and $W_{105}$'s are $\binom{N+1}{w}$ over
+$w \equiv \lceil N/2\rceil \pmod 2$ --- the same row of Pascal's triangle cut
+into its two parity classes. $W_{105}$'s class always contains the centre, hence
+the central binomial; $W_{150}$'s misses it exactly at $N \equiv 1 \pmod 4$,
+which is where the divergences above sit and where they will keep sitting
+($N = 17, 21, \ldots$). The identification came first and the derivation
+second, which is the useful direction for an encyclopedia to work in.
+
+\paragraph{And one gap the derivation closed.} With the closed form in hand it
+was obvious what $W_{105}$'s \emph{sector count} had to be --- the size of a
+parity class, a period-4 staircase --- and it is \oeis{A004525}$(N+2)$, ``one
+even followed by three odd''. That row had been missing from the table.
 
 \section{What is not there}
 

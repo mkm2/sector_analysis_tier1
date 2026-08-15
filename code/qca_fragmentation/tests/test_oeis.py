@@ -144,12 +144,12 @@ def test_every_cached_entry_is_used_and_every_used_entry_is_cached():
 
 
 def test_the_counts_R20_quotes_are_the_counts_in_the_table():
-    """R20's abstract states 23 identifications over 37 (rule, observable)
-    pairs from 17 distinct entries.  Pinned so the prose cannot drift from the
+    """R20's abstract states 24 identifications over 38 (rule, observable)
+    pairs from 18 distinct entries.  Pinned so the prose cannot drift from the
     table it describes."""
-    assert len(OE.IDENTIFICATIONS) == 23
-    assert sum(len(i.rules) for i in OE.IDENTIFICATIONS) == 37
-    assert len({i.aid for i in OE.IDENTIFICATIONS}) == 17
+    assert len(OE.IDENTIFICATIONS) == 24
+    assert sum(len(i.rules) for i in OE.IDENTIFICATIONS) == 38
+    assert len({i.aid for i in OE.IDENTIFICATIONS}) == 18
 
 
 def test_the_growth_constants_are_the_ones_the_reports_quote():

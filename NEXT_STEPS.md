@@ -1066,7 +1066,7 @@ overlapping unit and finds no disagreement anywhere in the sixteen.
 
 ## R20 -- the growth sequences have names (2026-08-14) -- DONE
 
-- **23 OEIS identifications, covering 37 (rule, observable) pairs from 17
+- **24 OEIS identifications, covering 38 (rule, observable) pairs from 18
   distinct entries**, each an
   exact contiguous block of 17 terms with the index shift recorded and pinned.
   `scaling/oeis.py` + `tests/test_oeis.py` (41 tests). Entries are cached in
@@ -1171,3 +1171,49 @@ overlapping unit and finds no disagreement anywhere in the sixteen.
   a small excess (12 Krylov in 10 level sets) and grades weak.
   This is exhaustive enumeration to N=18 in memory, the same kind of run R18
   already did at pbc -- **not** the held production pbc sweep.
+
+## R21 §6 -- W150 and W105 in closed form (2026-08-16) -- DONE
+
+- **Both rules are the same model in different variables.** In the padded bond
+  variables `u_i = s_i XOR s_{i+1}` (i=0..N, so N+1 bonds), obc0 makes
+  `x -> u` a bijection onto the EVEN-WEIGHT vectors of {0,1}^(N+1). Flipping
+  site i toggles u_{i-1}, u_i. W150 = IVVI fires iff the neighbours differ,
+  i.e. iff `u_{i-1} != u_i` -> `01 <-> 10`, a wall HOPS, weight(u) = D
+  conserved. W105 = VIIV fires iff they agree, i.e. iff `u_{i-1} = u_i` ->
+  `00 <-> 11`, a wall PAIR is created/destroyed, so D is NOT conserved. In the
+  staggered bond variable `v_i = u_i XOR (i mod 2)` that condition reads
+  `v_{i-1} != v_i`, so W105 is the identical hopping model in v and weight(v)
+  is conserved. Hops generate the full symmetric group on positions -> a fixed
+  weight is ONE orbit, which is why the level sets are the Krylov sectors.
+- Constraint transfer: `weight(u) even <=> weight(v) = ceil(N/2) mod 2`
+  (v differs from u at the ceil(N/2) odd positions).
+- **Sector distribution, obc0** (`hsf_strength.sector_distribution`):
+  - W150: `|sector D| = C(N+1, D)` for **D even**, D = 0,2,...,<= N+1.
+  - W105: `|sector S| = C(N+1, S + ceil(N/2))` for
+    `S + ceil(N/2) = eps, eps+2, ... <= N+1`, `eps = ceil(N/2) mod 2`.
+  Both labels are always even (S = -2 sum_i (-1)^i x_i x_{i+1}). So each
+  distribution is ONE PARITY CLASS of row N+1 of Pascal's triangle; they differ
+  only in which class. Verified against the engine for N=3..18 -- sizes,
+  labels, sector count, and charge constancy on each Krylov sector.
+- Everything else falls out and matches what R19/R20 had recorded separately:
+  - sector counts `floor((N+1)/2)+1` (W150) and `floor((N+1-eps)/2)+1` (W105);
+  - `D_max`: W105 ALWAYS reaches the central binomial because
+    `floor((N+1)/2) = ceil(N/2)` is exactly its class -> A001405(N+1) derived,
+    not matched. W150 reaches it too when N+1 is odd (the peak value then sits
+    at two indices of opposite parity) or N+1 = 0 mod 4, and **misses it
+    exactly at N = 1 (mod 4)** -- which is where R20 saw 210 vs 252 (N=9) and
+    3003 vs 3432 (N=13), and where it will keep happening (17, 21, ...).
+  - frozen counts: size-1 sectors are the ends of the row, giving R19's
+    `1 + (N mod 2)` for W150 and the period-4 `1,0,1,2` for W105.
+- **One statement ties the residues together.** The reflection `w -> N+1-w` is
+  a symmetry of row N+1 and swaps the parity classes exactly when N+1 is odd,
+  so W150 and W105 have the SAME sector-size multiset for every N except
+  **N = 1 (mod 4)** -- the same residue at which W105 has no frozen states and
+  the same one at which their D_max differ. Three separate R19/R20
+  observations, one fact.
+- **New OEIS row (R20 now 24 identifications / 38 pairs / 18 entries):**
+  W105 obc0 `n_recurrent` = **A004525(N+2)** "one even followed by three odd".
+  The closed form is what made it obvious what to search for.
+- NB the closed form is obc0 only. On the ring the bijection and the constraint
+  both change and the level sets stop being the sectors (R21's pbc table: W150
+  has 12 Krylov sectors inside 10 level sets).
