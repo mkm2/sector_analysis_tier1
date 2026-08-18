@@ -1272,3 +1272,56 @@ weak component and `psi^N` terminal components.
   `1 if N = 2 mod 3, else F(N+2) - 2^(N/2) for even N, F(N+2) for odd N` --
   exact for N = 6..20, with N=20 an out-of-sample confirmation. So b_rec(W91)
   = phi, not the 1.62-1.70 band the short window suggested.
+
+### R22 rev.2 -- the theory sharpened (2026-08-18)
+
+The first draft got the dictionary right but stated it more weakly than
+necessary. Four upgrades, all verified:
+
+1. **Prop. 1 generalised from unitary to UNITAL.** Row sums of
+   `P[y,x] = sum_j |<y|K_j|x>|^2` equal `<y|Phi(1)|y>`, so P is doubly
+   stochastic iff Phi is unital -- and then the uniform state is stationary
+   with full support, so nothing is transient and WCC = SCC = terminal SCC.
+   Unitary is the special case. This names the PHYSICAL ingredient: unitality
+   = no contracting direction = the maximally mixed state is stationary. A
+   Hadamard branches but does not contract; a reset contracts.
+2. **Prop. 2 (NEW): the gap also needs BRANCHING.** If the support graph is
+   functional (out-degree 1) then each WCC has exactly one cycle, so
+   `n_rec = n_wcc` no matter how contracting the channel is. Combined with
+   Prop. 1: **a gap requires the channel to be simultaneously non-unital and
+   branching.** Verified: the 81 V-free rules give 891 (rule,N) points with
+   `n_rec == n_wcc` at EVERY ONE. And all 8 gap rules carry exactly one V
+   (out of 108 one-V rules) plus at least one reset -- minimal branching.
+3. **The counts are commutant DIMENSIONS.** With `C` = commutant of the Kraus
+   set, `F` = fixed points of Phi-dagger, `D` = diagonal algebra:
+   `dim(C /\ D) = n_wcc` (diagonal A commutes with all K_j iff its symbol is
+   constant on WCCs) and `dim(F /\ D) = n_rec` (harmonic functions, spanned by
+   the absorption probabilities). So `C subset F` IS the graph inequality
+   `n_rec >= n_wcc`, and Moudgalya-Motrunich's "dimension of the commutant"
+   criterion applies verbatim to n_wcc.
+4. **Thm. 1 strengthened -- the idempotents never proliferate.** The
+   projections in `F /\ D` are EXACTLY the indicators of unions of WCCs
+   (if Q is harmonic then supp(Q) and its complement are both forward-closed,
+   so no edge joins them). Hence `F /\ D` holds exactly `2^n_wcc` projections
+   however large n_rec grows. A channel can acquire psi^N steady states without
+   the Boolean algebra of always-answerable questions gaining a single atom.
+   That is much stronger than "the J_i fail to be idempotent". Measured at N=8:
+   idempotent J_i = 19/19 (W73), 9/28 (W36, one per WCC holding a lone
+   attractor), 0/13 (W203).
+
+**New quantitative section (3.5): how many bits survive.** X uniform on 2^N,
+T = terminal class reached. `H(T|X) = 0` identically when the strong symmetry
+is present (Thm. 1 in information dress). Without it `H(T|X) > 0` AND GROWING:
+W203 gives 0.805 -> 1.024 -> 1.242 over N = 8,10,12, ~0.11 bits/site lost to
+noise. But the surprise is that `I(X;T)` is **extensive in BOTH regimes at
+comparable rates** -- increment per 2 sites is 0.831 (W73, W109) vs 0.862
+(W203), 0.886 (W219), 0.889 (W36). So case B is NOT weak memory. Right
+statement: not how much is remembered but with what certainty.
+**Fragmentation = a noiseless code; multistability = a noisy channel of
+similar capacity whose zero-error capacity is nil** (one WCC => nothing at all
+recoverable with probability 1, though ~0.38N bits are recoverable on average).
+
+Code: `scaling/absorption.py` gains `n_idempotent()` and
+`retained_information()`; `tests/test_absorption.py` now 101 tests covering
+both new propositions, the idempotent bound and the extensivity.
+Report R22 rev.2 is 11 pages.

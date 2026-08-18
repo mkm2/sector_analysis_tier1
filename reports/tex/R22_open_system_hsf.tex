@@ -45,20 +45,35 @@ Bu\v{c}a and Prosen: the finest decomposition of the basis that makes every
 Kraus operator block-diagonal, hence a genuine superselection rule with a
 charge measurable at $t=0$. Terminal components are the \emph{enclosures} of
 the Baumgartner--Narnhofer / Albert--Jiang asymptotic decomposition: they count
-steady states, not sectors. Fragmentation is a statement about the first;
-exponentially many attractors inside one block is multistability --- an
-exponentially degenerate steady-state manifold with no symmetry protecting it.
-The distinction is operational, not aesthetic, and we measure it: the
-conserved quantities of a channel are the absorption probabilities
-$\varphi_i(x)$, and a strong symmetry is precisely the statement that they are
-\textbf{idempotent}. For rules whose weak components proliferate the initial
-state fixes the attractor with certainty for $100\%$ of basis states; for
-rules with one weak component and exponentially many attractors it does so for
-$46\%$ at $N=10$, falling to $39\%$ at $N=12$ --- the rest of the time the
-noise decides, not the initial condition. We map the four growth regimes onto
-the literature, flag a terminology collision between two independent
-``strong/weak'' dichotomies that this project uses both of, and state
-precisely what a population-level graph can and cannot certify.
+steady states, not sectors. Made dimensional, the two counts are
+$\dim(\mathcal{C}\cap\mathcal{D}) = n_{\mathrm{wcc}}$ and
+$\dim(\mathcal{F}\cap\mathcal{D}) = n_{\mathrm{rec}}$ for the strong-symmetry
+commutant $\mathcal{C}$ and the conserved-quantity space $\mathcal{F}$, so the
+graph inequality $n_{\mathrm{rec}} \ge n_{\mathrm{wcc}}$ is just the inclusion
+$\mathcal{C}\subseteq\mathcal{F}$, and Moudgalya--Motrunich's commutant
+criterion applies verbatim to the first. The central result is that the gap
+between them is invisible to the \emph{idempotents}: the projections in
+$\mathcal{F}$ are exactly the indicators of unions of weak components, so a
+channel may acquire $\psi^N$ steady states without the Boolean algebra of
+always-answerable questions gaining a single atom. Fragmentation is exponential
+growth of that Boolean algebra; exponentially many attractors inside one block
+is multistability. Two hypotheses bound when the gap can occur at all: unital
+channels have no transient part (so all three component notions coincide), and
+functional support graphs have one attractor per component --- \textbf{the gap
+requires the channel to be simultaneously non-unital and branching}, which
+$891$ measured points across the $81$ deterministic rules confirm without
+exception. Operationally, a strong symmetry says the attractor is a
+deterministic function of the initial state: measured, $100\%$ of basis states
+have a certain fate for rules whose sectors proliferate, against $46\%$ at
+$N=10$ and $39\%$ at $N=12$ for a rule with one weak component. Yet the
+retained information $I(X;T)$ is extensive in \emph{both} regimes, at
+comparable rates --- so the difference is not how much is remembered but with
+what certainty: fragmentation is a noiseless code, multistability a noisy
+channel of similar capacity from which nothing at all can be recovered with
+probability one. We map the four growth regimes onto the literature, flag a
+terminology collision between two independent ``strong/weak'' dichotomies that
+this project uses both of, and state precisely what a population-level graph
+can and cannot certify.
 \end{abstract}
 
 \tableofcontents
@@ -83,35 +98,81 @@ outgoing edge, which we also call recurrent classes or attractors. In general
 these are different. The following says why the distinction has never had to be
 made in the closed-system fragmentation literature.
 
-\begin{proposition}[Unitarity collapses the three notions]
+Throughout, $P$ denotes the induced population dynamics,
+\begin{equation}
+  P_{yx} \;=\; \sum_j \big| \langle y | K_j | x \rangle \big|^2 ,
+  \label{eq:P}
+\end{equation}
+a column-stochastic matrix whose support is exactly $G$. Two structural
+hypotheses turn out to control everything, and neither is the one we first
+reached for.
+
+\begin{proposition}[Unitality kills the transient part]
 \label{prop:doubly}
-If $\Phi(\rho) = U\rho U^\dagger$ with $U$ unitary, then every SCC of $G$ is
-terminal and coincides with its WCC:
+If $\Phi$ is \emph{unital}, $\Phi(\mathbb{1}) = \mathbb{1}$, then $P$ is doubly
+stochastic, no state is transient, and
 \[
   \text{WCC} \;=\; \text{SCC} \;=\; \text{terminal SCC}.
 \]
+Unitary evolution is the special case $\Phi(\rho) = U\rho U^\dagger$.
 \end{proposition}
 
 \begin{proof}
-The induced population dynamics is the matrix $P_{yx} = |\langle y|U|x\rangle|^2$.
-Its columns sum to one because $U|x\rangle$ is normalised, and its rows sum to
-one because $\langle y|U$ is; so $P$ is \emph{doubly stochastic} and the uniform
-distribution is stationary with full support. In a finite Markov chain a
-transient state carries zero stationary mass, so no state is transient and
-every SCC is terminal. Finally, distinct terminal SCCs cannot be joined by an
-edge in either direction --- an edge out of a terminal SCC would contradict
-terminality --- so each is its own WCC.
+Columns of $P$ sum to one by trace preservation, $\sum_j K_j^\dagger K_j =
+\mathbb{1}$. For the rows,
+$\sum_x P_{yx} = \sum_j \langle y | K_j K_j^\dagger | y \rangle
+= \langle y | \Phi(\mathbb{1}) | y \rangle$, which is $1$ exactly when $\Phi$ is
+unital on the diagonal. So $P$ is doubly stochastic, the uniform distribution
+is stationary with full support, and since a transient state of a finite chain
+carries zero stationary mass, there are none; every SCC is therefore terminal.
+Finally, distinct terminal SCCs admit no edge in either direction --- an edge
+leaving a terminal SCC contradicts terminality --- so each is its own WCC.
 \end{proof}
 
-This is not an idle formality; it is why the project's earlier reports could
-speak of ``the'' Krylov sectors. Empirically it holds exactly: across all $16$
-unitary rules and all $N \in [6,16]$ the measured transient fraction is
-identically $0$ and $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$ at every point, and
-no dissipative rule has an empty transient part at any $N$. The moment a reset
-channel $D$ or $E$ enters the rule word, $P$ loses column normalisation on the
-right --- two basis states are mapped onto one --- the chain acquires
-transients, and the three counts separate. \textbf{The entire subject of this
-report is a dissipative phenomenon with no closed-system shadow.}
+Stating it for unital rather than unitary channels is not generality for its
+own sake: it identifies the physical ingredient. Unitality says the maximally
+mixed state is stationary, i.e.\ the channel has no contracting direction in
+state space. A Hadamard branches but does not contract; a reset contracts. That
+is why the phenomenon of this report is invisible until a $D$ or an $E$ enters
+the rule word. Empirically the dichotomy is exact: across all $16$ unitary
+rules and all $N \in [6,16]$ the measured transient fraction is identically
+$0$ and $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$ at every point, while no
+dissipative rule has an empty transient part at any $N$; measured row sums of
+$P$ deviate from $1$ by as much as $15$ for $W_{36}$ at $N=8$.
+
+Contraction alone is not enough, however. The second hypothesis is branching.
+
+\begin{proposition}[Determinism also collapses the two counts]
+\label{prop:functional}
+If every vertex of $G$ has out-degree one --- the support graph is a
+\emph{functional} graph --- then every WCC contains exactly one terminal SCC,
+so $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$ regardless of how contracting $\Phi$
+is.
+\end{proposition}
+
+\begin{proof}
+A weakly connected component of a functional graph on $n$ vertices has exactly
+$n$ edges, hence exactly one cycle; following the unique successor from any
+vertex must reach it. That cycle is the unique terminal SCC of the component.
+\end{proof}
+
+Together the two propositions bound the phenomenon from both sides:
+
+\begin{quote}
+\textbf{A gap between $n_{\mathrm{wcc}}$ and $n_{\mathrm{rec}}$ requires the
+channel to be simultaneously non-unital and branching.}
+\end{quote}
+
+Both halves are visible in our rule family. The $81$ rules whose words contain
+no $V$ have out-degree one, and across all $891$ measured $(\text{rule},N)$
+points among them $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$ without a single
+exception. The $16$ rules with no $D$ or $E$ are unital, and satisfy the same
+equality by Proposition~\ref{prop:doubly}. Every rule for which the two counts
+actually separate therefore carries at least one $V$ \emph{and} at least one
+reset --- and, as it happens, all eight carry exactly one $V$, the minimum
+amount of branching that permits the gap at all. \textbf{The subject of this
+report is what happens when branching and contraction act together, and it has
+no closed-system shadow.}
 
 \section{The dictionary}
 \label{sec:dictionary}
@@ -152,11 +213,38 @@ it is the maximal one available in the computational basis. Bu\v{c}a and Prosen
 establish the fact that gives this report its answer: \emph{only} a strong
 symmetry implies non-trivial reductions inside the space of steady states.
 
-So:
+The statement can be made dimensional, which is what connects it to the
+commutant criterion. Write $\mathcal{C} = \{A : [A,K_j] = 0 \ \forall j\}$ for
+the commutant of the Kraus set --- the algebra of strong symmetries --- and
+$\mathcal{D}$ for the algebra of operators diagonal in the computational basis.
+
+\begin{proposition}[$n_{\mathrm{wcc}}$ \emph{is} a commutant dimension]
+\label{prop:dim}
+$\dim (\mathcal{C} \cap \mathcal{D}) = n_{\mathrm{wcc}}$. Concretely,
+$\mathcal{C} \cap \mathcal{D}$ consists exactly of the operators
+$A = \sum_x a(x)|x\rangle\langle x|$ whose symbol $a$ is constant on each weak
+component.
+\end{proposition}
+
+\begin{proof}
+For diagonal $A$, $[A,K_j] = 0$ reads
+$(a(y) - a(x))\,\langle y|K_j|x\rangle = 0$ for all $x,y,j$, i.e.\ $a(y) = a(x)$
+whenever $x \to y$. Since $a$ is a scalar function, the condition is symmetric
+under reversing the edge, so $a$ is constant on weakly connected components ---
+and any such $a$ manifestly commutes with every $K_j$.
+\end{proof}
+
+This is the precise bridge to Moudgalya and Motrunich~\cite{mm2022}, whose
+criterion for fragmentation is exponential growth of the dimension of the
+commutant algebra, with conventional symmetries such as $U(1)$ or $SU(2)$
+giving only polynomial growth. Proposition~\ref{prop:dim} says that
+$n_{\mathrm{wcc}}$ is not merely \emph{correlated} with that dimension; in the
+classical (product-basis) setting it \emph{is} that dimension. So:
+
 \begin{quote}
-$n_{\mathrm{wcc}}$ counts superselection sectors. It is the open-system
-successor of ``number of Krylov sectors'', and it is the count that
-fragmentation is about.
+$n_{\mathrm{wcc}}$ counts superselection sectors, and equals the dimension of
+the diagonal strong-symmetry commutant. It is the open-system successor of
+``number of Krylov sectors'', and it is the count that fragmentation is about.
 \end{quote}
 
 \subsection{Terminal components are enclosures}
@@ -263,25 +351,66 @@ the Heisenberg picture. For each terminal component $T_i$ define the
   \label{eq:absorb}
 \end{equation}
 Each $J_i$ satisfies $\Phid(J_i) = J_i$, so $\Tr(J_i \rho(t))$ is constant:
-these are conserved quantities in exactly Albert and Jiang's sense, and there
-are $n_{\mathrm{rec}}$ of them. Exponentially many attractors therefore do
-imply exponentially many conserved quantities. The question is what \emph{kind}.
+these are conserved quantities in exactly Albert and Jiang's sense. Writing
+$\mathcal{F} = \{A : \Phid(A) = A\}$ for the space of them, the counterpart of
+Proposition~\ref{prop:dim} holds.
 
-\begin{proposition}[Idempotency is the signature of a strong symmetry]
-\label{prop:idem}
-$J_i^2 = J_i$ for every $i$ if and only if $\varphi_i(x) \in \{0,1\}$ for
-every $x$ and $i$, which holds if and only if every weak component contains
-exactly one terminal component, i.e.\ $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$.
-In that case the $J_i$ are the $P_\alpha$ of Proposition~\ref{prop:wcc}.
+\begin{proposition}[$n_{\mathrm{rec}}$ is also a dimension, of a larger space]
+\label{prop:fdim}
+$\dim(\mathcal{F} \cap \mathcal{D}) = n_{\mathrm{rec}}$, with basis
+$\{J_i\}$. Moreover $\mathcal{C} \subseteq \mathcal{F}$, so
+$n_{\mathrm{wcc}} \le n_{\mathrm{rec}}$ always.
 \end{proposition}
 
-\noindent This is the whole answer in one line. Fragmentation requires the
-conserved quantities to be \emph{projectors} --- charges that take a definite
-value on every basis state, that can be measured at $t=0$, and whose value can
-never change. When $n_{\mathrm{rec}} \gg n_{\mathrm{wcc}}$ the conserved
-quantities exist but are not idempotent: they are non-local, real-valued
-functions on configuration space, they have no interpretation as a charge of
-the initial state, and they are recovered only in the $t\to\infty$ limit.
+\begin{proof}
+A diagonal $A$ with symbol $a$ is fixed by $\Phid$ iff $a$ is harmonic,
+$a(x) = \sum_y P_{yx}\,a(y)$. By the maximum principle $a$ is constant on each
+terminal component, and its values there determine it everywhere by solving the
+Dirichlet problem on the transient part; the solutions are spanned by the
+$\varphi_i$. The inclusion is immediate: $[A,K_j]=0$ gives
+$\Phid(A) = \sum_j K_j^\dagger A K_j = A\sum_j K_j^\dagger K_j = A$.
+\end{proof}
+
+So the graph inequality $n_{\mathrm{rec}} \ge n_{\mathrm{wcc}}$ is nothing but
+the algebra inclusion $\mathcal{C} \subseteq \mathcal{F}$: \emph{every strong
+symmetry is a conserved quantity, but not every conserved quantity is a strong
+symmetry}. Exponentially many attractors therefore do imply exponentially many
+conserved quantities. The question is what \emph{kind} --- and the answer is
+that the two spaces differ in a way no amount of multistability can repair.
+
+\begin{theorem}[The idempotents never proliferate]
+\label{prop:idem}
+The projections lying in $\mathcal{F} \cap \mathcal{D}$ are exactly the
+indicators of unions of weak components. Hence $\mathcal{F} \cap \mathcal{D}$
+contains precisely $2^{\,n_{\mathrm{wcc}}}$ projections, however large
+$n_{\mathrm{rec}}$ may be, and its minimal projections are the $P_\alpha$ of
+Proposition~\ref{prop:wcc}. In particular $J_i^2 = J_i$ if and only if $T_i$ is
+the unique terminal component of its weak component, and $J_i^2 = J_i$ for
+\emph{every} $i$ if and only if $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$.
+\end{theorem}
+
+\begin{proof}
+Let $Q = \sum_{x \in S} |x\rangle\langle x|$ be harmonic. For $x \in S$,
+$1 = \sum_{y \in S} P_{yx}$ forces every successor of $x$ into $S$; for
+$x \notin S$, $0 = \sum_{y\in S} P_{yx}$ forbids any successor of $x$ from
+lying in $S$. Thus $S$ and its complement are both forward-closed, so no edge
+joins them in either direction and $S$ is a union of weak components.
+Conversely every such indicator is harmonic. The count and the statement about
+minimal projections follow, and the $J_i$ clause is the special case
+$S = \operatorname{supp}\varphi_i$.
+\end{proof}
+
+\noindent Theorem~\ref{prop:idem} is the whole answer, and it is stronger than
+the observation that non-idempotent conserved quantities exist. \emph{The
+idempotent part of the conserved-quantity space is blind to the attractors
+entirely.} A rule may acquire $\psi^N$ steady states, and the Boolean algebra of
+yes/no questions about the initial state that remain answerable at all times
+does not grow by a single atom. Fragmentation is exponential growth of that
+Boolean algebra; multistability is exponential growth of the surrounding linear
+space and nothing more. Measured directly at $N=8$: $W_{73}$ has $19$
+idempotent $J_i$ out of $19$, $W_{36}$ has $9$ out of $28$ --- one for each of
+the nine weak components that happen to hold a single attractor --- and
+$W_{203}$, whose entire state space is one weak component, has \emph{none}.
 
 \subsection{The operational content, measured}
 \label{sec:measured}
@@ -330,6 +459,64 @@ odds.
 
 Both are ergodicity breaking, and both give an exponentially degenerate
 steady-state manifold. Only the first is Hilbert-space fragmentation.
+
+\subsection{How much memory survives, in bits}
+\label{sec:bits}
+
+Theorem~\ref{prop:idem} says the \emph{certain} memory does not grow. It does
+not say the memory is small, and it would be wrong to conclude that. Let $X$ be
+a uniformly random initial basis state and $T$ the terminal component the
+system ends in. The natural quantities are the entropy of the outcome $H(T)$,
+the noise $H(T \mid X)$ injected by the branching, and the retained information
+$I(X;T) = H(T) - H(T\mid X)$.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+rule & regime & $N$ & $H(T)$ & $H(T\mid X)$ & $I(X;T)$ & $\Delta I$ per $2$ sites \\
+\midrule
+$W_{73}$  \rt{VIID} & sectors proliferate & 8  & 3.170 & 0.000 & 3.170 & --- \\
+                    &                     & 12 & 4.832 & 0.000 & 4.832 & $0.831$ \\
+$W_{109}$ \rt{EIIV} & sectors proliferate & 12 & 5.471 & 0.000 & 5.471 & $0.831$ \\
+$W_{36}$  \rt{IDDV} & attractors only     & 12 & 6.588 & 0.710 & 5.878 & $0.889$ \\
+$W_{203}$ \rt{VEII} & attractors only     & 8  & 3.626 & 0.805 & 2.821 & --- \\
+                    &                     & 12 & 5.786 & 1.242 & 4.544 & $0.862$ \\
+$W_{219}$ \rt{VEEI} & attractors only     & 12 & 4.603 & 1.070 & 3.533 & $0.886$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent All in bits, obc0, $X$ uniform. Three things are worth reading off.
+
+First, $H(T\mid X) = 0$ identically in the top block, which is
+Theorem~\ref{prop:idem} again in information-theoretic dress: when every
+$\varphi_i$ is idempotent the outcome is a deterministic function of the input
+and the channel from $X$ to $T$ is noiseless.
+
+Second, $H(T \mid X) > 0$ and \emph{growing} in the bottom block --- for
+$W_{203}$ it rises $0.805 \to 1.024 \to 1.242$ across $N = 8,10,12$, an
+extensive loss of roughly $0.11$ bits per site. A constant fraction of the
+capacity of this channel is consumed by noise, and that fraction does not
+diminish with system size.
+
+Third, and least expected: $I(X;T)$ is \emph{extensive in both regimes}, with
+strikingly similar coefficients --- the increment per two sites is $0.831$ for
+the fragmented rules and $0.862$--$0.889$ for the multistable ones. Case B is
+therefore not a weak or vestigial form of memory. It stores an extensive number
+of bits about the initial condition, comparable in count to what genuine
+fragmentation stores.
+
+The distinction survives all of this, and sharpens: it is not \emph{how much}
+is remembered but \emph{with what certainty}. In the fragmented case the map
+$x \mapsto T$ is a deterministic labelling, so there is a decoder that is
+correct with probability one and is itself a conserved quantity. In the
+multistable case no such decoder exists --- by Theorem~\ref{prop:idem} the
+only zero-error questions are the WCC memberships, and there is just one weak
+component, so \textbf{nothing whatever about the initial state can be recovered
+with certainty}, even though $\sim 0.38 N$ bits can be recovered on average.
+Fragmentation gives a noiseless code; multistability gives a noisy channel of
+comparable rate.
 
 \subsection{Where this sits in the current literature}
 
@@ -492,18 +679,30 @@ the steady-state count too.
 \begin{itemize}
 \item WCCs are the blocks of a \emph{strong symmetry}: the finest basis
 decomposition making every Kraus operator block-diagonal
-(Prop.~\ref{prop:wcc}). Their count is the open-system Krylov sector count,
-and exponential growth of it is Hilbert-space fragmentation.
-\item Terminal SCCs are \emph{enclosures}: supports of extremal steady states.
-Their count is a $t\to\infty$ statement and is always $\ge n_{\mathrm{wcc}}$.
+(Prop.~\ref{prop:wcc}), and $n_{\mathrm{wcc}} = \dim(\mathcal{C}\cap
+\mathcal{D})$ exactly (Prop.~\ref{prop:dim}), which is the quantity
+Moudgalya--Motrunich's criterion is stated in terms of. Exponential growth of
+it is Hilbert-space fragmentation.
+\item Terminal SCCs are \emph{enclosures}: supports of extremal steady states,
+with $n_{\mathrm{rec}} = \dim(\mathcal{F}\cap\mathcal{D})$
+(Prop.~\ref{prop:fdim}). The familiar inequality $n_{\mathrm{rec}} \ge
+n_{\mathrm{wcc}}$ is the algebra inclusion $\mathcal{C}\subseteq\mathcal{F}$.
 \item Exponentially many terminal SCCs inside one WCC is \textbf{not}
-fragmentation. It is multistability: the conserved quantities are absorption
-probabilities, which fail to be idempotent (Prop.~\ref{prop:idem}), and the
-attractor is selected by noise rather than fixed by the initial state --- a
-$100\%$ versus $46\%$ effect in direct measurement (\S\ref{sec:measured}).
-\item The distinction has no closed-system analogue: unitarity makes the
-population dynamics doubly stochastic, which kills the transient part and
-collapses all three component notions (Prop.~\ref{prop:doubly}).
+fragmentation. The projections in $\mathcal{F}$ are exactly the unions of weak
+components (Thm.~\ref{prop:idem}), so the idempotent part of the
+conserved-quantity space cannot see the extra attractors at all; the attractor
+is then selected by noise rather than fixed by the initial state --- a $100\%$
+versus $46\%$ effect in direct measurement (\S\ref{sec:measured}).
+\item But the memory is not weak, only uncertain: $I(X;T)$ is extensive in both
+regimes at comparable rates (\S\ref{sec:bits}). Fragmentation is a noiseless
+code; multistability is a noisy channel of similar capacity whose zero-error
+capacity is nil.
+\item The gap requires the channel to be \textbf{both non-unital and
+branching}: unital channels have no transient part
+(Prop.~\ref{prop:doubly}) and functional graphs have one attractor per
+component (Prop.~\ref{prop:functional}). Hence no closed-system analogue, and
+in this family all eight rules exhibiting the gap carry exactly one $V$
+together with at least one reset.
 \item ``Strong/weak'' means two different things in this project, and now a
 third thing in the mixed-state literature (\S\ref{sec:collision}).
 \item Everything here is certified at the level of populations only
@@ -524,13 +723,17 @@ diagnostic, not a sweep.
 
 \begin{verbatim}
     python -m qca_fragmentation.scaling.absorption --table
-    pytest qca_fragmentation/tests/test_absorption.py     # 58 tests
+    pytest qca_fragmentation/tests/test_absorption.py    # 101 tests
 \end{verbatim}
 
-\noindent The tests pin every number in the table of \S\ref{sec:measured}, and
-check both directions of Proposition~\ref{prop:idem} as well as the double
-stochasticity of Proposition~\ref{prop:doubly} --- the latter holding for the
-unitary rules and failing for the dissipative ones.
+\noindent The tests pin every number quoted in \S\ref{sec:measured} and
+\S\ref{sec:bits}; check both directions of Theorem~\ref{prop:idem}, including
+the idempotent counts $19/19$, $9/28$ and $0/13$ and the bound
+$\#\{\text{idempotents}\} \le n_{\mathrm{wcc}}$; verify the double stochasticity
+of Proposition~\ref{prop:doubly} (holding for the unitary rules, failing for
+the dissipative ones); and confirm Proposition~\ref{prop:functional} on the
+$V$-free rules. The extensivity of $I(X;T)$ is checked as an equality of
+successive increments to $5\%$.
 
 \begin{thebibliography}{99}
 

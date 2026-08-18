@@ -96,3 +96,79 @@ def test_the_numbers_R22_quotes_are_the_numbers_the_module_returns():
 def test_strong_symmetry_helper_agrees_with_the_summary():
     assert AB.strong_symmetry_holds(73, 10)
     assert not AB.strong_symmetry_holds(203, 10)
+
+
+# --- R22 Prop. 1 / Prop. 2: when can the two counts separate at all? --------
+
+@pytest.mark.parametrize("rule", (0, 4, 12, 76, 200, 240, 255))
+@pytest.mark.parametrize("N", (6, 8, 10))
+def test_deterministic_rules_never_show_the_gap(rule, N):
+    """No V in the word => out-degree 1 => one attractor per weak component."""
+    from qca_fragmentation import results_io
+    assert "V" not in rules.wolfram_to_tuple(rule)
+    g = scc.analyze(rule, N, "obc0", rules.wolfram_to_tuple(rule),
+                    detect_ergodic=False)
+    w = results_io.load_wcc_results(rule, "obc0").get(N)
+    if w is not None:
+        assert g.n_recurrent == w["n_wcc"], (rule, N)
+
+
+def test_every_rule_showing_the_gap_is_branching_and_non_unital():
+    """R22: the gap needs both a V and a reset.  The eight are minimal in V."""
+    gap = (36, 44, 100, 104, 203, 217, 219, 233)
+    for r in gap:
+        t = rules.wolfram_to_tuple(r)
+        assert sum(s == "V" for s in t) == 1, r
+        assert any(s in ("D", "E") for s in t), r
+
+
+# --- R22 Thm. 1: the idempotents cannot outnumber the weak components -------
+
+@pytest.mark.parametrize("rule,N,expected", ((73, 8, 19), (36, 8, 9), (203, 8, 0)))
+def test_the_idempotent_count_is_what_R22_quotes(rule, N, expected):
+    assert AB.n_idempotent(rule, N) == expected
+
+
+@pytest.mark.parametrize("rule", (36, 203, 219, 73))
+@pytest.mark.parametrize("N", (6, 8))
+def test_idempotents_never_exceed_the_weak_component_count(rule, N):
+    from qca_fragmentation import results_io
+    w = results_io.load_wcc_results(rule, "obc0").get(N)
+    if w is not None:
+        assert AB.n_idempotent(rule, N) <= w["n_wcc"], (rule, N)
+
+
+# --- R22 section 3.5: how many bits survive ---------------------------------
+
+@pytest.mark.parametrize("rule,N", ((73, 10), (109, 10)))
+def test_a_strong_symmetry_makes_the_memory_noiseless(rule, N):
+    d = AB.retained_information(rule, N)
+    assert d["H_T_given_X"] == pytest.approx(0.0, abs=1e-12)
+    assert d["noiseless"]
+    assert d["I_XT"] == pytest.approx(d["H_T"])
+
+
+@pytest.mark.parametrize("rule,N", ((203, 10), (219, 10), (36, 10)))
+def test_without_it_the_branching_destroys_memory(rule, N):
+    d = AB.retained_information(rule, N)
+    assert d["H_T_given_X"] > 0.0
+    assert not d["noiseless"]
+    assert d["I_XT"] < d["H_T"]
+
+
+@pytest.mark.parametrize("rule", (73, 109, 203, 219))
+def test_the_retained_information_is_extensive_in_both_regimes(rule):
+    """The point of R22 sec 3.5: case B remembers just as many bits, less surely."""
+    vals = [AB.retained_information(rule, N)["I_XT"] for N in (8, 10, 12)]
+    assert vals[0] < vals[1] < vals[2]
+    d1, d2 = vals[1] - vals[0], vals[2] - vals[1]
+    assert d1 == pytest.approx(d2, rel=0.05), (rule, vals)
+    assert 0.7 < d1 < 1.0, (rule, d1)
+
+
+def test_the_noise_term_itself_grows_with_N():
+    prev = 0.0
+    for N in (8, 10, 12):
+        h = AB.retained_information(203, N)["H_T_given_X"]
+        assert h > prev
+        prev = h

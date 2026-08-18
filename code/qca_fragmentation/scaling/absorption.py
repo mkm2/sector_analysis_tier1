@@ -149,8 +149,45 @@ def summary(rule: int, N: int, bc: str = BC_DEFAULT) -> dict:
 
 
 def strong_symmetry_holds(rule: int, N: int, bc: str = BC_DEFAULT) -> bool:
-    """R22 Prop. 2: the conserved quantities are projectors iff n_rec == n_wcc."""
+    """R22 Thm. 1: the conserved quantities are projectors iff n_rec == n_wcc."""
     return summary(rule, N, bc)["idempotent"]
+
+
+def _entropy(p: np.ndarray) -> float:
+    p = np.asarray(p, dtype=float)
+    p = p[p > 1e-15]
+    return float(-(p * np.log2(p)).sum())
+
+
+def n_idempotent(rule: int, N: int, bc: str = BC_DEFAULT) -> int:
+    """How many J_i are projectors -- i.e. how many terminal classes are alone
+    in their weak component (R22 Thm. 1).  Never exceeds n_wcc."""
+    phi, _ = absorption(rule, N, bc)
+    return int(sum(1 for i in range(phi.shape[1])
+                   if np.all(np.isclose(phi[:, i], 0) | np.isclose(phi[:, i], 1))))
+
+
+def retained_information(rule: int, N: int, bc: str = BC_DEFAULT) -> dict:
+    """
+    Bits of the initial condition that survive to t = infinity, for X uniform
+    on the 2^N basis states and T the terminal class reached (R22 section 3.5).
+
+    H(T|X) = 0 exactly when the strong symmetry is present; otherwise it is the
+    extensive amount of memory the branching destroys.
+    """
+    phi, terminal = absorption(rule, N, bc)
+    pT = phi.mean(axis=0)
+    H_T = _entropy(pT)
+    H_T_given_X = float(np.mean([_entropy(row) for row in phi]))
+    return {
+        "rule": rule, "N": N, "bc": bc,
+        "n_terminal": len(terminal),
+        "H_T": H_T,
+        "H_T_given_X": H_T_given_X,
+        "I_XT": H_T - H_T_given_X,
+        "bits_per_site": (H_T - H_T_given_X) / N,
+        "noiseless": bool(np.isclose(H_T_given_X, 0.0)),
+    }
 
 
 def build(rows=R22_ROWS, bc: str = BC_DEFAULT) -> List[dict]:
