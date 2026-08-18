@@ -1217,3 +1217,58 @@ overlapping unit and finds no disagreement anywhere in the sixteen.
 - NB the closed form is obc0 only. On the ring the bijection and the constraint
   both change and the level sets stop being the sectors (R21's pbc table: W150
   has 12 Krylov sectors inside 10 level sets).
+
+## R22 -- what the transition graph means (2026-08-18) -- DONE
+
+Conceptual report, no census: what WCCs and terminal SCCs ARE in open-quantum-
+system language, prompted by the finding that some dissipative rules have one
+weak component and `psi^N` terminal components.
+
+- **Prop. 1 (why the question has no closed-system analogue).** A unitary gives
+  `P[y,x] = |<y|U|x>|^2` which is DOUBLY stochastic (rows and columns both sum
+  to 1), so the uniform distribution is stationary with full support, so no
+  state is transient, so WCC = SCC = terminal SCC. Verified: all 16 unitary
+  rules have transient fraction identically 0 and `n_rec == n_wcc` at every N;
+  no dissipative rule has an empty transient part. The whole WCC/terminal split
+  is a dissipative phenomenon.
+- **Prop. 2 (WCCs are a strong symmetry).** WCC projectors `P_alpha` satisfy
+  `[K_j, P_alpha] = 0` for every Kraus operator -- the WCC partition is the
+  FINEST partition of the computational basis that block-diagonalises all
+  Kraus operators. That is exactly Buca-Prosen STRONG symmetry, so
+  `Tr(P_alpha rho)` is conserved. `n_wcc` = number of superselection sectors =
+  the open-system Krylov sector count. Terminal SCCs are instead the
+  ENCLOSURES of Baumgartner-Narnhofer / irreducible components of
+  Carbone-Pautrat; `n_rec` counts STEADY STATES, not sectors.
+- **The answer: exponential `n_rec` without exponential `n_wcc` is NOT HSF.**
+  Under the Moudgalya-Motrunich commutant criterion the relevant algebra is the
+  strong-symmetry commutant = the WCC decomposition. One weak component means
+  one Krylov sector, full stop. What IS exponentially large is the space of
+  Heisenberg-picture conserved quantities `J_i = sum_x phi_i(x)|x><x|` built
+  from absorption probabilities.
+- **Prop. 3 + measurement: idempotency is the signature.** `J_i^2 = J_i` iff
+  every `phi_i(x)` is 0/1 iff `n_rec == n_wcc`. Measured on the honest weighted
+  Markov chain (new module `scaling/absorption.py`, `tests/test_absorption.py`,
+  58 tests): fraction of basis states whose attractor is CERTAIN is
+  100.0% for W73 and W109 (n_wcc = n_rec = 41, 54) but 46.1% for W203 at N=10
+  and 39.1% at N=12 (n_wcc = 1, n_rec = 28 and 60), with effective attractor
+  count rising 2.6 -> 3.2 (max 15.0 -> 27.1). **Strong symmetry = the initial
+  state decides; multistability = the noise decides.**
+- Four regimes mapped: A/D fragmentation with room for noiseless subsystems;
+  A/C fragmentation with classical memory (= Li-Sala-Pollmann's dephasing
+  reduction of quantum to classical HSF); B/C multistability with an
+  exponential DARK-STATE manifold (W203 etc.); B/D empty in this rule family
+  (recorded as an observation, not a theorem).
+- **Terminology collision flagged.** strong/weak FRAGMENTATION (Sala/Khemani,
+  `D_max/dim s`) and strong/weak SYMMETRY (Buca-Prosen, `[L_k,U]=0`) are
+  orthogonal axes; R21 used the first, R22 the second. A third use now exists:
+  strong-to-weak spontaneous symmetry breaking in mixed states (Lessa et al.).
+- **Stated ceiling.** The support graph is the POPULATION skeleton: it lower-
+  bounds fragmentation (quantum HSF in a non-product basis is invisible --
+  live risk for us, since R-T15 found Temperley-Lieb and that is exactly
+  Li-Sala-Pollmann's vehicle for quantum HSF), it cannot split `d_max_rec` into
+  `n_k * m_k` (R17 and the X-gate correction answered that in opposite
+  directions), and `n_rec` lower-bounds the true steady-state count.
+- Also settled en route: **W91 largest recurrent class** is
+  `1 if N = 2 mod 3, else F(N+2) - 2^(N/2) for even N, F(N+2) for odd N` --
+  exact for N = 6..20, with N=20 an out-of-sample confirmation. So b_rec(W91)
+  = phi, not the 1.62-1.70 band the short window suggested.

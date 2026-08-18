@@ -9158,3 +9158,6 @@
 {"ts": "2026-08-06T17:23:04", "rule": 84, "bc": "obc0", "N": 22, "runtime": 122.4409, "ergodic": false, "engine_version": "1a.1", "tier": "1e", "tier1e_version": "1e.1", "n_wcc": 12, "d_max_wcc": 1302982}
 {"ts": "2026-08-06T17:25:06", "rule": 88, "bc": "obc0", "N": 22, "runtime": 122.0457, "ergodic": false, "engine_version": "1a.1", "tier": "1e", "tier1e_version": "1e.1", "n_wcc": 8, "d_max_wcc": 1182240}
 {"ts": "2026-08-06T17:27:11", "rule": 229, "bc": "obc0", "N": 22, "runtime": 124.7729, "ergodic": false, "engine_version": "1a.1", "tier": "1e", "tier1e_version": "1e.1", "n_wcc": 8, "d_max_wcc": 1334272}
+{"ts": "2026-08-18T17:10:48", "rule": 91, "bc": "obc0", "N": 18, "runtime": 119.9272, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-08-18T17:16:47", "rule": 91, "bc": "obc0", "N": 19, "runtime": 359.1391, "ergodic": false, "engine_version": "1a.1"}
+{"ts": "2026-08-18T17:29:40", "rule": 91, "bc": "obc0", "N": 20, "runtime": 772.6608, "ergodic": false, "engine_version": "1a.1"}

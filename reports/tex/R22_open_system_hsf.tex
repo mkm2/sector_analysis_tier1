@@ -1,0 +1,605 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Phid}{\Phi^{\dagger}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\title{\textbf{Report R22 --- what the transition graph means}\\
+\large Weak components, terminal components and Hilbert-space fragmentation
+in open quantum systems}
+\author{Tier 1 analysis}
+\date{2026-08-18}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Every sector count this project reports is a count of components of one
+directed graph: the support graph of the channel in the computational basis.
+For unitary rules the choice of component notion is immaterial, and the
+project has been able to say ``Krylov sector'' without qualification. For
+dissipative rules it is not immaterial, and the two natural counts can
+disagree \emph{exponentially}: we have rules with a single weakly connected
+component and $\psi^N$ terminal components, $\psi = 1.4656$. This report says
+what the two counts are in the language of open quantum systems, and answers
+the question that provoked it --- if the recurrent classes proliferate but the
+weak components do not, is that Hilbert-space fragmentation? The answer is
+\textbf{no}, and the reason is sharp rather than terminological. Weak
+components are exactly the blocks of a \emph{strong symmetry} in the sense of
+Bu\v{c}a and Prosen: the finest decomposition of the basis that makes every
+Kraus operator block-diagonal, hence a genuine superselection rule with a
+charge measurable at $t=0$. Terminal components are the \emph{enclosures} of
+the Baumgartner--Narnhofer / Albert--Jiang asymptotic decomposition: they count
+steady states, not sectors. Fragmentation is a statement about the first;
+exponentially many attractors inside one block is multistability --- an
+exponentially degenerate steady-state manifold with no symmetry protecting it.
+The distinction is operational, not aesthetic, and we measure it: the
+conserved quantities of a channel are the absorption probabilities
+$\varphi_i(x)$, and a strong symmetry is precisely the statement that they are
+\textbf{idempotent}. For rules whose weak components proliferate the initial
+state fixes the attractor with certainty for $100\%$ of basis states; for
+rules with one weak component and exponentially many attractors it does so for
+$46\%$ at $N=10$, falling to $39\%$ at $N=12$ --- the rest of the time the
+noise decides, not the initial condition. We map the four growth regimes onto
+the literature, flag a terminology collision between two independent
+``strong/weak'' dichotomies that this project uses both of, and state
+precisely what a population-level graph can and cannot certify.
+\end{abstract}
+
+\tableofcontents
+
+\section{Why the question does not arise for closed systems}
+\label{sec:closed}
+
+The object under study is the support graph $G$ of one full brick-wall cycle
+$\Phi$ in the computational basis: vertices are the $2^N$ bit strings, and
+$x \to y$ when the channel can take $|x\rangle\langle x|$ to something with
+weight on $|y\rangle\langle y|$. Writing $\Phi(\rho) = \sum_j K_j \rho
+K_j^\dagger$, this is
+\begin{equation}
+  x \to y \quad\Longleftrightarrow\quad
+  \exists j : \langle y | K_j | x \rangle \neq 0 .
+  \label{eq:graph}
+\end{equation}
+Three notions of ``component'' live on a directed graph: weakly connected
+components (WCCs, obtained by forgetting edge directions), strongly connected
+components (SCCs, mutual reachability), and terminal SCCs --- those with no
+outgoing edge, which we also call recurrent classes or attractors. In general
+these are different. The following says why the distinction has never had to be
+made in the closed-system fragmentation literature.
+
+\begin{proposition}[Unitarity collapses the three notions]
+\label{prop:doubly}
+If $\Phi(\rho) = U\rho U^\dagger$ with $U$ unitary, then every SCC of $G$ is
+terminal and coincides with its WCC:
+\[
+  \text{WCC} \;=\; \text{SCC} \;=\; \text{terminal SCC}.
+\]
+\end{proposition}
+
+\begin{proof}
+The induced population dynamics is the matrix $P_{yx} = |\langle y|U|x\rangle|^2$.
+Its columns sum to one because $U|x\rangle$ is normalised, and its rows sum to
+one because $\langle y|U$ is; so $P$ is \emph{doubly stochastic} and the uniform
+distribution is stationary with full support. In a finite Markov chain a
+transient state carries zero stationary mass, so no state is transient and
+every SCC is terminal. Finally, distinct terminal SCCs cannot be joined by an
+edge in either direction --- an edge out of a terminal SCC would contradict
+terminality --- so each is its own WCC.
+\end{proof}
+
+This is not an idle formality; it is why the project's earlier reports could
+speak of ``the'' Krylov sectors. Empirically it holds exactly: across all $16$
+unitary rules and all $N \in [6,16]$ the measured transient fraction is
+identically $0$ and $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$ at every point, and
+no dissipative rule has an empty transient part at any $N$. The moment a reset
+channel $D$ or $E$ enters the rule word, $P$ loses column normalisation on the
+right --- two basis states are mapped onto one --- the chain acquires
+transients, and the three counts separate. \textbf{The entire subject of this
+report is a dissipative phenomenon with no closed-system shadow.}
+
+\section{The dictionary}
+\label{sec:dictionary}
+
+\subsection{Weak components are a strong symmetry}
+
+\begin{proposition}[WCCs block-diagonalise every Kraus operator]
+\label{prop:wcc}
+Let $\{B_\alpha\}$ be the WCCs of $G$ and $P_\alpha$ the orthogonal projector
+onto $\operatorname{span}\{|x\rangle : x \in B_\alpha\}$. Then
+$[K_j, P_\alpha] = 0$ for every Kraus operator $K_j$ and every $\alpha$, and
+consequently $\Tr(P_\alpha \rho)$ is conserved for all time. Conversely, the
+$\{B_\alpha\}$ are the \emph{finest} partition of the computational basis with
+this property.
+\end{proposition}
+
+\begin{proof}
+If $P_\alpha K_j P_\beta \neq 0$ for $\alpha \neq \beta$ there are
+$x \in B_\beta$, $y \in B_\alpha$ with $\langle y|K_j|x\rangle \neq 0$, i.e.\ an
+edge $x \to y$ in \eqref{eq:graph}; then $x$ and $y$ are weakly connected and
+$\alpha = \beta$, a contradiction. Hence each $K_j = \bigoplus_\alpha P_\alpha
+K_j P_\alpha$ and $P_\alpha K_j = K_j P_\alpha$. Conservation follows:
+$\Tr(P_\alpha \Phi(\rho)) = \sum_j \Tr(K_j P_\alpha \rho K_j^\dagger) =
+\sum_j \Tr(K_j^\dagger K_j P_\alpha \rho) = \Tr(P_\alpha\rho)$, using
+$\sum_j K_j^\dagger K_j = \mathbb{1}$. Minimality holds because any coarser-than-$G$
+partition with block-diagonal Kraus operators has no edges between its parts,
+so it is a union of WCCs.
+\end{proof}
+
+Proposition~\ref{prop:wcc} is the whole content of the identification. In the
+classification of Bu\v{c}a and Prosen~\cite{buca2012}, a symmetry of a
+Lindbladian is \emph{strong} when the Hamiltonian \emph{and every jump
+operator individually} commute with it, and \emph{weak} when only the
+generator as a whole does. Setting $U = \sum_\alpha e^{i\theta_\alpha}
+P_\alpha$ for generic phases, Proposition~\ref{prop:wcc} says exactly that the
+WCC decomposition furnishes a strong symmetry, and the minimality clause says
+it is the maximal one available in the computational basis. Bu\v{c}a and Prosen
+establish the fact that gives this report its answer: \emph{only} a strong
+symmetry implies non-trivial reductions inside the space of steady states.
+
+So:
+\begin{quote}
+$n_{\mathrm{wcc}}$ counts superselection sectors. It is the open-system
+successor of ``number of Krylov sectors'', and it is the count that
+fragmentation is about.
+\end{quote}
+
+\subsection{Terminal components are enclosures}
+
+The terminal SCCs are a different kind of object entirely. They are the
+\emph{enclosures} of Baumgartner and Narnhofer~\cite{bn2008}, whose analysis of
+GKS--Lindblad generators equips the Hilbert space with a decomposition into
+mutually orthogonal subspaces and separates the transient part from the
+part where probability accumulates. In the quantum-channel formulation the
+same structure is the irreducible decomposition of Carbone and
+Pautrat~\cite{carbone2016}: the recurrent subspace, which supports the
+invariant states, decomposes into the supports of the extremal invariant
+states, with the orthogonal complement being transient. Albert and
+Jiang~\cite{albert2014} give the form of the asymptotic manifold,
+\begin{equation}
+  \rho(\infty) \;=\; \bigoplus_k \;\big( \sigma_k \otimes \rho_k \big),
+  \qquad \sigma_k \in M_{n_k},
+  \label{eq:aj}
+\end{equation}
+where $k$ runs over the enclosures, $\rho_k$ is a fixed state on the
+``dissipative'' factor of enclosure $k$, and $M_{n_k}$ is a noiseless
+subsystem carrying surviving coherence. Their central point --- and the one we
+lean on in \S\ref{sec:answer} --- is that the infinite-time state is fixed by
+the initial state together with the full list of conserved quantities.
+
+So:
+\begin{quote}
+$n_{\mathrm{rec}}$ counts steady states. It is a statement about the
+$t \to \infty$ limit, not about a decomposition of the Hilbert space.
+\end{quote}
+
+\subsection{The table}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+graph object & algebraic object & physical reading \\
+\midrule
+WCC & block of a strong symmetry; & superselection sector; Krylov \\
+    & $[K_j,P_\alpha]=0$ & sector of the dephased model \\[2pt]
+$n_{\mathrm{wcc}}$ & \# blocks & \# conserved charges valid at \emph{all} times \\[2pt]
+$d^{\mathrm{wcc}}_{\max}$ & largest block dimension & the R21 strong/weak-fragmentation ratio \\[4pt]
+SCC & communicating class & refines the sector into transient strata \\[2pt]
+transient SCCs & transient subspace & everything that decays \\[4pt]
+terminal SCC & enclosure~\cite{bn2008}; irreducible & attractor; support of one extremal \\
+    & component~\cite{carbone2016} & steady state \\[2pt]
+$n_{\mathrm{rec}}$ & \# enclosures & \# extremal steady states \\[2pt]
+$d^{\mathrm{rec}}_{\max}$ & $n_k \cdot m_k$ of the largest & noiseless-subsystem dimension \\
+    & enclosure & \emph{times} mixing dimension \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two structural facts follow immediately and are worth stating because they
+constrain every census. First, $n_{\mathrm{rec}} \ge n_{\mathrm{wcc}}$ always,
+since every weak component contains at least one terminal SCC; the inequality
+is saturated exactly when each sector has a unique attractor. Second, the
+familiar hyperbola $ab \ge 2$ of R9/R16 is a statement about WCCs \emph{only},
+and it holds because they tile: $\sum_\alpha \dim B_\alpha = 2^N$. Recurrent
+classes do not tile --- they occupy the recurrent volume $\mu^N \le 2^N$ ---
+so the correct analogue is $a_{\mathrm{rec}} \, b_{\mathrm{rec}} \ge \mu$, with
+$\mu = 2$ recovering the closed-system bound. For the rules discussed below
+$\mu = \psi = 1.4656$ and the bound is saturated exactly.
+
+\section{Is exponential \texorpdfstring{$n_{\mathrm{rec}}$}{n\_rec} without
+exponential \texorpdfstring{$n_{\mathrm{wcc}}$}{n\_wcc} fragmentation?}
+\label{sec:answer}
+
+\subsection{The criterion}
+
+The sharpest available definition of fragmentation is the commutant-algebra
+one of Moudgalya and Motrunich~\cite{mm2022}: given the set of local terms
+(Hamiltonian terms, or the local gates of a circuit), form the algebra of all
+operators commuting with each of them; the system is fragmented when the
+dimension of this \emph{commutant} grows exponentially in system size, as
+against the polynomial growth produced by conventional symmetries such as
+$U(1)$ or $SU(2)$. Their framework also supplies the classical/quantum
+distinction --- ``classical'' fragmentation being fragmentation in a product
+basis, which is the case here.
+
+The open-system version replaces ``commutes with each local term'' by
+``commutes with the Hamiltonian and each jump operator'', which is
+Bu\v{c}a--Prosen strong symmetry, and the superoperator formulation is
+developed in~\cite{mm2024}, where symmetry algebras appear as frustration-free
+ground states of a local super-Hamiltonian and the strong/weak distinction is
+made explicit. Under that criterion the answer is immediate:
+Proposition~\ref{prop:wcc} identifies the strong-symmetry commutant in the
+computational basis with the WCC decomposition, so \textbf{exponentially many
+weak components is fragmentation and exponentially many terminal components is
+not}. A rule with one weak component has a trivial strong-symmetry commutant:
+its Hilbert space is a single Krylov sector.
+
+\subsection{What is exponentially large instead}
+
+This does not make the phenomenon empty --- something is exponentially large,
+and it is worth naming precisely. It is the space of conserved quantities in
+the Heisenberg picture. For each terminal component $T_i$ define the
+\emph{absorption probability}
+\begin{equation}
+  \varphi_i(x) \;=\; \Pr[\,\text{absorbed in } T_i \mid \text{start in } x\,],
+  \qquad
+  J_i \;=\; \sum_x \varphi_i(x)\, |x\rangle\langle x| .
+  \label{eq:absorb}
+\end{equation}
+Each $J_i$ satisfies $\Phid(J_i) = J_i$, so $\Tr(J_i \rho(t))$ is constant:
+these are conserved quantities in exactly Albert and Jiang's sense, and there
+are $n_{\mathrm{rec}}$ of them. Exponentially many attractors therefore do
+imply exponentially many conserved quantities. The question is what \emph{kind}.
+
+\begin{proposition}[Idempotency is the signature of a strong symmetry]
+\label{prop:idem}
+$J_i^2 = J_i$ for every $i$ if and only if $\varphi_i(x) \in \{0,1\}$ for
+every $x$ and $i$, which holds if and only if every weak component contains
+exactly one terminal component, i.e.\ $n_{\mathrm{rec}} = n_{\mathrm{wcc}}$.
+In that case the $J_i$ are the $P_\alpha$ of Proposition~\ref{prop:wcc}.
+\end{proposition}
+
+\noindent This is the whole answer in one line. Fragmentation requires the
+conserved quantities to be \emph{projectors} --- charges that take a definite
+value on every basis state, that can be measured at $t=0$, and whose value can
+never change. When $n_{\mathrm{rec}} \gg n_{\mathrm{wcc}}$ the conserved
+quantities exist but are not idempotent: they are non-local, real-valued
+functions on configuration space, they have no interpretation as a charge of
+the initial state, and they are recovered only in the $t\to\infty$ limit.
+
+\subsection{The operational content, measured}
+\label{sec:measured}
+
+Proposition~\ref{prop:idem} converts the abstract distinction into a number one
+can compute: what fraction of basis states have their attractor determined
+\emph{with certainty} by the initial condition? We built the honest population
+Markov chain of the channel ($I$ keeps, $V=H$ splits $\tfrac12/\tfrac12$, $D$
+and $E$ reset) and solved $\varphi = Q\varphi + R$ exactly on the transient
+block.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+rule & regime & $n_{\mathrm{wcc}}$ & $n_{\mathrm{rec}}$
+  & certain fate & effective \# attractors \\
+\midrule
+$W_{73}$  \rt{VIID}  & sectors proliferate & 41 & 41 & $100.0\%$ & $1.00$ \\
+$W_{109}$ \rt{EIIV}  & sectors proliferate & 54 & 54 & $100.0\%$ & $1.00$ \\
+$W_{36}$  \rt{IDDV}  & attractors only     & 10 & 60 & $72.5\%$  & $1.8$ \\
+$W_{203}$ \rt{VEII}  & attractors only     & 1  & 28 & $46.1\%$  & $2.6$ \\
+$W_{203}$ \rt{VEII} ($N=12$) & attractors only & 1 & 60 & $39.1\%$ & $3.2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent All rows at $N=10$ unless marked, obc0. ``Effective \# attractors''
+is the participation ratio $1/\sum_i \varphi_i(x)^2$ averaged over basis
+states. The dissipative rules whose \emph{weak} components proliferate behave
+exactly as Proposition~\ref{prop:idem} requires: every basis state has a
+certain fate, the conserved quantities are projectors, the charge is fixed at
+$t=0$. $W_{203}$, with a single weak component, does not: fewer than half its
+basis states have a determined fate, and the fraction \emph{falls} with $N$
+while the effective number of accessible attractors rises ($\max 15.0$ at
+$N=10$, $27.1$ at $N=12$).
+
+The physical statement is therefore:
+
+\begin{quote}
+With exponentially many weak components, \textbf{the initial state decides}
+which attractor the system reaches. With one weak component and exponentially
+many attractors, \textbf{the noise decides}; the initial state only sets the
+odds.
+\end{quote}
+
+Both are ergodicity breaking, and both give an exponentially degenerate
+steady-state manifold. Only the first is Hilbert-space fragmentation.
+
+\subsection{Where this sits in the current literature}
+
+Two neighbouring bodies of work make the placement precise.
+
+\emph{Dissipative freezing.} S\'anchez Mu\~noz, Buca and
+co-workers~\cite{freezing2019,freezing2023} study what individual quantum
+trajectories do under a \emph{strong} symmetry: initialised in a superposition
+of sectors, each stochastic realisation randomly selects one and stays there,
+so the conservation law that holds for the density matrix is ``broken'' at the
+level of single realisations. Our case is the mirror image. There, trajectory
+selection happens \emph{despite} a strong symmetry that makes the ensemble
+remember; here there is no strong symmetry at all, and the trajectory-level
+selection among $\psi^N$ attractors is the only structure present. The two
+phenomena are easy to confuse from the trajectory picture alone and are
+distinguished exactly by whether $\varphi_i$ is idempotent.
+
+\emph{Dark states.} When the attractors are single basis states --- the
+generic case among the rules where this gap appears --- the terminal
+components are dark states in the standard sense: configurations immune to
+every jump operator, which is precisely how the recurrent subspace is
+characterised in open reaction--diffusion settings. An exponentially large
+dark-state manifold reached from a structureless transient bulk is a
+well-recognised target for dissipative state preparation, and it is a
+different resource from a fragmented Hilbert space: one prepares states, the
+other protects them.
+
+\section{The four regimes}
+\label{sec:regimes}
+
+Writing $n_{\mathrm{wcc}} \sim a_{\mathrm{w}}^N$,
+$n_{\mathrm{rec}} \sim a_{\mathrm{r}}^N$,
+$d^{\mathrm{rec}}_{\max} \sim b_{\mathrm{r}}^N$, four regimes are possible and
+each has a distinct reading.
+
+\paragraph{(A/D) Sectors, attractors and attractor dimension all exponential.}
+Exponentially many superselection sectors, each retaining an exponentially
+large recurrent space. This is fragmentation in the full sense, and it is the
+regime in which the asymptotic manifold \eqref{eq:aj} can carry an
+exponentially large noiseless subsystem --- strong fragmentation is a known
+route to stabilising exponentially many decoherence-free subspaces. Whether
+$d^{\mathrm{rec}}_{\max} = n_k m_k$ is coherence ($n_k$) or classical mixing
+($m_k$) is \emph{not} decided by the graph; see \S\ref{sec:cannot}. In our
+setting the unitary rules $W_{108}$, $W_{201}$, $W_{156}$, $W_{198}$ sit here
+together with the dissipative $W_{73}$, $W_{109}$.
+
+\paragraph{(A/C) Sectors exponential, attractors trivial.} Exponentially many
+sectors, each collapsing onto a small attractor --- typically one frozen
+state per sector. The fragmentation is real and the memory is classical: the
+long-time state is a bit string labelled by the conserved charge. This is what
+dephasing does to a fragmented model, and it is the regime Li, Sala and
+Pollmann~\cite{li2023} reach when they couple a fragmented system to a
+dephasing bath: the quantum fragmentation is reduced to a classical one, the
+stationary state becomes separable, and what survives is classical
+correlations arising from fluctuations of the remaining conserved quantities.
+The degenerate limiting case is $W_{204} = \rt{IIII}$, with $2^N$ sectors of
+one state each.
+
+\paragraph{(B/C) Attractors exponential, sectors not, attractors trivial.}
+The regime that provoked this report. One (or polynomially many) Krylov
+sectors, $\psi^N$ dark states, a transient bulk occupying $99\%+$ of the
+Hilbert space, and non-idempotent conserved quantities. Not fragmentation:
+\textbf{multistability with an exponentially degenerate dark-state manifold}.
+The exemplar is $W_{203} = \rt{VEII}$, whose entire $2^N$-dimensional space is
+one weak component.
+
+\paragraph{(B/D) Attractors exponential and exponentially large, sectors not.}
+Exponentially many enclosures each exponentially large, inside a single
+superselection sector. This would be the most interesting regime --- an
+exponentially degenerate manifold of exponentially large noiseless
+subsystems with no symmetry organising them --- and it is \emph{empty} in the
+256-rule family at obc0. We record its absence as an observation, not a
+theorem; nothing we know forbids it, and the volume constraint
+$a_{\mathrm{r}} b_{\mathrm{r}} \le 2$ leaves room for it.
+
+\section{A terminology collision worth flagging}
+\label{sec:collision}
+
+This project now uses two independent dichotomies that are both called
+``strong versus weak'', and they are orthogonal. Conflating them would
+invalidate R21's conclusions or this report's, depending on the direction of
+the error.
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.45\textwidth}p{0.45\textwidth}@{}}
+\toprule
+\textbf{strong / weak \emph{fragmentation}} &
+\textbf{strong / weak \emph{symmetry}} \\
+Sala \emph{et al.}~\cite{sala2020}, Khemani \emph{et al.}~\cite{khemani2020} &
+Bu\v{c}a--Prosen~\cite{buca2012} \\
+\midrule
+About the \emph{size} of the largest sector relative to the symmetry sector
+containing it: strong iff $D_{\max}(s)/\dim s \to 0$. &
+About \emph{how} a symmetry acts: strong iff every jump operator commutes with
+it individually, weak iff only the generator does. \\[4pt]
+A question you ask \emph{after} you have a sector decomposition. &
+A question about whether you have a sector decomposition at all. \\[4pt]
+Used in R21, which grades 108/201/156/198 as strongly fragmented. &
+Used here, to say what $n_{\mathrm{wcc}}$ counts. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A model can be weakly fragmented with a perfectly good strong symmetry
+($W_{60}$, $W_{102}$ in R21), and --- as \S\ref{sec:answer} shows --- can have
+exponentially many steady states with no strong symmetry whatever. There is
+also a third, newer use of the same words in the mixed-state literature:
+\emph{strong-to-weak spontaneous symmetry breaking}~\cite{swssb2024}, where a
+strong symmetry of a density matrix degrades to a weak one and the order
+parameter is a fidelity correlator rather than a two-point function. That is a
+statement about phases of mixed states, not about sector counting, and it
+should not be read into either column above. Whether the boundary between our
+regimes A and B can be crossed as a genuine SWSSB transition in a family of
+channels is a natural question and one we have not touched.
+
+\section{What a population graph cannot certify}
+\label{sec:cannot}
+
+The support graph \eqref{eq:graph} is the \emph{population} skeleton of the
+channel. It records which basis states feed which, and nothing about the
+phases. Three consequences bound every claim in this report and in the
+project's dissipative reports generally.
+
+\begin{enumerate}
+\item \textbf{It is a lower bound on fragmentation.} A channel may have
+conserved quantities invisible in the computational basis --- the fragmentation
+may be quantum, i.e.\ in a non-product basis, in the sense
+of~\cite{mm2022}. The WCC count is then an undercount. This is not
+hypothetical for us: R-T15 identified the single-$V$ commutant of
+$W_{108}/W_{201}/W_{156}/W_{198}$ as a Temperley--Lieb algebra, and the
+Temperley--Lieb model is exactly the vehicle Li, Sala and Pollmann use for
+\emph{quantum} HSF in an entangled basis~\cite{li2023}. Their
+fragmentation-preserving coupling produces a steady state with coherent memory
+carried by an extensive set of \emph{non-commuting} conserved quantities. No
+diagonal graph can see any of that.
+
+\item \textbf{It cannot split $d^{\mathrm{rec}}_{\max}$ into $n_k \cdot m_k$.}
+The graph gives the dimension of an enclosure's support; \eqref{eq:aj} says
+that dimension factorises into a noiseless subsystem and a mixing factor, and
+which one carries the growth is a question about coherence. The project has
+answered it in both directions already: R17 found the exponential terminal
+SCCs to be dense, mixing digraphs rather than cycles --- so $m_k$ is large and
+$n_k$ small, a classical attractor --- while the $X$-gate correction
+established the opposite for permutation circuits, where the functional graph
+describes only populations and exponentially large decoherence-free subspaces
+sit underneath it. \emph{The graph alone never settles this.}
+
+\item \textbf{The equality $\dim(\text{fixed points of } \Phid) =
+n_{\mathrm{rec}}$ is a classical statement.} For the population chain the
+conserved quantities are exhausted by the absorption probabilities
+\eqref{eq:absorb}. The full channel can carry additional fixed points built
+from coherences between enclosures of equal structure, which is precisely the
+$M_{n_k}$ factor in \eqref{eq:aj}. So $n_{\mathrm{rec}}$ is a lower bound on
+the steady-state count too.
+\end{enumerate}
+
+\section{Summary}
+
+\begin{itemize}
+\item WCCs are the blocks of a \emph{strong symmetry}: the finest basis
+decomposition making every Kraus operator block-diagonal
+(Prop.~\ref{prop:wcc}). Their count is the open-system Krylov sector count,
+and exponential growth of it is Hilbert-space fragmentation.
+\item Terminal SCCs are \emph{enclosures}: supports of extremal steady states.
+Their count is a $t\to\infty$ statement and is always $\ge n_{\mathrm{wcc}}$.
+\item Exponentially many terminal SCCs inside one WCC is \textbf{not}
+fragmentation. It is multistability: the conserved quantities are absorption
+probabilities, which fail to be idempotent (Prop.~\ref{prop:idem}), and the
+attractor is selected by noise rather than fixed by the initial state --- a
+$100\%$ versus $46\%$ effect in direct measurement (\S\ref{sec:measured}).
+\item The distinction has no closed-system analogue: unitarity makes the
+population dynamics doubly stochastic, which kills the transient part and
+collapses all three component notions (Prop.~\ref{prop:doubly}).
+\item ``Strong/weak'' means two different things in this project, and now a
+third thing in the mixed-state literature (\S\ref{sec:collision}).
+\item Everything here is certified at the level of populations only
+(\S\ref{sec:cannot}); coherent fragmentation would be invisible, and our own
+Temperley--Lieb structure is a live candidate for it.
+\end{itemize}
+
+\section*{Reproduce}
+\addcontentsline{toc}{section}{Reproduce}
+
+The measurement of \S\ref{sec:measured} needs transition \emph{probabilities},
+which the project's component engine does not carry: \fn{graph/scc.py} works
+with the unweighted successor relation, since that is all that component
+structure requires. The weighted one-cycle chain is therefore rebuilt from the
+gate semantics ($I$ keeps, $V=H$ splits $\tfrac12/\tfrac12$, $D$ and $E$
+reset), in \fn{scaling/absorption.py}, at cost $O(4^N)$. It is a small-$N$
+diagnostic, not a sweep.
+
+\begin{verbatim}
+    python -m qca_fragmentation.scaling.absorption --table
+    pytest qca_fragmentation/tests/test_absorption.py     # 58 tests
+\end{verbatim}
+
+\noindent The tests pin every number in the table of \S\ref{sec:measured}, and
+check both directions of Proposition~\ref{prop:idem} as well as the double
+stochasticity of Proposition~\ref{prop:doubly} --- the latter holding for the
+unitary rules and failing for the dissipative ones.
+
+\begin{thebibliography}{99}
+
+\bibitem{buca2012} B.~Bu\v{c}a and T.~Prosen,
+\emph{A note on symmetry reductions of the Lindblad equation: transport in
+constrained open spin chains},
+New J.\ Phys.\ \textbf{14}, 073007 (2012);
+\href{https://arxiv.org/abs/1203.0943}{arXiv:1203.0943}.
+
+\bibitem{bn2008} B.~Baumgartner and H.~Narnhofer,
+\emph{Analysis of quantum semigroups with GKS--Lindblad generators: II.
+General},
+J.\ Phys.\ A \textbf{41}, 395303 (2008);
+\href{https://arxiv.org/abs/0806.3164}{arXiv:0806.3164}.
+
+\bibitem{albert2014} V.~V.~Albert and L.~Jiang,
+\emph{Symmetries and conserved quantities in Lindblad master equations},
+Phys.\ Rev.\ A \textbf{89}, 022118 (2014);
+\href{https://arxiv.org/abs/1310.1523}{arXiv:1310.1523}.
+
+\bibitem{carbone2016} R.~Carbone and Y.~Pautrat,
+\emph{Irreducible decompositions and stationary states of quantum channels},
+Rep.\ Math.\ Phys.\ \textbf{77}, 293 (2016);
+\href{https://arxiv.org/abs/1507.08404}{arXiv:1507.08404}.
+
+\bibitem{mm2022} S.~Moudgalya and O.~I.~Motrunich,
+\emph{Hilbert space fragmentation and commutant algebras},
+Phys.\ Rev.\ X \textbf{12}, 011050 (2022);
+\href{https://arxiv.org/abs/2108.10324}{arXiv:2108.10324}.
+
+\bibitem{mm2024} S.~Moudgalya and O.~I.~Motrunich,
+\emph{Symmetries as ground states of local superoperators: hydrodynamic
+implications},
+PRX Quantum \textbf{5}, 040330 (2024);
+\href{https://arxiv.org/abs/2309.15167}{arXiv:2309.15167}.
+
+\bibitem{li2023} Y.~Li, P.~Sala and F.~Pollmann,
+\emph{Hilbert space fragmentation in open quantum systems},
+Phys.\ Rev.\ Research \textbf{5}, 043239 (2023);
+\href{https://arxiv.org/abs/2305.06918}{arXiv:2305.06918}.
+
+\bibitem{sala2020} P.~Sala, T.~Rakovszky, R.~Verresen, M.~Knap and F.~Pollmann,
+\emph{Ergodicity breaking arising from Hilbert space fragmentation in
+dipole-conserving Hamiltonians},
+Phys.\ Rev.\ X \textbf{10}, 011047 (2020).
+
+\bibitem{khemani2020} V.~Khemani, M.~Hermele and R.~Nandkishore,
+\emph{Localization from Hilbert space shattering: from theory to physical
+realizations},
+Phys.\ Rev.\ B \textbf{101}, 174204 (2020).
+
+\bibitem{freezing2019} C.~S\'anchez Mu\~noz, B.~Buca, J.~Tindall,
+A.~Gonz\'alez-Tudela, D.~Jaksch and D.~Porras,
+\emph{Symmetries and conservation laws in quantum trajectories: dissipative
+freezing},
+Phys.\ Rev.\ A \textbf{100}, 042113 (2019).
+
+\bibitem{freezing2023} J.~Tindall, D.~Jaksch and C.~S\'anchez Mu\~noz,
+\emph{On the generality of symmetry breaking and dissipative freezing in
+quantum trajectories},
+SciPost Phys.\ Core \textbf{6}, 004 (2023);
+\href{https://arxiv.org/abs/2204.06585}{arXiv:2204.06585}.
+
+\bibitem{swssb2024} L.~A.~Lessa, R.~Ma, J.-H.~Zhang, Z.~Bi, M.~Cheng and
+C.~Wang,
+\emph{Strong-to-weak spontaneous symmetry breaking in mixed quantum states},
+PRX Quantum \textbf{6}, 010344 (2025);
+\href{https://arxiv.org/abs/2405.03639}{arXiv:2405.03639}.
+
+\end{thebibliography}
+
+\end{document}
