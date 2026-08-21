@@ -259,3 +259,39 @@ def test_constrained_space_is_irreducible_for_73_but_not_109(N):
         assert len(inside) == want, (rule, N, len(inside))
         assert not straddle
         assert sum(len(d["members"][c]) for c in inside) == len(C)
+
+
+def _protected_dim(rule, N):
+    d = st.decompose(rule, N)
+    return sum(len(d["members"][c]) for c, t in enumerate(d["terminal"]) if t)
+
+
+@pytest.mark.parametrize("rule,expect", [
+    (73,  [13, 24, 44, 81, 149, 274, 504]),
+    (109, [9, 17, 31, 57, 105, 193, 355]),
+])
+def test_protected_dimension_is_tribonacci(rule, expect):
+    """R23: D = dim of the whole protected space obeys the tribonacci
+    recurrence, so it grows at 1.8393 -- faster than any single enclosure."""
+    got = [_protected_dim(rule, N) for N in range(4, 11)]
+    assert got == expect
+    for i in range(3, len(got)):
+        assert got[i] == got[i - 1] + got[i - 2] + got[i - 3]
+
+
+@pytest.mark.parametrize("rule,expect", [
+    (28,  [9, 14, 20, 33, 49, 74, 116]),
+    (199, [5, 9, 11, 19, 29, 41, 67]),
+    (29,  [5, 9, 11, 19, 29, 41, 67]),
+])
+def test_protected_dimension_of_the_six(rule, expect):
+    """R23: the six share the root of x^3 = x + 2 through two different
+    integer recurrences."""
+    got = [_protected_dim(rule, N) for N in range(4, 11)]
+    assert got == expect
+    if rule == 28:
+        for i in range(4, len(got)):
+            assert got[i] == got[i-1] + got[i-2] + got[i-3] - 2 * got[i-4]
+    else:
+        for i in range(3, len(got)):
+            assert got[i] == got[i - 2] + 2 * got[i - 3]

@@ -515,6 +515,53 @@ carries an entangling unitary on a constrained space, and nothing bounds it. We
 state this as the mechanism, not as a derivation: the particular values $18$,
 $53$, $67$ are not accounted for here.
 
+\section{How much is actually protected}
+
+Everything above counts \emph{one} enclosure at a time. But \S4.4 showed the
+whole recurrent space carries a single unitary, so the protected space is the
+span of \emph{all} recurrent basis states, of dimension $D=\sum_k n_k$, and that
+is a strictly bigger object than the largest enclosure. Each rule therefore has
+three exponents, not one, and they are all different:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+ & number of enclosures & largest enclosure & protected dimension $D$ \\
+\midrule
+the six & $\rho=1.3247$ & $2^{1/3}=1.2599$ & $\mathbf{1.5214}$ \\
+        & $x^3=x+1$ & exact & $x^3=x+2$ \\[2pt]
+$W_{73}$, $W_{109}$ & $\psi=1.4656$ & $\varphi=1.6180$ & $\mathbf{1.8393}$ \\
+        & $x^3=x^2+1$ & $x^2=x+1$ & $x^3=x^2+x+1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The right-hand column is measured, then identified as the dominant
+root of an exact integer recurrence fitted to $N=4,\dots,13$ and verified on
+every term:
+\[
+\begin{array}{ll}
+W_{73},\,W_{109} & D(N)=D(N{-}1)+D(N{-}2)+D(N{-}3) \quad\text{(tribonacci)}\\
+W_{28},\,W_{70} & D(N)=D(N{-}1)+D(N{-}2)+D(N{-}3)-2D(N{-}4)\\
+W_{157},\,W_{199},\,W_{29},\,W_{71} & D(N)=D(N{-}2)+2D(N{-}3)
+\end{array}
+\]
+with $W_{73}$ running $13,24,44,81,149,274,504,927,1705,3136$ and $W_{109}$
+running $9,17,31,57,105,193,355,653,1201,2209$. The last two recurrences differ
+but share a characteristic root, the real root of $x^3=x+2$.
+
+In qubits per site the protected space holds $\log_2 1.8393=0.879$ for $73$ and
+$109$, against $\log_2\varphi=0.694$ inside the largest blockade sector alone,
+and $\log_2 1.5214=0.605$ for the six. The gap between $0.879$ and $0.694$ is
+exactly the cross-enclosure coherence of \S4.4: a per-attractor accounting throws
+it away, and it is the larger part of what survives. (The tribonacci growth and
+the qubits-per-site framing are due to the Tier-1 session, R24; the two
+recurrences for the six and their shared root $x^3=x+2$ are measured here.)
+
+None of this is protection in the coding sense --- \S4.4 already showed the
+distance is $1$ --- but it is the right size for the noiseless subsystem against
+the machine's own resets.
+
 \section{Answering the question as asked}
 
 \begin{enumerate}
