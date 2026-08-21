@@ -210,3 +210,52 @@ def test_coherence_between_two_attractors_survives(rule):
         psi = tr.step(psi, np.random.default_rng(0))
         assert set(np.nonzero(np.abs(psi) > 1e-11)[0].tolist()) <= set(a) | set(b)
     assert abs(sum(psi[x] ** 2 for x in a) - 0.5) < 1e-12
+
+
+def _constrained(N, bad):
+    return [x for x in range(1 << N)
+            if bad not in "".join(str((x >> i) & 1) for i in range(N))]
+
+
+def _cycle_on(rule, N, basis):
+    tr = st.Trajectory(rule, N)
+    idx = {x: j for j, x in enumerate(basis)}
+    M = np.zeros((len(basis), len(basis)))
+    for j, x in enumerate(basis):
+        psi = tr.step(st.basis_state(N, x), np.random.default_rng(0))
+        for y in np.nonzero(np.abs(psi) > 1e-13)[0]:
+            assert int(y) in idx, "amplitude left the constrained space"
+            M[idx[int(y)], j] = psi[y]
+    return M
+
+
+@pytest.mark.parametrize("child,parent,bad", [(73, 201, "11"), (109, 108, "00")])
+@pytest.mark.parametrize("N", [6, 8, 9])
+def test_child_acts_as_its_coherent_parent_on_the_constrained_space(
+        child, parent, bad, N):
+    """R23: the induced unitary is literally the coherent parent -- 201 IS the
+    P^0 H P^0 Floquet model, 108 IS P^1 H P^1, and the reset cannot fire."""
+    b = _constrained(N, bad)
+    tr = st.Trajectory(child, N)
+    for x in b:
+        assert tr.jump_budget(st.basis_state(N, x))[0] == 0.0
+    Mc, Mp = _cycle_on(child, N, b), _cycle_on(parent, N, b)
+    assert np.abs(Mc - Mp).max() < 1e-12
+    assert np.abs(Mc.T @ Mc - np.eye(len(b))).max() < 1e-12
+
+
+@pytest.mark.parametrize("N", [9, 11])
+def test_constrained_space_is_irreducible_for_73_but_not_109(N):
+    """R23: invariance is not irreducibility.  73's no-11 space is one
+    enclosure; 109's no-00 space splits into exactly four, no transients."""
+    for rule, bad, want in [(73, "11", 1), (109, "00", 4)]:
+        C = set(_constrained(N, bad))
+        d = st.decompose(rule, N)
+        inside = [c for c, t in enumerate(d["terminal"])
+                  if t and set(d["members"][c]) <= C]
+        straddle = [c for c, t in enumerate(d["terminal"])
+                    if t and set(d["members"][c]) & C
+                    and not set(d["members"][c]) <= C]
+        assert len(inside) == want, (rule, N, len(inside))
+        assert not straddle
+        assert sum(len(d["members"][c]) for c in inside) == len(C)
