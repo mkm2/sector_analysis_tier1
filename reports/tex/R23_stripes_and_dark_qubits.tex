@@ -408,6 +408,51 @@ count as $0$. The map is unitary on that subspace to
 $\lVert AA^{\mathsf T}-\mathbb{1}\rVert\le4.4\times10^{-16}$.
 \end{proposition}
 
+\subsubsection*{Where that operator comes from: it is the coherent parent}
+
+The reference operator above was not pulled out of the air, though it was
+identified numerically before it was understood. Read the gate words in slot
+order $(00),(01),(10),(11)$:
+\[
+W_{201}=\rt{VIII}\quad W_{73}=\rt{VIID}, \qquad
+W_{108}=\rt{IIIV}\quad W_{109}=\rt{EIIV}.
+\]
+$W_{201}$ fires its Hadamard exactly when both neighbours are empty --- it
+\emph{is} the Floquet $P^0HP^0$ model --- and $W_{108}$ fires when both are
+occupied. Each dissipative rule is its coherent parent with a single identity
+replaced by a reset. So the blockade projector in the proposition is not a
+coincidence: $a$ is inherited from whichever slot the parent's Hadamard occupies,
+and the induced unitary is literally the parent rule. (Observation due to the
+Tier-1 session, R24, which also gives the argument: $W_{73}$'s \rt{D} sits in
+slot $(11)$, so it acts only at a site whose neighbours are both $1$ --- on the
+no-adjacent-$1$s space such a site is itself $0$, where \rt{D} is the identity.)
+
+Verified here independently on the \emph{whole} constrained space, $N=4,\dots,11$:
+no amplitude leaves it (escape exactly $0.0$), the jump probability is $0$
+throughout, the one-cycle matrix is orthogonal to $4.4\times10^{-16}$, and it
+agrees with the parent's to $\le2.2\times10^{-16}$ in floating point.
+
+\paragraph{Invariance is not irreducibility, and the two rules differ.} The
+constrained space has dimension $F(N+2)$ for both, but they sit differently
+inside it:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+ & $N=9$ & $N=11$ \\
+\midrule
+$W_{73}$, no-\rt{11} space & one enclosure, $89$ & one enclosure, $233$ \\
+$W_{109}$, no-\rt{00} space & four: $34,21,21,13$ & four: $89,55,55,34$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+For $W_{73}$ the constrained space \emph{is} the attractor, irreducibly. For
+$W_{109}$ it splits into exactly four enclosures --- all Fibonacci, summing to
+$F(N+2)$ with \emph{no} transient states left over and no enclosure straddling
+the boundary --- which is why its largest attractor is $F(N)$ and not $F(N+2)$.
+The cause is not the reset firing at the open boundary: we measured
+$P(\text{jump})=0$ everywhere on that space, boundary included. It is that the
+parent $W_{108}$ is already reducible there under \rt{obc0}.
+
 \noindent This is the PXP structure exactly --- a projector-dressed single-site
 operator on a hard-core constrained chain --- with the spin flip $X$ replaced by
 the Hadamard $H$, and in Floquet (brickwork) rather than Hamiltonian form. The
