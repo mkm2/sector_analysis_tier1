@@ -1,0 +1,491 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\title{\textbf{Report R23 --- the stripes are walls, the flicker is a dark
+qubit, and only rules 73 and 109 are doing many-body physics}\\
+\large Krylov sector analysis of quantum cellular automata}
+\author{Tier 1 analysis}
+\date{2026-08-21}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The trajectory pictures for $W_{28}$, $W_{29}$, $W_{70}$, $W_{71}$, $W_{157}$
+and $W_{199}$ all end in a stripe pattern whose gaps appear to breathe slightly,
+which raises the fair suspicion that these six rules are trivial. They are ---
+\emph{asymptotically}, and now for a stated reason rather than an impression.
+Every terminal SCC of all six is a \textbf{subcube}: its states agree on a set of
+frozen sites and range freely over the rest, so $|A|=2^{\#\mathrm{free}}$
+(exhaustive, $N=6\ldots14$). Together with R17's completeness this says exactly
+one thing --- the attractor is $k$ independent unbiased coins and nothing else.
+The frozen part is a \textbf{wall tiling}: the attractor words are precisely the
+tilings of the chain by \rt{10} and \rt{f10} (rules $199$, $71$; mirrored for
+$157$, $29$) or by \rt{10}, \rt{1f0} plus a leading vacuum run (rules $28$,
+$70$), as set equality for $N=6\ldots14$. That \emph{derives} R17's two fitted
+constants: tiles of length $2$ and $3$ give the plastic number $\rho$, and the
+all-wide tiling gives $2^{\lfloor(N+1)/3\rfloor}$. Every attractor of all eight
+rules is moreover an exact decoherence-free subspace --- the jump probability on
+it is $0$ identically --- so the channel restricted to an attractor is a
+\emph{unitary}. For the six that unitary is a product of single-qubit Hadamards
+on the free sites: each runs $H^t$ and oscillates with \textbf{period $2$}. The
+stripes are the walls; the breathing gap is one dark qubit per wide tile; the
+half-chain entanglement is identically zero because the attractor subspace is a
+tensor product across every cut (membership-matrix rank $1$). The period-$2$
+signal is single-shot: averaging over trajectories drops it from $\sim0.45$ to
+$\sim0.05$, so it is invisible in an averaged plot. Rules $29$ and $71$ --- and
+only they --- have weak components holding several terminal SCCs
+($n_\mathrm{wcc}=n_\mathrm{rec}$ exactly for the other six). The selection is a
+set of independent \textbf{fair coins resolved in one period}: absorption
+probabilities are uniform on $2^k$ attractors with $k\in\{1,2\}$, never anything
+else. It is multistability with noise-induced selection, not a bifurcation.
+Finally $W_{73}$ and $W_{109}$ are a different animal and the answer to
+``are they more interesting'' is yes: their attractors are \emph{not} subcubes
+but the hard-core constrained spaces --- no two adjacent $1$s for $W_{73}$
+($\dim=F(N+2)$), no two adjacent $0$s for $W_{109}$ ($\dim=F(N)$). The
+dissipation prepares an exponentially large decoherence-free subspace carrying a
+kinetically constrained unitary, and the state inside it is entangled.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question}
+
+Rules $28$, $29$, $70$, $71$, $157$, $199$ are R17's plastic class. In the
+trajectory simulations they all relax to a stripe pattern with what looks like a
+slow oscillation of the space between stripes. Three things were asked: whether
+that is really what happens, how it relates to the terminal-SCC digraph, and what
+precisely goes on in $29$ and $71$, whose weak components do not have unique
+terminal SCCs. A fourth question asked what $73$ and $109$ look like and whether
+they are more interesting. All four are answered below; the last one has the
+largest answer.
+
+Everything here is at \rt{obc0} with $V=H$, and every statement labelled
+\emph{exhaustive} is a full enumeration of $2^N$, not a sample.
+
+\section{The stripes are walls}
+
+\subsection{Every attractor is a subcube}
+
+Write an attractor $A$ as a word over $\{0,1,\rt{f}\}$: site $i$ gets its common
+value if every state of $A$ agrees there, and \rt{f} if it does not.
+
+\begin{proposition}
+For all six rules and $N=6,\dots,14$, every terminal SCC satisfies
+$|A| = 2^{\#\rt{f}}$ --- $A$ is the full subcube on its free sites.
+\end{proposition}
+
+\noindent This is the missing half of R17. R17 showed each terminal SCC is a
+complete digraph $K_n$; ``$K_n$ on a subcube'' is precisely the statement that
+the free bits are redrawn independently and uniformly every period. The graph is
+the product of $k$ unbiased coins, which is why its second eigenvalue is exactly
+$0$ and why $n$ is always a power of two.
+
+\subsection{The frozen part is a tiling, and it fixes both constants}
+
+A tile is a wall \rt{1} together with the empty sites that belong to it; a wide
+tile carries one free site.
+
+\begin{proposition}
+The set of attractor words is \emph{exactly} the set of tilings of the chain by
+\[
+\begin{array}{ll}
+W_{199},\,W_{71} & \rt{10},\ \rt{f10}\\
+W_{157},\,W_{29} & \text{the mirror image of those}\\
+W_{28},\,W_{70}  & \rt{10},\ \rt{1f0},\ \text{preceded by a run of vacuum tiles \rt{0}}
+\end{array}
+\]
+with two edge conditions. The chain may end inside a tile, but the remnant must
+still contain its wall --- a free site with no wall beside it is not dark, so
+\rt{f10} may be cut to \rt{f1} and never to \rt{f}. And for $W_{28}$, $W_{70}$
+the chain must end \emph{at} a wall: a trailing empty site with nothing after it
+is refilled, so the final tile is always the truncated one, whereas the $199$
+family may end on a full tile. Set equality --- no containment either way ---
+for $N=6,\dots,14$, and it is these two conditions that make it equality rather
+than containment.
+\end{proposition}
+
+\noindent Two consequences drop out without a fit.
+
+\emph{The plastic number.} Tiles of length $2$ and $3$ give the counting
+recursion $a(N)=a(N-2)+a(N-3)$, whose growth rate is $\rho=1.3247$, the root of
+$x^3=x+1$. The counts are $5,7,9,12,16,21,28,37,49$ for the $199$ family and
+$11,15,20,27,36,48,64,85,113$ for the $28$ family over $N=6\ldots14$, matching
+R17's series term for term. The $28$ family is larger by exactly the leading
+vacuum run, and it is the \emph{absence} of an \rt{E} that permits it: with an
+\rt{E} at $(0,0)$ the empty region refills, so $157$, $199$, $29$, $71$ have no
+vacuum tile. That is R17's ``the children carrying an \rt{E} keep a strict
+subset'', now with the reason attached.
+
+\emph{The base $2^{1/3}$.} The largest attractor is the all-wide-tile word, so
+its dimension is $2^{\lfloor (N+1)/3\rfloor}$ exactly, giving
+$b_\mathrm{att}=2^{1/3}$ as an identity rather than a fitted constant.
+
+\section{Every attractor is decoherence-free}
+
+\begin{proposition}
+For all eight rules, on every terminal SCC tested the jump probability is $0$ to
+machine zero at every site of every period, the no-jump Kraus operator removes no
+norm ($\le 3\times10^{-16}$), and the support never leaves the SCC. The channel
+restricted to a terminal SCC is therefore a \emph{unitary}.
+\end{proposition}
+
+\noindent This is the sharp form of R17's ``the reset never fires on its own
+attractor''. The dissipation is spent entirely on the transient; what it leaves
+behind is a decoherence-free subspace. The interesting question then becomes
+which unitary, and the six rules and the two rules answer it differently.
+
+\section{The flicker: one dark qubit per wide tile}
+
+For the six, the free sites are isolated --- each sits between a wall and an
+empty site --- so the surviving unitary is a product of single-qubit Hadamards,
+one per wide tile. Each free qubit runs $H^t$, and since $H^2=\mathbb{1}$ it
+cycles $\lvert0\rangle\to\lvert+\rangle\to\lvert0\rangle$: the occupation at that
+site alternates between a definite value and $1/2$ with \textbf{period $2$},
+forever, exactly. Measured deep in the attractor,
+$\max_t\lvert n(t+2)-n(t)\rvert = 0$ to machine precision at every $N$ tested and
+in both brickwork conventions (engine even-first, \fn{pyqca} odd-first).
+
+So the trajectory picture decomposes cleanly:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+what you see & what it is \\
+\midrule
+bright stripes, fixed & the walls of the tiling \\
+dark gaps of width $1$ or $2$ & \rt{10} and \rt{f10} tiles \\
+the gap that breathes with period $2$ & the dark qubit of a wide tile \\
+which stripe pattern you get & which tiling the noise selected \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The entanglement is exactly zero, not just small}
+
+Being a subcube, the attractor subspace is a tensor product of single-site
+spaces, hence a tensor product across \emph{every} cut. Checked directly at the
+middle cut: the membership matrix of left-half against right-half configurations
+has rank $1$ for all $41$/$77$ (rule $28$) and $20$/$36$ (rule $199$)
+non-trivial attractors at $N=11,13$, and likewise for $70$, $157$, $29$, $71$. Hence \emph{every} state in the attractor is a product state, and the
+measured half-chain entropy of the trajectory is $0$ identically --- not
+statistically zero, deterministically zero, at every $N$ and on every trajectory.
+
+\subsection{What survives averaging, and what does not}
+
+Two different things happen to the two features, and they should not be lumped
+together.
+
+The \emph{oscillation} is destroyed. The period-$2$ amplitude of a single
+trajectory is $0.42$--$0.50$, essentially its maximum of $1/2$; averaged over
+$200$--$400$ trajectories it collapses to $0.03$--$0.07$. Different trajectories
+land on different tilings and reach them at different times, so the phases add
+incoherently.
+
+The \emph{stripes} are damped but not erased. A single trajectory has full
+contrast, $\max_i n_i - \min_i n_i = 1.000$: the frozen sites sit at exactly $0$
+or $1$. Averaged over $300$ trajectories at $N=15$ the contrast falls to $0.48$
+($W_{28}$) and $0.31$ ($W_{199}$), and what survives is not any one tiling but a
+staggered residue --- a period-$2$ modulation in \emph{space} about $n\approx0.5$
+with the boundary sites strongly pinned ($0.81$ at the right edge for $W_{28}$).
+That residue is a consequence of the grammar: walls are separated by $2$ or $3$
+sites, so across the tiling ensemble they still favour one sublattice, and the
+open boundary fixes the first wall. For $73$ and $109$ the same average is much
+flatter, contrast $0.12$ and $0.16$.
+
+\textbf{Prediction for the notebook:} the cells plotting one trajectory should
+show crisp full-contrast stripes with a visible flicker; the cell taking
+\fn{np.mean} should show a much weaker staggered pattern about $n\approx1/2$ with
+bright edges, and no time dependence at all. That is a check on this report, not
+a result of it.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_stripes_obc0.pdf}{\textwidth}
+\caption{\textbf{Top row:} one quantum trajectory each at $N=23$, the size used
+in \fn{pyqca/mixed/trajectories.ipynb} (odd layer first, fixed-zero boundary).
+$W_{28}$ and $W_{199}$ lock into a wall tiling; $W_{73}$ and $W_{109}$ never do.
+\textbf{Middle row, left to right:} the same rule averaged over $300$
+trajectories, where the stripes wash out because each run picks a different
+tiling; the occupation of one free site, alternating with period $2$ against a
+site of $W_{73}$ that does not; the period-$2$ amplitude single-shot against
+ensemble-averaged; and the half-chain entanglement inside the attractor, which is
+identically zero for the six and finite for $73$ and $109$.
+\textbf{Bottom row:} the number of attractors against $N$ with $\rho^N$ and
+$\psi^N$ for reference; the largest attractor against $2^{\lfloor(N+1)/3\rfloor}$
+and $F(N{+}2)$; the fraction of attractors that are subcubes --- exactly $1$ for
+the six, well below it for $73$ and $109$; and the number of enclosures per
+strong-symmetry block, which is $1$ for every rule except $29$ and $71$.}
+\label{fig:stripes}
+\end{figure}
+
+\section{Rules 29 and 71: several enclosures in one block}
+
+\subsection{Only these two split}
+
+Counting weak components against terminal SCCs at $N=9,\dots,13$:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+rule & $28$, $70$ & $157$, $199$ & $73$, $109$ & $29$ & $71$ \\
+\midrule
+$n_\mathrm{wcc}$ vs $n_\mathrm{rec}$ & equal & equal & equal &
+  $7$ vs $16$ ($N{=}10$) & $12$ vs $16$ ($N{=}10$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Six of the eight have an exact bijection: one attractor per weak
+component. In the R22 dictionary a weak component is a strong-symmetry block and
+a terminal SCC is an enclosure, so those six have a \emph{unique} steady state
+inside every block. Rules $29$ and $71$ do not: a block can carry up to six
+enclosures, and the asymptotic state depends on the trajectory.
+
+\subsection{What happens is a fair coin, resolved in one period}
+
+\begin{proposition}
+For $W_{29}$ and $W_{71}$ at $N=8,\dots,12$: every state whose fate is undecided
+has \emph{all} of its successors already committed, so the branch resolves in
+exactly \textbf{one period}; and the absorption distribution is uniform on $2^k$
+attractors with $k\in\{1,2\}$ --- probability vectors are $(\tfrac12,\tfrac12)$
+($560$ states at $N=12$) or $(\tfrac14,\tfrac14,\tfrac14,\tfrac14)$ ($8$ states),
+and nothing else ever occurs.
+\end{proposition}
+
+\noindent The shared-route states are $1.6\%$--$14\%$ of the space
+($4,24,32,128,192$ for $W_{71}$ at $N=8\ldots12$) and are all transient.
+
+\subsection{What the coin chooses, and why it needs both resets}
+
+Take $W_{29}$ at $N=9$ and the branch point \rt{110001000} (site $0$ leftmost).
+In one period it reaches eight states with probability $1/8$ each, four in each
+of two attractors. Tracing the layers: on the even layer site $2$ sees
+$(m,n)=(1,0)$ and gets a Hadamard --- that is the coin --- and site $8$ sees
+$(0,0)$ and is excited by the \rt{E}. On the odd layer the outcome at site $2$
+routes everything else:
+\begin{itemize}
+\item site $2$ measures $1$: site $3$ then sees $(1,0)$ and is Hadamarded into
+the free site of a wide tile, while site $1$ sees $(1,1)$ and is \emph{reset by
+the \rt{D}}. The wall lands at site $2$, giving the tiling $(2,3,3,1)$.
+\item site $2$ measures $0$: site $3$ sees $(0,0)$ and is \emph{excited by the
+\rt{E}} into a new wall, while site $1$ is Hadamarded into the free site. The
+wall lands at site $3$, giving the tiling $(3,2,3,1)$.
+\end{itemize}
+So the coin exchanges a short tile with a wide one, and it needs \emph{both}
+resets: the
+\rt{E} writes the new wall, the \rt{D} erases the old one. That is exactly what
+$29=\rt{EIVD}$ and $71=\rt{EVID}$ have and what $28=\rt{IIVD}$, $70=\rt{IVID}$,
+$157=\rt{EIVI}$, $199=\rt{EVII}$ do not --- which is why only these two split.
+
+\subsection{What survives as a quantum number}
+
+The block is not label-free. Across all $20$ multi-attractor blocks of $W_{29}$
+and all $16$ of $W_{71}$ at $N=8,\dots,12$, the \textbf{number of walls is
+constant} --- that is the strong symmetry the extra reset leaves intact. Their
+\emph{arrangement} is not: the coin permutes tiles. For $W_{71}$ the multiset of
+tile lengths is conserved as well ($16/16$), so the branch is a pure
+rearrangement, e.g.\ a block whose three attractors are the tilings
+$(3,2,2,1)$, $(2,3,2,1)$, $(2,2,3,1)$. For $W_{29}$ the multiset survives in only
+$8/20$ blocks, because its truncated boundary tile can trade a unit --- one block
+at $N=10$ holds $(2,2,2,2,2)$ alongside $(2,2,3,2,1)$, same five walls,
+different widths. The two rules are a reflection pair and \rt{obc0} with a fixed
+layer order is not reflection-covariant for dissipative rules, so an asymmetry at
+the right edge is expected rather than surprising.
+
+\subsection{Is it a bifurcation? No}
+
+A bifurcation is a qualitative change of the attractor set as a parameter is
+varied. Nothing is varied here: there is no coupling to tune, the branching ratio
+is exactly $1/2$ at every $N$, and the attractor set is the same tiling family as
+for $157$ and $199$ --- rules $29$ and $71$ have \emph{identical} attractor words
+to $157$ and $199$ respectively; the extra \rt{D} changes only which basins are
+joined. The correct name is multistability with noise-induced selection: several
+enclosures inside one strong-symmetry block, chosen by the measurement record.
+
+Nor is the branch coherent. Starting the unmonitored trajectory \emph{at} the
+branch point, $40$ runs all end supported in a single terminal SCC with
+$S_\mathrm{mid}=0$ ($19$ one way, $21$ the other) --- the \rt{D} acts as a
+which-path detector, so the ensemble is a classical $\tfrac12/\tfrac12$ mixture
+of two stripe patterns, not a superposition of them.
+
+\section{Rules 73 and 109 are doing something else}
+
+\subsection{The attractors are constrained spaces, not subcubes}
+
+Only $13/55$ and $21/68$ of the non-trivial attractors of $W_{73}$ and $W_{109}$
+at $N=11$ are subcubes, against $100\%$ for the six. The largest one is the
+diagnostic:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+rule & largest attractor & dimension \\
+\midrule
+$W_{73}$  & all bitstrings with \textbf{no two adjacent $1$s} & $F(N+2)$ \\
+$W_{109}$ & all bitstrings with \textbf{no two adjacent $0$s} & $F(N)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Verified for $N=7,\dots,13$: $W_{73}$ gives $34,55,89,144,233,377,610$
+and $W_{109}$ gives $13,21,34,55,89,144,233$. This is the hard-core / blockade
+constrained space, and it is where $b_\mathrm{att}=\varphi$ comes from. The
+number of attractors grows at the supergolden ratio $\psi=1.4656$
+($13,19,28,41,60,88,129$ for $W_{73}$).
+
+Combined with \S3, the physical statement is: \textbf{the dissipation prepares an
+exponentially large decoherence-free subspace which is a kinetically constrained
+Hilbert space, and then acts as a unitary constrained QCA inside it.} That is the
+setting of PXP-type models, and it is not something the six rules do.
+
+\subsection{The induced unitary is PXP with the spin flip replaced by a Hadamard}
+
+\S3 says the channel restricted to an attractor is \emph{some} unitary. For these
+two it is an identifiable one.
+
+\begin{proposition}
+On the largest attractor of $W_{73}$ and of $W_{109}$, at $N=9$ and $11$, the
+induced one-period map equals, to machine precision
+($\le1.7\times10^{-16}$ entrywise), the brickwork product over the even then the
+odd sublattice of the blockade-controlled Hadamard
+\[
+  U_i \;=\; P^{a}_{i-1}\,H_i\,P^{a}_{i+1}
+        \;+\; \bigl(\mathbb{1}-P^{a}_{i-1}P^{a}_{i+1}\bigr),
+\]
+with $a=0$ (fire only when both neighbours are \emph{empty}) for $W_{73}$ and
+$a=1$ (both neighbours \emph{occupied}) for $W_{109}$; sites beyond the chain
+count as $0$. The map is unitary on that subspace to
+$\lVert AA^{\mathsf T}-\mathbb{1}\rVert\le4.4\times10^{-16}$.
+\end{proposition}
+
+\noindent This is the PXP structure exactly --- a projector-dressed single-site
+operator on a hard-core constrained chain --- with the spin flip $X$ replaced by
+the Hadamard $H$, and in Floquet (brickwork) rather than Hamiltonian form. The
+constraint is preserved for the obvious reason: flipping a site whose neighbours
+are both empty can never create an adjacent pair, so $P^0HP^0$ maps the
+no-two-adjacent-$1$s space to itself, and $P^1HP^1$ does the same for
+no-two-adjacent-$0$s.
+
+The two rules are \emph{not} related by a particle-hole conjugation, which is
+worth stating because the constraints look like mirror images. Conjugating by a
+global $X$ would send $H\mapsto XHX$, and $XHX$ is a different reflection: the
+$W_{109}$ map tested against a $P^1(XHX)P^1$ brickwork misses by $0.71$, while
+the same test with $H$ is exact. Both rules carry the \emph{same} gate and
+opposite blockade projectors, and the \rt{obc0} boundary pins $0$ rather than
+$1$, which is why the dimensions come out at $F(N+2)$ and $F(N)$ rather than
+agreeing.
+
+\subsection{And they are entangled}
+
+The membership matrix across the middle cut has rank $2$ --- the blockade
+constraint is a bond-dimension-$2$ condition, so the attractor is \emph{not} a
+product subspace, and states in it need not be product states. They are not: the
+half-chain entropy of the trajectory state deep in the attractor is
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+ & $N=9$ & $11$ & $13$ & $15$ \\
+\midrule
+$W_{73}$  & $0.624\pm0.121$ & $0.737\pm0.158$ & $0.773\pm0.178$ & $0.928\pm0.215$ \\
+$W_{109}$ & $0.386\pm0.084$ & $0.616\pm0.117$ & $0.737\pm0.152$ & $0.751\pm0.166$ \\
+\midrule
+the six & $0$ & $0$ & $0$ & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent ($24$ trajectories each, averaged over an $8$-period window, errors are
+standard errors of the mean; the six rules read $\le 9.3\times10^{-17}$, i.e.\
+machine zero, at every entry.) The contrast with that row of exact zeros is the
+result. The apparent \emph{growth} with $N$ is \textbf{not} resolved at this
+sample size --- the rise from $N=9$ to $N=15$ is $1.2\sigma$ for $W_{73}$ and
+$2.0\sigma$ for $W_{109}$ --- so we deliberately fit no scaling law to it. The
+claim is that the entropy is nonzero and $O(1)$, not that it obeys a volume law.
+A run with enough trajectories to separate a volume law from a logarithm is the
+obvious next measurement and is not attempted here.
+
+Their occupation profile also has no period: $\max_t\lvert n(t+p)-n(t)\rvert$
+stays $O(1)$ for every $p\le8$, against machine zero at $p=2$ for the six.
+
+\subsection{This is the structural counterpart of the MPO result}
+
+The dissipative MPO sweep found an $N$-independent operator Schmidt rank for all
+six --- $\chi_\mathrm{sat}=53$ ($28$, $70$), $18$ ($29$, $71$), $67$ ($199$,
+$157$) --- and exponential growth for $73$ and $109$. The structure above is why.
+The asymptotic map of the six is a sum over a \emph{regular} tiling language of
+\emph{product} operators, and a regular language has a finite transfer matrix, so
+the bond dimension cannot grow with $N$. For $73$ and $109$ the asymptotic map
+carries an entangling unitary on a constrained space, and nothing bounds it. We
+state this as the mechanism, not as a derivation: the particular values $18$,
+$53$, $67$ are not accounted for here.
+
+\section{Answering the question as asked}
+
+\begin{enumerate}
+\item \textbf{Is the stripe pattern real?} Yes, and it is a wall tiling. The
+stripes are the walls, the gaps are tiles of width $2$ or $3$, and which tiling
+you get is chosen by the noise from a set that grows like $\rho^N$.
+
+\item \textbf{Is the oscillation real?} Yes, and it is exactly period $2$: one
+dark qubit per wide tile running $H^t$, coherent and immune to the dissipation
+because the attractor is decoherence-free. It is a single-shot effect and
+averages away.
+
+\item \textbf{How does it relate to the terminal-SCC digraph?} Directly. The
+terminal SCC is a complete digraph on a subcube, and that is the graph-theoretic
+shadow of ``$k$ independent dark qubits'': completeness $=$ the bits are
+redrawn independently and uniformly; the subcube $=$ they are independent
+\emph{sites}; the frozen complement $=$ the walls.
+
+\item \textbf{Are the six trivial?} Asymptotically yes --- product state, zero
+entanglement, memoryless, a decoupled period-$2$ flicker. What is not trivial is
+the \emph{fragmentation}: an exponential number of decoherence-free subspaces
+surviving dissipation, selected by the measurement record. The interest is in the
+selection, not in the asymptotic dynamics.
+
+\item \textbf{What happens in $29$ and $71$?} A weak component holds several
+enclosures. From a shared state the fate is settled in one period by $k$
+independent fair coins, uniform on $2^k$ outcomes, $k\in\{1,2\}$. The coin picks
+the width of one tile and requires both an \rt{E} and a \rt{D}. Not a
+bifurcation: no parameter, ratio pinned at $1/2$, same attractor set as $157$ and
+$199$.
+
+\item \textbf{Are $73$ and $109$ more interesting?} Decisively. Their attractors
+are the hard-core constrained spaces of dimension $F(N+2)$ and $F(N)$ --- not
+product subspaces, rank $2$ across a cut, hosting an entangled and aperiodic
+constrained unitary. The induced unitary is
+identified exactly: blockade-controlled Hadamards, PXP with $X\to H$ in Floquet
+form. Dissipative preparation of an exponentially large decoherence-free
+subspace carrying a PXP-type constrained dynamics is worth a paper; a set of
+decoupled flickering qubits is not.
+\end{enumerate}
+
+\section{Reproduction}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.stripes --rebuild
+python -m pytest qca_fragmentation/tests/test_stripes.py -q
+\end{verbatim}
+
+\noindent All numbers come from \fn{analytics/stripes\_obc0.json}. The exact
+statements (subcube, tiling grammar, absorption law, decoherence-free test) are
+full enumerations of $2^N$; the entanglement and period-$2$ numbers are
+state-vector quantum trajectories with the per-site two-Kraus split of
+\fn{core.cycle.\_split\_site}, sampled.
+
+\end{document}
