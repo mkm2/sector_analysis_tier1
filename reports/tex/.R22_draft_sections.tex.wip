@@ -1,0 +1,372 @@
+\section{The asymptotic manifold, measured}
+\label{sec:manifold}
+
+Item~2 of \S\ref{sec:cannot} is a genuine limitation of the support graph, but
+it is not a limitation of the model: the split it cannot see is computable
+exactly at small $N$, and this section computes it. Doing so changes the
+reading of two of the rules \S\ref{sec:regimes} classified.
+
+\subsection{What the two factors are}
+
+Write the structure theorem \eqref{eq:aj} out with its physical content
+attached. Every state converges into
+\begin{equation}
+  \rho(\infty) \;=\; \bigoplus_k \; p_k \;\, \rho_k \otimes \sigma_k ,
+  \qquad
+  \mathcal{H}_{\mathrm{asym}} = \bigoplus_k \mathcal{H}_{n_k} \otimes
+  \mathcal{H}_{m_k},
+  \label{eq:manifold}
+\end{equation}
+and the three objects are three different kinds of thing.
+
+\begin{itemize}
+\item $p_k = \Tr(J_k \rho_0)$ is a \emph{classical label}, fixed at $t = 0$ and
+never moving again. This is the part the population graph sees.
+\item $\rho_k$ is an arbitrary state on an $n_k$-dimensional factor. It is not
+damped at all; the channel acts on it as a unitary, $\rho_k \mapsto U_k \rho_k
+U_k^\dagger$. Everything written here survives forever. This is a
+\emph{decoherence-free subspace} in the sense of Zanardi and
+Rasetti~\cite{zr1997}, a noiseless subsystem in the sense of Knill, Laflamme
+and Viola~\cite{klv2000}.
+\item $\sigma_k$ is a \emph{fixed} full-rank state on an $m_k$-dimensional
+factor, determined by the channel alone. Whatever is written there is erased
+and replaced by $\sigma_k$. It is junk.
+\end{itemize}
+
+The set of steady states is convex and compact, and its \emph{extreme points}
+--- the states that are not mixtures of other steady states --- are read off
+\eqref{eq:manifold} directly: $p$ concentrated on one $k$, and $\rho_k =
+|\psi\rangle\langle\psi|$ with $\psi$ inside a single eigenspace of $U_k$. Two
+consequences are worth stating because they are easy to get backwards.
+
+\begin{remark}
+An extremal steady state is usually a \emph{mixed} state of the full system:
+it is $|\psi\rangle\langle\psi|\otimes\sigma_k$ and $\sigma_k$ has full rank on
+$m_k$ dimensions. Extremality is convex geometry, not purity.
+\end{remark}
+
+\begin{remark}
+There are either finitely many extremal steady states or a continuum, never
+anything between. If every $n_k = 1$ there are exactly $K$ of them and the
+steady-state set is a simplex with $K$ vertices --- one per attractor, the
+classical picture. As soon as some $n_k \ge 2$ the extremals contain a copy of
+$\mathbb{CP}^{\,n_k-1}$ and the steady-state set grows a Bloch-ball face. That
+jump is the difference between a classical memory and a quantum one, and
+$n_{\mathrm{rec}}$ cannot detect it.
+\end{remark}
+
+\subsection{How it is computed}
+
+Exactly, with no time-stepping. The Ces\`aro projector at eigenvalue $1$ is
+built from the left and right kernels of $S - \mathbb{1}$, where $S$ is the
+dense $4^N$ one-cycle superoperator; applied to $\mathbb{1}/d$ it gives
+$\rho_\infty$, whose support \emph{is} $\mathcal{H}_{\mathrm{asym}}$, of
+dimension $D = \sum_k n_k m_k$. That support is invariant, so the channel
+restricts to it --- and the restricted channel has a \emph{full-rank} fixed
+state, which is exactly the hypothesis under which the peripheral
+eigenoperators ($|\lambda| = 1$) of the dual map close into a $*$-algebra
+\begin{equation}
+  \mathcal{A} \;=\; \bigoplus_k M_{n_k} \otimes \mathbb{1}_{m_k},
+  \qquad \dim\mathcal{A} = \sum_k n_k^2 ,
+  \label{eq:asymalg}
+\end{equation}
+on which the dual map acts as an automorphism. Splitting $\mathcal{A}$ by its
+centre gives the blocks; the rank of each block's subalgebra gives $n_k$ and
+the block support gives $m_k$.
+
+Two points of technique. The \emph{fixed} points of $\Phid$ are not enough:
+whenever $U_k \ne \mathbb{1}$ they give only the commutant of $U_k$, which for
+any unitary rule collapses \eqref{eq:asymalg} to something far smaller than the
+truth. And the peripheral subspace must be taken from a \emph{sorted Schur
+form}, not from eigenvectors: with a degenerate peripheral spectrum
+\rt{numpy.linalg.eig} returns nearly parallel eigenvectors --- for $W_{51}$ at
+$N=5$ all $1024$ eigenvalues lie on the circle but the eigenvector matrix has
+numerical rank $1001$ --- while a Schur basis of an invariant subspace is
+orthonormal by construction.
+
+\subsection{The two pure cases, and one that has both}
+
+\begin{table}[htbp]
+\centering
+\caption{The asymptotic manifold at $N = 4$, obc0. $D$ is its dimension,
+$\dim\mathcal{A} = \sum_k n_k^2$, and $\dim\mathrm{Fix}(\Phid) < \dim\mathcal{A}$
+exactly when some $U_k \neq \mathbb{1}$.}
+\label{tab:blocks}
+\begin{tabular}{rlrrrl}
+\toprule
+rule & word & $D$ & $\dim\mathcal{A}$ & $\dim\mathrm{Fix}$ & blocks \\
+\midrule
+$W_{232}$ & DIIE & 7  & 49  & 49 & $M_7\otimes\sigma_1$ \\
+$W_{36}$  & IDDV & 6  & 36  & 36 & $M_6\otimes\sigma_1$ \\
+$W_{203}$ & VEII & 4  & 16  & 10 & $M_4\otimes\sigma_1$ \\
+$W_{150}$ & IVVI & 16 & 256 & 36 & $M_{16}\otimes\sigma_1$ \\
+$W_{91}$  & VEED & 3  & 1   & 1  & $M_1\otimes\sigma_3$ \\
+$W_{189}$ & EIVE & 7  & 2   & 2  & $M_1\otimes\sigma_4 \;\oplus\; M_1\otimes\sigma_3$ \\
+$W_{19}$  & VVVD & 13 & 17  & 9  & $M_4\otimes\sigma_1 \;\oplus\; M_1\otimes\sigma_9$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{$m_k = 1$: a pure decoherence-free subspace.} $W_{232}$ = DIIE is,
+decoded back to an elementary cellular automaton, $f(l,s,r) = \mathrm{majority}$.
+Its asymptotic algebra is the \emph{full} matrix algebra $M_7$ with $U_k =
+\mathbb{1}$: nothing is erased, the asymptotic manifold is every state on a
+seven-dimensional subspace, and the extremal steady states form a continuum
+$\mathbb{CP}^6$. The population graph reports seven fixed points and calls them
+seven classical pointer states; the truth is $\log_2 7 \approx 2.8$
+\emph{qubits} held exactly. This reproduces, from the superoperator, the count
+$\dim\mathcal{A} = n_{\mathrm{rec}}^2 = 49, 121$ at $N = 4, 5$ that
+\fn{permutation/coherence.py} obtains by an unrelated route (label
+synchronisation along the orbit), which is a useful cross-check on both.
+
+\paragraph{$n_k = 1$: pure mixing.} $W_{91}$ = VEED has a single block with $n =
+1$, $m = 3$: one steady state, of rank three, with spectrum exactly
+$(\tfrac25,\tfrac25,\tfrac15)$, reached from every initial state. No memory of
+any kind; the manifold is a point. At $N = 5$ the manifold is a single
+\emph{pure} state ($D = 1$), which is the $N \equiv 2 \pmod 3$ case of the
+closed form for $W_{91}$'s largest recurrent class recorded in this project's
+notes. $W_{189}$ = EIVE has two such blocks, $(1,4)$ and $(1,3)$: exactly two
+extremal steady states, both mixed, and the manifold is the line segment
+joining them. That is bistability in its purest form --- one classical bit
+survives, no qubit does --- and it matches $n_{\mathrm{wcc}}(W_{189}) = 2$.
+
+\paragraph{Both at once.} $W_{19}$ = VVVD carries one block of each kind,
+$\mathbb{C}^4 \oplus (\mathbb{C}^1\otimes\mathbb{C}^9)$. Its
+decoherence-free block \emph{rotates}: $\dim\mathrm{Fix} = 8 < 16$ and the
+peripheral phases are $\{0,\pi\}$, so $U_0$ has two doubly degenerate
+eigenvalues of opposite sign and the encoded state flips every cycle. The other
+block has a unique rank-nine $\sigma$. The extremal steady states are two Bloch
+spheres plus one isolated point.
+
+\subsection{Two findings}
+
+\begin{enumerate}
+\item \textbf{No block mixes the two factors.} Across all $256$ rules at $N=4$
+and again at $N=5$, obc0, not one block has $n_k > 1$ \emph{and} $m_k > 1$.
+Every block is either a pure decoherence-free subspace or a single state. The
+genuinely quantum intermediate case --- a noiseless \emph{subsystem}, where
+information hides in a tensor factor and is invisible to any subspace
+projection --- does not occur in this family at these sizes. At $N=4$: $141$
+rules have some $n_k > 1$, $49$ have some $m_k > 1$, four rules
+($W_{19}, W_{61}, W_{103}, W_{179}$) carry both kinds of block in the same
+channel, and $70$ rules have every block trivial, of which $68$ have a unique
+steady state. We record this as an observation, not a theorem; it is exactly
+the kind of statement that could fail at larger $N$.
+
+\item \textbf{Two of the ``multistable'' rules are not.} $W_{203}$ and $W_{36}$
+are among the eight rules that motivated this report: $n_{\mathrm{wcc}} = 1$ and
+$n_{\mathrm{wcc}} = 10$ against $n_{\mathrm{rec}} = 28$ and $60$ at $N = 10$,
+with certain fractions of $46\%$ and $73\%$ (\S\ref{sec:measured}). Their
+asymptotic algebras are $M_4$ and $M_6$ at $N=4$, and $M_5$ and $M_9$ at $N=5$
+--- \emph{single} blocks. The channel's asymptotic evolution on them is
+unitary; there are no competing attractors for noise to choose between. What
+\S\ref{sec:measured} measured is a property of the \emph{monitored} chain, in
+which the computational basis is dephased once per cycle, and that is the right
+object for the questions \S\S\ref{sec:answer}--\ref{sec:bits} ask. But the
+sentence ``the noise decides which attractor'' is a statement about the
+monitored channel and must not be carried over to the unmonitored one. The
+distinction is the same one R7 drew for the pair graph and the $X$-gate
+correction drew for permutation circuits; it now has numbers on both sides.
+\end{enumerate}
+
+\section{Memory, and what it costs to correct errors}
+\label{sec:qec}
+
+\subsection{The asymptotic algebra is the code}
+
+Equation~\eqref{eq:asymalg} is not merely analogous to an error-correcting code;
+it is the same object. Blume-Kohout, Ng, Poulin and Viola~\cite{bknpv2008}
+proved that every \emph{information-preserving structure} of a quantum process
+--- and their notion subsumes noiseless subsystems, decoherence-free subspaces,
+pointer bases and error-correcting codes --- is a matrix algebra, and is
+isometric to the fixed-point algebra of an associated unital process. What our
+$\mathcal{A}$ is, is that algebra for the channel iterated forever. So the R22
+counts sort into three distinct kinds of resource:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+quantity & what it counts & code-theoretic name \\
+\midrule
+$n_{\mathrm{wcc}} = \dim(\mathcal{C}\cap\mathcal{D})$ & protected classical bits
+  & zero-error classical capacity \\
+$n_k$ in \eqref{eq:asymalg} & protected qubits
+  & decoherence-free subspace / noiseless subsystem \\
+$n_{\mathrm{rec}} - n_{\mathrm{wcc}}$ & nothing & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The third row is Theorem~\ref{prop:idem} restated in the language of codes.
+Extra terminal components inside one weak component add conserved quantities,
+but they add no conserved \emph{projections}, hence no distinguishable-with-
+certainty codewords, hence nothing to the zero-error capacity. In the same
+language, \S\ref{sec:bits}'s finding is that the ordinary (average-case)
+capacity is extensive in both regimes: what multistability destroys is
+\emph{zero-error} capacity specifically.
+
+It is worth recording the operator-level statement behind that, which is
+stronger than the diagonal version proved in Theorem~\ref{prop:idem}.
+
+\begin{proposition}[Every conserved question is a strong symmetry]
+\label{prop:projections}
+Let $P = P^2 = P^\dagger$ satisfy $\Phid(P) = P$. Then $[P, K_j] = 0$ for every
+$j$. Consequently $\mathcal{C}$ and $\mathcal{F}$ contain exactly the same
+projections, and the entire gap $\mathcal{F}\setminus\mathcal{C}$ consists of
+non-idempotent elements.
+\end{proposition}
+
+\begin{proof}
+For $\rho$ supported in $\operatorname{ran}P$ we get $\Tr(P\,\Phi(\rho)) =
+\Tr(\Phid(P)\rho) = \Tr(P\rho) = 1$, so $\operatorname{ran}P$ is invariant. The
+same computation with $\mathbb{1}-P$, which is also a conserved projection,
+makes $\operatorname{ran}P^\perp$ invariant. Every $K_j$ therefore preserves
+both summands of $\mathcal{H} = \operatorname{ran}P \oplus
+\operatorname{ran}P^\perp$, i.e.\ is block-diagonal, i.e.\ commutes with $P$.
+\end{proof}
+
+This also explains why $\mathcal{F}$ is not an algebra while $\mathcal{C}$ is.
+A commutant is closed under products by construction; $\mathcal{F}$ is closed
+under products only when $\Phid$ is multiplicative on it, and $\Phid$ is a
+$*$-automorphism precisely in the closed case $\Phid(A) = U^\dagger A U$. That
+is \S\ref{sec:closed} seen from the algebraic side. The general criterion is
+Frigerio's~\cite{frigerio1978}: with a \emph{faithful} stationary state,
+$\mathcal{F}$ is a von Neumann algebra and coincides with $\mathcal{C}$. A large
+transient region is exactly what forbids a faithful stationary state, so our
+dissipative rules sit as far from that hypothesis as possible --- measured at
+$N=4$, obc0, $(\dim\mathcal{C}, \dim\mathcal{F})$ is $(30,49)$ for $W_{232}$,
+$(20,36)$ for $W_{36}$ and $(1,10)$ for $W_{203}$: one strong symmetry, ten
+conserved quantities.
+
+\subsection{Fragmentation as a source of logical qubits: Iadecola's construction}
+
+Iadecola~\cite{iadecola2026} asks what fragmentation buys when it is combined
+with a symmetry rather than considered alone. In a charge-conserving,
+kinetically constrained chain, the projectors onto the Krylov sectors and the
+generators of charge conjugation and translation generate a \emph{non-Abelian}
+algebra, and the consequence is exponentially many logical qubits encoded in
+degenerate pairs of eigenstates, which may be highly entangled.
+
+The mechanism translates into our language cleanly, and the translation makes
+the difference visible. His degeneracies come from a symmetry that \emph{maps
+one fragment onto another}, so that the pair carries a two-dimensional
+irreducible representation. In \eqref{eq:asymalg} that is precisely $n_k = 2$:
+a non-Abelian commutant is the same thing as a block of dimension greater than
+one, and this project has already met one --- R-T15 identified the single-$V$
+commutant of $W_{108}/W_{201}/W_{156}/W_{198}$ as non-Abelian, of
+Temperley--Lieb type.
+
+Two differences matter.
+
+\begin{enumerate}
+\item \textbf{Closed versus open.} Iadecola's setting is Hamiltonian, so there
+is no transient part and $\mathcal{C} = \mathcal{F} = \mathcal{A}$; the
+distinction this whole report is about does not arise. Ours has transients, and
+they break the identification: $W_{203}$ at $N = 4$ has $\dim\mathcal{C} = 1$
+--- no strong symmetry whatsoever --- and yet $\mathcal{A} = M_4$, a
+four-dimensional decoherence-free subspace. \textbf{A decoherence-free subspace
+need not be protected by any symmetry of the dynamics}; it can be a property of
+the recurrent set alone, invisible in $\mathcal{C}$ because $\mathcal{C}$ must
+also respect the transients.
+\item \textbf{Where the coherence comes from.} His comes from a symmetry
+relating sectors. Ours comes from the resets acting \emph{trivially} on the
+recurrent set: a reset destroys $|x\rangle\langle y|$ only if it fires on a bit
+where $x$ and $y$ differ, so once the dynamics has settled onto configurations
+the resets never touch, all coherences among them survive. That is the $J$-label
+criterion of the $X$-gate correction, and it is why $W_{232}$'s algebra is the
+whole of $M_{n_{\mathrm{rec}}}$.
+\end{enumerate}
+
+A third point of contact is worth flagging as a caution rather than a result.
+Iadecola derives from the same algebra \emph{necessary conditions} for the usual
+experimental signatures of fragmentation, such as the late-time persistence of
+density imbalances. Our $\S$\ref{sec:measured} numbers are exactly such
+late-time observables, and Finding~2 of \S\ref{sec:manifold} is an instance of
+his warning: a late-time imbalance measured in the computational basis reports
+on the monitored chain, and can indicate multistability where the unmonitored
+channel has a single coherent block.
+
+\subsection{The majority rule as an autonomous memory}
+
+Guedes, Winter and M\"uller~\cite{guedes2024} propose exactly this family of
+automata as measurement-free quantum error correction: a QCA whose local update
+is a classical density-classification rule, run as a decoder for a repetition
+code, with no syndrome extraction anywhere. The two rules they study are
+Wolfram's rule $232$ --- local majority voting --- and Toom's two-line voting in
+two dimensions. Rule $232$ is \emph{our} $W_{232}$: decoding the gate word DIIE
+through the project's encoding gives $(c_p,c_q) = (f(l,0,r), f(l,1,r))$ with
+$f = \mathrm{majority}$, so the automaton whose asymptotic algebra
+Table~\ref{tab:blocks} reports as $M_7$ is the one they run as a decoder.
+
+That makes the comparison direct, and it is not flattering to fragmentation.
+
+\begin{table}[htbp]
+\centering
+\caption{$W_{232}$ = majority voting as an autonomous memory, obc0. $d$ is the
+largest weight such that \emph{every} error of that weight or less is undone by
+the automaton itself. The obc0 boundary pins the left and right ends to $0$, so
+the all-ones codeword is unprotected at its edges and $d(1^N) = 0$; the
+periodic counterpart is deliberately not run here.}
+\label{tab:memory}
+\begin{tabular}{rrrrrrr}
+\toprule
+$N$ & attractors & basin $0^N$ & basin $1^N$ & code basin & $d(0^N)$ &
+repetition $d$ \\
+\midrule
+ 8 &    44 &   41 &   12 & $20.70\%$ & 1 & 3 \\
+10 &   117 &   99 &   29 & $12.50\%$ & 1 & 4 \\
+12 &   305 &  239 &   70 & $\phantom{0}7.54\%$ & 1 & 5 \\
+14 &   798 &  577 &  169 & $\phantom{0}4.55\%$ & 1 & 6 \\
+16 &  2091 & 1393 &  408 & $\phantom{0}2.75\%$ & 1 & 7 \\
+18 &  5473 & 3363 &  985 & $\phantom{0}1.66\%$ & 1 & 8 \\
+20 & 14328 & 8119 & 2378 & $\phantom{0}1.00\%$ & 1 & 9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three readings of Table~\ref{tab:memory}.
+
+\paragraph{The automaton corrects exactly one error, at every size.} A single
+flipped bit is an isolated minority and majority voting removes it. Two
+\emph{adjacent} flipped bits are not: each of them sees one neighbour agreeing,
+so the pair is stable, and it is stable because it is one of the automaton's own
+protected pointer states. The autonomous distance is therefore $1$ for every
+$N$, against a repetition-code distance of $\lfloor (N-1)/2 \rfloor$. This is
+precisely the ``islands'' failure Guedes et al.\ identify, and R22's vocabulary
+names its cause: the islands are not decoding failures, they are \emph{other
+weak components}, and the automaton preserves them with the same fidelity with
+which it preserves the codewords. The very property that makes $W_{232}$ a good
+passive memory --- $\mathcal{A} = M_{n_{\mathrm{rec}}}$, everything protected
+--- is what makes it a bad decoder.
+
+\paragraph{The code basin shrinks exponentially.} The two codeword basins are
+Pell and NSW numbers, growing like $(1+\sqrt2)^{N/2} \approx 1.554^N$ against a
+state space of $2^N$, so the fraction of configurations the automaton returns to
+a codeword decays like $0.777^N$: half the space at $N=4$, one percent at
+$N=20$. Meanwhile the attractor count grows like $\varphi^N$. A decoder is
+useful when the intended codewords have basins of measure approaching one; here
+they have measure approaching zero.
+
+\paragraph{Hence: autonomous error correction wants the \emph{opposite} of
+fragmentation.} The figure of merit for a self-correcting memory is a
+\emph{small} asymptotic algebra with \emph{large} basins --- ideally $K = 2$
+blocks, or one block with $n_k = 2$, and a transient region covering
+essentially the whole space. Exponential $n_{\mathrm{wcc}}$ means exponentially
+many competing enclosures, so the intended codeword's basin is an exponentially
+small fraction of the space and the automaton faithfully preserves errors. This
+is the same obstruction that sends Guedes et al.\ to Toom's rule in two
+dimensions, where the two consensus states have basins of measure approaching
+one. Fragmentation is a good \emph{passive} memory --- it protects what is
+already there --- and a bad \emph{active} one, because it protects the wrong
+states just as well.
+
+\paragraph{The absorption probabilities are the decoder.} One further
+identification makes \S\ref{sec:measured} directly usable here. If the intended
+codeword is terminal class $i$ and an error takes the state to $x$, then
+$\varphi_i(x)$ of \eqref{eq:absorb} is exactly the probability that the
+automaton restores the codeword: $\varphi$ \emph{is} the decoder's success
+landscape, and the ``certain fraction'' reported in \S\ref{sec:measured} is the
+fraction of configurations decoded with probability one. Read that way, the
+$100\%$ for $W_{73}/W_{109}$ against $46\%$ for $W_{203}$ is a statement about
+decoders, and Theorem~\ref{prop:idem} says the certain part is supported on
+whole weak components and nowhere else.
