@@ -23,7 +23,7 @@
 \large Weak components, terminal components and Hilbert-space fragmentation
 in open quantum systems}
 \author{Tier 1 analysis}
-\date{2026-08-18 \quad (rev.3, 2026-08-21)}
+\date{2026-08-18 \quad (rev.4, 2026-08-22)}
 
 \begin{document}
 \maketitle
@@ -79,8 +79,8 @@ all $256$ rules at $N = 4$ and $5$, splitting each enclosure into the
 decoherence-free factor $n_k$ that holds qubits forever and the mixing factor
 $m_k$ that is erased. No block anywhere has both factors non-trivial, and two
 rules this report had filed as multistable turn out to have a \emph{single}
-coherent block --- their multistability belongs to the monitored chain, not to
-the channel. Read as codes, the three counts separate cleanly:
+coherent block --- for $W_{203}$ the multistability belongs to the monitored
+chain rather than to the channel, while $W_{36}$ keeps a genuine coherent gap. Read as codes, the three counts separate cleanly:
 $n_{\mathrm{wcc}}$ is zero-error classical capacity, $n_k$ is protected qubits,
 and $n_{\mathrm{rec}} - n_{\mathrm{wcc}}$ is nothing. That reading has a sharp
 consequence for autonomous error correction, which we test on the rule Guedes,
@@ -372,19 +372,44 @@ Proposition~\ref{prop:dim} holds.
 
 \begin{proposition}[$n_{\mathrm{rec}}$ is also a dimension, of a larger space]
 \label{prop:fdim}
-$\dim(\mathcal{F} \cap \mathcal{D}) = n_{\mathrm{rec}}$, with basis
-$\{J_i\}$. Moreover $\mathcal{C} \subseteq \mathcal{F}$, so
+For the \emph{monitored} channel --- the one whose Heisenberg dual is the
+population chain --- $\dim(\mathcal{F} \cap \mathcal{D}) = n_{\mathrm{rec}}$,
+with basis $\{J_i\}$. Moreover $\mathcal{C} \subseteq \mathcal{F}$, so
 $n_{\mathrm{wcc}} \le n_{\mathrm{rec}}$ always.
 \end{proposition}
 
 \begin{proof}
-A diagonal $A$ with symbol $a$ is fixed by $\Phid$ iff $a$ is harmonic,
-$a(x) = \sum_y P_{yx}\,a(y)$. By the maximum principle $a$ is constant on each
-terminal component, and its values there determine it everywhere by solving the
-Dirichlet problem on the transient part; the solutions are spanned by the
-$\varphi_i$. The inclusion is immediate: $[A,K_j]=0$ gives
+A diagonal $A$ with symbol $a$ is fixed by the population chain's dual iff $a$
+is harmonic, $a(x) = \sum_y P_{yx}\,a(y)$. By the maximum principle $a$ is
+constant on each terminal component, and its values there determine it
+everywhere by solving the Dirichlet problem on the transient part; the solutions
+are spanned by the $\varphi_i$. The inclusion is immediate: $[A,K_j]=0$ gives
 $\Phid(A) = \sum_j K_j^\dagger A K_j = A\sum_j K_j^\dagger K_j = A$.
 \end{proof}
+
+\begin{remark}[The unmonitored channel gives only an inequality]
+\label{rem:squeeze}
+The restriction to the monitored channel in Proposition~\ref{prop:fdim} is not
+cosmetic. For diagonal $A$ the \emph{diagonal} of $\Phid(A)$ is exactly the
+population chain's answer, $\langle x|\Phid(A)|x\rangle = \sum_y P_{yx} a(y)$,
+so harmonicity is necessary --- but $\Phid(A)$ need not itself be diagonal, and
+$A \in \mathcal{F}\cap\mathcal{D}$ requires the off-diagonal part to vanish as
+well. Hence, for the coherent channel,
+\[
+  n_{\mathrm{wcc}} \;=\; \dim(\mathcal{C}\cap\mathcal{D})
+  \;\le\; \dim(\mathcal{F}\cap\mathcal{D}) \;\le\; n_{\mathrm{rec}},
+\]
+and the right-hand inequality can be \emph{strict}: $W_{29}$ at $N=4$ has three
+terminal components and only two conserved diagonal quantities. R24 measures
+the squeeze across this family and finds that several of the gap rules of
+\S\ref{sec:regimes} owe their gap entirely to the dephasing --- while
+$W_{36}, W_{44}, W_{100}$ keep a genuine coherent gap at $N=5$. Everything
+downstream of Proposition~\ref{prop:fdim} in this report is a statement about
+the monitored channel, which is the object \S\ref{sec:measured} and
+\S\ref{sec:bits} measure; Theorem~\ref{prop:idem} is unaffected, since it
+concerns projections and $\mathcal{C}$ and $\mathcal{F}$ share those
+(Prop.~\ref{prop:projections}).
+\end{remark}
 
 So the graph inequality $n_{\mathrm{rec}} \ge n_{\mathrm{wcc}}$ is nothing but
 the algebra inclusion $\mathcal{C} \subseteq \mathcal{F}$: \emph{every strong
@@ -685,8 +710,11 @@ n_{\mathrm{rec}}$ is a classical statement.} For the population chain the
 conserved quantities are exhausted by the absorption probabilities
 \eqref{eq:absorb}. The full channel can carry additional fixed points built
 from coherences between enclosures of equal structure, which is precisely the
-$M_{n_k}$ factor in \eqref{eq:aj}. So $n_{\mathrm{rec}}$ is a lower bound on
-the steady-state count too.
+$M_{n_k}$ factor in \eqref{eq:aj}, so $n_{\mathrm{rec}}$ is a lower bound on
+the steady-state count. \emph{Along the diagonal the inequality runs the other
+way}: a diagonal operator fixed by $\Phid$ must be harmonic \emph{and} have no
+off-diagonal image, so $\dim(\mathcal{F}\cap\mathcal{D}) \le n_{\mathrm{rec}}$
+with equality only for the monitored chain (Remark~\ref{rem:squeeze}).
 \end{enumerate}
 
 \section{The asymptotic manifold, measured}
@@ -1106,8 +1134,11 @@ non-trivial}: each is a pure decoherence-free subspace or a single state.
 $W_{232}$ holds $\log_2 7$ qubits exactly at $N=4$; $W_{91}$ holds nothing;
 $W_{189}$ holds one classical bit; $W_{19}$ holds both kinds at once. Crucially
 $W_{203}$ and $W_{36}$, filed as multistable in \S\ref{sec:regimes}, have
-\emph{single} blocks --- ``the noise decides'' is true of the monitored chain
-and false of the channel.
+\emph{single} blocks. For $W_{203}$ that does settle it --- ``the noise
+decides'' is true of the monitored chain and false of the channel, at $N=4$ and
+$N=5$ alike. For $W_{36}$ it does not: a single block still leaves
+$\dim(\mathcal{F}\cap\mathcal{D}) = 9$ against $n_{\mathrm{wcc}} = 7$ at $N=5$,
+so its gap is real. R24 separates the two cases across the family.
 \item A decoherence-free subspace need not come from a symmetry: $W_{203}$ at
 $N=4$ has $\dim\mathcal{C}=1$, no strong symmetry at all, and
 $\mathcal{A} = M_4$. In the closed-system setting of Iadecola's symmetry

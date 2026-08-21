@@ -1,4 +1,4 @@
-"""
+r"""
 The asymptotic manifold of the channel, split into its two factors  (Report R22).
 
 R22 sec.6 listed, as a limitation, that the support graph gives the DIMENSION of
@@ -244,6 +244,207 @@ def load_census(N: int, bc: str = BC_DEFAULT) -> Optional[Dict]:
         return json.load(fh)
 
 
+# --- the two algebras themselves: C and F -----------------------------------
+
+def kraus_operators(rule: int, N: int, bc: str = BC_DEFAULT) -> List[np.ndarray]:
+    """Dense Kraus operators of one full brick-wall cycle.
+
+    One per choice of jump/no-jump at every reset site, so the count is
+    2^(number of sites whose gate can fire), and each is a product of the
+    per-site operators in the project's even-then-odd order.
+    """
+    from ..core.cycle import even_sites, neighbor_bits, odd_sites
+    t = rules_mod.wolfram_to_tuple(rule)
+    dim = 1 << N
+    H = (1 / np.sqrt(2.0)) * np.array([[1.0, 1.0], [1.0, -1.0]])
+
+    def site(i: int) -> List[np.ndarray]:
+        A0 = np.zeros((dim, dim))
+        A1 = np.zeros((dim, dim))
+        jumps = False
+        bit = 1 << i
+        for x in range(dim):
+            m, n = neighbor_bits(x, i, N, bc)
+            s = t[2 * m + n]
+            xi = (x >> i) & 1
+            x0, x1 = x & ~bit, x | bit
+            if s == "I":
+                A0[x, x] += 1.0
+            elif s == "V":
+                A0[x0, x] += H[0, xi]
+                A0[x1, x] += H[1, xi]
+            elif s == "D":
+                if xi == 0:
+                    A0[x, x] += 1.0
+                else:
+                    A1[x0, x] += 1.0
+                    jumps = True
+            else:                                  # "E"
+                if xi == 1:
+                    A0[x, x] += 1.0
+                else:
+                    A1[x1, x] += 1.0
+                    jumps = True
+        return [A0, A1] if jumps else [A0]
+
+    ops = [np.eye(dim)]
+    for layer in (even_sites(N), odd_sites(N)):
+        for i in layer:
+            ops = [A @ B for A in site(i) for B in ops]
+    return [K for K in ops if np.abs(K).max() > 1e-12]
+
+
+def commutant_basis(rule: int, N: int, bc: str = BC_DEFAULT,
+                    tol: float = TOL) -> np.ndarray:
+    """Basis (columns, vectorised) of C = {A : [A, K_j] = 0 for all j}.
+
+    Intersected one Kraus operator at a time, so the largest matrix ever formed
+    is d^2 x d^2.  Stacking all of them at once is what runs out of memory: with
+    a reset at every site the stack is 2^N * d^2 rows.
+    """
+    dim = 1 << N
+    B = np.eye(dim * dim)
+    for K in kraus_operators(rule, N, bc):
+        M = (np.kron(K, np.eye(dim)) - np.kron(np.eye(dim), K.T)) @ B
+        B = B @ nullspace(M, tol)
+        if B.shape[1] == 0:
+            break
+    return B
+
+
+def conserved_basis(rule: int, N: int, bc: str = BC_DEFAULT,
+                    tol: float = TOL) -> np.ndarray:
+    """Basis of F = {A : Phi-dagger(A) = A}, the conserved quantities."""
+    t = rules_mod.wolfram_to_tuple(rule)
+    S = PE.full_channel_superoperator(N, t, bc)
+    return nullspace(S.conj().T - np.eye(S.shape[0]), tol)
+
+
+def diagonal_dimension(basis: np.ndarray, dim: int, tol: float = 1e-7) -> int:
+    """dim of the subspace of span(basis) consisting of DIAGONAL operators.
+
+    This is n_wcc for C and n_rec for F (R22 Props. 3 and 4).
+    """
+    if basis.shape[1] == 0:
+        return 0
+    off = [i * dim + j for i in range(dim) for j in range(dim) if i != j]
+    return nullspace(basis[off, :], tol).shape[1]
+
+
+def algebra_report(rule: int, N: int, bc: str = BC_DEFAULT) -> Dict:
+    """dim C, dim F and their diagonal parts, next to the block structure."""
+    dim = 1 << N
+    C = commutant_basis(rule, N, bc)
+    F = conserved_basis(rule, N, bc)
+    z = decompose(rule, N, bc)
+    PF = F @ F.conj().T
+    inside = max((float(np.linalg.norm(PF @ C[:, j] - C[:, j]))
+                  for j in range(C.shape[1])), default=0.0)
+    return dict(rule=rule, word=z.word, N=N, bc=bc,
+                dim_C=C.shape[1], dim_F=F.shape[1],
+                n_wcc=diagonal_dimension(C, dim),
+                n_rec=diagonal_dimension(F, dim),
+                dim_asym=z.dim_asym, dim_alg=z.dim_alg, dim_fix=z.dim_fix,
+                blocks=[(b.n, b.m) for b in z.blocks],
+                logical_qubits=z.logical_qubits,
+                C_inside_F=inside)
+
+
+# --- the code space, and whether it protects anything -----------------------
+
+PAULI = {
+    "X": np.array([[0.0, 1.0], [1.0, 0.0]], dtype=complex),
+    "Y": np.array([[0.0, -1j], [1j, 0.0]], dtype=complex),
+    "Z": np.array([[1.0, 0.0], [0.0, -1.0]], dtype=complex),
+}
+
+
+def code_space(rule: int, N: int, bc: str = BC_DEFAULT) -> np.ndarray:
+    """Isometry onto the asymptotic support -- the subspace the channel keeps."""
+    t = rules_mod.wolfram_to_tuple(rule)
+    d = 1 << N
+    S = PE.full_channel_superoperator(N, t, bc)
+    P, _ = cesaro_projector(S)
+    rho = (P @ (np.eye(d).reshape(-1) / d)).reshape(d, d)
+    rho = (rho + rho.conj().T) / 2
+    w, U = np.linalg.eigh(rho)
+    return U[:, w > 1e-9 * max(w.max(), 1e-30)]
+
+
+def basis_spanned(rule: int, N: int, bc: str = BC_DEFAULT,
+                  W: Optional[np.ndarray] = None) -> Tuple[bool, List[int]]:
+    """Is the asymptotic support spanned by computational basis states, and which?"""
+    W = code_space(rule, N, bc) if W is None else W
+    diag = np.diag(W @ W.conj().T).real
+    words = [x for x in range(1 << N) if diag[x] > 1 - 1e-8]
+    return len(words) == W.shape[1], words
+
+
+def asymptotic_unitary(rule: int, N: int, bc: str = BC_DEFAULT,
+                       W: Optional[np.ndarray] = None) -> Tuple[np.ndarray, float, int]:
+    """The channel restricted to the recurrent space, if it is a unitary.
+
+    Returns (A, isometry error, number of OTHER Kraus operators that do not
+    vanish there).  A zero in the last slot means every jump operator annihilates
+    the code space: the dissipation is transient-only and the asymptotic
+    evolution is closed.
+    """
+    W = code_space(rule, N, bc) if W is None else W
+    k = W.shape[1]
+    best, err, live = None, np.inf, 0
+    for K in kraus_operators(rule, N, bc):
+        M = W.conj().T @ K @ W
+        if np.linalg.norm(M) < 1e-10:
+            continue
+        live += 1
+        e = float(np.abs(M.conj().T @ M - np.eye(k)).max())
+        if e < err:
+            best, err = M, e
+    return best, err, max(live - 1, 0)
+
+
+def knill_laflamme(W: np.ndarray, N: int, weight: int, tol: float = 1e-8) -> bool:
+    """Does P E_a^dagger E_b P = c_{ab} P hold for all Pauli errors of this weight?"""
+    from itertools import combinations, product
+    k = W.shape[1]
+    es = [np.eye(1 << N, dtype=complex)]
+    for sites in combinations(range(N), weight):
+        for ps in product("XYZ", repeat=weight):
+            E = np.eye(1 << N, dtype=complex)
+            for i, p in zip(sites, ps):
+                op = np.array([[1.0]], dtype=complex)
+                for q in range(N):
+                    op = np.kron(PAULI[p] if q == i else np.eye(2), op)
+                E = op @ E
+            es.append(E)
+    for a in range(len(es)):
+        Ma = es[a].conj().T @ W
+        for b in range(a, len(es)):
+            M = Ma.conj().T @ (es[b] @ W)
+            if np.abs(M - (np.trace(M) / k) * np.eye(k)).max() > tol:
+                return False
+    return True
+
+
+def code_distance(rule: int, N: int, bc: str = BC_DEFAULT, max_weight: int = 1) -> int:
+    """Largest w with the Knill-Laflamme condition satisfied at every weight <= w.
+
+    Zero means a single Pauli error is not even DETECTABLE.  For a basis-spanned
+    code space that is forced: the operators W^dagger Z_i W are diagonal in the
+    codeword basis with entries +-1, distinct codewords being distinct bit
+    strings, so every joint eigenspace of them is one-dimensional and no
+    subspace of dimension two can have all of them act as scalars.  So no
+    SUBCODE helps either -- the whole family is distance one against dephasing.
+    """
+    W = code_space(rule, N, bc)
+    d = 0
+    for w in range(1, max_weight + 1):
+        if not knill_laflamme(W, N, w):
+            return d
+        d = w
+    return d
+
+
 # --- what the census is for: memory and error correction --------------------
 
 def fates(rule: int, N: int, bc: str = BC_DEFAULT) -> List[int]:
@@ -306,6 +507,78 @@ def memory_profile(rule: int, N: int, bc: str = BC_DEFAULT) -> Dict:
                 distance_zero=autonomous_distance(rule, N, zero, bc, fate),
                 distance_one=autonomous_distance(rule, N, one, bc, fate),
                 repetition_distance=(N - 1) // 2)
+
+
+# --- R24 sec.6: the dissipative pair is the unitary pair, one letter changed --
+
+#: (dissipative rule, unitary parent, which bit the constraint forbids adjacent)
+PARENTS = ((73, 201, 1), (109, 108, 0))
+
+
+def constrained_states(N: int, forbid: int) -> List[int]:
+    """Basis states with no two ADJACENT sites both equal to `forbid`."""
+    out = []
+    for x in range(1 << N):
+        b = [(x >> i) & 1 for i in range(N)]
+        if all(not (b[i] == b[i + 1] == forbid) for i in range(N - 1)):
+            out.append(x)
+    return out
+
+
+def cycle_on(rule: int, N: int, states: Sequence[int],
+             bc: str = BC_DEFAULT) -> Tuple[np.ndarray, int, int]:
+    """<y|K|x> summed over Kraus labels, restricted to `states`.
+
+    Returns the matrix, the number of amplitudes that leave the set, and the
+    number of DISTINCT Kraus labels seen -- one label means no jump ever fired.
+    """
+    t = rules_mod.wolfram_to_tuple(rule)
+    idx = {x: i for i, x in enumerate(states)}
+    M = np.zeros((len(states), len(states)))
+    escaped, labels = 0, set()
+    for x in states:
+        for lab, fl in PE._branch_amplitudes(x, N, t, bc).items():
+            labels.add(lab)
+            for y, a in fl.items():
+                if y in idx:
+                    M[idx[y], idx[x]] += a
+                elif abs(a) > 1e-12:
+                    escaped += 1
+    return M, escaped, len(labels)
+
+
+def parent_agreement(rule: int, N: int, bc: str = BC_DEFAULT) -> Dict:
+    """R24 Prop. 3: on the constrained space the reset never fires, so the
+    dissipative rule acts exactly as its unitary parent."""
+    parent, forbid = next((p, f) for r, p, f in PARENTS if r == rule)
+    S = constrained_states(N, forbid)
+    Md, esc_d, lab_d = cycle_on(rule, N, S, bc)
+    Mu, esc_u, _ = cycle_on(parent, N, S, bc)
+    return dict(rule=rule, parent=parent, N=N, dim=len(S),
+                difference=float(np.abs(Md - Mu).max()),
+                escaped=esc_d + esc_u, kraus_labels=lab_d,
+                unitarity=float(np.abs(Md.T @ Md - np.eye(len(S))).max()))
+
+
+def code_growth(rule: int, Ns: Sequence[int], bc: str = BC_DEFAULT) -> List[Dict]:
+    """Growth of the protected space, from the graph engine (R24 sec.2.3).
+
+    Prop. 3 makes D the number of recurrent basis states, so this needs no
+    superoperator and reaches N ~ 18.  For W73/W109 the three columns carry
+    three different exponents: n_rec at the supergolden 1.4656, d_max at the
+    golden 1.6180, and D at the tribonacci constant 1.8393 -- the total
+    decoherence-free space grows faster than any single enclosure because the
+    coherences BETWEEN enclosures survive.
+    """
+    from ..graph import scc as _scc, wcc as _wcc
+    t = rules_mod.wolfram_to_tuple(rule)
+    out = []
+    for N in Ns:
+        g = _scc.analyze(rule, N, bc, t, detect_ergodic=False)
+        w = _wcc.weak_components(rule, N, bc, t)
+        out.append(dict(N=N, n_wcc=w.n_wcc, n_rec=g.n_recurrent,
+                        D=sum(g.sizes_recurrent), d_max=max(g.sizes_recurrent)))
+    return out
 
 
 # --- CLI --------------------------------------------------------------------

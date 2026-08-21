@@ -1325,3 +1325,64 @@ Code: `scaling/absorption.py` gains `n_idempotent()` and
 `retained_information()`; `tests/test_absorption.py` now 101 tests covering
 both new propositions, the idempotent bound and the extensivity.
 Report R22 rev.2 is 11 pages.
+
+### R22 rev.3/rev.4 and R24 -- the asymptotic manifold (2026-08-21/22)
+
+New module `quantum/asymptotic.py`, tests `tests/test_asymptotic.py` (147),
+censuses `analytics/asymptotic_blocks_obc0_N{4,5}.json`.
+
+**What was added.** R22 sec.6 item 2 said the support graph cannot split an
+enclosure's dimension into a decoherence-free factor `n_k` and a mixing factor
+`m_k` and that "the graph alone never settles this". It is now settled exactly
+at N <= 5 for all 256 rules. Method: Cesaro projector at eigenvalue 1 from the
+left/right kernels of `S - 1`, applied to `1/d`; the SUPPORT of the result is
+the asymptotic space; restrict the channel to it (invariant, and the restricted
+channel then has a full-rank fixed state); the PERIPHERAL eigenoperators of the
+dual map then close into `A = (+)_k M_{n_k} (x) 1_{m_k}`; split by the centre.
+
+Three implementation traps, all of which bit:
+- The FIXED points of Phi-dagger are too few whenever `U_k =/= 1`. For any
+  unitary rule they give only the commutant of U. Use the peripheral span.
+- Take the peripheral subspace from a SORTED SCHUR FORM, not eigenvectors:
+  W51 at N=5 has all 1024 eigenvalues on the unit circle but `np.linalg.eig`
+  returns an eigenvector matrix of numerical rank 1001.
+- Build the centre by bicommutant from two generic elements each of A and A'.
+  A `dim A`-fold stack of `D^2 x D^2` commutator blocks is 17 GB at N=5.
+  Same for the Kraus commutant: intersect one operator at a time.
+
+**Findings (R22 rev.3).** No block anywhere has `n_k > 1` AND `m_k > 1`, over
+256 rules at N=4 and N=5 -- no genuine noiseless SUBSYSTEM in this family.
+W232 (= majority voting = Guedes-Winter-Mueller's rule) is `M_7 (x) sigma_1`
+with U = 1. New proposition: every conserved PROJECTION is a strong symmetry,
+so C and F share their idempotents. New QEC section: A is Blume-Kohout et al.'s
+information-preserving structure; W232's autonomous distance is 1 at every N and
+its codeword basin decays like `0.777^N`, so autonomous QEC wants the OPPOSITE
+of fragmentation.
+
+**CORRECTION carried into rev.4.** R22 Prop. 4's `dim(F&D) = n_rec` is a
+statement about the MONITORED chain. Coherently only
+`n_wcc = dim(C&D) <= dim(F&D) <= n_rec` holds. W29 at N=4 is a sharp
+counterexample (3 terminal classes, 2 conserved diagonal quantities). Auditing
+R22's eight gap rules: 44/104/203/217/233/219 are monitored-only, 36/44/100 keep
+a genuine coherent gap at N=5. `dim(C&D) = n_wcc` remained exact everywhere.
+Theorem 1 is untouched.
+
+**R24.** All eight R23 rules are a SINGLE block `M_D (x) sigma_1` with
+`dim A = D^2`; exhaustively at N=4,5 exactly one Kraus operator survives on the
+recurrent space and it is an isometry there. So the dissipation is
+transient-only and coherences between DIFFERENT attractors survive. Theorem:
+a basis-spanned code space admits no subspace of dimension >= 2 that can even
+DETECT a single-site Z error, so all eight are distance 1 and no subcode helps.
+W73/W109: dissipation prepares the blockade space then runs R23's Floquet
+blockade-Hadamard, with preparation probability decaying like `0.9^N`.
+
+**Open, and worth doing.**
+1. `chi(t)` at fixed N for W73/W109. R23 measured chi_sat vs N; the PRL plan's
+   headline is linear growth in TIME. Nobody has measured that axis for the
+   dissipative rules, and Fig. 3 as sketched would need it.
+2. Can a modified rule push the blockade-space preparation probability to 1?
+   Currently `0.9^N` and heralding is required.
+3. N = 6 decomposition (d = 64, 4096^2 superoperator) for a handful of rules, to
+   test whether "no block mixes the two factors" survives.
+4. The pbc counterpart of everything here is untouched -- deliberately, the pbc
+   sweeps are on hold.

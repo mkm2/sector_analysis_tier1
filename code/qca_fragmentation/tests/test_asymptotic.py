@@ -154,3 +154,145 @@ def test_the_codeword_basin_shrinks_exponentially():
     assert all(a > b for a, b in zip(fracs, fracs[1:]))
     ratios = [b / a for a, b in zip(fracs, fracs[1:])]
     assert all(0.55 < r < 0.65 for r in ratios), ratios      # ~ 0.777^2 per 2 sites
+
+
+# --- R24: the eight rules of R23 --------------------------------------------
+
+R23_RULES = (28, 29, 70, 71, 157, 199, 73, 109)
+
+
+@pytest.mark.parametrize("rule", R23_RULES)
+@pytest.mark.parametrize("N", (4, 5))
+def test_the_R23_rules_have_a_single_full_matrix_block(rule, N):
+    """dim A = D^2 exactly: one block, m_k = 1, nothing erased asymptotically."""
+    z = AS.decompose(rule, N)
+    assert z.n_blocks == 1
+    assert (z.blocks[0].n, z.blocks[0].m) == (z.dim_asym, 1)
+    assert z.dim_alg == z.dim_asym ** 2
+
+
+@pytest.mark.parametrize("rule", R23_RULES)
+@pytest.mark.parametrize("N", (4, 5))
+def test_the_dissipation_is_transient_only(rule, N):
+    """Exactly one Kraus operator survives on the recurrent space, and it is an
+    isometry there -- so the asymptotic evolution is closed."""
+    W = AS.code_space(rule, N)
+    A, err, others = AS.asymptotic_unitary(rule, N, W=W)
+    assert others == 0, (rule, N, others)
+    assert err < 1e-12, (rule, N, err)
+
+
+@pytest.mark.parametrize("rule", R23_RULES)
+@pytest.mark.parametrize("N", (4, 5))
+def test_the_code_space_is_basis_spanned(rule, N):
+    spanned, words = AS.basis_spanned(rule, N)
+    assert spanned
+    assert len(words) == AS.decompose(rule, N).dim_asym
+
+
+@pytest.mark.parametrize("rule", R23_RULES)
+def test_no_R23_rule_can_detect_a_single_pauli_error(rule):
+    """Basis-spanned => distance one, and no subcode helps."""
+    assert AS.code_distance(rule, 4) == 0
+
+
+@pytest.mark.parametrize("rule,N,dims", (
+    (28, 4, (25, 45)), (70, 4, (32, 45)), (29, 4, (3, 13)), (71, 4, (6, 13)),
+    (157, 4, (3, 13)), (199, 4, (5, 13)), (73, 4, (19, 35)), (109, 4, (9, 31)),
+))
+def test_the_algebra_dimensions_R24_quotes(rule, N, dims):
+    z = AS.algebra_report(rule, N)
+    assert (z["dim_C"], z["dim_F"]) == dims
+    assert z["C_inside_F"] < 1e-10
+
+
+# --- R24: the corrected chain  n_wcc <= dim(F /\ D) <= n_rec ----------------
+
+@pytest.mark.parametrize("rule,N", (
+    (29, 4), (44, 4), (104, 4), (203, 4), (217, 4), (233, 4),
+    (36, 5), (44, 5), (100, 5), (203, 5), (73, 5), (28, 5),
+))
+def test_the_conserved_diagonal_count_is_squeezed(rule, N):
+    """R22 Prop. 4 holds for the MONITORED chain; coherently only <= survives."""
+    from qca_fragmentation.graph import wcc
+    d = 1 << N
+    t = rules.wolfram_to_tuple(rule)
+    cd = AS.diagonal_dimension(AS.commutant_basis(rule, N), d)
+    fd = AS.diagonal_dimension(AS.conserved_basis(rule, N), d)
+    g = scc.analyze(rule, N, "obc0", t, detect_ergodic=False)
+    w = wcc.weak_components(rule, N, "obc0", t)
+    assert cd == w.n_wcc, (rule, N)
+    assert cd <= fd <= g.n_recurrent, (rule, N, cd, fd, g.n_recurrent)
+
+
+def test_rule_29_loses_a_terminal_class_when_the_monitoring_is_switched_off():
+    """The fair coin of R23 sec.5 is not a conserved quantity of the channel."""
+    d = 1 << 4
+    fd = AS.diagonal_dimension(AS.conserved_basis(29, 4), d)
+    g = scc.analyze(29, 4, "obc0", rules.wolfram_to_tuple(29), detect_ergodic=False)
+    assert g.n_recurrent == 3
+    assert fd == 2
+
+
+def test_the_gap_of_W36_is_real_but_that_of_W203_is_not():
+    d5 = 1 << 5
+    assert AS.diagonal_dimension(AS.conserved_basis(36, 5), d5) == 9      # > n_wcc = 7
+    assert AS.diagonal_dimension(AS.commutant_basis(36, 5), d5) == 7
+    assert AS.diagonal_dimension(AS.conserved_basis(203, 5), d5) == 1     # = n_wcc
+    assert AS.diagonal_dimension(AS.commutant_basis(203, 5), d5) == 1
+
+
+# --- R24 sec.6: the dissipative pair is the unitary pair, one letter changed --
+
+def test_the_dissipative_rules_are_one_letter_mutations():
+    assert rules.wolfram_to_tuple(201) == ("V", "I", "I", "I")
+    assert rules.wolfram_to_tuple(73) == ("V", "I", "I", "D")
+    assert rules.wolfram_to_tuple(108) == ("I", "I", "I", "V")
+    assert rules.wolfram_to_tuple(109) == ("E", "I", "I", "V")
+    assert rules.is_unitary(rules.wolfram_to_tuple(201))
+    assert rules.is_unitary(rules.wolfram_to_tuple(108))
+    assert not rules.is_unitary(rules.wolfram_to_tuple(73))
+    assert not rules.is_unitary(rules.wolfram_to_tuple(109))
+
+
+@pytest.mark.parametrize("rule", (73, 109))
+@pytest.mark.parametrize("N", (4, 5, 6, 7, 8, 9))
+def test_the_reset_is_invisible_on_the_constrained_space(rule, N):
+    """R24 Prop. 3.  Agreement is EXACT, not to machine precision."""
+    z = AS.parent_agreement(rule, N)
+    assert z["difference"] == 0.0, (rule, N, z)
+    assert z["escaped"] == 0
+    assert z["kraus_labels"] == 1          # only the no-jump branch occurs
+    assert z["unitarity"] < 1e-14
+
+
+@pytest.mark.parametrize("N,dim", ((4, 8), (6, 21), (8, 55), (10, 144)))
+def test_the_constrained_space_is_fibonacci(N, dim):
+    assert len(AS.constrained_states(N, 1)) == dim
+    assert len(AS.constrained_states(N, 0)) == dim
+
+
+@pytest.mark.parametrize("rule", (73, 109))
+def test_the_protected_space_grows_at_the_tribonacci_constant(rule):
+    """R24 sec.2.3: D obeys a(n) = a(n-1) + a(n-2) + a(n-3)."""
+    rows = AS.code_growth(rule, range(4, 15))
+    D = [r["D"] for r in rows]
+    for i in range(3, len(D)):
+        assert D[i] == D[i - 1] + D[i - 2] + D[i - 3], (rule, i, D)
+    assert D[-1] / D[-2] == pytest.approx(1.8393, abs=1e-3)
+
+
+@pytest.mark.parametrize("rule", (73, 109))
+def test_these_two_are_fragmented_in_both_senses_at_every_size(rule):
+    for r in AS.code_growth(rule, range(4, 16)):
+        assert r["n_wcc"] == r["n_rec"], (rule, r)
+
+
+def test_the_largest_enclosure_is_fibonacci_and_the_total_is_not():
+    """d_max grows at phi, D at the tribonacci constant -- the difference is the
+    cross-enclosure coherence."""
+    rows = AS.code_growth(73, range(6, 15))
+    dm = [r["d_max"] for r in rows]
+    for i in range(2, len(dm)):
+        assert dm[i] == dm[i - 1] + dm[i - 2], dm
+    assert rows[-1]["D"] > rows[-1]["d_max"] * 5

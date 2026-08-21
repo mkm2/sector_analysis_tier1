@@ -1,0 +1,567 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Phid}{\Phi^{\dagger}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\A}{\mathcal{A}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\title{\textbf{Report R24 --- what the eight rules of R23 protect}\\
+\large The strong-symmetry algebra, the conserved quantities, and why none of
+it is a code}
+\author{Tier 1 analysis}
+\date{2026-08-22}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+R23 established that the six bounded dissipative rules relax onto a wall tiling
+with one period-2 dark qubit per wide tile, that $W_{29}/W_{71}$ split a
+strong-symmetry block by a fair coin, and that $W_{73}/W_{109}$ instead reach a
+hard-core constrained space carrying a Floquet blockade-Hadamard --- PXP with
+the spin flip replaced by $H$. This report computes, exactly from the $4^N$
+superoperator, the two algebras those statements live in: the strong-symmetry
+commutant $\C$ and the conserved-quantity space $\F$. Three results. \emph{One},
+the asymptotic algebra of every one of the eight is a \emph{single} full matrix
+algebra $M_D$ with trivial mixing factor, $\dim\A = D^2$ exactly, where $D$ is
+the total number of recurrent basis states; exhaustively at $N=4,5$, precisely
+one Kraus operator is non-zero on the recurrent space and it is an isometry
+there, so the dissipation is transient-only and the asymptotic evolution is a
+closed unitary --- not merely one decoherence-free subspace per attractor, but a
+single coherent block across all of them, with the coherences between distinct
+attractors surviving too. \emph{Two}, R22's identity
+$\dim(\F\cap\D) = n_{\mathrm{rec}}$ is a statement about the \emph{monitored}
+chain; coherently only $n_{\mathrm{wcc}} \le \dim(\F\cap\D) \le
+n_{\mathrm{rec}}$ survives, and $W_{29}$ at $N=4$ realises the strict case ---
+its fair coin is not a conserved quantity. Auditing R22's eight gap rules the
+same way splits them: five owe their gap entirely to the dephasing, while
+$W_{36}, W_{44}, W_{100}$ keep a genuine coherent gap at $N=5$. \emph{Three},
+none of the eight protects anything. Their code spaces are spanned by
+computational basis states, and we prove that such a space admits no subspace at
+all --- of any dimension above one --- that can so much as \emph{detect} a
+single-site $Z$ error. Distance one, no subcode helps, verified against the
+Knill--Laflamme conditions. What the eight are is a passive memory against one
+specific structured noise model, namely the machine's own resets, which
+annihilate the code space identically. The physics worth keeping is
+$W_{73}/W_{109}$: dissipation autonomously prepares a Rydberg-blockade Hilbert
+space of dimension $F(N+2)$ and then runs an entangling constrained Floquet
+circuit inside it, with preparation efficiency decaying like $0.9^N$. That last
+statement has a one-line origin, which we prove: $W_{73}$ and $W_{109}$ are the
+unitary Floquet-$P^0HP^0$ and Floquet-$P^1HP^1$ rules $W_{201}$ and $W_{108}$
+with a \emph{single identity gate replaced by a reset}, and on the constrained
+space the reset can never fire, so the dissipative rule acts there exactly as
+its unitary parent --- identically, to zero, for $N = 4,\dots,11$.
+\end{abstract}
+
+\tableofcontents
+
+\section{The two algebras, and why they differ}
+
+Throughout, $\{K_j\}$ are the Kraus operators of one brick-wall cycle, $\D$ is
+the algebra of operators diagonal in the computational basis, and
+\[
+  \C = \{A : [A, K_j] = 0 \;\;\forall j\},
+  \qquad
+  \F = \{A : \Phid(A) = A\}.
+\]
+$\C$ is the strong-symmetry algebra of Bu\v{c}a and Prosen~\cite{buca2012}; $\F$
+is the space of conserved quantities, the operational object, since
+$\Tr(A\rho_t)$ is constant for every initial $\rho$ exactly when $A \in \F$.
+Always $\C \subseteq \F$ --- verified here to $3\times10^{-14}$ --- and $\C$ is
+an algebra while $\F$ in general is not: $\Phid$ respects products only when it
+is a $*$-automorphism, i.e.\ only in the closed case. Frigerio's
+theorem~\cite{frigerio1978} is the criterion: with a \emph{faithful} stationary
+state $\F$ is a von Neumann algebra and equals $\C$. A large transient region is
+precisely what denies that hypothesis, which is why the eight rules below have
+$\dim\C$ far below $\dim\F$.
+
+\section{The measurement}
+
+\begin{table}[htbp]
+\centering
+\caption{The eight rules of R23, obc0, exact from the $4^N$ superoperator. $D$
+is the dimension of the whole recurrent space, $\A$ the asymptotic algebra,
+$\dim\mathrm{Fix}$ the fixed points of $\Phid$ inside it. Every row has
+$\dim\A = D^2$.}
+\label{tab:algebras}
+\begin{tabular}{rlrrrrrrrr}
+\toprule
+rule & word & $N$ & $\dim\C$ & $\dim\F$ & $n_{\mathrm{wcc}}$ &
+$n_{\mathrm{rec}}$ & $D$ & $\dim\A$ & $\dim\mathrm{Fix}$\\
+\midrule
+$W_{28}$  & IIVD & 4 & 25 & 45 & 6 & 6 &  9 &  81 &  45 \\
+$W_{70}$  & IVID & 4 & 32 & 45 & 6 & 6 &  9 &  81 &  45 \\
+$W_{29}$  & EIVD & 4 &  3 & 13 & 2 & \textbf{3} &  5 &  25 &  13 \\
+$W_{71}$  & EVID & 4 &  6 & 13 & 3 & 3 &  5 &  25 &  13 \\
+$W_{157}$ & EIVI & 4 &  3 & 13 & 3 & 3 &  5 &  25 &  13 \\
+$W_{199}$ & EVII & 4 &  5 & 13 & 3 & 3 &  5 &  25 &  13 \\
+$W_{73}$  & VIID & 4 & 19 & 35 & 4 & 4 & 13 & 169 &  35 \\
+$W_{109}$ & EIIV & 4 &  9 & 31 & 5 & 5 &  9 &  81 &  31 \\
+\midrule
+$W_{28}$  & IIVD & 5 & 58 & 106 & 8 & 8 & 14 & 196 & 106 \\
+$W_{70}$  & IVID & 5 & 58 & 106 & 8 & 8 & 14 & 196 & 106 \\
+$W_{29}$  & EIVD & 5 & 11 &  41 & 4 & 4 &  9 &  81 &  41 \\
+$W_{71}$  & EVID & 5 & 11 &  41 & 4 & 4 &  9 &  81 &  41 \\
+$W_{157}$ & EIVI & 5 & 18 &  41 & 4 & 4 &  9 &  81 &  41 \\
+$W_{199}$ & EVII & 5 & 18 &  41 & 4 & 4 &  9 &  81 &  41 \\
+$W_{73}$  & VIID & 5 & 33 &  96 & 6 & 6 & 24 & 576 &  96 \\
+$W_{109}$ & EIIV & 5 & 27 &  95 & 8 & 8 & 17 & 289 &  95 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The dissipation is transient-only}
+
+\begin{proposition}[Exhaustive at $N = 4, 5$]
+\label{prop:unitary}
+For each of the eight rules, of the up to twelve Kraus operators of one cycle
+exactly \emph{one} is non-zero on the recurrent subspace, and its restriction
+$A$ there satisfies $\lVert A^\dagger A - \mathbb{1}\rVert_{\max} \le
+3.6\times10^{-15}$. Every other Kraus operator annihilates that subspace
+identically ($\lVert W^\dagger K W\rVert \le 7.6\times10^{-15}$).
+\end{proposition}
+
+\noindent Consequently the channel restricted to the recurrent space is a
+unitary, and the asymptotic algebra is the full $M_D$ --- which is what
+Table~\ref{tab:algebras} reports as $\dim\A = D^2$, in every row.
+
+This is stronger than ``every attractor is a decoherence-free subspace''. That
+statement is per-enclosure; this one is joint. The recurrent space of $W_{28}$
+at $N=4$ carries six terminal components of sizes $2,2,2,1,1,1$, and the
+channel decoheres neither within them \emph{nor between them}: a superposition
+of states drawn from two different attractors is preserved exactly. It is also
+what makes $\F$ readable, because with a unitary $U$ on the code space
+\[
+  \dim\F \;=\; \sum_i \mathrm{mult}(\lambda_i)^2 ,
+\]
+the sum over the multiplicities of $U$'s eigenvalues. Table~\ref{tab:algebras}
+can then be read spectroscopically, and R23 rev.2 has since diagonalised $U$
+directly, which both confirms the reading and corrects one guess made from the
+totals alone.
+
+For the six bounded rules $\dim\F \approx D^2/2$ --- $45/81$, $13/25$,
+$106/196$, $41/81$ --- the signature of a two-fold spectrum. Diagonalising
+confirms it exactly: two distinct eigenvalues every time and $U^2 = \mathbb{1}$
+to $2.2\times10^{-16}$, with multiplicities $(6,3)$ for $W_{28}$ at $N=4$ and
+$(3,2)$ for $W_{29}/W_{71}/W_{157}/W_{199}$ there, reproducing $45$ and $13$.
+So R23's period-2 flicker, originally measured on trajectories, is forced by the
+spectrum.
+
+For $W_{73}$ at $N=5$ the total $\dim\F = 96$ is right but its factorisation is
+\emph{not} $6\times4^2$, as a first reading of the totals suggested. $U$ has
+twelve distinct eigenvalues with multiplicities $(8,4,2,2,1,1,1,1,1,1,1,1)$,
+giving $64+16+4+4+8 = 96$; eight sit at exactly $+1$, four at $-1$, and the rest
+are complex and off the roots of unity. $W_{109}$ at $N=5$ has $D=17$ and
+multiplicities $(9,2,2,2,1,1)$, giving $95$. The conclusion is unchanged and in
+fact sharpened --- complex eigenvalues off the unit roots mean no period at all,
+$\lVert U^2 - \mathbb{1}\rVert = 0.5$ --- but a multiplicity pattern must be
+read off the spectrum, never inferred from $\dim\F$.
+
+\subsection{Scope}
+
+Proposition~\ref{prop:unitary} covers all enclosures at $N = 4$ and $5$, which
+is exhaustive at those sizes but only those sizes. The independent check on the
+Tier-2 side (top three attractors per rule at $N=11$, plus a basis-by-basis pass
+on the largest attractor of $W_{73}/W_{109}$ at $N=9,11$) reaches further up but
+not across. Neither should be quoted as a theorem for all $N$.
+
+\section{The squeeze: what the monitoring was doing}%
+\label{sec:squeeze}
+
+R22 Proposition~4 states $\dim(\F\cap\D) = n_{\mathrm{rec}}$. That is a
+statement about the \emph{monitored} channel. For diagonal $A$ the diagonal of
+$\Phid(A)$ is exactly the population chain's answer, so harmonicity is
+necessary; but $\Phid(A)$ need not \emph{be} diagonal, and membership of
+$\F\cap\D$ demands the off-diagonal part vanish as well. Hence
+\begin{equation}
+  n_{\mathrm{wcc}} \;=\; \dim(\C\cap\D)
+  \;\le\; \dim(\F\cap\D) \;\le\; n_{\mathrm{rec}} .
+  \label{eq:squeeze}
+\end{equation}
+The left equality is exact for the coherent channel and holds in every row we
+have measured. The right inequality is saturated by construction for the
+monitored chain and can be strict otherwise.
+
+\paragraph{\texorpdfstring{$W_{29}$ at $N=4$}{W29 at N=4} is the counterexample.} Three terminal components,
+and $\dim(\F\cap\D) = 2$ --- sharply, the smallest relative singular value of
+the off-diagonal block is $0.357$, not a tolerance question. R23 identifies the
+mechanism: the third component is reached from a shared transient by a fair
+coin, and a fair coin is not a conserved quantity. The coherent channel simply
+has no observable that records which way it fell.
+
+\paragraph{Auditing R22's eight gap rules.} The same computation applied to the
+rules that motivated R22 splits them in two (Table~\ref{tab:audit}). Five have
+$\dim(\F\cap\D) = n_{\mathrm{wcc}}$ at both sizes: their WCC/SCC gap is an
+artifact of dephasing and disappears when the monitoring is switched off. Three
+--- $W_{36}, W_{44}, W_{100}$ --- keep a genuine coherent gap at $N=5$.
+
+\begin{table}[htbp]
+\centering
+\caption{R22's gap rules re-measured coherently, obc0. ``monitored-only'' means
+$\dim(\F\cap\D)$ collapses to $n_{\mathrm{wcc}}$ although the graph reports
+$n_{\mathrm{rec}} > n_{\mathrm{wcc}}$.}
+\label{tab:audit}
+\begin{tabular}{rlrrrrl}
+\toprule
+rule & word & $N$ & $n_{\mathrm{wcc}}$ & $\dim(\F\cap\D)$ & $n_{\mathrm{rec}}$
+& verdict \\
+\midrule
+$W_{44}$  & IIDV & 4 & 5 & 5 & 6 & monitored-only \\
+$W_{104}$ & DIIV & 4 & 3 & 3 & 4 & monitored-only \\
+$W_{203}$ & VEII & 4 & 1 & 1 & 3 & monitored-only \\
+$W_{217}$ & VIEI & 4 & 1 & 1 & 3 & monitored-only \\
+$W_{233}$ & VIIE & 4 & 3 & 3 & 4 & monitored-only \\
+\midrule
+$W_{104}$ & DIIV & 5 & 3 & 3 & 5 & monitored-only \\
+$W_{203}$ & VEII & 5 & 1 & 1 & 4 & monitored-only \\
+$W_{217}$ & VIEI & 5 & 1 & 1 & 4 & monitored-only \\
+$W_{219}$ & VEEI & 5 & 1 & 1 & 2 & monitored-only \\
+$W_{233}$ & VIIE & 5 & 3 & 3 & 4 & monitored-only \\
+\midrule
+$W_{36}$  & IDDV & 5 & 7 & \textbf{9} & 9 & genuine gap \\
+$W_{44}$  & IIDV & 5 & 7 & \textbf{8} & 9 & genuine gap \\
+$W_{100}$ & IDIV & 5 & 7 & \textbf{8} & 9 & genuine gap \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two things this does \emph{not} disturb. R22's Theorem~1 concerns projections,
+and $\C$ and $\F$ contain the same projections, so the Boolean algebra of
+conserved questions still has exactly $n_{\mathrm{wcc}}$ atoms whichever channel
+is meant. And the measurements of R22 \S3.4--3.5 are measurements of the
+monitored chain, which is the right object for the question they answer --- what
+a repeatedly observed system remembers. The correction is one of scope, not of
+arithmetic.
+
+\section{Trivial, and not}
+
+\subsection{The six are physical qubits with extra steps}
+
+$W_{28}, W_{70}, W_{29}, W_{71}, W_{157}, W_{199}$: R23 shows every enclosure is
+a subcube $2^k$ over a frozen wall backbone, so the decoherence-free space
+factorises as a tensor product of \emph{single-site} dark qubits, each running
+$H^t$. There is no encoding: a logical qubit is one physical site. There is no
+non-locality, hence nothing for a distance to be built out of, and the operator
+entanglement of the asymptotic unitary is bounded, which is R23's mechanism for
+the $N$-independent $\chi_{\mathrm{sat}}$.
+
+$\dim\C$ for these is small and erratic --- $3, 5, 6, 25, 32$ at $N=4$, and note
+that $W_{157}$ and $W_{199}$ have identical $\F$ but $\dim\C = 3$ against $5$.
+That asymmetry is a fact about the \emph{transients}, since $\C$ must commute
+with the Kraus operators everywhere, not only on the recurrent space. It is a
+reminder that $\C$ is not the right invariant for asymptotic questions.
+
+\subsection{\texorpdfstring{$W_{73}$ and $W_{109}$}{W73 and W109} are the interesting ones}
+
+Their largest enclosure is the hard-core constrained space, of dimension
+$F(N+2)$ and $F(N)$, and the induced one-period map is R23's blockade-controlled
+Hadamard --- PXP with the spin flip replaced by $H$, in Floquet rather than
+Hamiltonian form. Combining that with Proposition~\ref{prop:unitary}:
+
+\begin{quote}
+\textbf{The dissipation autonomously prepares a Rydberg-blockade Hilbert space
+and then runs an entangling constrained Floquet circuit inside it.}
+\end{quote}
+
+That is a statement about dissipative state preparation of a kinetically
+constrained manifold, and it is the physics in this family worth reporting. Its
+efficiency is finite and decaying. The probability that a uniformly random
+initial state is absorbed into the largest enclosure, from the exact absorption
+probabilities:
+
+\begin{center}
+\begin{tabular}{lccccccccc}
+\toprule
+$N$ & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+\midrule
+$W_{73}$  & $0.625$ & $0.563$ & $0.500$ & $0.438$ & $0.398$ & $0.344$ &
+  $0.316$ & $0.272$ & $0.251$ \\
+$W_{109}$ & $0.313$ & $0.438$ & $0.281$ & $0.328$ & $0.234$ & $0.254$ &
+  $0.190$ & $0.199$ & $0.151$ \\
+\midrule
+$\dim$ & 8 & 13 & 21 & 34 & 55 & 89 & 144 & 233 & 377 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Roughly $0.9^N$, against a target growing like $\varphi^N$. So the
+preparation is probabilistic and needs heralding; it is not a deterministic
+pump. Whether a modified rule can push this to $1$ is the obvious question and
+is not attempted here.
+
+\section{Nothing here is a code}
+\label{sec:code}
+
+\begin{theorem}[A basis-spanned code space has distance one]
+\label{thm:distance}
+Let the code space be spanned by computational basis states. Then no subspace of
+it of dimension $\ge 2$ satisfies the Knill--Laflamme condition~\cite{kl1997}
+for the single-site Pauli errors --- not the correction condition, and not even
+the weaker detection condition.
+\end{theorem}
+
+\begin{proof}
+Let $W$ be the isometry onto the code space and $V$ that of a candidate
+subcode. Detection of $Z_i$ requires $V^\dagger W^\dagger Z_i W V = c_i
+\mathbb{1}$, so the subcode lies inside an eigenspace of $M_i := W^\dagger Z_i
+W$. Because $W$ is basis-spanned, each $M_i$ is diagonal in the codeword basis
+with entries $\pm 1$, namely the $i$-th bit of each codeword. Distinct codewords
+are distinct bit strings, so the joint spectrum $\{(\pm1)_i\}$ separates them
+and every joint eigenspace of $M_1,\dots,M_N$ is one-dimensional. Hence
+$\dim V \le 1$.
+\end{proof}
+
+R23 establishes that the asymptotic support of all eight rules is basis-spanned;
+we re-verify it at $N = 4, 5$ against the superoperator. So all eight have
+distance one and \emph{no subcode helps}. Checked directly: the Knill--Laflamme
+condition fails at weight one for every one of them.
+
+What is true is the complementary statement, and it is the same lesson R22 \S8
+drew from majority voting. The eight are perfectly protected against the
+machine's own dissipation --- Proposition~\ref{prop:unitary} says the jump
+operators annihilate the code space identically, an \emph{infinite}-distance
+noiseless subsystem in the sense of Knill, Laflamme and Viola~\cite{klv2000} for
+that one structured noise model --- and completely unprotected against anything
+else. Fragmentation protects everything it finds, including the errors, which is
+why it protects nothing selectively.
+
+One nuance worth recording, because it is the natural place to look for a
+positive result. The blockade constraint of $W_{73}$ \emph{does} make some
+bit-flip errors leave the code space, and those are detectable by a
+constraint check. But not all of them: $\ldots0\,0\,0\ldots \to
+\ldots0\,1\,0\ldots$ stays inside. The classical minimum distance of the
+hard-core space is $1$, so even restricted to $X$ errors the constraint is a
+detector of some errors, not a code.
+
+\subsection{Three exponents, and no gap anywhere}
+\label{sec:exponents}
+
+Beyond the sizes the superoperator reaches, the graph engine gives the growth of
+the protected space directly, since Prop.~\ref{prop:unitary} makes $D$ the
+number of recurrent basis states. For $W_{73}$ and $W_{109}$, obc0, $N$ up to
+$18$:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+quantity & growth & identification \\
+\midrule
+$n_{\mathrm{rec}}$, the number of enclosures & $\psi = 1.4656$ &
+  supergolden, A000930 \\
+$d^{\mathrm{rec}}_{\max}$, the largest enclosure & $\varphi = 1.6180$ &
+  Fibonacci, the blockade space \\
+$D$, the whole protected space & $1.8393$ &
+  \textbf{tribonacci constant} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $D$ for $W_{73}$ runs $13, 24, 44, 81, 149, 274, 504, 927, 1705,
+3136, 5768, \dots$ --- each term the sum of the previous three, ratio settled at
+$1.8393$ by $N=9$; $W_{109}$ gives $9, 17, 31, 57, 105, 193, 355, \dots$, the
+same recurrence and the same constant. So the total decoherence-free dimension
+grows \emph{faster} than any single enclosure: $\log_2 1.8393 = 0.879$ qubits
+per site protected in total, against $\log_2\varphi = 0.694$ inside the largest
+blockade sector. The difference is exactly the cross-enclosure coherence that
+Prop.~\ref{prop:unitary} says survives, and that a per-attractor account would
+miss.
+
+The other column worth having: $n_{\mathrm{wcc}} = n_{\mathrm{rec}}$ at
+\emph{every} $N$ from $4$ to $18$, for both rules. These two are fragmented in
+both senses with no gap at any size we can reach --- which is what a paper built
+on ``fragmented in both senses, and non-unitary'' needs, and which
+\S\ref{sec:squeeze} shows is not automatic.
+
+\section{\texorpdfstring{The dissipative pair is the unitary pair,\\ with one
+letter changed}{The dissipative pair is the unitary pair, with one letter
+changed}}
+\label{sec:parents}
+
+R23 identifies the induced unitary on the largest attractor of $W_{73}$ and
+$W_{109}$ numerically, as a brickwork of blockade-controlled Hadamards. There is
+a reason, and it is one line of gate arithmetic.
+
+Read the gate words in slot order $(00),(01),(10),(11)$, the slot being the
+state of the two neighbours:
+\[
+  W_{201} = \mathrm{VIII}, \quad W_{73} = \mathrm{VIID};
+  \qquad
+  W_{108} = \mathrm{IIIV}, \quad W_{109} = \mathrm{EIIV}.
+\]
+$W_{201}$ fires a Hadamard exactly when both neighbours are empty --- it
+\emph{is} the Floquet $P^0HP^0$ model --- and $W_{108}$ fires when both are
+occupied, the $P^1HP^1$ model. And each dissipative rule is its unitary parent
+with a \emph{single} identity replaced by a reset: $W_{73} = W_{201}$ with
+slot $(11)$ changed $\mathrm{I}\to\mathrm{D}$, and $W_{109} = W_{108}$ with slot
+$(00)$ changed $\mathrm{I}\to\mathrm{E}$.
+
+\begin{proposition}[The reset is invisible on the constrained space]
+\label{prop:parents}
+Let $\mathcal{C}^1_N$ be the span of the basis states with no two adjacent
+$1$s, and $\mathcal{C}^0_N$ likewise for $0$s. Then $\mathcal{C}^1_N$ is invariant
+under the channel of $W_{73}$, no jump operator ever fires on it, and $W_{73}$
+acts there exactly as $W_{201}$. Dually, $\mathcal{C}^0_N$ is invariant under
+$W_{109}$, which acts there exactly as $W_{108}$.
+\end{proposition}
+
+\begin{proof}
+$W_{73}$'s reset $\mathrm{D}$ sits in slot $(11)$, so it can only fire at a site
+both of whose neighbours are $1$; on $\mathcal{C}^1_N$ such a site must itself
+be $0$, and $\mathrm{D}$ resets to $0$, so it acts as the identity and its jump
+Kraus operator vanishes. The only non-trivial gate left is the Hadamard in slot
+$(00)$, which can set a site to $1$ only when both neighbours are $0$, creating
+no adjacent pair; sites updated in the same brick-wall layer are two apart and
+their common neighbour is $0$, so simultaneity does not spoil this. Hence
+$\mathcal{C}^1_N$ is invariant and the map is the no-jump Kraus operator alone,
+which is $W_{201}$'s unitary. The argument for $W_{109}$ is the same with $0$
+and $1$, and $\mathrm{E}$ in place of $\mathrm{D}$.
+\end{proof}
+
+\noindent Measured, the two one-cycle matrices agree \emph{identically} --- not
+to machine precision, to exactly zero --- for $N = 4,\dots,11$, with no
+amplitude leaving the subspace, only the empty Kraus label occurring, and
+$\lVert M^{\mathsf T}M - \mathbb{1}\rVert \le 2.3\times10^{-16}$.
+
+So the mechanism behind ``some dissipative models inherit fragmentation'' is
+not an analogy. The reset does no work at all in the steady state; its entire
+role is to \emph{drive the system into} the constrained subspace, where the
+dynamics is the unitary model itself. That also explains R23's $a=0$ versus
+$a=1$ blockade: the projector is inherited from whichever slot the parent's
+Hadamard occupies.
+
+The proposition gives invariance, not attraction --- that $\mathcal{C}^1_N$ is
+reached is a separate fact, and \S\ref{sec:squeeze}'s table shows it is reached
+only with probability $\approx 0.9^N$. Irreducibility is a separate fact too,
+and the two rules differ on it. Decomposing the constrained space (support
+graph of the one-cycle map restricted to it, obc0):
+\[
+  \begin{array}{lll}
+  W_{73} \text{ on no-}11: & N=9:\; \{89\} & N=11:\; \{233\}\\
+  W_{109}\text{ on no-}00: & N=9:\; \{34,21,21,13\} & N=11:\; \{89,55,55,34\}
+  \end{array}
+\]
+with no transient states inside the space at any $N$, all parts Fibonacci and
+summing to $F(N+2)$. So $\mathcal{C}^1_N$ \emph{is} $W_{73}$'s attractor,
+irreducibly, while for $W_{109}$ it splits four ways, the largest part being the
+$F(N)$ that R23 reports.
+
+It is worth being explicit about \emph{why}, because the plausible explanation
+is wrong. One might guess the split comes from the \rt{obc0} boundary letting
+$W_{109}$'s reset fire at the chain ends. It does not: the reset never fires
+anywhere on $\mathcal{C}^0_N$, edges included. At the left edge the outside
+counts as $0$, so site $0$ sees the pair $(0, x_1)$; if $x_1 = 0$ then $x_0$
+must be $1$ to avoid a $00$, and $\mathrm{E}$ resets to $1$, the identity there;
+if $x_1 = 1$ the slot is $(01) = \mathrm{I}$. Measured, exactly one Kraus label
+occurs at every state for $N = 4,\dots,11$. The split is a property of the
+\emph{parent}: $W_{108}$ is already reducible on that space, and gives the
+identical four-way decomposition at every $N$ we checked. (Independently
+confirmed on the Tier-2 side; the correction is theirs.)
+
+\section{What this leaves for the PRL}
+
+Three things the above supplies for a paper built on ``fragmented, in both
+senses, and non-unitary''.
+
+\begin{enumerate}
+\item \textbf{The mechanism sentence, and it is better than expected.} The
+dissipative rules inherit fragmentation because their dissipation is
+\emph{transient-only}: asymptotically the channel is a unitary on an
+exponentially large constrained subspace (Prop.~\ref{prop:unitary}). For the two
+rules that matter it is sharper still --- $W_{73}$ and $W_{109}$ are the
+Floquet-$P^0HP^0$ and Floquet-$P^1HP^1$ models with a \emph{single identity
+replaced by a reset}, and on the constrained space the reset provably never
+fires (Prop.~\ref{prop:parents}). The dissipative models do not merely resemble
+the unitary ones; they \emph{are} them, plus a pump that drives the system into
+the constrained sector. If the paper introduces Floquet-PHP and Floquet-PHQ as
+its two unitary models, then Fig.~3's dissipative counterparts are the same two
+words with one letter changed, which is about as compact as a third figure can
+get. That is also why an SCC census suffices there, and why deferring the
+WCC/SCC distinction to a companion paper is defensible: for seven of the eight,
+$n_{\mathrm{wcc}} = n_{\mathrm{rec}}$ at every size we can check coherently.
+\item \textbf{One caveat that must be handled before the figure is drawn.} It is
+$W_{29}$, and now $W_{36}/W_{44}/W_{100}$ from \S\ref{sec:squeeze}: the SCC
+count is not always a coherent invariant. A census presented as
+``fragmentation'' should either restrict to rules where \eqref{eq:squeeze} is
+tight or say which quantity is plotted.
+\item \textbf{A gap in the evidence, and a trap in closing it.} R23 reports
+$\chi_{\mathrm{sat}}$ saturating \emph{in $N$} for the six and growing
+exponentially for $W_{73}/W_{109}$. A headline about linear growth \emph{in
+time} is a different axis, and the dissipative rules have not been measured on
+it. The trap is that the obvious protocol is self-defeating:
+Proposition~\ref{prop:unitary} says there is no dissipation \emph{inside} an
+enclosure, so a $\chi(t)$ run started from a state already in the largest
+enclosure measures the operator entanglement of a purely unitary constrained
+circuit and cannot support any claim about the dissipative model. The
+dissipative content lives entirely in the transient. Whatever protocol is
+chosen must therefore start outside the enclosure and pay for the transient.
+A second, practical obstacle: the superoperator route OOMs for $W_{73}$ at
+$N=7$, $t=5$ (27\,GB, because the zip-up materialises an untruncated bond at
+$16\chi \approx 12000$), so those two need a contraction that never forms that
+bond. $\chi(t)$ for the six bounded rules is runnable today.
+\end{enumerate}
+
+\section*{Reproduce}
+\addcontentsline{toc}{section}{Reproduce}
+
+Everything is in \fn{quantum/asymptotic.py}, which builds the dense $4^N$
+superoperator through \fn{quantum/peripheral.py}. The commutant is intersected
+one Kraus operator at a time rather than as a single stack --- with a reset at
+every site the stack has $2^N d^2$ rows and exhausts memory at $N=5$.
+
+\begin{verbatim}
+    python -m qca_fragmentation.quantum.asymptotic --rules 28,29,73,109 --N 4
+    pytest qca_fragmentation/tests/test_asymptotic.py   # 147 tests
+\end{verbatim}
+
+\noindent The tests pin Table~\ref{tab:algebras} row by row, check
+Proposition~\ref{prop:unitary} for all eight at $N=4,5$, confirm the code space
+is basis-spanned, verify Theorem~\ref{thm:distance} through the
+Knill--Laflamme condition, and pin both sides of \eqref{eq:squeeze} including
+the $W_{29}$ counterexample and the $W_{36}$-versus-$W_{203}$ split.
+
+\begin{thebibliography}{9}
+
+\bibitem{buca2012} B.~Bu\v{c}a and T.~Prosen,
+  \emph{A note on symmetry reductions of the Lindblad equation},
+  New J.\ Phys.\ \textbf{14}, 073007 (2012).
+
+\bibitem{frigerio1978} A.~Frigerio,
+  \emph{Stationary states of quantum dynamical semigroups},
+  Commun.\ Math.\ Phys.\ \textbf{63}, 269 (1978).
+
+\bibitem{kl1997} E.~Knill and R.~Laflamme,
+  \emph{Theory of quantum error-correcting codes},
+  Phys.\ Rev.\ A \textbf{55}, 900 (1997).
+
+\bibitem{klv2000} E.~Knill, R.~Laflamme and L.~Viola,
+  \emph{Theory of quantum error correction for general noise},
+  Phys.\ Rev.\ Lett.\ \textbf{84}, 2525 (2000).
+
+\bibitem{bknpv2008} R.~Blume-Kohout, H.~K.~Ng, D.~Poulin and L.~Viola,
+  \emph{Characterizing the structure of preserved information in quantum
+  processes},
+  Phys.\ Rev.\ Lett.\ \textbf{100}, 030501 (2008).
+
+\bibitem{iadecola2026} T.~Iadecola,
+  \emph{Symmetry fragmentation},
+  Phys.\ Rev.\ Lett.\ \textbf{136}, 100401 (2026), arXiv:2510.06333.
+
+\end{thebibliography}
+
+\end{document}
