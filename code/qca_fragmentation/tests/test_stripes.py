@@ -163,3 +163,50 @@ def test_induced_unitary_is_blockade_controlled_hadamard(rule, a):
                     M[x, x] += 1.0
             U = M @ U
     assert np.abs(A - U[np.ix_(m, m)]).max() < 1e-12
+
+
+def _induced_on_recurrent(rule, N):
+    """The map the channel induces on the span of all terminal SCCs."""
+    d = st.decompose(rule, N)
+    rec = sorted(x for c, t in enumerate(d["terminal"]) if t
+                 for x in d["members"][c])
+    idx = {x: j for j, x in enumerate(rec)}
+    tr = st.Trajectory(rule, N)
+    A = np.zeros((len(rec), len(rec)))
+    for j, x in enumerate(rec):
+        psi = tr.step(st.basis_state(N, x), np.random.default_rng(0))
+        for y in np.nonzero(np.abs(psi) > 1e-12)[0]:
+            assert int(y) in idx, "recurrent space is not closed"
+            A[idx[int(y)], j] = psi[y]
+    return A
+
+
+@pytest.mark.parametrize("rule", [28, 70, 157, 199, 29, 71])
+def test_recurrent_space_carries_an_involution(rule):
+    """R23: for the six, the induced map on the WHOLE recurrent space is
+    unitary with exactly two eigenvalues, so U^2 = 1 and period 2 is forced."""
+    A = _induced_on_recurrent(rule, 6)
+    assert np.abs(A @ A.T - np.eye(len(A))).max() < 1e-12
+    assert np.abs(A @ A - np.eye(len(A))).max() < 1e-12
+    ev = np.linalg.eigvals(A)
+    assert len({complex(np.round(z, 6)) for z in ev}) == 2
+
+
+@pytest.mark.parametrize("rule", [28, 199, 29, 73, 109])
+def test_coherence_between_two_attractors_survives(rule):
+    """R23: the no-jump Kraus operator serves every enclosure at once, so a
+    superposition drawn from two different attractors is never decohered."""
+    N = 9
+    d = st.decompose(rule, N)
+    tc = sorted((c for c, t in enumerate(d["terminal"]) if t),
+                key=lambda c: -len(d["members"][c]))
+    a, b = d["members"][tc[0]], d["members"][tc[1]]
+    tr = st.Trajectory(rule, N)
+    psi = np.zeros(1 << N)
+    psi[a[0]] = psi[b[0]] = 1 / np.sqrt(2)
+    for _ in range(12):
+        pj, dn = tr.jump_budget(psi)
+        assert pj == 0.0 and dn < 1e-12
+        psi = tr.step(psi, np.random.default_rng(0))
+        assert set(np.nonzero(np.abs(psi) > 1e-11)[0].tolist()) <= set(a) | set(b)
+    assert abs(sum(psi[x] ** 2 for x in a) - 0.5) < 1e-12
