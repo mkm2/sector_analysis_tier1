@@ -1,0 +1,3398 @@
+{
+ "N": 5,
+ "bc": "obc0",
+ "rules": {
+  "0": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDDD"
+  },
+  "1": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 21,
+   "word": "VDDD"
+  },
+  "10": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEDD"
+  },
+  "100": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 81,
+   "word": "IDIV"
+  },
+  "101": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EDIV"
+  },
+  "102": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 134,
+   "word": "IVIV"
+  },
+  "103": {
+   "blocks": [
+    [
+     2,
+     1
+    ],
+    [
+     1,
+     11
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 5,
+   "dim_asym": 13,
+   "dim_fix": 3,
+   "word": "EVIV"
+  },
+  "104": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 25,
+   "word": "DIIV"
+  },
+  "105": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 140,
+   "word": "VIIV"
+  },
+  "106": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "DEIV"
+  },
+  "107": {
+   "blocks": [
+    [
+     1,
+     19
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 19,
+   "dim_fix": 1,
+   "word": "VEIV"
+  },
+  "108": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 510,
+   "word": "IIIV"
+  },
+  "109": {
+   "blocks": [
+    [
+     17,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 289,
+   "dim_asym": 17,
+   "dim_fix": 95,
+   "word": "EIIV"
+  },
+  "11": {
+   "blocks": [
+    [
+     1,
+     9
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 9,
+   "dim_fix": 1,
+   "word": "VEDD"
+  },
+  "110": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 57,
+   "word": "IEIV"
+  },
+  "111": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 14,
+   "word": "EEIV"
+  },
+  "112": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDEV"
+  },
+  "113": {
+   "blocks": [
+    [
+     1,
+     10
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 10,
+   "dim_fix": 1,
+   "word": "VDEV"
+  },
+  "114": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVEV"
+  },
+  "115": {
+   "blocks": [
+    [
+     1,
+     19
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 19,
+   "dim_fix": 1,
+   "word": "VVEV"
+  },
+  "116": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IDEV"
+  },
+  "117": {
+   "blocks": [
+    [
+     1,
+     5
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 5,
+   "dim_fix": 1,
+   "word": "EDEV"
+  },
+  "118": {
+   "blocks": [
+    [
+     1,
+     12
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 2,
+   "dim_asym": 13,
+   "dim_fix": 2,
+   "word": "IVEV"
+  },
+  "119": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "EVEV"
+  },
+  "12": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IIDD"
+  },
+  "120": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "DIEV"
+  },
+  "121": {
+   "blocks": [
+    [
+     1,
+     19
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 19,
+   "dim_fix": 1,
+   "word": "VIEV"
+  },
+  "122": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEEV"
+  },
+  "123": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VEEV"
+  },
+  "124": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 57,
+   "word": "IIEV"
+  },
+  "125": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 14,
+   "word": "EIEV"
+  },
+  "126": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 12,
+   "word": "IEEV"
+  },
+  "127": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 7,
+   "word": "EEEV"
+  },
+  "128": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDDI"
+  },
+  "129": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 21,
+   "word": "VDDI"
+  },
+  "13": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EIDD"
+  },
+  "130": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVDI"
+  },
+  "131": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VVDI"
+  },
+  "132": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IDDI"
+  },
+  "133": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EDDI"
+  },
+  "134": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IVDI"
+  },
+  "135": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EVDI"
+  },
+  "136": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIDI"
+  },
+  "137": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 21,
+   "word": "VIDI"
+  },
+  "138": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEDI"
+  },
+  "139": {
+   "blocks": [
+    [
+     1,
+     9
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 9,
+   "dim_fix": 1,
+   "word": "VEDI"
+  },
+  "14": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IEDD"
+  },
+  "140": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IIDI"
+  },
+  "141": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EIDI"
+  },
+  "142": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IEDI"
+  },
+  "143": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EEDI"
+  },
+  "144": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDVI"
+  },
+  "145": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VDVI"
+  },
+  "146": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVVI"
+  },
+  "147": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 92,
+   "word": "VVVI"
+  },
+  "148": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IDVI"
+  },
+  "149": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EDVI"
+  },
+  "15": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EEDD"
+  },
+  "150": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 112,
+   "word": "IVVI"
+  },
+  "151": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EVVI"
+  },
+  "152": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIVI"
+  },
+  "153": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 56,
+   "word": "VIVI"
+  },
+  "154": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEVI"
+  },
+  "155": {
+   "blocks": [
+    [
+     1,
+     19
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 19,
+   "dim_fix": 1,
+   "word": "VEVI"
+  },
+  "156": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 256,
+   "word": "IIVI"
+  },
+  "157": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 41,
+   "word": "EIVI"
+  },
+  "158": {
+   "blocks": [
+    [
+     10,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 100,
+   "dim_asym": 10,
+   "dim_fix": 22,
+   "word": "IEVI"
+  },
+  "159": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EEVI"
+  },
+  "16": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDVD"
+  },
+  "160": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDDE"
+  },
+  "161": {
+   "blocks": [
+    [
+     1,
+     12
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 12,
+   "dim_fix": 1,
+   "word": "VDDE"
+  },
+  "162": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVDE"
+  },
+  "163": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VVDE"
+  },
+  "164": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 81,
+   "word": "IDDE"
+  },
+  "165": {
+   "blocks": [
+    [
+     2,
+     1
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 8,
+   "dim_asym": 4,
+   "dim_fix": 6,
+   "word": "EDDE"
+  },
+  "166": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IVDE"
+  },
+  "167": {
+   "blocks": [
+    [
+     1,
+     6
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 6,
+   "dim_fix": 1,
+   "word": "EVDE"
+  },
+  "168": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIDE"
+  },
+  "169": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VIDE"
+  },
+  "17": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VDVD"
+  },
+  "170": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEDE"
+  },
+  "171": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "VEDE"
+  },
+  "172": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 81,
+   "word": "IIDE"
+  },
+  "173": {
+   "blocks": [
+    [
+     2,
+     1
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 7,
+   "dim_asym": 5,
+   "dim_fix": 5,
+   "word": "EIDE"
+  },
+  "174": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IEDE"
+  },
+  "175": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 2,
+   "word": "EEDE"
+  },
+  "176": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDVE"
+  },
+  "177": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VDVE"
+  },
+  "178": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVVE"
+  },
+  "179": {
+   "blocks": [
+    [
+     4,
+     1
+    ],
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 17,
+   "dim_asym": 17,
+   "dim_fix": 9,
+   "word": "VVVE"
+  },
+  "18": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVVD"
+  },
+  "180": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IDVE"
+  },
+  "181": {
+   "blocks": [
+    [
+     1,
+     6
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 6,
+   "dim_fix": 1,
+   "word": "EDVE"
+  },
+  "182": {
+   "blocks": [
+    [
+     16,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 256,
+   "dim_asym": 16,
+   "dim_fix": 28,
+   "word": "IVVE"
+  },
+  "183": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "EVVE"
+  },
+  "184": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIVE"
+  },
+  "185": {
+   "blocks": [
+    [
+     1,
+     21
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 21,
+   "dim_fix": 1,
+   "word": "VIVE"
+  },
+  "186": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEVE"
+  },
+  "187": {
+   "blocks": [
+    [
+     1,
+     12
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 12,
+   "dim_fix": 1,
+   "word": "VEVE"
+  },
+  "188": {
+   "blocks": [
+    [
+     16,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 256,
+   "dim_asym": 16,
+   "dim_fix": 48,
+   "word": "IIVE"
+  },
+  "189": {
+   "blocks": [
+    [
+     1,
+     3
+    ],
+    [
+     1,
+     3
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 2,
+   "dim_asym": 6,
+   "dim_fix": 2,
+   "word": "EIVE"
+  },
+  "19": {
+   "blocks": [
+    [
+     4,
+     1
+    ],
+    [
+     1,
+     20
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 17,
+   "dim_asym": 24,
+   "dim_fix": 9,
+   "word": "VVVD"
+  },
+  "190": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 8,
+   "word": "IEVE"
+  },
+  "191": {
+   "blocks": [
+    [
+     1,
+     3
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 3,
+   "dim_fix": 1,
+   "word": "EEVE"
+  },
+  "192": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDII"
+  },
+  "193": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 21,
+   "word": "VDII"
+  },
+  "194": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVII"
+  },
+  "195": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 56,
+   "word": "VVII"
+  },
+  "196": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IDII"
+  },
+  "197": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EDII"
+  },
+  "198": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 256,
+   "word": "IVII"
+  },
+  "199": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 41,
+   "word": "EVII"
+  },
+  "2": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVDD"
+  },
+  "20": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IDVD"
+  },
+  "200": {
+   "blocks": [
+    [
+     12,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 144,
+   "dim_asym": 12,
+   "dim_fix": 144,
+   "word": "DIII"
+  },
+  "201": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 248,
+   "word": "VIII"
+  },
+  "202": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 36,
+   "word": "DEII"
+  },
+  "203": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 17,
+   "word": "VEII"
+  },
+  "204": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 1024,
+   "word": "IIII"
+  },
+  "205": {
+   "blocks": [
+    [
+     17,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 289,
+   "dim_asym": 17,
+   "dim_fix": 289,
+   "word": "EIII"
+  },
+  "206": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IEII"
+  },
+  "207": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 64,
+   "word": "EEII"
+  },
+  "208": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDEI"
+  },
+  "209": {
+   "blocks": [
+    [
+     1,
+     9
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 9,
+   "dim_fix": 1,
+   "word": "VDEI"
+  },
+  "21": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EDVD"
+  },
+  "210": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVEI"
+  },
+  "211": {
+   "blocks": [
+    [
+     1,
+     19
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 19,
+   "dim_fix": 1,
+   "word": "VVEI"
+  },
+  "212": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IDEI"
+  },
+  "213": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EDEI"
+  },
+  "214": {
+   "blocks": [
+    [
+     10,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 100,
+   "dim_asym": 10,
+   "dim_fix": 22,
+   "word": "IVEI"
+  },
+  "215": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EVEI"
+  },
+  "216": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 36,
+   "word": "DIEI"
+  },
+  "217": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 17,
+   "word": "VIEI"
+  },
+  "218": {
+   "blocks": [
+    [
+     3,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 9,
+   "dim_asym": 3,
+   "dim_fix": 9,
+   "word": "DEEI"
+  },
+  "219": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "VEEI"
+  },
+  "22": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 25,
+   "word": "IVVD"
+  },
+  "220": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IIEI"
+  },
+  "221": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 64,
+   "word": "EIEI"
+  },
+  "222": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 36,
+   "word": "IEEI"
+  },
+  "223": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 25,
+   "word": "EEEI"
+  },
+  "224": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDIE"
+  },
+  "225": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VDIE"
+  },
+  "226": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVIE"
+  },
+  "227": {
+   "blocks": [
+    [
+     1,
+     21
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 21,
+   "dim_fix": 1,
+   "word": "VVIE"
+  },
+  "228": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 81,
+   "word": "IDIE"
+  },
+  "229": {
+   "blocks": [
+    [
+     1,
+     1
+    ],
+    [
+     2,
+     1
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 7,
+   "dim_asym": 5,
+   "dim_fix": 5,
+   "word": "EDIE"
+  },
+  "23": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EVVD"
+  },
+  "230": {
+   "blocks": [
+    [
+     16,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 256,
+   "dim_asym": 16,
+   "dim_fix": 48,
+   "word": "IVIE"
+  },
+  "231": {
+   "blocks": [
+    [
+     1,
+     3
+    ],
+    [
+     1,
+     3
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 2,
+   "dim_asym": 6,
+   "dim_fix": 2,
+   "word": "EVIE"
+  },
+  "232": {
+   "blocks": [
+    [
+     11,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 121,
+   "dim_asym": 11,
+   "dim_fix": 121,
+   "word": "DIIE"
+  },
+  "233": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "VIIE"
+  },
+  "234": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 25,
+   "word": "DEIE"
+  },
+  "235": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "VEIE"
+  },
+  "236": {
+   "blocks": [
+    [
+     21,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 441,
+   "dim_asym": 21,
+   "dim_fix": 441,
+   "word": "IIIE"
+  },
+  "237": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 64,
+   "word": "EIIE"
+  },
+  "238": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 36,
+   "word": "IEIE"
+  },
+  "239": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EEIE"
+  },
+  "24": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIVD"
+  },
+  "240": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDEE"
+  },
+  "241": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "VDEE"
+  },
+  "242": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVEE"
+  },
+  "243": {
+   "blocks": [
+    [
+     1,
+     12
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 12,
+   "dim_fix": 1,
+   "word": "VVEE"
+  },
+  "244": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IDEE"
+  },
+  "245": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 2,
+   "word": "EDEE"
+  },
+  "246": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 8,
+   "word": "IVEE"
+  },
+  "247": {
+   "blocks": [
+    [
+     1,
+     3
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 3,
+   "dim_fix": 1,
+   "word": "EVEE"
+  },
+  "248": {
+   "blocks": [
+    [
+     5,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 25,
+   "dim_asym": 5,
+   "dim_fix": 25,
+   "word": "DIEE"
+  },
+  "249": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "VIEE"
+  },
+  "25": {
+   "blocks": [
+    [
+     1,
+     24
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 24,
+   "dim_fix": 1,
+   "word": "VIVD"
+  },
+  "250": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "DEEE"
+  },
+  "251": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "VEEE"
+  },
+  "252": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 36,
+   "word": "IIEE"
+  },
+  "253": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EIEE"
+  },
+  "254": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IEEE"
+  },
+  "255": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EEEE"
+  },
+  "26": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEVD"
+  },
+  "27": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VEVD"
+  },
+  "28": {
+   "blocks": [
+    [
+     14,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 196,
+   "dim_asym": 14,
+   "dim_fix": 106,
+   "word": "IIVD"
+  },
+  "29": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 41,
+   "word": "EIVD"
+  },
+  "3": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VVDD"
+  },
+  "30": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IEVD"
+  },
+  "31": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EEVD"
+  },
+  "32": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDDV"
+  },
+  "33": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VDDV"
+  },
+  "34": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVDV"
+  },
+  "35": {
+   "blocks": [
+    [
+     1,
+     15
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 15,
+   "dim_fix": 1,
+   "word": "VVDV"
+  },
+  "36": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 81,
+   "word": "IDDV"
+  },
+  "37": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EDDV"
+  },
+  "38": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IVDV"
+  },
+  "39": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "EVDV"
+  },
+  "4": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IDDD"
+  },
+  "40": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIDV"
+  },
+  "41": {
+   "blocks": [
+    [
+     1,
+     15
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 15,
+   "dim_fix": 1,
+   "word": "VIDV"
+  },
+  "42": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEDV"
+  },
+  "43": {
+   "blocks": [
+    [
+     1,
+     10
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 10,
+   "dim_fix": 1,
+   "word": "VEDV"
+  },
+  "44": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 81,
+   "word": "IIDV"
+  },
+  "45": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EIDV"
+  },
+  "46": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IEDV"
+  },
+  "47": {
+   "blocks": [
+    [
+     1,
+     5
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 5,
+   "dim_fix": 1,
+   "word": "EEDV"
+  },
+  "48": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDVV"
+  },
+  "49": {
+   "blocks": [
+    [
+     1,
+     15
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 15,
+   "dim_fix": 1,
+   "word": "VDVV"
+  },
+  "5": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EDDD"
+  },
+  "50": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVVV"
+  },
+  "51": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 512,
+   "word": "VVVV"
+  },
+  "52": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IDVV"
+  },
+  "53": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "EDVV"
+  },
+  "54": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 64,
+   "word": "IVVV"
+  },
+  "55": {
+   "blocks": [
+    [
+     1,
+     17
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 17,
+   "dim_fix": 1,
+   "word": "EVVV"
+  },
+  "56": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIVV"
+  },
+  "57": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 36,
+   "word": "VIVV"
+  },
+  "58": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DEVV"
+  },
+  "59": {
+   "blocks": [
+    [
+     1,
+     19
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 19,
+   "dim_fix": 1,
+   "word": "VEVV"
+  },
+  "6": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IVDD"
+  },
+  "60": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 134,
+   "word": "IIVV"
+  },
+  "61": {
+   "blocks": [
+    [
+     2,
+     1
+    ],
+    [
+     1,
+     11
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 5,
+   "dim_asym": 13,
+   "dim_fix": 3,
+   "word": "EIVV"
+  },
+  "62": {
+   "blocks": [
+    [
+     1,
+     1
+    ],
+    [
+     1,
+     12
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 2,
+   "dim_asym": 13,
+   "dim_fix": 2,
+   "word": "IEVV"
+  },
+  "63": {
+   "blocks": [
+    [
+     1,
+     8
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 8,
+   "dim_fix": 1,
+   "word": "EEVV"
+  },
+  "64": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDID"
+  },
+  "65": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 21,
+   "word": "VDID"
+  },
+  "66": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVID"
+  },
+  "67": {
+   "blocks": [
+    [
+     1,
+     24
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 24,
+   "dim_fix": 1,
+   "word": "VVID"
+  },
+  "68": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 169,
+   "word": "IDID"
+  },
+  "69": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EDID"
+  },
+  "7": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EVDD"
+  },
+  "70": {
+   "blocks": [
+    [
+     14,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 196,
+   "dim_asym": 14,
+   "dim_fix": 106,
+   "word": "IVID"
+  },
+  "71": {
+   "blocks": [
+    [
+     9,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 81,
+   "dim_asym": 9,
+   "dim_fix": 41,
+   "word": "EVID"
+  },
+  "72": {
+   "blocks": [
+    [
+     6,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 36,
+   "dim_asym": 6,
+   "dim_fix": 36,
+   "word": "DIID"
+  },
+  "73": {
+   "blocks": [
+    [
+     24,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 576,
+   "dim_asym": 24,
+   "dim_fix": 96,
+   "word": "VIID"
+  },
+  "74": {
+   "blocks": [
+    [
+     3,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 9,
+   "dim_asym": 3,
+   "dim_fix": 9,
+   "word": "DEID"
+  },
+  "75": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "VEID"
+  },
+  "76": {
+   "blocks": [
+    [
+     24,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 576,
+   "dim_asym": 24,
+   "dim_fix": 576,
+   "word": "IIID"
+  },
+  "77": {
+   "blocks": [
+    [
+     11,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 121,
+   "dim_asym": 11,
+   "dim_fix": 121,
+   "word": "EIID"
+  },
+  "78": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 64,
+   "word": "IEID"
+  },
+  "79": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EEID"
+  },
+  "8": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DIDD"
+  },
+  "80": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDED"
+  },
+  "81": {
+   "blocks": [
+    [
+     1,
+     9
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 9,
+   "dim_fix": 1,
+   "word": "VDED"
+  },
+  "82": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVED"
+  },
+  "83": {
+   "blocks": [
+    [
+     1,
+     13
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 13,
+   "dim_fix": 1,
+   "word": "VVED"
+  },
+  "84": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "IDED"
+  },
+  "85": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EDED"
+  },
+  "86": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "IVED"
+  },
+  "87": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "EVED"
+  },
+  "88": {
+   "blocks": [
+    [
+     3,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 9,
+   "dim_asym": 3,
+   "dim_fix": 9,
+   "word": "DIED"
+  },
+  "89": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "VIED"
+  },
+  "9": {
+   "blocks": [
+    [
+     13,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 169,
+   "dim_asym": 13,
+   "dim_fix": 21,
+   "word": "VIDD"
+  },
+  "90": {
+   "blocks": [
+    [
+     2,
+     1
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 8,
+   "dim_asym": 4,
+   "dim_fix": 6,
+   "word": "DEED"
+  },
+  "91": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "VEED"
+  },
+  "92": {
+   "blocks": [
+    [
+     8,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 64,
+   "dim_asym": 8,
+   "dim_fix": 64,
+   "word": "IIED"
+  },
+  "93": {
+   "blocks": [
+    [
+     4,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 16,
+   "dim_asym": 4,
+   "dim_fix": 16,
+   "word": "EIED"
+  },
+  "94": {
+   "blocks": [
+    [
+     3,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 9,
+   "dim_asym": 3,
+   "dim_fix": 9,
+   "word": "IEED"
+  },
+  "95": {
+   "blocks": [
+    [
+     2,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 4,
+   "dim_asym": 2,
+   "dim_fix": 4,
+   "word": "EEED"
+  },
+  "96": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DDIV"
+  },
+  "97": {
+   "blocks": [
+    [
+     1,
+     15
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 15,
+   "dim_fix": 1,
+   "word": "VDIV"
+  },
+  "98": {
+   "blocks": [
+    [
+     1,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1,
+   "dim_asym": 1,
+   "dim_fix": 1,
+   "word": "DVIV"
+  },
+  "99": {
+   "blocks": [
+    [
+     32,
+     1
+    ]
+   ],
+   "consistent": true,
+   "dim_alg": 1024,
+   "dim_asym": 32,
+   "dim_fix": 36,
+   "word": "VVIV"
+  }
+ }
+}
