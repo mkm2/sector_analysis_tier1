@@ -295,3 +295,42 @@ def test_protected_dimension_of_the_six(rule, expect):
     else:
         for i in range(3, len(got)):
             assert got[i] == got[i - 2] + 2 * got[i - 3]
+
+
+@pytest.mark.parametrize("child,parent", [
+    (28, 156), (157, 156), (29, 156), (70, 198), (199, 198), (71, 198)])
+def test_the_six_also_act_as_their_coherent_parent(child, parent):
+    """R23: every non-trivial terminal SCC of the six is exactly a Krylov
+    sector of 156/198, and the channel matches the parent on it."""
+    N = 9
+    d, dp = st.decompose(child, N), st.decompose(parent, N)
+    seen = 0
+    for c, t in enumerate(d["terminal"]):
+        if not t or len(d["members"][c]) < 2:
+            continue
+        seen += 1
+        m = sorted(d["members"][c])
+        assert set(dp["members"][dp["comp"][m[0]]]) == set(m)
+        assert np.abs(_cycle_on(child, N, m) - _cycle_on(parent, N, m)).max() < 1e-12
+    assert seen > 0
+
+
+@pytest.mark.parametrize("rule", [28, 70, 157, 199, 29, 71])
+def test_induced_unitary_is_a_tensor_product_of_hadamards(rule):
+    """R23: on each attractor of the six the induced unitary is exactly
+    (x) H over the free sites -- whence period 2 and zero entanglement."""
+    N = 9
+    H = np.array([[1.0, 1.0], [1.0, -1.0]]) / np.sqrt(2)
+    d = st.decompose(rule, N)
+    for c, t in enumerate(d["terminal"]):
+        if not t or len(d["members"][c]) < 2:
+            continue
+        m = sorted(d["members"][c])
+        free = [i for i, ch in enumerate(st.attractor_word(m, N)) if ch == "f"]
+        order = sorted(m, key=lambda x: tuple((x >> i) & 1 for i in free))
+        perm = [m.index(x) for x in order]
+        M = _cycle_on(rule, N, m)[np.ix_(perm, perm)]
+        ref = np.array([[1.0]])
+        for _ in free:
+            ref = np.kron(ref, H)
+        assert np.abs(M - ref).max() < 1e-12
