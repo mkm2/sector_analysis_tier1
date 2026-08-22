@@ -606,6 +606,101 @@ def constrained_decomposition(rule: int, N: int, bc: str = BC_DEFAULT,
                 transient_inside=sum(int((lab == c).sum()) for c in leaving))
 
 
+# --- R24 sec.6.1: the parent identity is general ----------------------------
+
+#: child -> coherent parent.  The four parents are the four single-V rules,
+#: differing only in which neighbour pattern gates the Hadamard:
+#:   W201 VIII (00) P^0 H P^0    W108 IIIV (11) P^1 H P^1
+#:   W156 IIVI (10) P^1 H P^0    W198 IVII (01) P^0 H P^1
+#: Symmetric slots give a blockade (hard-core space, entangling); asymmetric
+#: slots give a domain-wall detector (tiling subcubes, a product unitary).
+COHERENT_PARENT = {28: 156, 29: 156, 157: 156,
+                   70: 198, 71: 198, 199: 198,
+                   73: 201, 109: 108}
+
+
+def _one_cycle_amplitudes(rule: int, N: int, bc: str = BC_DEFAULT) -> Dict:
+    t = rules_mod.wolfram_to_tuple(rule)
+    return {x: PE._branch_amplitudes(x, N, t, bc) for x in range(1 << N)}
+
+
+def terminal_sccs(rule: int, N: int, bc: str = BC_DEFAULT) -> List[List[int]]:
+    """Terminal strong components of the support graph, as lists of states."""
+    import scipy.sparse as sp
+    from scipy.sparse.csgraph import connected_components
+    per = _one_cycle_amplitudes(rule, N, bc)
+    rows, cols = [], []
+    for x, branches in per.items():
+        for fl in branches.values():
+            for y, a in fl.items():
+                if abs(a) > 1e-12:
+                    rows.append(y)
+                    cols.append(x)
+    d = 1 << N
+    A = sp.csr_matrix((np.ones(len(rows)), (rows, cols)), shape=(d, d))
+    n, lab = connected_components(A, directed=True, connection="strong")
+    r_, c_ = A.nonzero()
+    leaving = {lab[j] for i, j in zip(r_, c_) if lab[i] != lab[j]}
+    return [sorted(np.nonzero(lab == c)[0].tolist())
+            for c in range(n) if c not in leaving]
+
+
+def _restrict(per: Dict, S: Sequence[int]) -> Tuple[np.ndarray, int, int]:
+    idx = {x: i for i, x in enumerate(S)}
+    M = np.zeros((len(S), len(S)))
+    escaped, labels = 0, set()
+    for x in S:
+        for lab, fl in per[x].items():
+            labels.add(lab)
+            for y, a in fl.items():
+                if y in idx:
+                    M[idx[y], idx[x]] += a
+                elif abs(a) > 1e-12:
+                    escaped += 1
+    return M, escaped, len(labels)
+
+
+def product_hadamard(S: Sequence[int], N: int) -> Tuple[Optional[np.ndarray], List[int]]:
+    """The tensor product of single-site Hadamards over the free sites of a
+    subcube, or (None, free) if S is not a subcube."""
+    Hm = (1 / np.sqrt(2.0)) * np.array([[1.0, 1.0], [1.0, -1.0]])
+    free = [i for i in range(N) if len({(x >> i) & 1 for x in S}) == 2]
+    if len(S) != 1 << len(free):
+        return None, free
+    order = sorted(S)
+    M = np.zeros((len(order), len(order)))
+    for a, x in enumerate(order):
+        for b, y in enumerate(order):
+            amp = 1.0
+            for i in free:
+                amp *= Hm[(y >> i) & 1, (x >> i) & 1]
+            M[b, a] = amp
+    return M, free
+
+
+def parent_on_every_enclosure(rule: int, N: int, bc: str = BC_DEFAULT) -> Dict:
+    """R24 Prop. 4: every non-trivial enclosure is a Krylov sector of the parent,
+    and the child acts there exactly as the parent does."""
+    parent = COHERENT_PARENT[rule]
+    pc = _one_cycle_amplitudes(rule, N, bc)
+    pp = _one_cycle_amplitudes(parent, N, bc)
+    sccs = [S for S in terminal_sccs(rule, N, bc) if len(S) > 1]
+    diff = uni = prod = 0.0
+    escaped = labels = 0
+    for S in sccs:
+        Mc, ec, lc = _restrict(pc, S)
+        Mp, ep, _ = _restrict(pp, S)
+        diff = max(diff, float(np.abs(Mc - Mp).max()))
+        uni = max(uni, float(np.abs(Mc.T @ Mc - np.eye(len(S))).max()))
+        escaped += ec + ep
+        labels = max(labels, lc)
+        T, _free = product_hadamard(S, N)
+        prod = np.inf if T is None else max(prod, float(np.abs(Mc - T).max()))
+    return dict(rule=rule, parent=parent, N=N, n_enclosures=len(sccs),
+                difference=diff, escaped=escaped, kraus_labels=labels,
+                unitarity=uni, product_hadamard=prod)
+
+
 # --- CLI --------------------------------------------------------------------
 
 def _print_rows(rows: Sequence[Asymptotics]) -> None:

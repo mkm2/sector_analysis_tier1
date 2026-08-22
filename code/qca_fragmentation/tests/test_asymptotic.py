@@ -373,3 +373,40 @@ def test_the_whole_space_outgrows_its_largest_enclosure(rule):
     a = np.log2(rows[-1]["D"] / rows[-4]["D"]) / 3
     b = np.log2(rows[-1]["d_max"] / rows[-4]["d_max"]) / 3
     assert a > b + 0.05, (rule, a, b)
+
+
+# --- R24 sec.6.1: the parent identity is general ----------------------------
+
+def test_the_four_parents_are_the_single_V_rules():
+    words = {p: "".join(rules.wolfram_to_tuple(p))
+             for p in set(AS.COHERENT_PARENT.values())}
+    assert words == {201: "VIII", 108: "IIIV", 156: "IIVI", 198: "IVII"}
+    for p, w in words.items():
+        assert w.count("V") == 1
+        assert rules.is_unitary(rules.wolfram_to_tuple(p))
+
+
+@pytest.mark.parametrize("rule", (28, 70, 157, 199, 29, 71, 73, 109))
+@pytest.mark.parametrize("N", (7, 9))
+def test_every_enclosure_is_a_krylov_sector_of_the_parent(rule, N):
+    z = AS.parent_on_every_enclosure(rule, N)
+    assert z["difference"] == 0.0, z
+    assert z["escaped"] == 0
+    assert z["kraus_labels"] == 1
+    assert z["unitarity"] < 1e-14
+    assert z["n_enclosures"] > 0
+
+
+@pytest.mark.parametrize("rule", (28, 70, 157, 199, 29, 71))
+@pytest.mark.parametrize("N", (7, 9))
+def test_the_six_carry_a_bare_product_of_hadamards(rule, N):
+    """Asymmetric projector => subcube enclosures => a product unitary, so R23's
+    period 2 and zero entanglement follow with no further measurement."""
+    z = AS.parent_on_every_enclosure(rule, N)
+    assert z["product_hadamard"] < 1e-14, z
+
+
+@pytest.mark.parametrize("rule", (73, 109))
+def test_the_symmetric_pair_is_not_a_product(rule):
+    z = AS.parent_on_every_enclosure(rule, 9)
+    assert z["product_hadamard"] > 1e-6 or z["product_hadamard"] == np.inf

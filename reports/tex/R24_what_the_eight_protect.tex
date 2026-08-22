@@ -66,7 +66,14 @@ statement has a one-line origin, which we prove: $W_{73}$ and $W_{109}$ are the
 unitary Floquet-$P^0HP^0$ and Floquet-$P^1HP^1$ rules $W_{201}$ and $W_{108}$
 with a \emph{single identity gate replaced by a reset}, and on the constrained
 space the reset can never fire, so the dissipative rule acts there exactly as
-its unitary parent --- identically, to zero, for $N = 4,\dots,11$.
+its unitary parent --- identically, to zero, for $N = 4,\dots,11$. This
+generalises: all eight are children of the four single-$V$ rules, every
+non-trivial enclosure is exactly a Krylov sector of its parent, and whether the
+parent's projector reads a symmetric pattern or a domain wall decides the rest
+--- symmetric gives the blockade space and an entangling PXP-type circuit,
+asymmetric gives tiling subcubes carrying a bare tensor product of single-site
+Hadamards. One slot of the gate word separates an interacting model from a free
+one.
 \end{abstract}
 
 \tableofcontents
@@ -416,7 +423,8 @@ changed}}
 
 R23 identifies the induced unitary on the largest attractor of $W_{73}$ and
 $W_{109}$ numerically, as a brickwork of blockade-controlled Hadamards. There is
-a reason, and it is one line of gate arithmetic.
+a reason, and it is one line of gate arithmetic. It also holds for the other
+six, which turns the two families into one statement (\S\ref{sec:allparents}).
 
 Read the gate words in slot order $(00),(01),(10),(11)$, the slot being the
 state of the two neighbours:
@@ -494,6 +502,67 @@ occurs at every state for $N = 4,\dots,11$. The split is a property of the
 identical four-way decomposition at every $N$ we checked. (Independently
 confirmed on the Tier-2 side; the correction is theirs.)
 
+\subsection{All eight, and what the fourth gate slot decides}
+\label{sec:allparents}
+
+The Tier-2 session asked whether Prop.~\ref{prop:parents} generalises. It does,
+and the general form is more informative than the special case, because it makes
+the split between the two families a property of \emph{one slot of the gate
+word}.
+
+The four unitary parents are exactly the four single-$V$ rules, differing only in
+which neighbour pattern gates the Hadamard:
+\[
+  \begin{array}{llll}
+  W_{201} = \mathrm{VIII} & \text{both empty} & P^0HP^0 &
+    \text{parent of } W_{73}\\
+  W_{108} = \mathrm{IIIV} & \text{both occupied} & P^1HP^1 &
+    \text{parent of } W_{109}\\
+  W_{156} = \mathrm{IIVI} & \text{left occupied, right empty} & P^1HP^0 &
+    \text{parent of } W_{28}, W_{29}, W_{157}\\
+  W_{198} = \mathrm{IVII} & \text{left empty, right occupied} & P^0HP^1 &
+    \text{parent of } W_{70}, W_{71}, W_{199}
+  \end{array}
+\]
+
+\begin{proposition}[The parent identity is general]
+\label{prop:allparents}
+For each of the eight, every non-trivial terminal SCC is exactly a Krylov sector
+of its coherent parent, and on it the child's one-cycle matrix equals the
+parent's, no jump operator fires, and the map is unitary.
+\end{proposition}
+
+\noindent Verified here on \emph{every} non-trivial terminal SCC at $N = 9$ and
+$11$ --- $21$ and $41$ of them for $W_{28}/W_{70}$, $11$ and $20$ for
+$W_{157}/W_{199}/W_{29}/W_{71}$, $24$ and $55$ for $W_{73}$, $27$ and $68$ for
+$W_{109}$ --- with agreement \emph{identically zero}, zero escape, a single Kraus
+label throughout, and $\lVert M^{\mathsf T}M-\mathbb{1}\rVert \le
+2.3\times10^{-16}$. This upgrades R17, which had the same statement at the level
+of the support graph, to the level of the operator.
+
+The reading is then clean. \textbf{Whether the projector reads a symmetric
+pattern or a domain wall decides everything else.} Symmetric, $(00)$ or $(11)$:
+the gate is a blockade, the invariant space is the hard-core space of dimension
+$F(N+2)$, and the dynamics entangles. Asymmetric, $(10)$ or $(01)$: the gate is a
+domain-wall detector, the invariant spaces are the tiling subcubes, and the
+dynamics does not entangle at all. One slot in the gate word separates a PXP-type
+interacting model from a free one.
+
+Free in the strongest sense: on every terminal SCC of the six the induced
+unitary is \emph{exactly} the tensor product of single-site Hadamards over the
+free sites, to $1.1\times10^{-16}$, at every SCC we checked. R23's period $2$ and
+its exactly-zero entanglement both follow with no further measurement, since
+$H^2=\mathbb{1}$ site by site and a product gate on a product subspace cannot
+correlate anything.
+
+That gives \S\ref{sec:exponents}'s table a structural reading. $D$ counts the
+whole protected space, $d^{\mathrm{rec}}_{\max}$ counts one parent sector, and
+the gap between the two exponents is coherence between \emph{different sectors of
+the same parent} --- for the six, between different tilings of the same chain.
+Neither family's protected space is a code, for the reason proved in
+\S\ref{sec:code}; but the six's is not even a correlated state space. It is a
+stack of independent qubits, one per wide tile per tiling.
+
 \section{What this leaves for the PRL}
 
 Three things the above supplies for a paper built on ``fragmented, in both
@@ -509,12 +578,17 @@ Floquet-$P^0HP^0$ and Floquet-$P^1HP^1$ models with a \emph{single identity
 replaced by a reset}, and on the constrained space the reset provably never
 fires (Prop.~\ref{prop:parents}). The dissipative models do not merely resemble
 the unitary ones; they \emph{are} them, plus a pump that drives the system into
-the constrained sector. If the paper introduces Floquet-PHP and Floquet-PHQ as
-its two unitary models, then Fig.~3's dissipative counterparts are the same two
-words with one letter changed, which is about as compact as a third figure can
-get. That is also why an SCC census suffices there, and why deferring the
-WCC/SCC distinction to a companion paper is defensible: for seven of the eight,
-$n_{\mathrm{wcc}} = n_{\mathrm{rec}}$ at every size we can check coherently.
+the constrained sector, and by Prop.~\ref{prop:allparents} the same holds for
+all eight, every enclosure being a Krylov sector of one of the four single-$V$
+rules. If the paper introduces Floquet-PHP and Floquet-PHQ as its two unitary
+models, then Fig.~3's dissipative counterparts are the same words with one
+letter changed, which is about as compact as a third figure can get. That is
+also why an SCC census suffices there, and why deferring the WCC/SCC distinction
+to a companion paper is defensible: for seven of the eight, $n_{\mathrm{wcc}} =
+n_{\mathrm{rec}}$ at every size we can check coherently. A bonus framing is
+available too: the four parents differ in a single gate slot, and whether that
+slot reads a symmetric pattern or a domain wall is exactly what separates the
+interacting family from the free one.
 \item \textbf{One caveat that must be handled before the figure is drawn.} It is
 $W_{29}$, and now $W_{36}/W_{44}/W_{100}$ from \S\ref{sec:squeeze}: the SCC
 count is not always a coherent invariant. A census presented as
