@@ -1434,8 +1434,10 @@ for both, which is the "fragmented in both senses" statement the PRL needs.
 Data: `analytics/r24_code_growth_obc0.json`, regenerate with
 `asymptotic.code_growth()`.
 
-**Position on the PRL's Fig. 3 chi(t).** Recommend NOT attempting it as
-sketched. After the parent result the dissipative and unitary models are the
+**PRL Fig. 3 chi(t): DROPPED (decided 2026-08-22), not deferred.** Reason given
+was that a full-space measurement had already been done previously and this is
+not an impactful route -- which agrees with the structural argument below from a
+different direction. Do NOT re-propose it; R24 sec.8 records why. After the parent result the dissipative and unitary models are the
 same circuit on the attractor, so chi(t) measured inside IS the unitary curve,
 and chi(t) across the transient is a statement about relaxation, not about
 fragmentation. Neither supports "the dissipative model inherits linear chi(t)".
