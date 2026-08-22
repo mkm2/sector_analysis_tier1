@@ -1,0 +1,435 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\fn}[1]{\texttt{#1}}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\title{\textbf{Report R27 --- the evolution operator's Schmidt rank}\\
+\large What the literature establishes, and why a linear-dimensional module
+forces linear growth}
+\author{Tier 1 analysis}
+\date{2026-08-22}
+
+\begin{document}
+\maketitle
+\sloppy
+\emergencystretch=3em
+
+\begin{abstract}
+Rule $156$ has an operator Schmidt rank $\chi(t)$ of its \emph{evolution
+operator} that grows linearly in $t$, in a clean, disorder-free, translation-%
+invariant Floquet circuit. This report establishes what the literature says
+about that observable and supplies a mechanism. \S\ref{sec:protocol} is an
+audited pass over the twelve references supplied plus eleven found by search,
+sorted by relevance, each with the finding that bears on our claim.
+\textbf{The baseline is Dubail's}: the OSEE of $U(t)=e^{-iHt}$ grows
+\emph{linearly}, hence $\chi$ \emph{exponentially}, ``unless the Hamiltonian is
+in a localized phase''. Zhou and Luitz classify the three observed growth laws
+for $U(t)$ --- linear, power law, logarithmic --- and both sub-linear classes
+occur only with disorder. Every disorder-free sub-linear result we could find,
+including Alba--Dubail--Medenjak for Rule~54 and the very recent
+Tan--Prosen clean non-integrable circuit, is about \emph{local operators in the
+Heisenberg picture}, which Dubail explicitly separates from the propagator. We
+found no disorder-free system with sub-linear evolution-operator OSEE.
+\S\ref{sec:mechanism} then derives the mechanism. The key quantity is not
+integrability but the \textbf{number of defects that can cross the cut}: if the
+sector containing the cut is spanned by configurations of $p$ domain walls with
+$p$ bounded, then $\chi(t) = O(t^{\,p})$, and if $p$ is extensive $\chi$ grows
+exponentially. The kink module of $W_{156}/W_{198}$ has $p=1$, giving
+$\chi(t) = O(t)$; the hard-core module of $W_{201}/W_{108}$ has extensive $p$,
+giving exponential growth. Fragmentation into modules of polynomial dimension is
+therefore a disorder-free mechanism for the localization signature.
+\end{abstract}
+
+\tableofcontents
+
+\section{Protocol: the literature, sorted by relevance}
+\label{sec:protocol}
+
+Two objects must be kept apart throughout, because the literature treats them
+very differently and conflating them is the trap this project already fell into
+once:
+\begin{itemize}
+\item \textbf{(L)} the operator entanglement of a \emph{local} operator $O(t) =
+U^\dagger O U$ in the Heisenberg picture;
+\item \textbf{(U)} the operator entanglement --- equivalently the Schmidt rank
+of the Choi vector, equivalently the MPO bond dimension --- of the
+\emph{evolution operator} $U(t)$ itself.
+\end{itemize}
+Our measurement is \textbf{(U)}. Sub-linear results for (L) do not bear on it.
+
+\subsection{Tier 1: directly on the claim}
+
+\begin{longtable}{p{0.28\textwidth}p{0.10\textwidth}p{0.54\textwidth}}
+\toprule
+reference & object & finding that bears on our claim \\
+\midrule
+\endhead
+Dubail, J.\ Phys.\ A \textbf{50}, 234001 (2017) & \textbf{(U)} &
+  \textbf{The decisive baseline.} ``The OSEE of the evolution operator
+  $U(t)=e^{-iHt}$ increases linearly with $t$, unless the Hamiltonian is in a
+  localized phase.'' Explicitly contrasts this with local operators, whose OSEE
+  ``grows sublinearly (perhaps logarithmically)''. Linear OSEE $\Rightarrow$
+  $\chi$ exponential. \emph{Localization is named as the only exception.} \\
+\addlinespace
+Zhou \& Luitz, PRB \textbf{95}, 094206 (2017) & \textbf{(U)} &
+  Classifies the growth of operator EE \emph{of the time evolution operator}
+  across chaotic, MBL and Floquet systems: linear, power-law and logarithmic
+  growth are all observed, before extensive saturation. Crucially the two
+  sub-linear classes are the \emph{random-field} Heisenberg model --- power law
+  at weak disorder, logarithmic at strong disorder. The most chaotic Floquet
+  model saturates at the Page value. \\
+\addlinespace
+Thakur, Pain \& Roy, PRB \textbf{111}, 174206 (2025) & \textbf{(U)} &
+  Operator entanglement of the time-evolution operator in the MBL phase, showing
+  a \emph{logarithmic light cone}, derived from eigenstate correlations without
+  invoking $\ell$-bits. This is the closest published phenomenology to ours ---
+  same object, same functional form --- but obtained \emph{from disorder}. \\
+\addlinespace
+Prosen \& \v{Z}nidari\v{c}, PRE \textbf{75}, 015202 (2007) & (L)/state &
+  The origin of the exponential-versus-polynomial dichotomy for MPO bond
+  dimension: $D_\epsilon(t)\propto e^{ct}$ in quantum chaotic systems,
+  polynomial when integrable. \emph{But the evolved objects are observables and
+  thermal states, not the propagator}, so this does not license
+  ``integrable $\Rightarrow$ polynomial $\chi$'' for $U(t)$. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Tier 2: the disorder-free sub-linear results, all for local operators}
+
+\begin{longtable}{p{0.28\textwidth}p{0.10\textwidth}p{0.54\textwidth}}
+\toprule
+reference & object & finding \\
+\midrule
+\endhead
+Alba, Dubail \& Medenjak, PRL \textbf{122}, 250603 (2019) & (L) &
+  Logarithmic upper bound on operator entanglement for \emph{all local
+  operators} in the Rule~54 chain, and evidence that log growth is generic for
+  interacting integrable systems. A cellular automaton, so tempting --- but the
+  wrong object. \\
+\addlinespace
+Tan \& Prosen, arXiv:2603.19363 (2026) & (L) &
+  ``Logarithmic growth of operator entanglement in a \emph{clean non-integrable}
+  circuit''. Semi-ergodic dual-unitary brickwork; mechanism is that the
+  Heisenberg evolution of a single traceless single-site operator lies in a
+  restricted subspace. \textbf{The nearest disorder-free precedent in spirit}
+  --- log growth from a restricted subspace rather than from integrability or
+  disorder --- but again for a local operator, not $U(t)$. \\
+\addlinespace
+Prosen \& Pi\v{z}orn, PRA \textbf{76}, 032316 (2007) & (L) &
+  Transverse Ising chain: OSEE of local operators \emph{saturates} for finite
+  Majorana index and grows \emph{logarithmically} for infinite index. Free
+  fermions; local operators. \\
+\addlinespace
+Pal \& Lakshminarayan, PRB \textbf{98}, 174304 (2018) & \textbf{(U)} &
+  Entangling power of time-evolution operators, integrable versus
+  non-integrable. The integrable kicked transverse-field Ising chain still shows
+  \emph{ballistic} growth of operator von Neumann entropy; its entangling power
+  saturates lower than the non-integrable case but the growth is not sub-linear.
+  \emph{Integrability alone does not buy sub-linear $\chi(t)$.} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Tier 3: framework, and the closest methodological neighbour}
+
+\begin{longtable}{p{0.28\textwidth}p{0.10\textwidth}p{0.54\textwidth}}
+\toprule
+reference & object & finding \\
+\midrule
+\endhead
+Merbis \& Bakker, ICCS 2024, arXiv:2406.04895 & \textbf{(U)}, classical &
+  \textbf{The closest method}: builds the MPO of a cellular automaton's
+  transition matrix and classifies elementary CA by operator-entanglement
+  growth. Types I (converges to a constant, e.g.\ their rules 136, 108), II
+  (rises then falls, peak at $t\sim L$), III (linear growth to an $L$-dependent
+  plateau, chaotic-like). Generic bond dimension quoted as $4^t$, i.e.\
+  $S(t)=2t$. \emph{No logarithmic class appears.} Their object is the classical
+  transition matrix of a deterministic CA, not a quantum evolution operator with
+  Hadamards, so the rule numbers are not comparable to ours despite the
+  coincidence. \\
+\addlinespace
+Zanardi, Zalka \& Faoro, PRA \textbf{62}, 030301 (2000); Zanardi, PRA
+  \textbf{63}, 040304 (2001) & \textbf{(U)} &
+  Where the object comes from: entanglement of a unitary regarded as a vector in
+  Hilbert--Schmidt space, and the entangling power. Definitional; sets the
+  measure we and everyone else use. \\
+\addlinespace
+Jonay, Huse \& Nahum, arXiv:1803.00089 (2018) & (L)/(U) &
+  The membrane / line-tension coarse-graining. Predicts \emph{linear} growth for
+  generic chaotic dynamics with rate set by the surface tension
+  $\mathcal E(v)$. Our result sits outside this picture, which is the point. \\
+\addlinespace
+Hahn, Luitz \& Chalker, PRX \textbf{14}, 031029 (2024) & \textbf{(U)} &
+  Eigenstate correlations of the time-evolution operator beyond ETH; uses
+  Floquet models without conserved densities to isolate scrambling. Provides the
+  eigenstate-correlation language in which Thakur--Pain--Roy then derive the MBL
+  log light cone. \\
+\addlinespace
+Bandyopadhyay \& Lakshminarayan, arXiv:quant-ph/0504052 (2005) & \textbf{(U)} &
+  Entangling power of quantum chaotic evolutions; early evidence that chaotic
+  evolutions approach the random-matrix value. \\
+\addlinespace
+Musz, Ku\'s \& \.Zyczkowski, PRA \textbf{87}, 022111 (2013) & \textbf{(U)} &
+  Geometry of unitary gates, perfect entanglers, unistochastic maps. Fixes what
+  ``maximal'' means for the measure. \\
+\addlinespace
+arXiv:2603.05656 (2026), \emph{Classical simulability from operator entanglement
+scaling} & (L) &
+  Simulability classification by the scaling exponent $\alpha$: $\alpha\ge1$
+  blocks efficient MPO approximation, $\alpha<1$ permits it over restricted
+  state ensembles. Local-operator entanglement. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Verdict of the pass}
+
+\begin{enumerate}
+\item For the \emph{evolution operator}, the established law is linear OSEE,
+i.e.\ \textbf{exponential} $\chi(t)$, with exactly one documented exception:
+\textbf{localization}, which requires disorder
+(Dubail; Zhou--Luitz; Thakur--Pain--Roy).
+\item Integrability is \emph{not} an exception for this object. Prosen--%
+\v{Z}nidari\v{c}'s polynomial result is for observables and states; Pal--%
+Lakshminarayan find ballistic operator-entropy growth even for an integrable
+kicked Ising chain.
+\item Every disorder-free sub-linear result we found --- Alba--Dubail--Medenjak,
+Prosen--Pi\v{z}orn, Tan--Prosen --- is for \emph{local operators}, which Dubail
+explicitly separates from the propagator.
+\item We found \textbf{no} report of sub-linear evolution-operator Schmidt-rank
+growth in a clean, disorder-free system. A linear $\chi(t)$ for $U(t)$ in a
+translation-invariant Floquet circuit is, on this evidence, unoccupied ground.
+\end{enumerate}
+
+\begin{remark}
+The nearest conceptual precedent is Tan--Prosen: log growth in a clean
+non-integrable circuit because the evolved operator is confined to a
+\emph{restricted subspace}. That is the same shape of mechanism as ours ---
+confinement to a small module rather than integrability or disorder --- applied
+to the other object. It should be cited as the closest relative and distinguished
+on the object.
+\end{remark}
+
+\section{The mechanism: defect counting bounds the Schmidt rank}
+\label{sec:mechanism}
+
+We now give the argument that a module of linear dimension forces linear
+$\chi(t)$. The statement turns out not to be about dimension as such, but about
+\emph{how many defects can cross the cut}.
+
+\subsection{Setup}
+
+Let $U$ be one period of a brick-wall circuit with strict light-cone velocity
+$v$ (sites per period). Fix a cut at bond $x$ and let $\chi_x(t)$ be the
+operator Schmidt rank of $U(t) = U^t$ across it --- equivalently the rank of the
+Choi vector $|U(t)\rangle\rangle$ under the bipartition, equivalently the MPO
+bond dimension at that bond.
+
+The generic bound is the light cone: $U(t)$ acts as the identity outside a
+causal diamond of width $2vt$ about the cut, so
+$\chi_x(t) \le 4^{\,2vt}$. Everything in \S\ref{sec:protocol} that grows
+exponentially is saturating a bound of this form. To do better one needs the
+dynamics to explore only a small part of the operator space on the diamond.
+
+\subsection{The kink chain}
+
+Take $W_{156}$. Its sectors are wall-free gaps, and inside a gap the state space
+is spanned by the \emph{kink states}
+\[
+  |k\rangle \;=\; \underbrace{1\cdots1}_{k}\,\underbrace{0\cdots0}_{l-k},
+  \qquad k = 0,\dots,l,
+\]
+of dimension $l+1$ --- one degree of freedom, the position of a single domain
+wall. Restricted to the gap,
+\[
+  U(t)\big|_{\rm gap} \;=\; \sum_{k,k'} A_{kk'}(t)\, |k\rangle\langle k'| ,
+\]
+a \emph{single-particle propagator}. Two facts make the Schmidt rank collapse.
+
+\paragraph{Every kink state is a product across the cut.} Cutting at $x$,
+\[
+  |k\rangle = |L_k\rangle \otimes |R_k\rangle,
+  \qquad
+  \begin{cases}
+    L_k = 1^k0^{\,x-k}, \; R_k = 0^{\,l-x} & k \le x,\\
+    L_k = 1^{x}, \; R_k = 1^{\,k-x}0^{\,l-k} & k > x .
+  \end{cases}
+\]
+So each term $|k\rangle\langle k'|$ is already a product operator
+$\ell_{kk'}\otimes r_{kk'}$ with
+$\ell_{kk'} = |L_k\rangle\langle L_{k'}|$ and
+$r_{kk'} = |R_k\rangle\langle R_{k'}|$. No entanglement is generated by the
+basis itself.
+
+\paragraph{Three of the four index sectors are rank one.} Split the sum by the
+side of the cut:
+\begin{itemize}
+\item $k,k' \le x$: then $R_k = R_{k'} = 0^{\,l-x}$, so \emph{every} term shares
+the same right factor. All of these together contribute Schmidt rank $\le 1$.
+\item $k,k' > x$: then $L_k = L_{k'} = 1^{x}$, the same left factor. Rank
+$\le 1$.
+\item $k \le x < k'$ and $k' \le x < k$: the crossing sectors. Here the left
+factor is $|L_k\rangle\langle 1^x|$, labelled by $k$ alone, and the right factor
+is $|0^{\,l-x}\rangle\langle R_{k'}|$, labelled by $k'$ alone. The contribution
+is the rank of the coefficient block $A_{kk'}$ restricted to that range.
+\end{itemize}
+Causality restricts the crossing blocks: $A_{kk'}(t) = 0$ unless
+$|k-k'| \le 2vt$, and a term contributes across the cut only if the kink is
+within the light cone of $x$, i.e.\ $|k-x|, |k'-x| \lesssim vt$. Each crossing
+block is therefore at most $(vt)\times(vt)$, of rank at most $vt$. Hence
+\begin{equation}
+  \boxed{\;\chi_x(t) \;\le\; 2 + 2\,vt \;=\; O(t).\;}
+  \label{eq:linear}
+\end{equation}
+
+\subsection{The general statement}
+
+Nothing above used $\delta$, the Hadamard, or integrability. What was used is
+that the sector is labelled by the position of \emph{one} defect.
+
+\begin{proposition}[Defect counting]
+\label{prop:defect}
+Suppose $U$ preserves a sector whose basis states are labelled by the positions
+of $p$ defects on the chain, each defect state being a product state across any
+cut, and suppose $U$ has strict light-cone velocity $v$. Then the operator
+Schmidt rank of $U(t)$ across a cut obeys
+\[
+  \chi_x(t) \;=\; O\big((vt)^{\,p}\big).
+\]
+If instead the number of defects is extensive in the region size, the bound
+degrades to the light-cone bound and $\chi_x(t)$ may grow exponentially.
+\end{proposition}
+
+\begin{proof}[Sketch]
+As above: a configuration is fixed by the $p$ defect positions, so a basis
+operator $|c\rangle\langle c'|$ factorises across the cut with left factor
+determined by the defect positions to the left and right factor by those to the
+right. Terms in which no defect lies within the light cone of the cut share a
+common factor on one side and contribute rank $1$. Terms with $j \le p$ defects
+inside the light cone are labelled by at most $(2vt)^{j}$ positions on each
+side, so the corresponding coefficient block has rank at most $(2vt)^{j}$.
+Summing over $j \le p$ gives $O((vt)^p)$.
+\end{proof}
+
+\subsection{The two families}
+
+\begin{center}
+\begin{tabular}{lllll}
+\toprule
+rules & gap module & dimension & defects $p$ & predicted $\chi(t)$ \\
+\midrule
+$W_{156}, W_{198}$ & kink chain $1^a0^b$ & $l+1$, linear & $1$ &
+  $O(t)$, \textbf{linear} \\
+$W_{201}, W_{108}$ & hard-core chain & $\sim\varphi^{\,l}$, exponential &
+  extensive & exponential \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent This reproduces both measured behaviours: linear $\chi(t)$ for rule
+$156$, exponential for $201/108$. It also explains why the split is so sharp
+despite the two families differing by a single letter of the gate word: the
+$V$-context decides the wall word, the wall word decides whether a gap admits an
+ascent, and that decides whether the gap carries one defect or extensively many.
+
+\begin{remark}[What the argument does and does not give]
+It gives linearity, and the identification of the exponent with the defect
+number. It does \emph{not} give the measured slope $6$; that requires counting
+the wall-pattern boundary conditions at the cut and the brick-wall velocity
+together, and is not attempted here. It is an upper bound, so it does not by
+itself prove the growth is not slower. And it assumes the sector basis is
+product across the cut, which holds for kink and hard-core configurations but
+must be checked for any other module.
+\end{remark}
+
+\begin{remark}[Why this is the localization signature without localization]
+In an MBL system the log light cone comes from an emergent set of quasi-local
+integrals of motion which confine information transport. Here the confinement is
+kinematic: the sector simply has too few configurations within the light cone
+for the Schmidt rank to grow. Fragmentation supplies, without disorder, the
+thing localization supplies with it --- a bound on how many distinguishable
+histories can cross a cut in time $t$. That is the sense in which
+Proposition~\ref{prop:defect} is the mechanism the literature pass says is
+missing.
+\end{remark}
+
+\section{What would settle it}
+
+\begin{enumerate}
+\item \textbf{$\chi(t)$ for $W_{198}, W_{201}, W_{108}$.} The linear-versus-%
+exponential contrast is the whole claim, and only $W_{156}$ has been measured in
+this project. The unitary path is the cheap one and the existing code already
+takes the rule as an argument.
+\item \textbf{A lower bound.} Proposition~\ref{prop:defect} bounds $\chi$ from
+above. Showing $\chi = \Theta(t)$ rather than $O(t)$ needs the crossing block of
+$A_{kk'}$ to have full rank, which for a single-particle propagator on a line is
+plausible but unproved here.
+\item \textbf{The slope.} $6$ per period is exact in the measured window and is
+presumably a small combinatorial count; deriving it would considerably strengthen
+the result.
+\end{enumerate}
+
+\begin{thebibliography}{99}
+\bibitem{Dubail2017} J.~Dubail,
+  \emph{Entanglement scaling of operators: a conformal field theory approach,
+  with a glimpse of simulability of long-time dynamics in $1+1$d},
+  J.\ Phys.\ A \textbf{50}, 234001 (2017); arXiv:1612.08630.
+\bibitem{ZhouLuitz2017} T.~Zhou and D.~J.~Luitz,
+  \emph{Operator entanglement entropy of the time evolution operator in chaotic
+  systems}, Phys.\ Rev.\ B \textbf{95}, 094206 (2017); arXiv:1612.07327.
+\bibitem{Thakur2025} R.~Thakur, B.~Pain and S.~Roy,
+  \emph{Logarithmic entanglement light cone from eigenstate correlations in the
+  many-body localized phase}, Phys.\ Rev.\ B \textbf{111}, 174206 (2025);
+  arXiv:2504.02815.
+\bibitem{PZ2007} T.~Prosen and M.~\v{Z}nidari\v{c},
+  \emph{Is the efficiency of classical simulations of quantum dynamics related
+  to integrability?}, Phys.\ Rev.\ E \textbf{75}, 015202 (2007).
+\bibitem{PP2007} T.~Prosen and I.~Pi\v{z}orn,
+  \emph{Operator space entanglement entropy in a transverse Ising chain},
+  Phys.\ Rev.\ A \textbf{76}, 032316 (2007); arXiv:0706.2480.
+\bibitem{ADM2019} V.~Alba, J.~Dubail and M.~Medenjak,
+  \emph{Operator entanglement in interacting integrable quantum systems: the
+  case of the Rule 54 chain},
+  Phys.\ Rev.\ Lett.\ \textbf{122}, 250603 (2019); arXiv:1901.04521.
+\bibitem{TanProsen2026} M.~T.~Tan and T.~Prosen,
+  \emph{Logarithmic growth of operator entanglement in a clean non-integrable
+  circuit}, arXiv:2603.19363 (2026).
+\bibitem{PalLak2018} R.~Pal and A.~Lakshminarayan,
+  \emph{Entangling power of time-evolution operators in integrable and
+  nonintegrable many-body systems},
+  Phys.\ Rev.\ B \textbf{98}, 174304 (2018); arXiv:1805.11632.
+\bibitem{Merbis2024} W.~Merbis and C.~C.~Bakker,
+  \emph{Operator entanglement growth quantifies complexity of cellular
+  automata}, ICCS 2024; arXiv:2406.04895.
+\bibitem{ZZF2000} P.~Zanardi, C.~Zalka and L.~Faoro,
+  \emph{Entangling power of quantum evolutions},
+  Phys.\ Rev.\ A \textbf{62}, 030301 (2000).
+\bibitem{Zanardi2001} P.~Zanardi,
+  \emph{Entanglement of quantum evolutions},
+  Phys.\ Rev.\ A \textbf{63}, 040304 (2001); arXiv:quant-ph/0010074.
+\bibitem{JHN2018} C.~Jonay, D.~A.~Huse and A.~Nahum,
+  \emph{Coarse-grained dynamics of operator and state entanglement},
+  arXiv:1803.00089 (2018).
+\bibitem{HLC2024} D.~Hahn, D.~J.~Luitz and J.~T.~Chalker,
+  \emph{Eigenstate correlations, the eigenstate thermalization hypothesis, and
+  quantum information dynamics in chaotic many-body quantum systems},
+  Phys.\ Rev.\ X \textbf{14}, 031029 (2024); arXiv:2309.12982.
+\bibitem{BL2005} J.~N.~Bandyopadhyay and A.~Lakshminarayan,
+  \emph{Entangling power of quantum chaotic evolutions via operator
+  entanglement}, arXiv:quant-ph/0504052 (2005).
+\bibitem{MKZ2013} M.~Musz, M.~Ku\'s and K.~\.Zyczkowski,
+  \emph{Unitary quantum gates, perfect entanglers, and unistochastic maps},
+  Phys.\ Rev.\ A \textbf{87}, 022111 (2013).
+\bibitem{Sim2026} \emph{Classical simulability from operator entanglement
+  scaling}, arXiv:2603.05656 (2026).
+\end{thebibliography}
+
+\end{document}
