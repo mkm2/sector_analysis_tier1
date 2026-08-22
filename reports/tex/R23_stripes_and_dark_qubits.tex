@@ -148,6 +148,61 @@ attractor''. The dissipation is spent entirely on the transient; what it leaves
 behind is a decoherence-free subspace. The interesting question then becomes
 which unitary, and the six rules and the two rules answer it differently.
 
+\subsection{Which unitary: always the coherent parent, for all eight}
+\label{sec:parentall}
+
+The answer is the same for every one of the eight, and it is the parent rule.
+Each dissipative rule is its coherent parent with one identity replaced by a
+reset, and on the parent's own sectors that reset never fires.
+
+\begin{proposition}
+For each of the eight, every non-trivial terminal SCC is \emph{exactly} a Krylov
+sector of the coherent parent --- set equality, not inclusion --- and on it the
+child's one-cycle matrix equals the parent's to $\le2.2\times10^{-16}$, with no
+amplitude leaving the subspace. Verified for every non-trivial attractor at
+$N=9$ and $11$ ($21$, $20$ and $11$ of them per rule) and, for $73$ and $109$, on
+the whole constrained space at $N=4,\dots,11$.
+\end{proposition}
+
+\noindent This upgrades R17, which established the same statement at the level of
+the support graph --- same vertices, same edges --- to the level of the operator.
+
+The four parents are the four single-\rt{V} rules, and they differ only in which
+neighbour pattern gates the Hadamard:
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+parent & word & fires when & dressed form \\
+\midrule
+$W_{201}$ & \rt{VIII} & both neighbours empty & $P^0HP^0$ \\
+$W_{108}$ & \rt{IIIV} & both neighbours occupied & $P^1HP^1$ \\
+$W_{156}$ & \rt{IIVI} & left occupied, right empty & $P^1HP^0$ \\
+$W_{198}$ & \rt{IVII} & left empty, right occupied & $P^0HP^1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent So all four are projector-dressed Hadamard Floquet models and the whole
+difference between the two families is whether the projector reads a
+\emph{symmetric} pattern or a \emph{domain wall}. Symmetric $(00)$ or $(11)$ is a
+blockade: the invariant space is the hard-core constrained space, of dimension
+$F(N+2)$, and the dynamics on it entangles. Asymmetric $(10)$ or $(01)$ is a
+domain-wall detector: the invariant spaces are the tiling subcubes, and the
+dynamics on them does not entangle at all. That single slot is the entire
+difference between \S4 and \S6.
+
+\begin{proposition}
+On every terminal SCC of the six, the induced unitary is exactly the tensor
+product $\bigotimes_{i\in\mathrm{free}}H_i$ of single-site Hadamards on the free
+sites --- agreement $1.1\times10^{-16}$ for every non-trivial attractor at
+$N=9,11$.
+\end{proposition}
+
+\noindent Period $2$ and zero entanglement are then both immediate: $H^2=\mathbb{1}$
+site by site, and a tensor product of single-site gates on a product subspace
+cannot correlate anything. The six are not merely \emph{like} decoupled qubits;
+on their attractors they are decoupled qubits, exactly.
+
 \section{The flicker: one dark qubit per wide tile}
 
 For the six, the free sites are isolated --- each sits between a wall and an
