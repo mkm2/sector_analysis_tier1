@@ -581,6 +581,31 @@ def code_growth(rule: int, Ns: Sequence[int], bc: str = BC_DEFAULT) -> List[Dict
     return out
 
 
+def constrained_decomposition(rule: int, N: int, bc: str = BC_DEFAULT,
+                              forbid: Optional[int] = None) -> Dict:
+    """How the constrained space of R24 Prop. 3 splits under the rule.
+
+    Returns the enclosure sizes, the number of transient states inside the space
+    and the number of distinct Kraus labels seen.  One label means the reset
+    never fires anywhere on the space, edges included -- which is why the split
+    for W109 is a property of its PARENT W108, not of the obc0 boundary.
+    """
+    import scipy.sparse as sp
+    from scipy.sparse.csgraph import connected_components
+    if forbid is None:
+        forbid = next(f for r, _p, f in PARENTS if r == rule)
+    S = constrained_states(N, forbid)
+    M, escaped, labels = cycle_on(rule, N, S, bc)
+    adj = sp.csr_matrix(np.abs(M) > 1e-12)
+    ncomp, lab = connected_components(adj, directed=True, connection="strong")
+    rows, cols = adj.nonzero()
+    leaving = {lab[c] for r, c in zip(rows, cols) if lab[r] != lab[c]}
+    return dict(rule=rule, N=N, dim=len(S), escaped=escaped,
+                kraus_labels=labels, n_enclosures=ncomp,
+                sizes=sorted(np.bincount(lab).tolist(), reverse=True),
+                transient_inside=sum(int((lab == c).sum()) for c in leaving))
+
+
 # --- CLI --------------------------------------------------------------------
 
 def _print_rows(rows: Sequence[Asymptotics]) -> None:

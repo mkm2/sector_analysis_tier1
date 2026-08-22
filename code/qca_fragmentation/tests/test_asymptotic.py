@@ -296,3 +296,80 @@ def test_the_largest_enclosure_is_fibonacci_and_the_total_is_not():
     for i in range(2, len(dm)):
         assert dm[i] == dm[i - 1] + dm[i - 2], dm
     assert rows[-1]["D"] > rows[-1]["d_max"] * 5
+
+
+@pytest.mark.parametrize("N,sizes", ((5, [13]), (7, [34]), (9, [89]), (11, [233])))
+def test_the_constrained_space_is_irreducible_for_W73(N, sizes):
+    z = AS.constrained_decomposition(73, N)
+    assert z["sizes"] == sizes
+    assert z["kraus_labels"] == 1 and z["escaped"] == 0
+    assert z["transient_inside"] == 0
+
+
+@pytest.mark.parametrize("N,sizes", (
+    (5, [5, 3, 3, 2]), (7, [13, 8, 8, 5]), (9, [34, 21, 21, 13]),
+    (11, [89, 55, 55, 34]),
+))
+def test_W109_splits_its_constrained_space_four_ways(N, sizes):
+    """And NOT because the obc0 boundary lets the reset fire -- it never fires."""
+    z = AS.constrained_decomposition(109, N)
+    assert z["sizes"] == sizes
+    assert z["kraus_labels"] == 1 and z["escaped"] == 0
+    assert z["transient_inside"] == 0
+    assert sum(sizes) == z["dim"]
+
+
+@pytest.mark.parametrize("rule,parent,forbid", ((73, 201, 1), (109, 108, 0)))
+@pytest.mark.parametrize("N", (5, 7, 9))
+def test_the_split_belongs_to_the_parent(rule, parent, forbid, N):
+    a = AS.constrained_decomposition(rule, N, forbid=forbid)
+    b = AS.constrained_decomposition(parent, N, forbid=forbid)
+    assert a["sizes"] == b["sizes"]
+
+
+# --- R24 sec.2.3: three exponents per rule ----------------------------------
+
+#: D(n) = sum_i c_i D(n-1-i), verified term by term over N = 4..18 (obc0).
+D_RECURRENCES = {
+    73: (1, 1, 1), 109: (1, 1, 1),          # tribonacci, root 1.839287
+    28: (1, 1, 1, -2), 70: (1, 1, 1, -2),   # root 1.521380
+    157: (0, 1, 2), 199: (0, 1, 2),         # same root, different recurrence
+    29: (0, 1, 2), 71: (0, 1, 2),
+}
+
+
+@pytest.mark.parametrize("rule,coeffs", sorted(D_RECURRENCES.items()))
+def test_the_protected_dimension_obeys_an_exact_integer_recurrence(rule, coeffs):
+    D = [r["D"] for r in AS.code_growth(rule, range(4, 15))]
+    k = len(coeffs)
+    for n in range(k, len(D)):
+        assert D[n] == sum(c * D[n - 1 - i] for i, c in enumerate(coeffs)), (rule, n, D)
+
+
+@pytest.mark.parametrize("rules_,expected", (
+    ((73, 109), 1.839287),
+    ((28, 70, 157, 199, 29, 71), 1.521380),
+))
+def test_the_dominant_roots_are_what_R24_quotes(rules_, expected):
+    for rule in rules_:
+        c = D_RECURRENCES[rule]
+        root = max(abs(z) for z in np.roots([1] + [-x for x in c]))
+        assert root == pytest.approx(expected, abs=1e-6), rule
+
+
+def test_the_four_short_rules_share_one_D_series():
+    """W29 and W71 have fewer weak components than enclosures, yet the same D:
+    the multistability repartitions the recurrent space, it does not shrink it."""
+    series = {tuple(r["D"] for r in AS.code_growth(rule, range(4, 13)))
+              for rule in (157, 199, 29, 71)}
+    assert len(series) == 1
+    assert {tuple(r["D"] for r in AS.code_growth(rule, range(4, 13)))
+            for rule in (28, 70)} != series
+
+
+@pytest.mark.parametrize("rule", (73, 109, 28, 157))
+def test_the_whole_space_outgrows_its_largest_enclosure(rule):
+    rows = AS.code_growth(rule, range(6, 15))
+    a = np.log2(rows[-1]["D"] / rows[-4]["D"]) / 3
+    b = np.log2(rows[-1]["d_max"] / rows[-4]["d_max"]) / 3
+    assert a > b + 0.05, (rule, a, b)

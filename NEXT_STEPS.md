@@ -1386,3 +1386,61 @@ blockade-Hadamard, with preparation probability decaying like `0.9^N`.
    test whether "no block mixes the two factors" survives.
 4. The pbc counterpart of everything here is untouched -- deliberately, the pbc
    sweeps are on hold.
+
+#### R24 additions after the exchange with the Tier-2 session (2026-08-22)
+
+Three things changed in R24 after cross-checking with the session that wrote
+R23. Two are corrections to me.
+
+1. **W73 = W201 with one letter changed; W109 = W108 likewise.** Slot order
+   (00),(01),(10),(11): W201 = VIII fires H iff both neighbours are EMPTY, which
+   IS the Floquet P^0 H P^0 model; W108 = IIIV fires iff both are OCCUPIED, the
+   P^1 H P^1 model. W73 = VIID is W201 with slot (11) I -> D; W109 = EIIV is
+   W108 with slot (00) I -> E. PROVED: on the constrained space the reset can
+   never fire, because a site with both neighbours 1 must itself be 0 and D
+   resets to 0. Measured, the one-cycle matrices agree IDENTICALLY (difference
+   exactly 0.0) for N = 4..11, zero escape, single Kraus label. This DERIVES
+   R23's numerically-found PXP structure and explains its a=0/a=1 blockade: the
+   projector is inherited from whichever slot the parent's Hadamard occupies.
+
+2. **CORRECTION (mine).** I read `dim F = 96` for W73 at N=5 as `6 x 4^2` and
+   called it six four-fold eigenvalues. Wrong — that was factorising a total.
+   The true multiplicities are (8,4,2,2,1,1,1,1,1,1,1,1), twelve distinct
+   eigenvalues; W109 at N=5 gives (9,2,2,2,1,1) = 95. Totals were right, pattern
+   was invented. **Never infer a multiplicity pattern from dim F; diagonalise U.**
+   The six bounded rules DO have exactly two eigenvalues with U^2 = 1, so their
+   period 2 is forced by the spectrum rather than measured on trajectories.
+
+3. **CORRECTION (mine).** I claimed W109's constrained space splits because the
+   obc0 boundary lets its reset fire at the ends. It does not fire anywhere,
+   edges included (at the left edge site 0 sees (0, x_1); if x_1 = 0 then x_0
+   must be 1 and E is the identity there; if x_1 = 1 the slot is (01) = I).
+   Verified independently: kraus_labels = 1 at every N. The split is the
+   PARENT's reducibility -- W108 gives the identical decomposition. Exactly:
+   W73 on no-"11" is irreducible ({13},{34},{89},{233} at N=5,7,9,11) while
+   W109 on no-"00" splits four ways ({5,3,3,2} ... {89,55,55,34}), all Fibonacci,
+   summing to F(N+2), largest F(N), with zero transient states inside.
+
+**New result worth carrying into the paper.** Three distinct exponents for both
+W73 and W109, obc0, N up to 18:
+   n_rec (enclosures)          -> psi = 1.4656   supergolden A000930
+   d_max (largest enclosure)   -> phi = 1.6180   Fibonacci
+   D     (whole protected space) -> 1.8393       TRIBONACCI constant
+D for W73: 13, 24, 44, 81, 149, 274, 504, 927, 1705, 3136, 5768, ... each the
+sum of the previous three. So the total decoherence-free dimension grows FASTER
+than any single enclosure -- 0.879 qubits/site against 0.694 -- and the excess is
+exactly the cross-enclosure coherence. And n_wcc = n_rec at EVERY N from 4 to 18
+for both, which is the "fragmented in both senses" statement the PRL needs.
+Data: `analytics/r24_code_growth_obc0.json`, regenerate with
+`asymptotic.code_growth()`.
+
+**Position on the PRL's Fig. 3 chi(t).** Recommend NOT attempting it as
+sketched. After the parent result the dissipative and unitary models are the
+same circuit on the attractor, so chi(t) measured inside IS the unitary curve,
+and chi(t) across the transient is a statement about relaxation, not about
+fragmentation. Neither supports "the dissipative model inherits linear chi(t)".
+The headline the physics does support is "the dissipation is transient-only, so
+the dissipative rules inherit fragmentation, and the object with the linear
+growth is the unitary parent the paper already introduces". If a third figure is
+wanted anyway, the cheap defensible one is the operator Schmidt rank of the
+CHANNEL through absorption on the six bounded rules, where it saturates.

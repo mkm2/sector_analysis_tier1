@@ -353,39 +353,60 @@ detector of some errors, not a code.
 \label{sec:exponents}
 
 Beyond the sizes the superoperator reaches, the graph engine gives the growth of
-the protected space directly, since Prop.~\ref{prop:unitary} makes $D$ the
-number of recurrent basis states. For $W_{73}$ and $W_{109}$, obc0, $N$ up to
-$18$:
+the protected space directly. It is worth being explicit about why that is
+allowed: $D$ is computed by summing terminal-SCC sizes in the \emph{classical}
+one-cycle support graph, and it equals the dimension of the decoherence-free
+space only because Prop.~\ref{prop:unitary} says the whole recurrent space is
+closed and carries a unitary. Without that, $D$ would be a combinatorial count
+with no quantum meaning. With it, the graph reaches $N=18$ and each rule carries
+\emph{three} distinct exponents:
 
-\begin{center}
-\begin{tabular}{lll}
+\begin{table}[htbp]
+\centering
+\caption{Growth of the three quantities, obc0, from exact integer recurrences
+verified term by term over $N = 4,\dots,18$. In both families the protected
+dimension $D$ has the largest exponent --- the whole space grows faster than any
+single enclosure in it.}
+\label{tab:exponents}
+\begin{tabular}{llll}
 \toprule
-quantity & growth & identification \\
+ & enclosures $n_{\mathrm{rec}}$ & largest $d^{\mathrm{rec}}_{\max}$ &
+   protected $D$ \\
 \midrule
-$n_{\mathrm{rec}}$, the number of enclosures & $\psi = 1.4656$ &
-  supergolden, A000930 \\
-$d^{\mathrm{rec}}_{\max}$, the largest enclosure & $\varphi = 1.6180$ &
-  Fibonacci, the blockade space \\
-$D$, the whole protected space & $1.8393$ &
-  \textbf{tribonacci constant} \\
+$W_{73}, W_{109}$ & $\psi = 1.4656$ & $\varphi = 1.6180$ &
+  $\mathbf{1.8393}$, $x^3 = x^2+x+1$ \\
+the six & $\rho = 1.3247$ & $2^{1/3}$ &
+  $\mathbf{1.5214}$, $x^3 = x+2$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 \noindent $D$ for $W_{73}$ runs $13, 24, 44, 81, 149, 274, 504, 927, 1705,
-3136, 5768, \dots$ --- each term the sum of the previous three, ratio settled at
+3136, \dots$, each term the sum of the previous three, ratio settled at
 $1.8393$ by $N=9$; $W_{109}$ gives $9, 17, 31, 57, 105, 193, 355, \dots$, the
-same recurrence and the same constant. So the total decoherence-free dimension
-grows \emph{faster} than any single enclosure: $\log_2 1.8393 = 0.879$ qubits
-per site protected in total, against $\log_2\varphi = 0.694$ inside the largest
-blockade sector. The difference is exactly the cross-enclosure coherence that
-Prop.~\ref{prop:unitary} says survives, and that a per-attractor account would
-miss.
+same recurrence. Among the six, $W_{28}/W_{70}$ give $9, 14, 20, 33, 49, 74,
+116, \dots$ obeying $D_n = D_{n-1}+D_{n-2}+D_{n-3}-2D_{n-4}$, and
+$W_{157}/W_{199}/W_{29}/W_{71}$ give $5, 9, 11, 19, 29, 41, 67, \dots$ obeying
+$D_n = D_{n-2}+2D_{n-3}$ --- two different recurrences sharing the real root of
+$x^3 = x+2$, a constant that appears nowhere else in this project. (The
+recurrences and the identification of the shared root are the Tier-2 session's;
+we verify all four term by term on independently generated series out to
+$N=18$.)
 
-The other column worth having: $n_{\mathrm{wcc}} = n_{\mathrm{rec}}$ at
-\emph{every} $N$ from $4$ to $18$, for both rules. These two are fragmented in
-both senses with no gap at any size we can reach --- which is what a paper built
-on ``fragmented in both senses, and non-unitary'' needs, and which
+Two readings. First, in both families the \emph{total} decoherence-free
+dimension grows strictly faster than any single enclosure --- $0.879$ qubits per
+site against $\log_2\varphi = 0.694$ for $W_{73}$, and $0.605$ against
+$\tfrac13$ for the six. The excess is exactly the cross-enclosure coherence
+Prop.~\ref{prop:unitary} guarantees, which a per-attractor account would miss
+entirely. Second, all four of $W_{157}, W_{199}, W_{29}, W_{71}$ carry the
+\emph{same} $D$ series although $W_{29}$ and $W_{71}$ have strictly fewer weak
+components than enclosures: the multistability changes how the recurrent space
+is partitioned into blocks, not how much of it there is.
+
+One more column worth having: $n_{\mathrm{wcc}} = n_{\mathrm{rec}}$ at
+\emph{every} $N$ from $4$ to $18$ for $W_{73}$ and $W_{109}$. Those two are
+fragmented in both senses with no gap at any size we can reach --- which is what
+a paper built on ``fragmented in both senses, and non-unitary'' needs, and which
 \S\ref{sec:squeeze} shows is not automatic.
 
 \section{\texorpdfstring{The dissipative pair is the unitary pair,\\ with one
