@@ -16,7 +16,8 @@
 \title{\textbf{Report R27 --- the evolution operator's Schmidt rank}\\
 \large What the literature establishes, and why a linear-dimensional module
 forces linear growth\\[2pt]
-\normalsize rev.\ 2: the bound is now two-sided, and the law is exact}
+\normalsize rev.\ 3: the ceiling, the reflection mechanism, and ranks without a
+threshold}
 \author{Tier 1 analysis}
 \date{2026-08-23}
 
@@ -63,6 +64,23 @@ value exactly $2t+1$ for both rules, every chain length and every cut tested.
 For the \emph{full} chain the exact law is $\chi(t)=6t-7$ for
 $4\le t\le N/2$, verified at $N=8,10,12,14,16$; the slope $6$ itself is recorded
 as measured, together with three ruled-out derivations of it.
+
+\textbf{New in rev.\ 3.} Three additions, all resting on exact arithmetic.
+\S\ref{sec:ceiling}: $\chi$ does not grow forever, and the ceiling is
+closed-form --- $(N^2{+}15)/4$ for $W_{156}/W_{198}$, $F(k)F(k{+}1)$ for
+$W_{108}$, $F(k)\big(F(k){+}3F(k{-}1)\big)$ for $W_{201}$ --- confirmed here at
+$N=7,9,11,13$ by exact rank over $\mathbb Q(\sqrt2)$ with no cutoff anywhere.
+\emph{A ceiling polynomial in $N$ and uniform in $t$ is a sharper contradiction
+of the exponential baseline than any statement about a growth window, and it
+answers the objection that a linear window is merely a light cone before
+saturation.} \S\ref{sec:reflection}: the slope acquires a mechanism --- kink
+reflection between stationary walls --- with the measured law
+$\text{slope} = 2(k-1)$ in the number $k$ of straddling-gap length classes,
+$N$-independent across $N=12,14$. \S\ref{sec:method}: the growth window is
+narrowed to $4\le t\le\min(N/2,12)$, and a methodological warning is recorded
+that cost this project three false results --- a \emph{fixed} singular-value
+cutoff manufactured a feature in three independent pipelines, in both
+directions.
 \end{abstract}
 
 \tableofcontents
@@ -547,9 +565,12 @@ it is claimed here.
 On the full $2^N$ space the exact operator Schmidt rank of $U^t$ across the
 middle bond is
 \begin{equation}
-  \boxed{\;\chi(t) \;=\; 6t-7,\qquad 4\le t\le N/2.\;}
+  \boxed{\;\chi(t) \;=\; 6t-7,\qquad 4\le t\le \min(N/2,\,12).\;}
   \label{eq:full}
 \end{equation}
+The upper limit $12$ is invisible at the sizes in this section --- for $N\le16$
+it is $N/2$ that binds --- and was found only at $N\ge31$; see
+\S\ref{sec:method}.
 Measured series (identical for $W_{156}$ and $W_{198}$, obc0, $x=N/2$):
 
 \begin{center}
@@ -599,19 +620,347 @@ The slope is therefore a genuinely global count over the wall grammar, and
 deriving it needs the MPO of $U^t$ itself rather than any sector-wise argument.
 \end{remark}
 
+\section{The ceiling}
+\label{sec:ceiling}
+
+$\chi(t)$ does not grow without bound. It saturates, and the saturation value is
+closed-form. This is the sharper statement: a growth law describes a window and
+invites the objection that the window is merely the light cone before
+saturation, whereas a ceiling \emph{polynomial in $N$ and uniform in $t$} says
+the propagator is efficiently representable at all times.
+
+\subsection{Exact ranks, with no threshold at all}
+
+Every amplitude in this project lies in $\mathbb Z[1/\sqrt2]$: it is
+$(a+b\sqrt2)/2^{m}$ with $a,b\in\mathbb Z$. So the rank of the reshuffle is an
+algebraic quantity and need never be read off a singular-value spectrum. Choose
+a prime $p\equiv\pm1\pmod 8$, so that $2$ is a quadratic residue and $\sqrt2$
+exists in $\mathbb F_p$, and map the whole computation --- $U$, its powers, the
+reshuffle, the elimination --- into $\mathbb F_p$. Keeping
+$2^{N}(p-1)^2<2^{53}$ makes float64 matrix multiplication \emph{exact}, so the
+powers still run at BLAS speed. Since
+$\operatorname{rank}_{\mathbb F_p}\le\operatorname{rank}_{\mathbb Q(\sqrt2)}$
+with equality off a finite set of $p$, agreement across two primes is the usual
+certificate.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llrrrr}
+\toprule
+rule & closed form & $N{=}7$ & $N{=}9$ & $N{=}11$ & $N{=}13$ \\
+\midrule
+$W_{156}$ & $(N^2+15)/4$ & 16 & 24 & 34 & 46 \\
+$W_{198}$ & $(N^2+15)/4$ & 16 & 24 & 34 & 46 \\
+$W_{108}$ & $F(k)F(k{+}1)$ & 15 & 40 & 104 & 273 \\
+$W_{201}$ & $F(k)\big(F(k){+}3F(k{-}1)\big)$ & 27 & 70 & 184 & 481 \\
+\bottomrule
+\end{tabular}
+\caption{Plateau of $\chi$, maximised over bonds, computed exactly over
+$\mathbb Q(\sqrt2)$ via $\mathbb F_p$; $k=(N{+}1)/2$. All sixteen entries agree
+with the closed form and agree at both primes ($1048559/1048447$, and
+$741431/741409$ at $N{=}13$). Data: \fn{analytics/r27\_exact\_ranks.json}.}
+\end{table}
+
+\noindent The contrast that matters is between the two gate slots and is
+\textbf{polynomial versus exponential in $N$}: $(N^2+15)/4$ against
+$\sim\varphi^{N}$. That maps onto the defect picture of
+Proposition~\ref{prop:defect} --- $p=1$ kink module against extensive $p$ ---
+with the \emph{ceiling}, not the slope, as the diagnostic. The closed forms are
+due to the MPO measurement on the experimental side of the project, fitted
+there; what is contributed here is their exact confirmation.
+
+\subsection{The maximum is off-centre}
+
+$W_{156}$ is not reflection symmetric --- its mirror is $W_{198}$ --- so at odd
+$N$ the two candidate middle bonds need not agree, and they do not. The
+per-bond profile of the saturated $\chi$ at $N=9$ is
+\[
+  2,\;6,\;14,\;22,\;\mathbf{24},\;17,\;9,\;4
+  \qquad (x=1,\dots,8),
+\]
+with the maximum at $x=(N{+}1)/2$ for $W_{156}$ and at $x=(N{-}1)/2$ for
+$W_{198}$; the two central bonds differ by exactly $2$, so the middle cut gives
+$(N^2{+}15)/4-2$. The closed form is therefore strictly a
+\emph{maximum over bonds}. The two rules' profiles are mirror images of one
+another, never equal.
+
+\subsection{The gate sets the dynamics, not the ceiling}
+
+Under $V=X$ the circuit is a permutation of basis states, so $U(t)$ is a
+permutation matrix, the reshuffle is a $0/1$ matrix, and its rank is an exact
+integer --- there is no threshold to choose even in principle. Computed that way,
+the largest $\chi$ over $t\le400$ is
+\[
+  24,\;34,\;46,\;60 \qquad\text{at } N=9,11,13,15,
+\]
+for both $X_{156}$ and $X_{198}$: \emph{identical to the Hadamard ceiling}.
+Replacing the Hadamard by a classical gate changes the dynamics completely
+($U(t)$ becomes periodic and $\chi$ never locks) but leaves $(N^2{+}15)/4$
+untouched, which places the ceiling in the wall grammar rather than in the gate.
+
+\begin{remark}[A supremum only where a period was swept]
+At these sizes the permutation did not close its period within $400$ steps, so
+the numbers above are maxima over a sampled window. The experimental side has
+since swept a full period at $N=9$ ($\operatorname{ord}=\operatorname{lcm}
+(1,\dots,9)=2520$, halved by $\chi(t)=\chi(\operatorname{ord}-t)$, which holds
+because $U(\operatorname{ord}-t)=U(t)^{\mathsf T}$ and transposition preserves
+the reshuffle rank) and obtains $24$ as a true supremum. For $N\ge11$ neither
+side has swept a period, and ``$\sup_t$'' should be read as a windowed maximum.
+\end{remark}
+
+\section{Reflection: where the slope comes from}
+\label{sec:reflection}
+
+Rev.\ 2 recorded the slope $6$ as measured and excluded three derivations of it.
+A mechanism has since been proposed --- \emph{between two stationary walls a
+moving domain wall propagates, reflects, and returns} --- and it survives a
+direct test.
+
+Krylov sectors are conserved, so restricting to a union of sectors is legitimate
+and the Schmidt rank of $U(t)P$ is well defined. Bucket the sectors of $W_{156}$
+by the length $L$ of the gap straddling the cut, with walls identified as the
+sites frozen across the sector. All ranks below are exact mod $p$.
+
+\begin{center}
+\begin{tabular}{p{0.17\textwidth}p{0.32\textwidth}p{0.40\textwidth}}
+\toprule
+bucket & $\chi(t)$, $t=1,2,\dots$ & reading \\
+\midrule
+$L=0$ (cut in a wall) & $4,4,4,4,\dots$ to $t{=}40$ & walls contribute a purely
+  $t$-independent constant \\
+$L=11$ (one long gap) & increments $2,2,2,2$ & the module law,
+  Theorem~\ref{thm:tight}, recovered inside the full chain \\
+$L=3$ & $6,8,8,8,6,4,\;6,8,8,8,6,4,\dots$ & \textbf{non-monotone, exactly
+  periodic with period $6$}, verified to $t{=}40$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The third line is reflection observed directly: $\chi$ falls and
+returns, because the kink bounces off both walls and comes back to a coherent
+configuration. Every other bucket saturates to a constant; $L=3$ is the only one
+that never does.
+
+\subsection{The ladder}
+
+Admitting only gaps with $L\ge L_{\min}$, the early-time slope depends on the
+number $k$ of admitted length classes and not on $N$:
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+$k$ classes & 1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
+slope, $N=12$ & 2 & 2 & 4 & 6 & --- & --- \\
+slope, $N=14$ & 2 & 2 & 4 & 6 & 8 & 10 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{equation}
+  \text{slope} \;=\; 2(k-1) \quad (k\ge2), \qquad 2 \quad (k=1).
+  \label{eq:ladder}
+\end{equation}
+
+\noindent Both sizes agree at every $k$ they share. Each additional gap length
+contributes exactly one module's worth, $2$. The full chain's $6$ corresponds to
+four effective classes.
+
+Why the full chain does not simply give $2(k_{\max}-1)$ is the same mechanism:
+short gaps contribute steeply and then \emph{stop}, because their kink has
+bounced and explored the whole gap, while long gaps keep contributing. The
+observed $6$ is the residual after the short gaps have gone quiet and before the
+long ones do. Reflection sets both the contribution and its cutoff time, which is
+why the slope is a finite $N$-independent constant instead of growing with the
+number of available gap lengths.
+
+\begin{remark}[Measured, not counted --- in both gates]
+\eqref{eq:ladder} is a measured law, not a derivation. The buckets share Schmidt
+vectors heavily, so ``four classes $\times$ two'' describes the ladder without
+counting it. Under the Hadamard at $N=12$, $t=5$ the per-bucket ranks sum to
+$161$ against a true $\chi$ of $23$. The same holds under $V=X$, where the ranks
+are exact integers and the temptation to treat the decomposition as sound is
+strongest --- measured on the experimental side at $N=11$:
+\[
+\begin{array}{l|cccccccc}
+t & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\\hline
+\textstyle\sum_L \chi_L & 64 & 88 & 99 & 100 & 95 & 88 & 76 & 71\\
+\chi & 4 & 8 & 12 & 17 & 23 & 26 & 26 & 26\\
+\text{ratio} & 16 & 11 & 8.2 & 5.9 & 4.1 & 3.4 & 2.9 & 2.7
+\end{array}
+\]
+Exactness of the ranks says nothing about additivity of the decomposition. This
+is the same sharing that defeated the three derivations excluded in rev.\ 2, and
+it remains the obstacle in both gates.
+\end{remark}
+
+\subsection{The two gates behave differently, and only one has a period law}
+
+Under $V=X$ the same bucketing has been carried out on the experimental side,
+where the ranks are exact integers for free. There \emph{every} bucket is a
+triangular wave --- rise at slope $2$, plateau, symmetric fall --- with period
+exactly $L+1$, verified for $L=2,\dots,9$ at $N=11,13$ and both rules, with the
+short-gap curves independent of $N$. That derives two facts previously only
+measured: the period of $\chi(t)$ divides
+$\operatorname{lcm}(3,\dots,N)=\operatorname{lcm}(1,\dots,N)$, which is the
+observed order of the permutation; and the ceiling is reached only when every
+bucket peaks together, which is why it is visited on a few percent of steps and
+why $\chi$ falls back to exactly $4$ --- that $4$ is literally the $L=0$ wall
+constant showing through. Both of those are heuristic readings rather than
+derivations, for the non-additivity reason recorded above; what genuinely follows
+is that a permutation has finite order, so $\chi(t)$ must be periodic and cannot
+converge, and $\operatorname{lcm}(3,\dots,N)=\operatorname{lcm}(1,\dots,N)$ is a
+consistency check on the observed order rather than a proof of it.
+
+\textbf{The Hadamard has no such law.} Repeating the measurement here, exactly
+mod $p$, for both rules at $N=12$ and $N=14$, out to $t=80$:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+$L$ & period & behaviour \\
+\midrule
+$0$ & --- & constant at $4$ \\
+$3$ & $\mathbf{6} = 2L$ & the only oscillating bucket, at either size \\
+all other $L$ & --- & saturate to a constant \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The $L=3$ curve is $6,8,8,8,6,4$ repeating, \emph{byte-identical} at
+$N=12$ and $N=14$: the short-gap component is $N$-independent here exactly as it
+is under $V=X$. What differs is only that under $V=X$ every $L$ behaves this way,
+whereas here $L=3$ is alone.
+
+\noindent So $L+1$ is a statement about permutation circuits, not about the
+Hadamard, and even the period of the one oscillating bucket differs ($6=2L$ here
+against $L+1=4$ there). Under the Hadamard the amplitudes spread and the rank
+fills its bucket instead of returning; only $L=3$ is small enough to keep coming
+back. What survives across both gates is the part that matters for the
+mechanism: walls give a $t$-independent constant, the longest gap rises at slope
+exactly $2$, and \emph{at least one} short-gap component never saturates. The
+last clause must be stated in that weak form: under the Hadamard $L=2$ --- the
+shortest gap there is --- saturates like all the others, and $L=3$ alone
+oscillates. ``Short gaps do not saturate'' would be false here, and it is the
+plural version that would make the prediction below sound overdetermined.
+
+\begin{remark}[A prediction, and its honest weight]
+$L=3$ is the only Hadamard bucket that never saturates. If it leaves a residual
+periodic component riding on the linear law, the departure from \eqref{eq:full}
+should \emph{repeat} rather than grow: the excess at $t=19,20,21$ should echo
+$t=13,14,15$. Two caveats. It is testable only at $N\ge31$, beyond the reach of
+the $2^N$ methods used here, and beyond the reach of double precision at
+$t\ge16$, so it needs exact elimination in place of SVD compression. And the
+prediction rests on a \emph{single} bucket, not on a family --- under $V=X$ a
+periodic correction would be overdetermined, but under the Hadamard everything
+else has gone quiet by then. It is a named test, not a strong expectation.
+\end{remark}
+
+\begin{remark}[A control]
+The same bucketing on $W_{108}$ shows no such structure: the buckets are
+non-periodic and irregular, reaching rank $63$ where $W_{156}$ stays under $18$.
+Single-kink reflection is therefore specific to the domain-wall slot, as it must
+be if that slot is the $p=1$ case and the symmetric slot has extensive defect
+number. A mechanism that also ``explained'' $W_{108}$ would be suspect.
+\end{remark}
+
+\section{Method: ranks without a threshold}
+\label{sec:method}
+
+\subsection{Why the window is $\min(N/2,12)$}
+
+Two departures from \eqref{eq:full} exist and are cleanly separable. The first
+is a \emph{downward}, finite-size roll-off at $t\sim(N{+}1)/2$ --- the light cone
+reaching a chain end --- which is what the sizes in \S\ref{sec:tight} see. The
+second is an \emph{upward}, $N$-independent departure beginning at $t=13$,
+reported by the MPO measurement at $N\ge31$: the excess over $6t-7$ is $+1$ at
+$t{=}13$ and $+2$ at $t{=}14$ (both certified by a singular-value gap of
+$7.3\times10^3$ and $6.9\times10^2$), $+3$ at $t{=}15$ marginal, and
+\emph{retracted} for $t\ge16$ where the gap collapses to order unity and the
+rank is not defined in double precision. Below $N\approx31$ the two effects
+cancel. Nothing in this report reaches $N\ge31$, so the second departure is
+recorded as that measurement's, not as verified here.
+
+\subsection{The trap, three times}
+
+Three independent pipelines each manufactured a feature by holding a
+singular-value cutoff \emph{fixed} while the spectrum moved underneath it, and
+they failed in both directions:
+
+\begin{center}
+\begin{tabular}{p{0.27\textwidth}p{0.36\textwidth}p{0.28\textwidth}}
+\toprule
+pipeline & spectrum & artefact \\
+\midrule
+kink module, cutoff $10^{-9}$ & genuine tail decays $\sim5.6\times$ per period
+  & a false departure from $t=14$ \\
+Hadamard MPO, cutoff $10^{-10}$ & same, $\sim8\times$ per period
+  & a false dip at $t=12$ \\
+$X$-gate MPO, cutoff $10^{-14}$ & genuine tail \emph{flat} at $10^{-4}$
+  & $57$ phantom channels ($161$ vs $104$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The module case is worth stating in full because it nearly entered
+this report as a result. At $N=60$, cut $x=30$, a float64 read at $10^{-9}$
+reports $\operatorname{rank}C_{LR}<t$ from $t=14$ on, $N$-independently
+($N=60,80$ identical; $N=200,400$ identical) --- which would have looked like
+striking confirmation of the $t=13$ departure in a second sector from a second
+code path. It is false. The exact rank over $\mathbb Q(\sqrt2)$ is $t$ for every
+$t=9,\dots,20$, and the spectrum shows why:
+
+\begin{center}
+\begin{tabular}{lrrrl}
+\toprule
+$t$ & $\sigma_t/\sigma_1$ & $\sigma_{t+1}/\sigma_1$ & gap & rank at $10^{-9}$ \\
+\midrule
+12 & $1.8\times10^{-8}$ & $1.2\times10^{-16}$ & $1.6\times10^{8}$ & correct \\
+13 & $3.3\times10^{-9}$ & $1.3\times10^{-16}$ & $2.5\times10^{7}$ & correct \\
+14 & $5.9\times10^{-10}$ & $1.5\times10^{-16}$ & $3.8\times10^{6}$ & short by 1 \\
+17 & $3.3\times10^{-12}$ & $1.6\times10^{-16}$ & $2.1\times10^{4}$ & short by 2 \\
+20 & $1.8\times10^{-14}$ & $1.5\times10^{-16}$ & $1.2\times10^{2}$ & short by 3 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The gap to the true null space never closes below $10^{2}$: the rank
+was never ambiguous, the threshold was simply in the wrong place.
+
+\begin{remark}[Two rules]
+\textbf{(i)} The certificate is $\sigma_r/\sigma_{r+1}$ at the claimed rank, never
+the value of a cutoff and never a sweep of it --- a sweep of the \emph{plateau}
+says nothing about the \emph{departure}, which is where the doubt lives.
+\textbf{(ii)} Where the object is integral or lies in a number ring, take the
+algebraic rank and the question does not arise. That is free for $V=X$, where
+the reshuffle is $0/1$, and available for the Hadamard case at any size where
+the matrix can be formed, by the $\mathbb F_p$ route of \S\ref{sec:ceiling}.
+\end{remark}
+
+\begin{remark}[Which rank is the physics]
+Because the genuine tail decays geometrically, ``the rank of $U(t)$'' is
+threshold-dependent and one must say which is meant. \eqref{eq:full} and
+\eqref{eq:exactmodule} are \emph{algebraic} rank, the right choice for a law. The
+quantity governing simulability is the $\epsilon$-rank at a practical $\epsilon$,
+and it is strictly \emph{smaller}: on the module at $\epsilon=10^{-9}$ it stalls
+near $17$ while the algebraic rank climbs. Efficient representability is
+therefore a stronger claim than the algebraic law, not a weaker one.
+\end{remark}
+
 \section{What would settle it}
 
 \begin{enumerate}
-\item \textbf{The slope $6$.} The one quantitative gap left. \eqref{eq:full} is
-exact over the whole accessible window and the three cheap explanations above
-are excluded, so this needs the transfer-matrix structure of the MPO of $U^t$.
-\item \textbf{$\chi(t)$ for $W_{201}, W_{108}$.} Held by the experimental side
-of the project; the linear-versus-exponential contrast is the whole claim and
-Proposition~\ref{prop:defect} predicts exponential growth there because the
-hard-core module has extensive defect number.
+\item \textbf{A counting proof of the slope.} \eqref{eq:ladder} gives the
+mechanism and the arithmetic, but the buckets share Schmidt vectors, so the
+ladder is measured rather than derived. Turning $2(k-1)$ into a theorem needs
+the MPO transfer structure of $U^t$ at the cut.
+\item \textbf{Is the departure periodic?} The excess over $6t-7$ at
+$t=19,20,21$ against $t=13,14,15$ decides whether the $t=13$ effect is
+short-gap reflection or a genuine onset. It needs $N\ge31$ and exact ranks at
+$t\ge16$, i.e.\ rank-revealing elimination over $\mathbb F_p$ in place of SVD
+compression.
 \item \textbf{Beyond one straddling gap.} Theorem~\ref{thm:tight} is the $p=1$
-case. Confirming the $O(t^{\,p})$ prediction of
-Proposition~\ref{prop:defect} on a module with $p=2$ would turn defect counting
+case; confirming $O(t^{\,p})$ on a module with $p=2$ would turn defect counting
 from an explanation of two data points into a law.
 \end{enumerate}
 

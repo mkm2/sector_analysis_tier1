@@ -1,0 +1,217 @@
+{
+ "argmax_bond": {
+  "156": "(N+1)/2",
+  "198": "(N-1)/2",
+  "note": "mirror images; middle cut = max - 2 at odd N"
+ },
+ "bc": "obc0",
+ "closed_forms": {
+  "108": "F(k) F(k+1), k=(N+1)/2",
+  "156/198": "(N^2+15)/4",
+  "201": "F(k) (F(k) + 3 F(k-1)), k=(N+1)/2"
+ },
+ "full_chain_exact": {
+  "156": {
+   "12": [
+    4,
+    8,
+    12,
+    17,
+    23,
+    29,
+    33,
+    37,
+    41
+   ],
+   "14": [
+    4,
+    8,
+    12,
+    17,
+    23,
+    29,
+    35,
+    39
+   ]
+  },
+  "note": "mod-p exact ranks, t = 1.. ; law 6t-7 for 4 <= t <= N/2 here"
+ },
+ "method": "exact rank over Q(sqrt2) via F_p; p = +-1 mod 8 so sqrt2 exists, p small enough that 2^N (p-1)^2 < 2^53 so float64 matmul is exact",
+ "module_exact_rank": {
+  "N": 60,
+  "crossing_rank_t9_to_t20": {
+   "10": 10,
+   "11": 11,
+   "12": 12,
+   "13": 13,
+   "14": 14,
+   "15": 15,
+   "16": 16,
+   "17": 17,
+   "18": 18,
+   "19": 19,
+   "20": 20,
+   "9": 9
+  },
+  "cut": 30,
+  "float64_tail_at_1e-9": {
+   "12": {
+    "rank": 12,
+    "sigma_r": 1.8e-08,
+    "sigma_r1": 1.2e-16
+   },
+   "13": {
+    "rank": 13,
+    "sigma_r": 3.3e-09,
+    "sigma_r1": 1.3e-16
+   },
+   "14": {
+    "rank": 13,
+    "sigma_r": 5.9e-10,
+    "sigma_r1": 1.5e-16
+   },
+   "17": {
+    "rank": 15,
+    "sigma_r": 3.3e-12,
+    "sigma_r1": 1.6e-16
+   },
+   "20": {
+    "rank": 17,
+    "sigma_r": 1.8e-14,
+    "sigma_r1": 1.5e-16
+   }
+  },
+  "note": "rank(C_LR) = t exactly over Q(sqrt2) through t=20. A float64 read at 1e-9 falsely reports a departure from t=14 because the smallest GENUINE singular value decays ~5.6x per period while the true null space stays at 1e-16.",
+  "rule": 156
+ },
+ "plateau_max_over_bonds": {
+  "108": {
+   "11": 104,
+   "13": 273,
+   "7": 15,
+   "9": 40
+  },
+  "156": {
+   "11": 34,
+   "13": 46,
+   "7": 16,
+   "9": 24
+  },
+  "198": {
+   "11": 34,
+   "13": 46,
+   "7": 16,
+   "9": 24
+  },
+  "201": {
+   "11": 184,
+   "13": 481,
+   "7": 27,
+   "9": 70
+  }
+ },
+ "primes": {
+  "N<=11": [
+   1048559,
+   1048447
+  ],
+  "N=13": [
+   741431,
+   741409
+  ]
+ },
+ "reflection": {
+  "N": 12,
+  "cut": 6,
+  "ladder_slope_by_k_classes": {
+   "12": {
+    "1": 2,
+    "2": 2,
+    "3": 4,
+    "4": 6
+   },
+   "14": {
+    "1": 2,
+    "2": 2,
+    "3": 4,
+    "4": 6,
+    "5": 8,
+    "6": 10
+   }
+  },
+  "note": "slope = 2(k-1) for k >= 2 classes of straddling-gap length, N-independent. Buckets share Schmidt vectors (sum 161 vs true 23 at N=12, t=5), so this is measured, not a counting proof.",
+  "per_gap_length_chi": {
+   "0": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "11": [
+    3,
+    5,
+    7,
+    9,
+    11,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12
+   ],
+   "3": [
+    6,
+    8,
+    8,
+    8,
+    6,
+    4,
+    6,
+    8,
+    8,
+    8,
+    6,
+    4
+   ]
+  },
+  "periods": {
+   "0": 1,
+   "10": 1,
+   "11": 1,
+   "2": 1,
+   "3": 6,
+   "4": 1,
+   "5": 1,
+   "6": 1,
+   "7": 1,
+   "8": 1,
+   "9": 1
+  },
+  "rule": 156
+ },
+ "xgate_sup_over_t_le_400": {
+  "156": {
+   "11": 34,
+   "13": 46,
+   "15": 60,
+   "9": 24
+  },
+  "198": {
+   "11": 34,
+   "13": 46,
+   "15": 60,
+   "9": 24
+  },
+  "note": "V=X makes U(t) a permutation matrix, so the reshuffle is 0/1 and the rank is an exact integer; no cutoff exists. Max over t <= 400, not a proven supremum at these sizes."
+ }
+}
