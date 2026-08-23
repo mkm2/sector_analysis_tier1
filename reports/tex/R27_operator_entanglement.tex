@@ -15,9 +15,10 @@
 
 \title{\textbf{Report R27 --- the evolution operator's Schmidt rank}\\
 \large What the literature establishes, and why a linear-dimensional module
-forces linear growth}
+forces linear growth\\[2pt]
+\normalsize rev.\ 2: the bound is now two-sided, and the law is exact}
 \author{Tier 1 analysis}
-\date{2026-08-22}
+\date{2026-08-23}
 
 \begin{document}
 \maketitle
@@ -48,6 +49,20 @@ exponentially. The kink module of $W_{156}/W_{198}$ has $p=1$, giving
 $\chi(t) = O(t)$; the hard-core module of $W_{201}/W_{108}$ has extensive $p$,
 giving exponential growth. Fragmentation into modules of polynomial dimension is
 therefore a disorder-free mechanism for the localization signature.
+
+\textbf{New in rev.\ 2.} \S\ref{sec:tight} closes the gap left open in rev.\ 1.
+The upper bound is sharpened to an exact combinatorial statement --- a
+\emph{last-passage identity} valid for any operator and any splitting, giving
+$\operatorname{rank}(P_RA^tP_L)\le t\cdot\operatorname{rank}(P_RAP_L)$ --- and
+the cross transfer of the kink walk is shown to be \emph{rank one}, in a cell
+basis in which the walk is a two-band chiral quantum walk. A matching lower
+bound follows from an explicit rank-$t$ factorisation whose two vector families
+are independent by causality. The result is the two-sided bound
+$2t \le \chi_{\rm module}(t)\le 2t+2$, so $\chi=\Theta(t)$, with the measured
+value exactly $2t+1$ for both rules, every chain length and every cut tested.
+For the \emph{full} chain the exact law is $\chi(t)=6t-7$ for
+$4\le t\le N/2$, verified at $N=8,10,12,14,16$; the slope $6$ itself is recorded
+as measured, together with three ruled-out derivations of it.
 \end{abstract}
 
 \tableofcontents
@@ -342,12 +357,11 @@ ascent, and that decides whether the gap carries one defect or extensively many.
 
 \begin{remark}[What the argument does and does not give]
 It gives linearity, and the identification of the exponent with the defect
-number. It does \emph{not} give the measured slope $6$; that requires counting
-the wall-pattern boundary conditions at the cut and the brick-wall velocity
-together, and is not attempted here. It is an upper bound, so it does not by
-itself prove the growth is not slower. And it assumes the sector basis is
-product across the cut, which holds for kink and hard-core configurations but
-must be checked for any other module.
+number. It does \emph{not} give the measured slope $6$. It is an upper bound, so
+it does not by itself prove the growth is not slower --- \S\ref{sec:tight}
+supplies the matching lower bound. And it assumes the sector basis is product
+across the cut, which holds for kink and hard-core configurations but must be
+checked for any other module.
 \end{remark}
 
 \begin{remark}[Why this is the localization signature without localization]
@@ -361,20 +375,244 @@ Proposition~\ref{prop:defect} is the mechanism the literature pass says is
 missing.
 \end{remark}
 
+\section{The tight bound}
+\label{sec:tight}
+
+Proposition~\ref{prop:defect} gives $\chi=O(t)$. This section replaces it, for
+the kink module, by a two-sided bound with an exactly matching measurement. All
+numbers below come from \fn{analytics/kink\_schmidt.py}, which rebuilds the
+propagator from the project's exact $\mathbb Z[1/\sqrt2]$ branch machinery, not
+from any earlier tabulation. One bookkeeping point: at obc0 the maximal one-wall
+Krylov sector of an $N$-site chain is $\{|k\rangle = 1^k0^{N-k}: k=1,\dots,N\}$,
+of dimension $l = N$ --- the all-zero configuration is frozen and sits outside
+it --- so $l$ and $N$ coincide throughout this section. Closure is exact: the
+amplitude leaking out of the module is $0.0$, not merely small.
+
+\subsection{Step 1: the reshuffle collapses onto the coefficient matrix}
+
+Fix the cut at bond $x$ and recall from \S\ref{sec:mechanism} that
+$|k\rangle = |L_{a}\rangle\otimes|R_{b}\rangle$ with $a = \min(k,x)$,
+$b = \max(k,x)$. The pair $(a,b)$ determines $k$, so the operator Schmidt
+decomposition of $U(t)|_{\rm module}$ is nothing but a re-indexing of the
+coefficient matrix $A^t$: rows $(a,a')$, columns $(b,b')$. The four index
+sectors land as follows.
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+index sector & row & column & content \\
+\midrule
+$k,k'\le x$ & $(k,k')$ & $(x,x)$ & the whole $LL$ block, in one column \\
+$k,k'> x$ & $(x,x)$ & $(k,k')$ & the whole $RR$ block, in one row \\
+$k\le x<k'$ & $(k,x)$ & $(x,k')$ & the crossing block $C_{LR}$ \\
+$k'\le x<k$ & $(x,k')$ & $(k,x)$ & the crossing block $C_{RL}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The two crossing blocks occupy disjoint rows and disjoint columns, and
+the remaining content is confined to the single row $(x,x)$ and the single
+column $(x,x)$. Hence, with no approximation,
+\begin{equation}
+  \operatorname{rank}C_{LR} + \operatorname{rank}C_{RL}
+  \;\le\; \chi_x(t) \;\le\;
+  2 + \operatorname{rank}C_{LR} + \operatorname{rank}C_{RL}.
+  \label{eq:sandwich}
+\end{equation}
+The whole problem is now the rank of one crossing block.
+
+\subsection{Step 2: a last-passage identity, and the transfer rank}
+
+\begin{proposition}[Transfer rank]
+\label{prop:transfer}
+Let $A$ act on a finite-dimensional space and let $P_L + P_R = \mathbb 1$ be
+complementary projectors. Then for every $t\ge1$
+\begin{equation}
+  P_R A^t P_L \;=\; \sum_{s=0}^{t-1}
+    \big(P_R A P_R\big)^{t-1-s}\,\big(P_R A P_L\big)\,\big(P_L A^{s} P_L\big),
+  \label{eq:lastpass}
+\end{equation}
+and consequently
+\[
+  \operatorname{rank}\big(P_R A^t P_L\big)
+  \;\le\; t\cdot\operatorname{rank}\big(P_R A P_L\big).
+\]
+\end{proposition}
+
+\begin{proof}
+Expand $A^t$ as a sum over sequences of $L/R$ labels, one per time step. Every
+sequence contributing to $P_RA^tP_L$ starts in $L$ and ends in $R$, so it has a
+unique \emph{last} time $s$ at which the label is $L$, with $0\le s\le t-1$.
+Grouping the sequences by that $s$ gives exactly \eqref{eq:lastpass}: the factor
+$P_LA^sP_L$ collects all histories up to time $s$ (unrestricted in between), the
+factor $P_RAP_L$ is the step out of $L$ at time $s+1$, and
+$(P_RAP_R)^{t-1-s}$ the remaining steps, which stay in $R$ by construction. Each
+summand contains $P_RAP_L$ as a factor, so each has rank at most
+$\operatorname{rank}(P_RAP_L)$, and rank is subadditive.
+\end{proof}
+
+The identity is checked numerically to $\le 2.2\times10^{-16}$ for the kink
+propagator at $N=24,30$ and $t\le10$, and for a random $10\times10$ unitary; it
+is elementary, but it is the step that converts a \emph{static}, one-period
+quantity into a linear-in-$t$ bound.
+
+It remains to compute $\operatorname{rank}(P_RAP_L)$ for the kink walk. Group
+the kink positions into cells $\{2j-1,2j\}$ and pass to
+\[
+  |p_j\rangle = \tfrac1{\sqrt2}\big(|2j-1\rangle + |2j\rangle\big),
+  \qquad
+  |m_j\rangle = \tfrac1{\sqrt2}\big(|2j-1\rangle - |2j\rangle\big).
+\]
+In this basis the exact one-period propagator of $W_{156}$ reads, in the bulk,
+\begin{align}
+  A\,|p_j\rangle &= \tfrac12\big(|m_{j-1}\rangle + |m_j\rangle
+    - |p_j\rangle + |p_{j+1}\rangle\big), \nonumber\\
+  A\,|m_j\rangle &= \tfrac12\big(|m_{j-1}\rangle - |m_j\rangle
+    - |p_j\rangle - |p_{j+1}\rangle\big),
+  \label{eq:cellwalk}
+\end{align}
+i.e.\ a two-band quantum walk hopping by at most one cell per period. Its
+inter-cell transfer operators are
+\begin{equation}
+  T_+ \;=\; \tfrac12\,|p\rangle\big(\langle p| - \langle m|\big),
+  \qquad
+  T_- \;=\; \tfrac12\,|m\rangle\big(\langle p| + \langle m|\big),
+  \label{eq:transfer}
+\end{equation}
+\emph{both of rank one} ($W_{198}$ is the mirror of $W_{156}$ and reflection
+sends $k\mapsto l+1-k$, so its cell tiling is the shifted pairing
+$\{2j,2j+1\}$ and the roles of $p$ and $m$ are exchanged).
+The coin state $p$ is the sole right-moving channel and $m$ the sole left-moving
+one: the walk is chiral, with one channel per chirality per cell. Measured
+directly, $\operatorname{rank}(P_RAP_L) = 1$ at \emph{every} cut
+$x=1,\dots,l-1$, for both rules at $N=12,20,24$, so
+Proposition~\ref{prop:transfer} gives
+$\operatorname{rank}C_{LR}\le t$, likewise for $C_{RL}$.
+
+\subsection{Step 3: the matching lower bound}
+
+Because $P_RAP_L = ab^{\mathsf T}$ is rank one, \eqref{eq:lastpass} is an
+explicit rank-$t$ factorisation:
+\[
+  P_R A^t P_L \;=\; \sum_{s=1}^{t} u_s v_s^{\mathsf T},
+  \qquad
+  u_s = (P_RAP_R)^{t-s} a, \qquad
+  v_s = \big(P_L A^{s-1} P_L\big)^{\mathsf T} b .
+\]
+If $\{u_s\}_{s\le t}$ and $\{v_s\}_{s\le t}$ are each linearly independent, the
+factorisation is $UV^{\mathsf T}$ with both factors of full column rank $t$, so
+the rank is exactly $t$. Independence follows from the light cone: by
+\eqref{eq:transfer} the rightward amplitude per period is exactly $\tfrac12$ and
+never vanishes, so $u_s$ reaches exactly $t-s$ cells to the right of the cut
+with leading amplitude $2^{-(t-s)}$, and $v_s$ exactly $s-1$ cells to the left.
+The reaches are pairwise distinct, hence each family is independent. Measured:
+$\dim\operatorname{span}\{u_s\} = \dim\operatorname{span}\{v_s\}
+= \operatorname{rank} = t$ for all $t\le 9$ at $N=24,30$, both rules, with the
+factorisation reproducing $P_RA^tP_L$ to $\le2.2\times10^{-16}$.
+
+\subsection{The law}
+
+Combining \eqref{eq:sandwich} with $\operatorname{rank}C_{LR}
+= \operatorname{rank}C_{RL} = t$:
+
+\begin{theorem}[Kink module]
+\label{thm:tight}
+For $W_{156}$ and $W_{198}$ on their maximal one-wall module of dimension $l$,
+and any cut $x$ with $1\le t<\min(x,\,l-x)$ --- i.e.\ as long as the light cone
+has not reached either end of the chain ---
+\[
+  2t \;\le\; \chi_x(t) \;\le\; 2t+2 ,
+  \qquad\text{so}\qquad \chi_x(t) = \Theta(t).
+\]
+\end{theorem}
+
+\noindent The measured value is the middle one, and the saturation is a clean
+truncation:
+\begin{equation}
+  \chi_x(t) \;=\; \min\big(2t+1,\; \chi_x^{\rm sat}\big),
+  \qquad t\ge1,
+  \label{eq:exactmodule}
+\end{equation}
+with $\chi_x^{\rm sat}$ a $t$-independent, cut-dependent ceiling. Verified
+exhaustively for both rules at $N=12,16,20$, \emph{every} cut $x=1,\dots,N-1$
+and $t$ up to $3N$, and at $N=24,30$ for $x=3,\,N/2,\,N/2+1$. At $t=0$ the value
+is $2$: the identity on the module is not a product operator across the cut,
+being $\mathbb 1_{\rm left}\otimes P_R + P_L\otimes\mathbb 1_{\rm right}$. This
+is the statement rev.\ 1 left open. The ceiling $\chi_x^{\rm sat}$ is a
+finite-chain edge effect, small when the cut is near an end; no closed form for
+it is claimed here.
+
+\subsection{The full chain}
+
+On the full $2^N$ space the exact operator Schmidt rank of $U^t$ across the
+middle bond is
+\begin{equation}
+  \boxed{\;\chi(t) \;=\; 6t-7,\qquad 4\le t\le N/2.\;}
+  \label{eq:full}
+\end{equation}
+Measured series (identical for $W_{156}$ and $W_{198}$, obc0, $x=N/2$):
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+$N$ & $\chi(t)$, $t=0,1,2,\dots$ & law holds for & first deviation \\
+\midrule
+$8$  & $1,4,8,12,17,20,21,\dots$ & $t\le4$ & $t=5$ \\
+$10$ & $1,4,8,12,17,23,27,30,31,\dots$ & $t\le5$ & $t=6$ \\
+$12$ & $1,4,8,12,17,23,29,33,37,41,\dots$ & $t\le6$ & $t=7$ \\
+$14$ & $1,4,8,12,17,23,29,35,39,43$ & $t\le7$ & $t=8$ \\
+$16$ & $1,4,8,12,17,23,29,35,41,45,49$ & $t\le8$ & $t=9$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The increments are $3,4,4,5$ and then a constant $6$; the deviations
+past $t=N/2$ are the finite-chain saturation, and the window grows by one period
+per two sites, exactly as a light cone should. The $N=14$ and $N=16$ rows were
+computed with a sparse propagator and a randomised rank estimator (oversampled
+to $160$ probe vectors, so the reported rank is exact whenever it is below the
+cap, which it always is).
+
+\begin{remark}[The slope $6$ is not yet derived --- and three routes are closed]
+Theorem~\ref{thm:tight} explains the linearity and gives slope $2$ per
+straddling gap. The factor $3$ relating that to \eqref{eq:full} is not derived
+here, and the obvious derivations do not work:
+\begin{enumerate}
+\item \emph{Not a sum over Krylov sectors.} The reshuffle is supported on entry
+$(y,y')$ only when $y,y'$ share a sector, so it splits into blocks of disjoint
+support; but the left Schmidt vectors are shared \emph{between} sectors, and the
+sum is wildly larger than the total. At $N=12$ (377 sectors)
+$\sum_S\chi_S(t) = 473,569,700,747,763,749,731,\dots$ against
+$\chi(t)=1,4,8,12,17,23,29,\dots$ --- not even monotone. Fragmentation alone does
+not make the MPO small; the sharing does.
+\item \emph{Not a sum over growing sectors either.} Only $12$ of the $377$
+sectors have a $\chi_S$ still growing at $t=6$, each with slope $2$ while
+unsaturated, for a total of $24$ where the full chain increments by $6$.
+\item \emph{Not an accumulating channel basis.} The left Schmidt subspace does
+not grow as a filtration: projecting the $t{+}1$ subspace against the $t$ one
+leaves $20$--$21$ new directions out of $23$--$29$, so the subspace rotates
+almost completely each period and there is no fixed set of ``six new channels''
+to count. Every Schmidt vector also acts non-trivially out to the far end of the
+half-chain, so the new directions cannot be localised at the light-cone edge.
+\end{enumerate}
+The slope is therefore a genuinely global count over the wall grammar, and
+deriving it needs the MPO of $U^t$ itself rather than any sector-wise argument.
+\end{remark}
+
 \section{What would settle it}
 
 \begin{enumerate}
-\item \textbf{$\chi(t)$ for $W_{198}, W_{201}, W_{108}$.} The linear-versus-%
-exponential contrast is the whole claim, and only $W_{156}$ has been measured in
-this project. The unitary path is the cheap one and the existing code already
-takes the rule as an argument.
-\item \textbf{A lower bound.} Proposition~\ref{prop:defect} bounds $\chi$ from
-above. Showing $\chi = \Theta(t)$ rather than $O(t)$ needs the crossing block of
-$A_{kk'}$ to have full rank, which for a single-particle propagator on a line is
-plausible but unproved here.
-\item \textbf{The slope.} $6$ per period is exact in the measured window and is
-presumably a small combinatorial count; deriving it would considerably strengthen
-the result.
+\item \textbf{The slope $6$.} The one quantitative gap left. \eqref{eq:full} is
+exact over the whole accessible window and the three cheap explanations above
+are excluded, so this needs the transfer-matrix structure of the MPO of $U^t$.
+\item \textbf{$\chi(t)$ for $W_{201}, W_{108}$.} Held by the experimental side
+of the project; the linear-versus-exponential contrast is the whole claim and
+Proposition~\ref{prop:defect} predicts exponential growth there because the
+hard-core module has extensive defect number.
+\item \textbf{Beyond one straddling gap.} Theorem~\ref{thm:tight} is the $p=1$
+case. Confirming the $O(t^{\,p})$ prediction of
+Proposition~\ref{prop:defect} on a module with $p=2$ would turn defect counting
+from an explanation of two data points into a law.
 \end{enumerate}
 
 \begin{thebibliography}{99}
