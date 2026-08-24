@@ -21,6 +21,8 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
 \newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
 
 \title{\textbf{Report R11 --- One rule space, two gates}\\
 \large What changes, and what cannot change, when the Hadamard is replaced by
@@ -39,8 +41,8 @@ compares them. The two families turn out not to be independent: because applying
 the Hadamard to a site produces \emph{both} values of the target bit, the flip is
 always one of the outcomes, so the $X$ transition graph is a subgraph of the
 Hadamard one and the $X$ sectors \textbf{refine} the Hadamard sectors --- verified
-exhaustively for all $256$ rules and over $2816$ swept units, with zero
-exceptions. Three consequences organise everything else. The gate can only ever
+for all $256$ rules at $N=7,8,9,10$ and \emph{both} boundary conditions, and over
+$2816$ swept units, with zero exceptions. Three consequences organise everything else. The gate can only ever
 \emph{split} sectors, never merge them, so no rule loses sector structure: of the
 $51$ rules with an exponentially growing sector count under $H$, all $51$ keep one
 under $X$, and $39$ rules with no structure under $H$ acquire it. The $81$ rules
@@ -142,6 +144,33 @@ A rule with no \rt{V} never invokes the gate, so its two circuits are the
 for them the refinement is an equality.
 \end{corollary}
 
+\begin{remark}[What ``exhaustive'' means here, and the partition-level census]
+\label{rem:audit}
+Revision 1 verified the refinement backbone at $N=8,9$ and \fn{obc0} only:
+exhaustive over \emph{rules}, not over sizes. It has since been widened to all
+$256$ rules at $N=7,8,9,10$ and both boundary conditions, $256/256$ at every
+one, and re-run at partition level rather than by comparing component counts
+(\fn{permutation/partition\_audit.py}). The same audit decomposes the equality
+count, and the decomposition is worth recording because the total alone is
+misleading:
+\begin{center}
+\begin{tabular}{llrrr}
+\toprule
+bc & $N$ & partitions equal & of which V-free & accidental \\
+\midrule
+\fn{obc0} & 7, 8, 9 & 186, 188, 188 & $81$ & 105, 107, 107 \\
+\fn{pbc}  & 7, 8, 9 & 113, 93, 101  & $81$ & 32, 12, 20 \\
+\bottomrule
+\end{tabular}
+\end{center}
+The $81$ of Corollary~\ref{cor:nofree} is a \emph{theorem floor}: it is present
+at every size and both boundary conditions, because those circuits are the same
+map. Everything above it is coincidence and is $N$-dependent. Quoting the total
+as though it were the structural number would be a mistake --- and note that
+only one of the $81$, rule $204$, is a unitary rule, so in the all-\rt{I}/\rt{V}
+sector the identity is essentially empty.
+\end{remark}
+
 \noindent All of this is verified rather than assumed:
 
 \begin{center}
@@ -154,6 +183,35 @@ come from a numpy step table and a three-colour walk. The two share no code belo
 \fn{core/cycle.py::\_compile}. On the $81$ rules where they must agree they agree
 exactly --- the full sector-size multiset, at every $N$ where both were run. That
 is the strongest cross-implementation check either report has.
+
+\begin{remark}[The cause, and why nothing can cancel]
+\label{rem:bijection}
+Theorem~\ref{thm:refine} says the refinement holds; the companion
+commutant-algebra report supplies why, and a stronger statement, which are cited
+here rather than restated. Its Proposition~3 is the \emph{branch/flip-set
+bijection}: in one brick-wall cycle each site is visited exactly once, so the
+map from the choice of flip/no-flip at each visited site to the final state is
+injective --- the final state differs from $x$ precisely at the chosen sites.
+Every state in $\operatorname{supp}(U\ket{x})$ is therefore reached by exactly
+\emph{one} branch, and destructive interference \textbf{cannot occur within one
+cycle}, for any $V$, any schedule, any $N$ and either boundary condition. Its
+Proposition~4 then identifies the Hadamard sector partition with the block
+partition of the bond algebra, which is a structural cause for the refinement
+rather than a verification of it. Scope for both: channels in
+$\{\rt{I},\rt{V}\}$ only; the reset channels are not two-level unitaries and
+neither statement applies to them.
+
+Verified independently here by enumerating branches explicitly as
+(state, flip-set) pairs: over all $16$ unitary rules, both boundary conditions
+and $N=6,7,8$, the maximum number of branches reaching any single final state is
+$1$, the flip set always equals (final $\oplus$ start), and each site is visited
+exactly once per cycle. \textbf{This is the test that can fail, and it is not the
+one to reach for by instinct}: counting cancellations in the accumulated
+amplitude dictionary cannot detect a multiplicity greater than one, because the
+dictionary sums contributions into a single key before any count is taken. Two
+branches meeting with non-cancelling amplitudes would be invisible to it. The
+multiplicity has to be counted on explicitly enumerated branches.
+\end{remark}
 
 \paragraph{Reading the theorem physically.} The Hadamard's extra edge is the
 non-flip branch, and it is exactly what \emph{glues} $X$ sectors together. So one
@@ -623,9 +681,27 @@ space, so the analogous constraint degenerates.
 \section{Open items}
 
 \begin{enumerate}
-\item \textbf{\rt{pbc}.} Held for both families. The refinement theorem is proved
-  without reference to the boundary, so it should carry over verbatim, and it will
-  be worth checking that the ring does not break the $81$-rule identity.
+\item \textbf{\rt{pbc}.} Held for both families as a sweep. The refinement
+  theorem is proved without reference to the boundary and does carry over: the
+  audit of Remark~\ref{rem:audit} now includes \fn{pbc} at $N=7,8,9$, $256/256$
+  at each, and the $81$-rule identity survives the ring ($81/81$ equal at every
+  size tested).
+
+  \textbf{One caveat the ring introduces, which is not in the theorem.} At
+  \emph{odd} $N$ with \fn{pbc} the brick-wall two-colouring does not exist: sites
+  $0$ and $N-1$ both fall in the even sublattice and are adjacent through the
+  boundary. The sites of a layer are then no longer mutually non-adjacent, and
+  the circuit depends on how a layer is updated internally. This project's
+  convention is sequential (\fn{core/cycle.py} applies sites in order, later
+  sites reading the current bitmask), and it is the reading that two independent
+  implementations reproduce; ``simultaneous'' is not even a single convention,
+  since two independent simultaneous implementations disagreed with each other.
+  \emph{At odd $N$ and \fn{pbc} the rule alone does not determine the circuit},
+  and any count there must state its convention. A clean precondition test is
+  due to the commutant-algebra session: $\max_{i,j}\lVert[g_i,g_j]\rVert$ over
+  the sites of one parity is exactly zero iff the colouring exists --- zero for
+  every \fn{obc0} size and every even $N$ at \fn{pbc}, non-zero for every odd
+  $N$ at \fn{pbc}.
 \item \textbf{The gluing map.} Theorem~\ref{thm:refine} says each Hadamard sector
   is a union of $X$ sectors, but nothing here counts them: the natural next
   observable is the number of $X$ sectors per Hadamard sector, whose growth would
