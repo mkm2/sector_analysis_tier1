@@ -308,7 +308,12 @@ $29=L(7)$, $76=L(9)=4\cdot19$, $123=L(10)=3\cdot41$ and $199=L(11)$ all occur,
 exactly once each, at that one $N$. What is excluded at \emph{both} boundaries is
 an integer that is neither a Fibonacci product nor a Lucas number: $14$, $17$,
 $19$, $22$, $23$, $28$, $31$, $33$, $35$, $37$, $38,\ldots$ --- none of these is
-a sector size of $W_{108}$ or $W_{201}$ at any $N$.
+a sector size of $W_{108}$ or $W_{201}$ at any $N$. Over $1\ldots50$ that
+exclusion set is
+$\{14,17,19,22,23,28,31,33,35,37,38,41,43,44,46,49\}$, obtained here by search
+over the exhaustive ground truth and in Tier-2 R-T20 rev.3 as the complement of
+$\{\text{Fibonacci products}\}\cup\{\text{Lucas}\}$ computed from the corner
+functions; the two constructions agree element for element.
 \end{enumerate}
 
 \section{Generating functions and the exact census}
@@ -603,7 +608,26 @@ its first form --- it omitted the wall-free label, which is a trace on the ring
 and therefore Lucas rather than Fibonacci --- by Tier-2 R-T20 rev.3, and is
 stated here in its corrected form; the routines were already right, and the
 regression test that should have caught it was vacuous because its list of
-system sizes happened to miss the $N$ at which $L(N)$ is small. Given those, the generating functions \eqref{eq:gf}, the closed
+system sizes happened to miss the $N$ at which $L(N)$ is small.
+
+\begin{remark}[where the errors were, all three times]
+\label{rem:wallfree}
+Three claims in this analysis were wrong in draft and corrected against
+exhaustive enumeration: $D_{\max}$ (one Fibonacci formula, in fact $F(N+2)$,
+$F(N)$ and $L(N)$ across the two rules and two boundaries), the finite-size
+offset (one constant, in fact three with a sign change), and the achievable-size
+set (Fibonacci products, in fact plus the Lucas numbers on the ring). All three
+are the same omission: the \textbf{wall-free label} is the one term in the
+renewal decomposition that is not a product of gap kernels, and it reads a
+different entry of $M_0^{\,m}$ --- a corner on the chain, a trace on the ring ---
+from everything else. Any statement here proved by summing over kernels needs it
+checked separately, and a fourth such correction, if there is one, is most likely
+to be there too. The instrument that caught all three was the same: the exhaustive
+union-find at small $N$, used as an oracle rather than as a confirmation. Both
+this analysis and the Tier-2 one had a defect invisible to their own tests ---
+here a ``never happens'' assertion whose witness range excluded the $N$ at which
+the mechanism can fire --- and both were found by diffing against that oracle.
+\end{remark} Given those, the generating functions \eqref{eq:gf}, the closed
 forms for $D_{\max}$, $n_{\rm frozen}$ and $n_{\rm sectors}$, the achievable-size
 semigroups, and $\lambda_1=2$ are derivations.
 
