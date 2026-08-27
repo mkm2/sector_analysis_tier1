@@ -1,0 +1,654 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\title{\textbf{Report R30 --- the sector-size distribution of the
+one-Hadamard rules $W_{156}/W_{198}$ and $W_{108}/W_{201}$}\\
+\large exact at finite $N$, log-normal at large $N$, at \rt{obc0} and \rt{pbc}}
+\author{Tier 1 analysis}
+\date{2026-08-28}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+R9 counted the Krylov sectors of the four one-Hadamard rules and measured the
+largest one; R18 showed both follow from a frozen wall word. This report gives
+the \emph{whole} distribution: how many sectors there are of each size, at every
+$N$, at both boundary conditions, and what that distribution looks like as
+$N\to\infty$. Everything reduces to one $2\times2$ matrix. Because the wall word
+has length two, its indicator matrix $M_1=|a\rangle\langle b|$ has \textbf{rank
+one}, so a wall cuts the transfer product and the sector size factorises over
+the gaps between consecutive walls,
+$|\K| = L(g_0)K(g_1)\cdots K(g_{k-1})R(g_k)$, with all three kernels corners of
+powers of the single matrix $M_0 = J - |a\rangle\langle b|$. The two families are
+then exactly the two \textbf{Jordan types} of $M_0$: the words \rt{00} and
+\rt{11} are diagonal, $M_0$ is a Fibonacci matrix and $K(g)=F(g-1)$ grows
+exponentially; the words \rt{01} and \rt{10} are off-diagonal, $M_0$ is
+unipotent and $K(g)=g$ grows linearly. From that one bit follow the sector
+counts ($\varphi$ against $\rho^2$), the largest sector ($\varphi^N$ against
+$4^{N/5}$), the frozen-sector counts (exponentially many against linearly many),
+and the set of sizes that occur at all --- every integer for
+$W_{156}/W_{198}$, but for $W_{108}/W_{201}$ only products of Fibonacci numbers,
+joined on the ring by the one wall-free sector of Lucas size $L(N)$, so no sector
+of those rules ever has size $14$, $17$, $19$, $22$, $23$, $28$ or $31$.
+We give the number of sectors of a given size $\sigma$ in closed form: at
+\rt{obc0} in the unipotent family
+$n_N(\sigma)\simeq P(\sigma)(N/2)^{\Omega(\sigma)+1}/(\Omega(\sigma)+1)!$, a
+polynomial whose degree is the number of prime factors of $\sigma$; on the ring
+the same law acquires a strict parity selection rule; in the Fibonacci family
+$n_N(\sigma)\simeq A(\sigma)N^{m(\sigma)}\varphi^N$. For the distribution as a
+whole, $\lambda_s$, defined by the single scalar equation $B_s(1/\lambda_s)=1$
+with $B_s(x)=\sum_g K(g)^sx^{g+1}$, is the free energy: $\lambda_0$ is the
+sector-count base, $\lambda_1=2$ identically, and $\tau=\ln\lambda$ gives a
+\textbf{log-normal} law $|\K| = \exp(\alpha_{\rm typ}N + \sigma\sqrt{N}\,\xi)$
+together with its full large-deviation spectrum. $\lambda_s$ is
+boundary-independent; the boundary contributes only an $O(1)$ offset, which
+vanishes identically on the ring and is rule-dependent on the chain --- negative
+for $W_{156}/W_{198}$ and $W_{108}$, but \emph{positive} for $W_{201}$.
+Every step is checked against exhaustive enumeration of the $2^N$ flip graph,
+and independently against the transfer-matrix construction of Tier-2 R-T20.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question, and what was already settled}
+
+The four rules carry a single Hadamard that fires on one neighbour pattern:
+\begin{center}
+\begin{tabular}{lllll}
+\toprule
+rule & tuple & fires when $(x_{i-1},x_{i+1})=$ & wall word & family \\
+\midrule
+$W_{201}$ & \rt{VIII} & $(0,0)$ & \rt{11} & the PXP constraint \\
+$W_{108}$ & \rt{IIIV} & $(1,1)$ & \rt{00} & its spin-flip image \\
+$W_{156}$ & \rt{IIVI} & $(1,0)$ & \rt{01} & chiral \\
+$W_{198}$ & \rt{IVII} & $(0,1)$ & \rt{10} & its reflection \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent All four are unitary, so by R17 their terminal SCCs are their Krylov
+sectors, and by the flip-reduction theorem (\fn{graph/flip\_graph.py}) the
+sector partition is the connected-component partition of the single-flip graph
+$x \sim x\oplus 2^i$ whenever the gate fires at $i$ in $x$. R9 fitted the
+sector-count bases $\rho^2=1.754878$ and $\varphi$; R18 derived them from a
+frozen wall word and showed that the conserved domain-wall charges are functions
+of the wall set rather than a second ingredient. R21 classified all four as
+strongly fragmented.
+
+What none of those settled is the \emph{distribution}: how the $2^N$ basis states
+are apportioned among the sectors. That is the object below. The user's question
+was asked for both boundary conventions, and the answer differs between them in
+ways that turn out to be sharp and worth stating separately, so \rt{obc0} and
+\rt{pbc} are carried side by side throughout.
+
+\section{The label is the sector}
+
+Write the padded chain $y_0=0,\ y_1\ldots y_N = x,\ y_{N+1}=0$ at \rt{obc0}, and
+$y_i = x_{i\bmod N}$ at \rt{pbc}. The \textbf{label} of a state is the set of
+positions at which the rule's wall word occurs.
+
+\begin{theorem}[completeness of the label]
+\label{thm:label}
+For each of the four rules, two states lie in the same Krylov sector if and only
+if they have the same label --- with one exception, at \rt{pbc} for
+$W_{156}/W_{198}$, where $0^N$ and $1^N$ share the empty label but are two
+distinct frozen sectors.
+\end{theorem}
+
+\begin{proof}[Proof]
+\emph{Constancy.} No move creates or destroys an occurrence. Take $W_{201}$,
+word \rt{11}: a site flips only when both neighbours are $0$. If $y_i=y_{i+1}=1$
+then site $i$ cannot flip (its right neighbour is $1$) and neither can site
+$i+1$, so an existing wall is frozen. Conversely a new \rt{11} at $j$ would need
+some site to become $1$ next to a $1$; but flipping $x_j$ up requires
+$x_{j-1}=x_{j+1}=0$, so no wall is created at $j-1$ or $j$. For $W_{156}$, word
+\rt{01}: a wall at $i$ means $y_i=0,y_{i+1}=1$; site $i$ can flip only if
+$(y_{i-1},y_{i+1})=(1,0)$, contradicted by $y_{i+1}=1$, and site $i+1$ only if
+$(y_i,y_{i+2})=(1,0)$, contradicted by $y_i=0$. Creation is excluded the same
+way. $W_{108}$ and $W_{198}$ are the images of these two under the spin flip and
+the reflection of the local rule, and the same two lines apply verbatim.
+
+\emph{Transitivity.} Fix a label. For $W_{156}/W_{198}$ the label is the set of
+ascents; ascents and descents alternate, so the free data are the descent
+positions, one in each open interval between consecutive ascents. A descent at
+$q$ can move to $q+1$ (flip $y_{q+1}$ up, which needs $(y_q,y_{q+2})=(1,0)$, true
+inside the interval) and to $q-1$ (flip $y_q$ down, which needs
+$(y_{q-1},y_{q+1})=(1,0)$, true inside the interval), and cannot leave it.
+Distinct descents never interact because the frozen ascents separate them, so the
+sector is a product of intervals and single flips connect it.
+For $W_{201}$ the label fixes the maximal runs of $1$s of length $\ge 2$; the
+sites adjacent to such a run are forced to $0$ and cannot flip, and the remaining
+free stretches carry exactly the strings with no \rt{11}. In such a string every
+$1$ has both neighbours $0$, so it may be flipped down; removing $1$s one at a
+time reaches the all-zero configuration of that stretch without ever creating a
+new run, so each free stretch is connected. $W_{108}$ is the same with $0$ and
+$1$ exchanged.
+
+\emph{The exception.} At \rt{pbc} the wall-free label of an ascent word is
+realised by $\operatorname{tr}M_0^N=2$ states, $0^N$ and $1^N$, both frozen. Every
+other wall-free fibre in this paper is connected.
+\end{proof}
+
+\noindent Theorem~\ref{thm:label} upgrades R18's exhaustive check to $N=14$ to a
+proof. It is independently re-verified here by \fn{sector\_is\_wall\_set}, which
+computes the label of all $2^N$ states and checks that it is constant on each
+flip-graph component and injective across components, for all four rules at both
+boundary conditions and $N=3\ldots18$: constant everywhere, zero collisions
+except the single expected one for $W_{156}/W_{198}$ at \rt{pbc}.
+
+\section{Rank one, and the renewal factorisation}
+
+The wall word reads the pair $(y_i,y_{i+1})$, so the label letter at $i$ is a
+function of one \emph{bond}. Hence the preimage of a label word $w$ is the set
+of paths of a two-node graph with position-dependent edge sets,
+\[
+M_w[u][v] = 1 \iff \bigl[\,(u,v)=\text{word}\,\bigr]=w ,
+\]
+and, writing the word as $(a,b)$,
+\begin{equation}
+\label{eq:mats}
+M_1 = |a\rangle\langle b| , \qquad M_0 = J - |a\rangle\langle b| ,
+\qquad M_0+M_1 = J ,
+\end{equation}
+$J$ the all-ones matrix. The sector size is then a matrix element,
+\[
+|\K(w)| \;=\; \langle 0| M_{w_0}M_{w_1}\cdots M_{w_N} |0\rangle \quad(\rt{obc0}),
+\qquad
+|\K(w)| \;=\; \operatorname{tr} M_{w_0}\cdots M_{w_{N-1}} \quad(\rt{pbc}).
+\]
+
+\noindent $M_1$ is a \emph{matrix unit}, so it has rank one, and that is the
+whole mechanism: every wall cuts the product.
+
+\begin{proposition}[renewal factorisation]
+\label{prop:renewal}
+Let the walls sit at $p_1<\cdots<p_k$ and let $g_j$ be the number of non-wall
+letters in the $j$-th gap, so that $g=0$ means two adjacent walls. Then
+\begin{align}
+|\K| &= L(g_0)\,K(g_1)\cdots K(g_{k-1})\,R(g_k) &&(\rt{obc0},\ k\ge1),\\
+|\K| &= K(g_1)\cdots K(g_k) \quad\text{cyclically} &&(\rt{pbc},\ k\ge1),
+\end{align}
+with
+\[
+K(g)=(M_0^{\,g})_{b,a},\qquad L(g)=(M_0^{\,g})_{0,a},\qquad
+R(g)=(M_0^{\,g})_{b,0},
+\]
+and the wall-free label has size $T(m)=(M_0^{\,m})_{0,0}$ at \rt{obc0} and
+$\operatorname{tr}M_0^{\,m}$ at \rt{pbc}, with $m$ the number of label letters,
+$N+1$ and $N$ respectively.
+\end{proposition}
+
+\noindent This is one formula for all four rules and both boundary conditions.
+Everything else in this report is a statement about powers of a single
+$2\times 2$ matrix.
+
+\subsection{The two Jordan types}
+
+\begin{center}
+\small
+\iftable{tab_r30_kernels.tex}
+\end{center}
+
+\noindent The word is \textbf{diagonal} ($a=b$) exactly for $W_{108}$ and
+$W_{201}$ and \textbf{off-diagonal} for $W_{156}$ and $W_{198}$, and that one bit
+is the fork:
+\[
+\begin{aligned}
+\text{diagonal word:}\quad & M_0 \sim \begin{psmallmatrix}1&1\\1&0\end{psmallmatrix},
+&& \text{eigenvalues } \varphi,\,-1/\varphi, && K(g)=F(g-1) && \text{HYPERBOLIC},\\
+\text{off-diagonal word:}\quad & M_0 \sim \begin{psmallmatrix}1&0\\1&1\end{psmallmatrix},
+&& \text{eigenvalue } 1 \text{ (defective)}, && K(g)=g && \text{PARABOLIC}.
+\end{aligned}
+\]
+
+\begin{remark}
+This is also why $W_{156}$ and $W_{198}$ have identical size multisets at every
+$N$ and both boundary conditions, and why $W_{108}$ and $W_{201}$ do at
+\rt{pbc}: the two $M_0$ of a pair are related by transposition or by conjugation
+with the swap, which moves $(a,b)$ with them, so $K$ is the same corner. At
+\rt{obc0} the boundary vector $|0\rangle$ is not swap-invariant, which is exactly
+why the spin flip survives on the ring and dies on the chain. Nothing in this
+report was obtained by \emph{applying} a symmetry: all four rules were computed
+from their own wall words, and the coincidences are results.
+\end{remark}
+
+\subsection{Six consequences, read straight off the kernel}
+
+\begin{enumerate}
+\item \textbf{The largest sector is the wall-free label} in the hyperbolic
+family, because a wall costs a letter and cuts the Fibonacci growth. Its size is
+the corresponding corner of $M_0^{\,m}$:
+\[
+D_{\max}(W_{201},\rt{obc0}) = F(N+2), \quad
+D_{\max}(W_{108},\rt{obc0}) = F(N), \quad
+D_{\max}(W_{108/201},\rt{pbc}) = L(N),
+\]
+$L$ the Lucas numbers. The two Fibonacci indices between the two chain values are
+the whole \rt{obc0} asymmetry: the frozen $0$-pad is a free \emph{collar} for the
+word \rt{11} (the site next to a block is forced to $0$ anyway, so the pad costs
+nothing) but a \emph{block letter} for the word \rt{00} (the wall-free stretch
+must begin and end with a $1$, and the two pads are $0$s). All three grow like
+$\varphi^N$.
+
+\item \textbf{In the parabolic family a wall-free stretch is worth only its
+length}, so the biggest sector is the best product of gap lengths at a cost of
+one extra letter per gap:
+$D_{\max} = \max \prod_j g_j$ subject to $\sum_j (g_j+1) \le m$. Since
+$4^{1/5}=1.319508 > 3^{1/4}=1.316074$, the optimum uses gaps of $4$ and
+$D_{\max}\sim 4^{N/5}$. Tier-2 R-T20 gives the exact residue form
+$G(B)=3^k4^{(B-4k)/5}$ with $k=4B \bmod 5$, valid for $B\ge12$, and
+$G(B+5)=4G(B)$ exactly. The series is
+$2,3,4,5,6,9,12,16,20,27,36,48,64,81$ at $N=3\ldots16$ on the ring, and the same
+one site later on the chain.
+
+\item \textbf{Frozen sectors.} A sector has size $1$ iff every renewal factor is
+$1$. In the hyperbolic family $K(g)=1$ for $g\in\{0,2,3\}$ (since
+$F(-1)=F(1)=F(2)=1$), and $x+x^3+x^4=1$ at $x=1/\varphi$, so there are
+$\Theta(\varphi^N)$ frozen sectors. In the parabolic family only $g=1$ gives
+$K=1$, which pins the walls to a rigid alternating pattern and leaves
+\emph{linearly} many: exactly $\lfloor (N-1)/2\rfloor+2$ at \rt{obc0}, and
+exactly $4$ at even $N$ and $2$ at odd $N$ on the ring (the two of them being the
+ring defect of Theorem~\ref{thm:label}).
+
+\item \textbf{The sector count.} At $s=0$ the renewal sum counts realisable
+labels. Parabolic: $K(g)>0$ iff $g\ge1$, i.e.\ no two adjacent walls, so the
+labels are the independent sets of a path or a cycle, giving $F(N+2)$ at
+\rt{obc0} and $L(N)+1$ at \rt{pbc} (the $+1$ is the ring defect). Hyperbolic:
+$K(g)=0$ only at $g=1$, so the labels are the binary words avoiding \rt{101},
+whose generating function has denominator $1-2x+x^2-x^3$ --- R18's recurrence
+$a(N)=2a(N-1)-a(N-2)+a(N-3)$, dominant root $\rho^2$, at \emph{both} boundary
+conditions.
+
+\item \textbf{The ring defect is the trace of a unipotent matrix.} The wall-free
+fibre at \rt{pbc} has $\operatorname{tr}M_0^{\,N}$ elements, which is $2$ when
+$M_0$ is unipotent and $L(N)$ when it is the Fibonacci matrix. So the anomaly R18
+recorded as an exception is not a special case to remember.
+
+\item \textbf{Which sizes occur at all.} The achievable sizes are the
+multiplicative semigroup generated by the kernel values, \emph{together with the
+wall-free label}, which is the one term that is not a product of kernels.
+Parabolic: $K(g)=g$ takes every value, so every integer up to $N$ is a sector
+size (verified: no integer in $1\ldots N$ is missing at $N=18,22,24$).
+Hyperbolic: the kernel values are the \emph{Fibonacci numbers}, so
+\[
+\{\text{sizes}\} =
+\begin{cases}
+\{\text{products of } F(j),\ j\ge3\} & (\rt{obc0}),\\[2pt]
+\{\text{products of } F(j),\ j\ge3\}\ \cup\ \{L(N)\} & (\rt{pbc}).
+\end{cases}
+\]
+The extra ring term is the wall-free sector, which is a \emph{trace} rather than
+a corner of $M_0^{\,N}$ and is therefore Lucas, not Fibonacci. Since Lucas
+numbers are generally not products of Fibonacci numbers this is an infinite
+family of extra sizes, not a handful of exceptions: $7=L(4)$, $11=L(5)$,
+$29=L(7)$, $76=L(9)=4\cdot19$, $123=L(10)=3\cdot41$ and $199=L(11)$ all occur,
+exactly once each, at that one $N$. What is excluded at \emph{both} boundaries is
+an integer that is neither a Fibonacci product nor a Lucas number: $14$, $17$,
+$19$, $22$, $23$, $28$, $31$, $33$, $35$, $37$, $38,\ldots$ --- none of these is
+a sector size of $W_{108}$ or $W_{201}$ at any $N$.
+\end{enumerate}
+
+\section{Generating functions and the exact census}
+
+Give a wall together with the gap after it the weight $x^{g+1}$, one variable per
+label letter, and set
+\[
+B_s(x)=\sum_{g\ge0}K(g)^s x^{g+1},\quad
+A_s(x)=\sum_{g\ge0}L(g)^s x^{g},\quad
+C_s(x)=\sum_{g\ge0}R(g)^s x^{g+1},\quad
+E_s(x)=\sum_{m\ge0}T(m)^s x^{m}.
+\]
+With $Z_N(s)=\sum_{\text{sectors}}|\K|^s$,
+\begin{equation}
+\label{eq:gf}
+\sum_N x^{N+1}Z^{\rt{obc0}}_N(s) = E_s + \frac{A_sC_s}{1-B_s},
+\qquad
+\sum_N x^{N}Z^{\rt{pbc}}_N(s) = \frac{x B_s'(x)}{1-B_s} + \sum_N (\operatorname{tr}M_0^N)^s x^N .
+\end{equation}
+The check that these are the right objects is $s=1$: since $M_0+M_1=J$ by
+\eqref{eq:mats}, the $s=1$ transfer operator is $J$ itself and $Z_N(1)=2^N$ is a
+theorem rather than a test. In the renewal language the same statement is
+$B_1(x)=x^2/(1-x)^2$ for the parabolic family, whose root is $x=1/2$ exactly.
+
+\begin{center}
+\small
+\textbf{\rt{obc0}} --- $n_{\rm sectors}$ / $D_{\max}$ / $n_{\rm frozen}$\\[2pt]
+\resizebox{\textwidth}{!}{\iftable{tab_r30_census_obc0.tex}}\\[8pt]
+\textbf{\rt{pbc}} --- $n_{\rm sectors}$ / $D_{\max}$ / $n_{\rm frozen}$\\[2pt]
+\resizebox{\textwidth}{!}{\iftable{tab_r30_census_pbc.tex}}
+\end{center}
+
+\noindent The exact size multiset is computed at any $N$ by
+\fn{sector\_sizes.hist}, and agrees term by term with exhaustive union-find on
+the $2^N$ flip graph for all four rules, both boundary conditions and
+$N=3\ldots16$ --- $112$ cases, zero mismatches, full multisets and not merely
+counts and maxima.
+
+\section{$n_N(\sigma)$: how many sectors have a given size}
+
+Proposition~\ref{prop:renewal} says a sector of size $\sigma$ is an \emph{ordered
+factorisation} of $\sigma$ into gap kernels, padded out with kernel-$1$ gaps to
+fill the chain. That gives $n_N(\sigma)$ exactly, and it is cheap: the dynamic
+program only ever needs to carry a \emph{divisor} of $\sigma$, so it costs
+$O(N\,d(\sigma))$ and runs at $N=10^4$ without effort, where the full histogram
+--- which must carry every partial product --- is already impossible past
+$N\approx100$.
+
+\subsection{The parabolic family: a polynomial whose degree is number theory}
+
+Here the kernel is $K(g)=g$, so a factor $f$ costs $f+1$ letters and the padding
+factor $1$ costs $2$. The longest factorisations are into \emph{primes}, and they
+dominate. Writing $\Omega(\sigma)$ for the number of prime factors with
+multiplicity and $P(\sigma)=\Omega!/\prod_i a_i!$ for the number of orderings of
+the prime multiset,
+\begin{equation}
+\boxed{\;
+n_N(\sigma) \;\simeq\; P(\sigma)\,\frac{(N/2)^{\Omega(\sigma)+1}}{(\Omega(\sigma)+1)!}
+\;}
+\qquad (\rt{obc0},\ \sigma \text{ fixed},\ N\to\infty).
+\end{equation}
+So the sector census reads off the prime factorisation of the size. $n_N(4)$ and
+$n_N(6)$ both grow like $N^3$ because $\Omega=2$ for both, but $n_N(6)$ is
+asymptotically \emph{twice} $n_N(4)$ because $6=2\cdot3$ can be ordered two ways
+and $4=2\cdot2$ only one; a prime size grows only like $N^2$. Measured
+$n_N(\sigma)$ divided by this prediction, at \rt{obc0}:
+\begin{center}
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+$\sigma$ & $\Omega$ & $P$ & $N=50$ & $N=200$ & $N=800$ & $N=3200$\\
+\midrule
+$2$   & 1 & 1 & 1.04000 & 1.01000 & 1.00250 & 1.00063\\
+$4$   & 2 & 1 & 0.99840 & 0.99990 & 0.99999 & 1.00000\\
+$6$   & 2 & 2 & 0.93619 & 0.98475 & 0.99623 & 0.99906\\
+$12$  & 3 & 3 & 0.81261 & 0.95325 & 0.98833 & 0.99708\\
+$30$  & 3 & 6 & 0.62335 & 0.90105 & 0.97506 & 0.99375\\
+$210$ & 4 & 24& 0.22866 & 0.74297 & 0.93229 & 0.98288\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+On the ring the budget is spent exactly rather than at most, which turns the
+same law into a \textbf{parity selection rule}:
+\begin{equation}
+n^{\rt{pbc}}_N(\sigma) \;\simeq\;
+2P(\sigma)\frac{(N/2)^{\Omega(\sigma)}}{\Omega(\sigma)!}
+\quad\text{when } N \equiv \mathrm{sopfr}(\sigma)+\Omega(\sigma) \pmod 2,
+\end{equation}
+($\mathrm{sopfr}$ is the sum of prime factors with multiplicity, A001414).
+The other parity is not merely one degree lower --- usually it is \emph{empty}.
+Merging two factors $a,b$ changes $\mathrm{sopfr}+\Omega$ by $(a-1)(b-1)-2$,
+which is odd exactly when $a$ and $b$ are both even, so a factorisation of the
+opposite parity exists iff $\sigma$ admits one with two even factors:
+\begin{equation}
+\sigma \text{ occurs at both parities of } N \iff 4 \mid \sigma ,
+\end{equation}
+and otherwise the wrong parity is empty. (Verified for $\sigma=2\ldots40$ over
+$N=3\ldots59$; the sharpening is Tier-2 R-T20 rev.3's.) The effect is not
+subtle. At
+$N=400$ the ring of $W_{156}$ has \emph{no} sector of size $2$ and none of size
+$6$, while at $N=401$ it has $401$ of size $2$; size $4$ occurs $39600$ times at
+$N=400$ and $401$ times at $N=401$. For $\sigma=1$ the two frozen states of the
+ring defect are present at every $N$ and are added to the formula, reproducing
+the exact counts $4$ and $2$.
+
+\subsection{The hyperbolic family: exponentially many}
+
+Here the padding is degenerate --- $K(g)=1$ for $g\in\{0,2,3\}$, at costs $1$, $3$
+and $4$ letters --- and $x+x^3+x^4=1$ at $x=1/\varphi$. So the number of ways to
+pad is itself exponential and
+\begin{equation}
+\boxed{\; n_N(\sigma)\;\simeq\;A(\sigma)\,N^{m(\sigma)}\varphi^{N} \;}
+\end{equation}
+with $m(\sigma)$ the largest number of factors in an ordered factorisation of
+$\sigma$ into Fibonacci numbers $\ge2$, and $m(\sigma)=-1$ (no sectors, ever)
+when $\sigma$ is not such a product. Measured $n_N(\sigma)\,N^{-m}\varphi^{-N}$
+at \rt{obc0} settles to a constant: for $\sigma=1$ ($m=0$) it is $1.3708$ at
+$N=100$, $200$ and $400$ alike; for $\sigma=2$ ($m=1$) it moves from
+$6.450\times10^{-2}$ to $6.467\times10^{-2}$ over the same window; for $\sigma=8$
+($m=3$, $8=2\cdot2\cdot2$ with $2=F(3)$) from $2.04\times10^{-5}$ to
+$2.28\times10^{-5}$, the residual drift being the expected $O(m/N)$.
+
+The contrast is the cleanest single statement in this report. \emph{At fixed
+size, the number of sectors is polynomial in $N$ for $W_{156}/W_{198}$ and
+exponential for $W_{108}/W_{201}$} --- and it is the same fact as
+$n_{\rm frozen}$ being linear in one family and $\Theta(\varphi^N)$ in the other,
+read at $\sigma=1$.
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_sector_multiplicity.pdf}{\textwidth}
+\caption{\textbf{$n_N(\sigma)$, the number of sectors of size exactly
+$\sigma$.}
+(a) the measured histogram --- union-find over the $2^N$ flip graph at $N=16$,
+\rt{obc0} --- with the renewal formula overlaid as black dashes; they agree
+exactly, size by size. The gaps in the $W_{108}$ comb are the non-Fibonacci
+integers, which are not sector sizes at any $N$ \emph{on the chain}; the
+$W_{156}$ comb has no gaps. On the ring one extra size per $N$ is filled in by
+the wall-free sector, the Lucas number $L(N)$.
+(b) the same on the ring at $N=16$ and $N=17$: the two combs are largely
+\emph{disjoint}, which is the parity selection rule --- $\sigma$ is populated at
+leading order only when $N\equiv\mathrm{sopfr}(\sigma)+\Omega(\sigma)\pmod2$.
+(c) the parabolic law: $n_N(\sigma)$ against $N$ on log-log, with the closed form
+dashed. The slopes are $\Omega(\sigma)+1$, and $\sigma=6$ sits a factor $2$
+above $\sigma=4$ at the same slope.
+(d) the hyperbolic law: $n_N(\sigma)\varphi^{-N}$ against $N$, straight lines of
+slope $m(\sigma)$, with $A(\sigma)N^{m}$ read off at the largest $N$.}
+\label{fig:mult}
+\end{figure}
+
+\section{The distribution at large $N$}
+
+\subsection{One scalar equation}
+
+By \eqref{eq:gf} the singularity of both generating functions is the root of
+$1-B_s$, so
+\begin{equation}
+\boxed{\;Z_N(s)\;\sim\;\text{const}\cdot\lambda_s^N,\qquad
+B_s(1/\lambda_s)=1 \;}
+\end{equation}
+with
+\[
+B_s(x) = x\,\mathrm{Li}_{-s}(x) \ \ \text{(parabolic)},\qquad
+B_s(x) = x + \sum_{g\ge2}F(g-1)^s x^{g+1}\ \ \text{(hyperbolic)} .
+\]
+Two things follow immediately. First $\lambda_s$ is \textbf{independent of the
+boundary condition}: the boundary enters \eqref{eq:gf} only through the numerator
+$A_sC_s$ and the additive term $E_s$, never through the pole. Second the
+landmarks are exact: $B_0(x)=x^2/(1-x)$ gives $\lambda_0=\varphi$ and
+$B_0(x)=x+x^3/(1-x)$ gives $x^3-x^2+2x-1=0$, i.e.\ $\lambda_0=\rho^2$, while
+$B_1$ gives $\lambda_1=2$ in both families.
+
+\begin{center}
+\small
+\iftable{tab_r30_lambda.tex}
+\end{center}
+
+\noindent The minimal polynomials are Tier-2 R-T20's, obtained there from the
+$s$-fold tensor transfer matrix $T_s = M_0^{\otimes s}+M_1^{\otimes s}$. Their
+dominant roots substituted into $B_s(1/\lambda)$ return $1$ to $30$ digits, so
+the two constructions describe the same object; the tensor route was also
+reimplemented here and reproduces the $s$-th moment of the exact histogram for
+$s=1\ldots4$, all four rules, both boundary conditions.
+
+\subsection{The sizes are log-normal}
+
+A label is a renewal chain and $\ln|\K| = \sum_j \ln K(g_j)$ is a
+renewal-reward sum, so the central limit theorem applies to $\ln|\K|$ under the
+uniform measure on sectors. With $\tau(s)=\ln\lambda_s$,
+\begin{equation}
+\boxed{\;|\K| \;=\; \exp\bigl(\alpha_{\rm typ}N + \sigma\sqrt{N}\,\xi\bigr),
+\qquad \xi\sim\mathcal{N}(0,1),\qquad
+\alpha_{\rm typ}=\tau'(0),\ \ \sigma^2=\tau''(0). \;}
+\end{equation}
+Beyond the typical value the whole spectrum follows: the number of sectors of
+size $e^{\alpha N}$ is $e^{Ng(\alpha)}$ with
+$g(\alpha)=\inf_s\bigl(\tau(s)-s\alpha\bigr)$. Its right edge is
+$\alpha_{\max}=\lim_{s\to\infty}\tau'(s)$, where $g=0$ and a single sector
+survives --- $\ln\varphi$ in the hyperbolic family and $(\ln4)/5$ in the
+parabolic one, matching \S3.2 items 1 and 2. Its left edge is $\alpha=0$, where
+$g(0)=\ln\lambda_{-\infty}$ is the frozen-sector growth rate --- $\ln\varphi$ and
+$0$ respectively, matching item 3. A separate landmark is $\tau'(1)$: the
+$s=1$ measure weights each sector by its size, i.e.\ it is the uniform measure on
+\emph{states}, so $e^{\tau'(1)N}$ is the size of the sector a randomly chosen
+state finds itself in. That $\tau'(1)<\ln2$ strictly is exactly strong
+fragmentation in the sense of R21.
+
+\begin{center}
+\small
+\resizebox{\textwidth}{!}{\iftable{tab_r30_asymptotics.tex}}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_sector_sizes.pdf}{\textwidth}
+\caption{\textbf{The sector-size distribution.}
+(a) the exact distribution on the ring at $N=60$ against the predicted
+log-normal $\mathcal{N}(\alpha_{\rm typ}N,\sigma^2N)$, no fitted parameter. The
+dotted lines mark $\alpha_{\max}$, which the distribution never reaches at any
+appreciable density even though a sector of that size exists.
+(b) the large-deviation spectrum $g(\alpha)$, with the three landmarks: the
+typical sector ($s=0$, circle), the typical \emph{state's} sector ($s=1$,
+square), and the largest sector ($\alpha_{\max}$, triangle, where $g=0$). The
+parabolic curve approaches its right edge only logarithmically in $s$, so the
+plotted branch stops just short of the triangle.
+(c) the finite-size offset $\langle\ln|\K|\rangle-\alpha_{\rm typ}N$: identically
+zero on the ring for all four rules, and a rule-dependent constant on the chain
+--- \emph{positive} for $W_{201}$.}
+\label{fig:sizes}
+\end{figure}
+
+\subsection{The two families, side by side}
+
+For $W_{156}/W_{198}$ the three landmarks $\alpha_{\rm typ}=0.198741$,
+$\tau'(1)=0.223285$ and $\alpha_{\max}=0.277259$ are close together and
+$\sigma^2=0.030461$ is small: the sectors are all of roughly the same size. For
+$W_{108}/W_{201}$ they are $0.074455$, $0.208469$ and $0.481212$ with
+$\sigma^2=0.076019$: the distribution is far broader and far more unequal. The
+crudest way to see it is to compare the mean sector with the sector a random
+state lands in --- at $N=16$, \rt{obc0}, the mean $W_{201}$ sector holds $11.2$
+states but a random state sits in one holding $200.8$, against $25.4$ and $40.0$
+for $W_{156}$. This is the same linear-versus-exponential gap module that
+separates the two families in R-T17 and R27, now visible in the census.
+
+\subsection{The boundary: exact on the ring, rule-dependent on the chain}
+
+Since $\lambda_s$ is boundary-independent, so are $\alpha_{\rm typ}$ and
+$\sigma^2$; the boundary can only contribute $O(1)$. Writing
+$\langle\ln|\K|\rangle = \alpha_{\rm typ}N + c_1$ and
+$\mathrm{Var}\,\ln|\K| = \sigma^2 N + c_2$, an exact $O(N^2)$ renewal dynamic
+program over the $L/K/R$ decomposition gives
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+& $W_{156}$ & $W_{198}$ & $W_{108}$ & $W_{201}$\\
+\midrule
+$c_1$ (\rt{obc0}) & $-0.246953$ & $-0.246953$ & $-0.100987$ & $+0.245187$\\
+$c_2$ (\rt{obc0}) & $+0.199433$ & $+0.199433$ & $-0.148880$ & $+0.170421$\\
+$c_1,c_2$ (\rt{pbc}) & $0$ & $0$ & $0$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[the offset is not a universal pad cost]
+An earlier draft of this analysis measured $c_1=-0.2470$ for $W_{156}$ and
+described it as ``the pad cost''. That reading is wrong, and Tier-2 R-T20 rev.2
+caught it: there are four values and $W_{201}$'s has the \emph{opposite sign}.
+The mechanism is the same one that separates $F(N+2)$ from $F(N)$ in \S3.2 item
+1 --- the frozen $0$-pad is a free collar for the word \rt{11} and a block letter
+for \rt{00} --- now showing up in the $O(1)$ term of the central limit theorem
+rather than in a leading exponent. The values above are reproduced independently
+here and by Tier-2 and agree to seven digits. No closed form is known for any of
+the three; $-0.24695309$ is not $\ln(25/32)=-0.2468601$.
+\end{remark}
+
+\noindent On the ring both offsets vanish identically --- the residuals at
+$N=192$ are $\sim10^{-6}$ and drift linearly in $N$, which identifies them as the
+truncation error of the substituted $\alpha_{\rm typ}$ and $\sigma^2$ rather than
+a genuine constant. So the log-normal law holds on the ring at \emph{finite} $N$
+with no correction at all: at $N=24$ the measured mean is $0.198739N$ against
+$\alpha_{\rm typ}=0.198741$, and the state-weighted mean is $0.223285N$ on the
+nose.
+
+\section{What is proved, what is computed, what is not claimed}
+
+\paragraph{Proved.} Theorem~\ref{thm:label} (the label is the sector, with the
+one ring defect) and Proposition~\ref{prop:renewal} (rank one gives the renewal
+factorisation). The achievable-size statement in \S3.2 item 6 was falsified in
+its first form --- it omitted the wall-free label, which is a trace on the ring
+and therefore Lucas rather than Fibonacci --- by Tier-2 R-T20 rev.3, and is
+stated here in its corrected form; the routines were already right, and the
+regression test that should have caught it was vacuous because its list of
+system sizes happened to miss the $N$ at which $L(N)$ is small. Given those, the generating functions \eqref{eq:gf}, the closed
+forms for $D_{\max}$, $n_{\rm frozen}$ and $n_{\rm sectors}$, the achievable-size
+semigroups, and $\lambda_1=2$ are derivations.
+
+\paragraph{Computed exactly, and cross-checked three ways.} The size multisets
+agree between (i) union-find on the $2^N$ flip graph, (ii) the renewal product
+enumerated label by label, and (iii) the polynomial-state transfer dynamic
+program, for all four rules, both boundary conditions and $N\le16$; and the
+moments agree with the independent tensor construction for $s=1\ldots4$.
+Tier-2 R-T20 reproduces the same multisets from its own engine, and its eight
+minimal polynomials satisfy $B_s(1/\lambda_s)=1$ to $30$ digits.
+
+\paragraph{Asymptotic, with a measured rate of approach.} The log-normal law and
+the large-deviation spectrum are $N\to\infty$ statements; the tables above give
+the finite-$N$ residuals rather than asserting convergence. The
+$n_N(\sigma)$ closed forms are leading-order at fixed $\sigma$ and their
+$1/N$ corrections are visible in the ratio table --- $\sigma=210$ is still
+$1.7\%$ low at $N=3200$.
+
+\paragraph{Not claimed.} No closed form for the three chain offsets $c_1$, nor
+for the residue $A(\sigma)$ in the hyperbolic multiplicity law; both are
+available numerically to any precision from the exact routines. Nothing here
+extends to the other twelve unitary rules, and nothing here was obtained by
+invoking a reflection or a spin flip.
+
+\paragraph{A caveat on cost, corrected.} An earlier note described
+\fn{hist} as polynomial in $N$. It is not: it carries one state per distinct
+partial matrix product, which is $1.0\times10^4$ at $N=40$, $6.4\times10^5$ at
+$N=80$ and $1.3\times10^7$ at $N=120$ (about $5.8$ GB). The number of distinct
+\emph{sizes} is polynomial ($540$ at $N=32$); the number of partial products is
+not. Above $N\approx100$ use \fn{moment\_Z} for moments, \fn{cumulants} for the
+central limit constants and \fn{multiplicity} for $n_N(\sigma)$ --- all three are
+polynomial or better.
+
+\section{Reproduction}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.sector_sizes --bc obc0 --nmax 22
+python -m qca_fragmentation.scaling.sector_sizes --bc pbc  --nmax 22
+python -m qca_fragmentation.scaling.sector_size_figure
+python -m pytest qca_fragmentation/tests/test_sector_sizes.py -q     # 160 tests
+\end{verbatim}
+
+\noindent Data in \fn{analytics/sector\_sizes\_\{obc0,pbc\}.json}. The
+complementary transfer-matrix treatment, the minimal polynomials of $\lambda_s$,
+the $G(B)$ residue formula for $D_{\max}$ and the independent offset table are
+Tier-2 report R-T20 rev.2 in the \fn{sector\_analysis\_tier2} repository.
+
+\end{document}
