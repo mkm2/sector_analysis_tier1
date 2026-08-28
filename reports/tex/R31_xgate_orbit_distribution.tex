@@ -1,0 +1,380 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\rt}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{\texttt{#1}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\ifgraphic}[2]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}%
+  {\fbox{\parbox{#2}{\centering\small figure \texttt{\detokenize{#1}} pending}}}}
+\newcommand{\iftable}[1]{\IfFileExists{#1}{\input{#1}}%
+  {\fbox{\parbox{0.9\textwidth}{\centering\small table
+  \texttt{\detokenize{#1}} pending}}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\title{\textbf{Report R31 --- the same four rules with $V=X$:\\
+what survives of R30 when the gate becomes a permutation}}
+\author{Tier 1 analysis}
+\date{2026-08-28}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+R30 derived the Krylov sector-size distribution of $W_{156}/W_{198}$ and
+$W_{108}/W_{201}$ with a Hadamard gate. Replacing the gate by $X$ makes the
+circuit a \emph{permutation}, so the sectors become its orbits, and the question
+is how much of the R30 machinery is gate-independent. The answer is sharp on both
+sides. What dies is one thing: R30 rests on the flip reduction, which needs
+$\langle b|V|b\rangle\ne0$ so that a half-layer image is a full \emph{subcube};
+$X$ has a zero diagonal, the choice at an active site is forced, and the
+transitivity half of R30's Theorem~1 goes with it. What survives is more than one
+would guess. The wall set is still conserved --- for free, since
+$\mathrm{supp}(U_X|x\rangle)\subseteq\mathrm{supp}(U_H|x\rangle)$ --- so the label
+is still an invariant, merely no longer a complete one, and the $X$ orbits
+strictly refine the Hadamard sectors. And, measured rather than assumed, inside a
+label fibre the $X$ map is the \textbf{direct product} of independent
+per-segment permutations, each depending only on the segment. So R30's renewal
+factorisation survives one level down, with its scalar gap kernel $K$ replaced by
+a \textbf{cycle type} $C$ satisfying $\sum C=K$, and its product replaced by an
+\textbf{lcm}: choosing one cycle $c_j$ per segment yields $\prod_j c_j/\mathrm{lcm}_j c_j$
+orbits of length $\mathrm{lcm}_j c_j$. For the ascent pair $C$ is a single cycle,
+so the orbit length is literally the lcm of R30's kernels; for the symmetric pair
+$C$ is the spectrum of the hard-core $X$ automaton on a segment, whose longest
+cycle is $3\ell-7$. This reproduces the exhaustive orbit multiset term by term on
+all $80$ (rule, boundary, $N$) triples with $N\le13$. The consequences are
+physical: replacing a product by an lcm turns the largest sector from
+$\varphi^N$ into a \textbf{Landau-type maximum}, $\exp\Theta(\sqrt{N\log N})$,
+which we identify exactly for the ascent pair --- so under $X$ there is no
+macroscopic sector at all, $D_{\max}$ is not even monotone in $N$, and R30's
+log-normal law has no analogue.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question}
+
+The four rules and their wall words are those of R30:
+$W_{201}=\rt{VIII}$ (word \rt{11}), $W_{108}=\rt{IIIV}$ (\rt{00}),
+$W_{156}=\rt{IIVI}$ (\rt{01}), $W_{198}=\rt{IVII}$ (\rt{10}). Everything below
+replaces the Hadamard by $X$ and keeps every other convention fixed: even sites
+then odd, sequential within a layer, \rt{obc0} $=$ frozen $0$ pads, and sectors
+$=$ weakly connected components of the one-cycle graph. Both boundary conditions
+are carried throughout, and all four rules were computed from their own wall
+words --- the coincidences below are results, not inputs.
+
+\section{What breaks: exactly one thing}
+
+\begin{proposition}[the load-bearing use of the Hadamard]
+R30 reduces the sector partition to the connected components of the single-flip
+graph. The proof needs both matrix elements of the gate to be non-zero, so that
+the image of a half-layer from a basis state is the full subcube spanned by the
+active sites. For $V=X$ the diagonal element vanishes: ``do not flip'' has
+amplitude zero, the choice at an active site is forced, and the image is a single
+point. The one-cycle map is a permutation of the $2^N$ basis states.
+\end{proposition}
+
+\noindent Two corollaries, both verified exhaustively for all four rules at both
+boundary conditions:
+
+\begin{itemize}
+\item \textbf{Sectors are orbits.} There are no transients, every state is
+recurrent, and the sum rule $\sum_\ell \ell\, n_N(\ell)=2^N$ is automatic rather
+than a check.
+\item \textbf{R30 Theorem~1's transitivity half dies.} Its proof moves one domain
+wall by one site, or removes one particle at a time; those are single-site moves,
+and under $X$ every active site flips at once. Nothing replaces them.
+\end{itemize}
+
+\section{What survives, and why}
+
+\subsection{The label is still conserved}
+
+\begin{proposition}
+The wall set is constant on $X$ orbits, for all four rules and both boundary
+conditions.
+\end{proposition}
+
+\begin{proof}
+$\mathrm{supp}(U_X|x\rangle)\subseteq\mathrm{supp}(U_H|x\rangle)$, because the
+$X$ image is one corner of the Hadamard subcube. Any quantity constant on
+Hadamard sectors is therefore constant on $X$ orbits, and R30 Theorem~1 gives the
+wall set as such a quantity.
+\end{proof}
+
+\noindent So the label is an invariant but not a complete one: the $X$ orbits
+\emph{strictly refine} the Hadamard sectors. That is R11's refinement theorem,
+now visible in the census --- at \rt{obc0}, $N=12$: $1442$ orbits inside $1081$
+fibres for $W_{108}$, $1018$ inside $616$ for $W_{201}$, $688$ inside $377$ for
+$W_{156}$.
+
+A pleasant corollary in the other direction: a state with no active site is fixed
+by any gate, so the \textbf{frozen sectors are gate-independent}. The fixed points
+of the $X$ map are exactly R30's size-$1$ sectors, checked for $N=4\ldots12$, all
+four rules, both boundary conditions. R30's closed forms for $n_{\rm frozen}$ ---
+$\lfloor(N-1)/2\rfloor+2$ and $4/2$ for the ascent pair, $\Theta(\varphi^N)$ for
+the symmetric one --- carry over unchanged.
+
+\subsection{The renewal factorisation survives one level down}
+
+This is the central measurement of the report.
+
+\begin{theorem}[measured; \fn{check\_factorisation}]
+\label{thm:factor}
+Inside a label fibre the $X$ map is the \textbf{direct product} of independent
+per-segment permutations, and each factor depends only on its own segment.
+Zero failures and zero conflicts over every label at $N=10,12$, all four rules,
+both boundary conditions; Tier-2 R-T21 reports the same over $N=3\ldots13$ from
+an independent implementation.
+\end{theorem}
+
+\noindent The walls block information flow, so this is what one hopes for; but it
+is not automatic, and it is what makes everything else possible. Given it, define
+$C$, the \textbf{cycle type} of a segment, indexed by the segment's number of
+states --- that is, by R30's kernel value. Then
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+\text{R30 ($H$):}\quad & |\K| = L(g_0)K(g_1)\cdots R(g_k) && \text{a PRODUCT},\\
+\text{R31 ($X$):}\quad & \text{choose } c_j\in C(g_j)\ \text{in each gap};\ \
+\text{this gives } \tfrac{\prod_j c_j}{\mathrm{lcm}_j c_j} \ \text{orbits of
+length } \mathrm{lcm}_j c_j .
+\end{aligned}}
+\end{equation}
+
+\noindent Since $\sum C(g)=K(g)$, forgetting the cycle structure recovers R30
+exactly: the cycle type refines the Hadamard kernel and nothing is lost.
+
+\begin{center}
+\small
+\iftable{tab_r31_kernel.tex}
+\end{center}
+
+\paragraph{The ascent pair is trivial and the symmetric pair is not.}
+For $W_{156}/W_{198}$, $C$ is a \emph{single} cycle of length equal to R30's
+kernel value: the domain wall marches ballistically and reflects, visiting every
+admissible position once per period. So the orbit length is literally the lcm of
+R30's gap kernels, and a fibre of R30 size $\prod_j K_j$ carries
+$\prod_j K_j/\mathrm{lcm}_j K_j$ orbits of length $\mathrm{lcm}_j K_j$. For
+$W_{108}/W_{201}$ the segment carries the hard-core (PXP-like) $X$ automaton with
+frozen ends, $|C(\ell)|=F(\ell+2)$ as in R30, and the spectrum is genuinely
+non-trivial: $(2,3)$, $(3,5)$, $(2,3,8)$, $(3,7,11)$, $(2,3,5,10,14),\ldots$,
+with the cycle lengths lying in arithmetic progressions of step $4$ and the
+longest equal to $3\ell-7$ (verified here to $\ell=16$ and by Tier-2 R-T21 to
+$\ell=26$).
+
+\begin{remark}[indexing, so the two reports can be read together]
+$C$ is indexed here by the segment's \emph{number of states}, which makes the
+corner class redundant --- keyed that way there are zero conflicts for all four
+rules at both boundaries. Tier-2 R-T21 indexes by the geometric gap and therefore
+needs a left/interior/right class; the two are the same table. Their
+$C(L,\ell)=C(K,\ell+1)$ for $W_{201}$ is our ``both segments have $F(\cdot)$
+states'', and their $C(L,\ell)=(1,)$ for $W_{156}$ is our ``a one-state segment
+is a fixed point''. Their $\ell$ counts the collars and ours does not, so their
+hyperbolic table is shifted by two.
+\end{remark}
+
+\subsection{The wall-free label: a segment on the chain, not on the ring}
+
+R30's Remark~2 recorded that every correction in that report was the same term,
+the wall-free label, and predicted a fourth. It happened twice more here, and the
+truth turns out to be sharper than either guess that preceded it:
+
+\begin{proposition}
+At \rt{obc0} the wall-free label \emph{is} a segment --- its cycle type is exactly
+$C$ evaluated at its state count, for all four rules, $N=4\ldots12$. At \rt{pbc}
+it is not, for any of them.
+\end{proposition}
+
+\noindent The mechanism is the pad. On the chain the frozen $0$ outside each end
+plays the part that a wall's collar plays in the bulk, so a wall-free chain is
+simply one long segment. On the ring there is no boundary at all: for the ascent
+rules the wall-free label is the two frozen uniform states, cycle type $(1,1)$ and
+not the $(2,)$ of a two-state segment; for the symmetric rules it is the hard-core
+$X$ automaton on a \emph{ring} of $L(N)$ states, whose spectrum
+($(4)$, $(2,2,3)$, $(4,7)$, $(3,5,5,5)$, $(8,10,11)$ at $N=3\ldots7$) appears
+nowhere among the segment kernels --- indeed usually \emph{no} segment has $L(N)$
+states, since R30 showed Lucas numbers are generally not Fibonacci products.
+
+\begin{remark}
+Both of the errors here were mine. The first kernel extraction classified the
+wall-free ring as a segment and duly reported the \rt{pbc} ascent kernel as
+ambiguous at eight lengths; the correction to that then over-shot into ``the
+wall-free label is never a segment'', which is false on the chain. Tier-2 R-T21
+caught the second. The predictor was unaffected only because it computes the
+wall-free type directly instead of looking it up.
+\end{remark}
+
+\subsection{The ring defect stops being a defect}
+
+Under the Hadamard, $0^N$ and $1^N$ shared the empty label on the ring and had to
+be separated by hand. Under $X$ they are simply two fixed points, and the lcm
+assembly returns them with no special case at all.
+
+\section{Verification}
+
+\begin{figure}[htbp]
+\centering
+\ifgraphic{../../figures/fig_orbit_sizes.pdf}{\textwidth}
+\caption{\textbf{The $X$-gate orbit-length distribution.}
+(a) the measured histogram --- orbits of the $2^N$ permutation at $N=16$,
+\rt{obc0} --- against the lcm assembly, overlaid as black dashes; they agree
+term by term.
+(b) the largest sector under $X$ (solid) against the Hadamard (dashed). The
+symmetric pair falls off its $\varphi^N$ line immediately; the ascent pair
+separates later, because its Hadamard $D_{\max}=4^{N/5}$ is itself slow. The $X$
+curves are not monotone.
+(c) the new kernel: for the symmetric pair the segment cycle spectrum, with the
+longest cycle $3\ell-7$; for the ascent pair a single cycle of length $\ell+1$.}
+\label{fig:orbits}
+\end{figure}
+
+The assembly reproduces the exhaustive orbit multiset of the $2^N$ permutation
+\textbf{term by term} on all $80$ (rule, boundary, $N$) triples with
+$N=4\ldots13$ --- not merely the counts and the maxima. Tier-2 R-T21 reports the
+same on $96$ triples to $N=14$ from an independent implementation, and our orbit
+counts agree to the digit.
+
+\begin{center}
+\small
+\textbf{\rt{obc0}} --- $n_{\rm sectors}$ ($X$/$H$) and $D_{\max}$ ($X$/$H$)\\[2pt]
+\resizebox{\textwidth}{!}{\iftable{tab_r31_census_obc0.tex}}\\[8pt]
+\textbf{\rt{pbc}}\\[2pt]
+\resizebox{\textwidth}{!}{\iftable{tab_r31_census_pbc.tex}}
+\end{center}
+
+\section{The distribution: an arithmetic law, not a log-normal}
+
+\subsection{$D_{\max}$ is a Landau-type maximum}
+
+Replacing a product by an lcm is what changes the physics. For the ascent pair
+the orbit length is exactly $\mathrm{lcm}$ of R30's gap kernels, so
+
+\begin{equation}
+\boxed{\;
+D_{\max} \;=\; \max\ \mathrm{lcm}(g_1,\ldots,g_k)
+\quad\text{subject to}\quad
+\sum_j (g_j+1)\ \begin{cases}\le N+1 & (\rt{obc0}),\\ = N & (\rt{pbc}).\end{cases}}
+\end{equation}
+
+\noindent Zero mismatches against exhaustive enumeration, $N=4\ldots19$, both
+boundary conditions. (The ring needing the budget spent \emph{exactly} rather
+than at most is the same cyclic-budget effect as R30's parity selection rule.)
+This is Landau's function with a cost penalty, so
+$D_{\max}=\exp\Theta(\sqrt{N\log N})$ --- \textbf{subexponential}. Measured,
+$\ln D_{\max}/\sqrt{N\ln N}$ sits at $0.62,0.67,0.69,0.69,0.74$ for $W_{156}$ at
+\rt{obc0}, $N=12,16,20,24,28$.
+
+So the single most consequential difference between the two gates is this: under
+the Hadamard the largest sector holds $\varphi^N$ states, an extensive fraction of
+a fragmented space; under $X$ \emph{no sector is macroscopic at all}. And because
+an lcm is arithmetic rather than monotone, $D_{\max}$ is not even increasing in
+$N$ --- $W_{201}$ at \rt{pbc} gives $56$, $166$, $153$ at $N=16,17,18$. That is
+not noise and not a bug; it is the signature that this is no longer a growth law.
+
+\subsection{The sector count, and a convergence between the families}
+
+The two families have almost the same growth base under $X$, which they did not
+under the Hadamard:
+\begin{center}
+\small
+\begin{tabular}{llrr}
+\toprule
+& & base under $X$ & base under $H$ \\
+\midrule
+\rt{obc0} & $W_{156}/W_{198}$ & $1.8299$ & $\varphi=1.6180$ \\
+\rt{obc0} & $W_{108}/W_{201}$ & $1.8412$ & $\rho^2=1.7549$ \\
+\rt{pbc}  & $W_{156}/W_{198}$ & $1.8124$ & $1.6164$ \\
+\rt{pbc}  & $W_{108}/W_{201}$ & $1.8437$ & $1.7549$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+(fitted over $N=10\ldots18$). More sectors, all of them smaller, and the
+distinction between the Fibonacci and unipotent families --- which organised
+every result in R30 --- largely washes out of the \emph{count}, while remaining
+sharp in the kernel and in $D_{\max}$.
+
+\subsection{What replaces the log-normal, and what we are not claiming}
+
+R30's log-normal came from $\ln|\K|$ being a renewal-\emph{reward} sum: an
+additive functional of a renewal chain, hence a central limit theorem. Here
+$\ln(\text{orbit length})=\ln\mathrm{lcm}(c_1,\ldots,c_k)$, which is not additive
+--- it is $\sum_p \max_j v_p(c_j)\ln p$, an arithmetic object. Empirically the
+typical orbit is strongly sub-linear in $N$:
+\begin{center}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+$N$ & $12$ & $16$ & $20$ & $24$ & $28$ \\
+\midrule
+$\langle\ln \ell\rangle$ ($W_{156}$, \rt{obc0}) & $1.5624$ & $1.8750$ & $2.1173$ & $2.3198$ & $2.4926$ \\
+$\;/\ln N$    & $0.629$ & $0.676$ & $0.707$ & $0.730$ & $0.748$ \\
+$\;/\ln^2 N$  & $0.253$ & $0.244$ & $0.236$ & $0.230$ & $0.224$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The first ratio rises and the second falls, so the truth lies between
+$\Theta(\ln N)$ and $\Theta(\ln^2 N)$ and \textbf{these sizes do not separate
+them}. We state that as an open question rather than fit an exponent to five
+points. The mechanism argues for the lower end: with $\Theta(N)$ segments and an
+exponential tail on segment length the longest cycle in a typical label is
+$O(\ln N)$, and all cycle lengths are $O(\ell)$ (Tier-2 R-T21, to $\ell=26$), so
+$\ln\mathrm{lcm}$ should be a sum of $\ln p$ over primes realised below an
+$O(\ln N)$ ceiling --- which gives $\Theta(\ln N)$ with a slowly growing
+correction. Settling it needs $N\sim40$--$60$ on the typical value.
+
+\section{Answering the question as asked}
+
+\begin{enumerate}
+\item \textbf{Is the old method still applicable?} Half of it, and the half that
+survives is the interesting half. The wall grammar is gate-independent: the label
+is still conserved, the fibre is still a product of free segments, and the
+renewal decomposition still organises the calculation. What is gate-dependent is
+the \emph{completeness} of the label, and with it every quantitative result of
+R30, because those all computed the size of a label fibre and the fibre now
+splits.
+
+\item \textbf{Where did R30 explicitly need the Hadamard?} In exactly one place:
+the flip reduction, which needs a non-zero diagonal so that a half-layer image is
+a subcube. Everything else in R30 is downstream of that, through the transitivity
+half of Theorem~1.
+
+\item \textbf{What replaces it?} A cycle type in place of a scalar kernel, and an
+lcm in place of a product. R30's $K(g)$ becomes $C(g)$ with $\sum C=K$, so the
+Hadamard answer is recovered by forgetting the cycle structure --- the two reports
+are the same combinatorics read at two resolutions.
+
+\item \textbf{What changes physically?} The largest sector collapses from
+$\varphi^N$ to $\exp\Theta(\sqrt{N\log N})$: under $X$ there is no macroscopic
+Krylov sector, the fragmentation is finer everywhere, and the size distribution is
+governed by lcm arithmetic rather than by a central limit theorem. Closed orbits
+and permutations do change the distribution, and they change it in the direction
+of \emph{more} fragmentation, not less.
+\end{enumerate}
+
+\section{Reproduction}
+
+\begin{verbatim}
+python -m qca_fragmentation.scaling.orbit_size_figure
+python -m pytest qca_fragmentation/tests/test_orbit_sizes.py -q     # 66 tests
+\end{verbatim}
+
+\noindent Engine in \fn{scaling/orbit\_sizes.py}, which reuses R30's
+\fn{scaling/sector\_sizes.py} for the label decomposition, so the two reports
+share one validated enumeration and differ only in the weight carried along it.
+The complementary transfer-matrix treatment, the corner-class indexing, the
+segment spectrum to $\ell=26$ and the ring wall-free spectra are Tier-2 report
+R-T21.
+
+\end{document}
