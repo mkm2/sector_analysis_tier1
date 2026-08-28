@@ -134,8 +134,8 @@ This is the central measurement of the report.
 Inside a label fibre the $X$ map is the \textbf{direct product} of independent
 per-segment permutations, and each factor depends only on its own segment.
 Zero failures and zero conflicts over every label at $N=10,12$, all four rules,
-both boundary conditions; Tier-2 R-T21 reports the same over $N=3\ldots13$ from
-an independent implementation.
+both boundary conditions; Tier-2 R-T21~\S2 (Prop.~2) reports the same over
+$N=3\ldots13$ from an independent implementation.
 \end{theorem}
 
 \noindent The walls block information flow, so this is what one hopes for; but it
@@ -171,16 +171,19 @@ $W_{108}/W_{201}$ the segment carries the hard-core (PXP-like) $X$ automaton wit
 frozen ends, $|C(\ell)|=F(\ell+2)$ as in R30, and the spectrum is genuinely
 non-trivial: $(2,3)$, $(3,5)$, $(2,3,8)$, $(3,7,11)$, $(2,3,5,10,14),\ldots$,
 with the cycle lengths lying in arithmetic progressions of step $4$ and the
-longest equal to $3\ell-7$ (verified here to $\ell=16$ and by Tier-2 R-T21 to
-$\ell=26$).
+longest equal to $3\ell-7$ (verified here to $\ell=16$, and by Tier-2
+R-T21~\S5 to $\ell=26$, where it is written $3\ell-13$ in that report's
+collar-counting indexing).
 
 \begin{remark}[indexing, so the two reports can be read together]
 $C$ is indexed here by the pair (\emph{family}, \emph{number of states}), which
 makes the corner class redundant --- keyed that way there are zero conflicts for
 all four rules at both boundaries. The family is genuinely part of the key: at
 every Fibonacci state count from $5$ up the two families carry different types
-($v=5$ is $(5)$ for the ascent pair and $(2,3)$ for the symmetric one). Tier-2 R-T21 indexes by the geometric gap and therefore
-needs a left/interior/right class; the two are the same table. Their
+($v=5$ is $(5)$ for the ascent pair and $(2,3)$ for the symmetric one). Tier-2 R-T21~\S2 indexes by the geometric gap and therefore
+needs a left/interior/right class; the two are the same table, and its
+paragraph ``The dictionary between the two indexings'' gives the translation
+from that side. Their
 $C(L,\ell)=C(K,\ell+1)$ for $W_{201}$ is our ``both segments have $F(\cdot)$
 states'', and their $C(L,\ell)=(1,)$ for $W_{156}$ is our ``a one-state segment
 is a fixed point''. Their $\ell$ counts the collars and ours does not, so their
@@ -213,7 +216,7 @@ states, since R30 showed Lucas numbers are generally not Fibonacci products.
 Both of the errors here were mine. The first kernel extraction classified the
 wall-free ring as a segment and duly reported the \rt{pbc} ascent kernel as
 ambiguous at eight lengths; the correction to that then over-shot into ``the
-wall-free label is never a segment'', which is false on the chain. Tier-2 R-T21
+wall-free label is never a segment'', which is false on the chain. Tier-2 R-T21~\S4
 caught the second. The predictor was unaffected only because it computes the
 wall-free type directly instead of looking it up.
 \end{remark}
@@ -272,7 +275,8 @@ D_{\max} \;=\; \max\ \mathrm{lcm}(g_1,\ldots,g_k)
 
 \noindent Zero mismatches against exhaustive enumeration, $N=4\ldots19$, both
 boundary conditions, and independently against Tier-2 R-T21's orbit multisets to
-$N=18$.
+$N=18$; the trap below is that report's \emph{Implementation warning} in
+its~\S6.
 
 \begin{remark}[an implementation trap]
 Maximum-lcm has \emph{no optimal substructure}: the obvious memoised recursion
@@ -337,10 +341,10 @@ $\;/\ln^2 N$  & $0.253$ & $0.244$ & $0.236$ & $0.230$ & $0.224$ \\
 \end{tabular}
 \end{center}
 The first ratio rises and the second falls, and at these sizes the two candidate
-laws are not separated. They have since been separated, by Tier-2 R-T21, and the
+laws are not separated. They have since been separated, by Tier-2 R-T21~\S6, and the
 answer is $\Theta(\ln N)$.
 
-\begin{proposition}[Tier-2 R-T21; anchor reproduced here]
+\begin{proposition}[Tier-2 R-T21~\S6; anchor reproduced here]
 \label{prop:logn}
 Under the \emph{state} measure the mean log orbit length is
 $\langle\ln\ell\rangle \sim \ln N/\ln 2$, and the orbit measure obeys the same
@@ -437,8 +441,10 @@ python -m pytest qca_fragmentation/tests -q                         # 2034 tests
 \noindent Engine in \fn{scaling/orbit\_sizes.py}, which reuses R30's
 \fn{scaling/sector\_sizes.py} for the label decomposition, so the two reports
 share one validated enumeration and differ only in the weight carried along it.
-The complementary transfer-matrix treatment, the corner-class indexing, the
-segment spectrum to $\ell=26$ and the ring wall-free spectra are Tier-2 report
-R-T21.
+The complementary transfer-matrix treatment is Tier-2 report R-T21 (5\,pp):
+its \S2 carries the corner-class indexing and the dictionary between the two
+parameterisations, \S4 the wall-free label, \S5 the segment spectrum to
+$\ell=26$ and the ring wall-free spectra, and \S6 the $\Theta(\ln N)$ law with
+the $1/\ln2$ mechanism.
 
 \end{document}
