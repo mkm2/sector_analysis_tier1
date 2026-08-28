@@ -53,9 +53,12 @@ value) rather than by the segment length makes the two families line up:
         kernels, and a fibre of R30 size prod K_j carries prod K_j / lcm(K_j)
         orbits of length lcm(K_j).
 
-    INDEXING.  C is indexed here by the segment's NUMBER OF STATES, i.e. by the
-    R30 kernel value, not by a length.  That is deliberate: it makes the corner
-    class redundant.  Tier-2 R-T21 indexes by the geometric gap and consequently
+    INDEXING.  C is indexed here by (FAMILY, NUMBER OF STATES) -- i.e. by the
+    rule together with the R30 kernel value -- not by a length.  That is
+    deliberate: it makes the corner class redundant.  The family is part of the
+    key, not decoration: at every Fibonacci state count from 5 up the two
+    families carry different types (v = 5 is (5,) for the ascent pair and (2,3)
+    for the symmetric one), which is why `segment_cycle_type` takes the rule.  Tier-2 R-T21 indexes by the geometric gap and consequently
     needs a left/interior/right class, and the two are the same table -- their
     C(L, l) = C(K, l+1) for W201 is our "both have F(...) states", and their
     C(L, l) = (1,) for W156 is our "a one-state segment is a fixed point".

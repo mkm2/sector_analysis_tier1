@@ -175,9 +175,11 @@ longest equal to $3\ell-7$ (verified here to $\ell=16$ and by Tier-2 R-T21 to
 $\ell=26$).
 
 \begin{remark}[indexing, so the two reports can be read together]
-$C$ is indexed here by the segment's \emph{number of states}, which makes the
-corner class redundant --- keyed that way there are zero conflicts for all four
-rules at both boundaries. Tier-2 R-T21 indexes by the geometric gap and therefore
+$C$ is indexed here by the pair (\emph{family}, \emph{number of states}), which
+makes the corner class redundant --- keyed that way there are zero conflicts for
+all four rules at both boundaries. The family is genuinely part of the key: at
+every Fibonacci state count from $5$ up the two families carry different types
+($v=5$ is $(5)$ for the ascent pair and $(2,3)$ for the symmetric one). Tier-2 R-T21 indexes by the geometric gap and therefore
 needs a left/interior/right class; the two are the same table. Their
 $C(L,\ell)=C(K,\ell+1)$ for $W_{201}$ is our ``both segments have $F(\cdot)$
 states'', and their $C(L,\ell)=(1,)$ for $W_{156}$ is our ``a one-state segment
@@ -269,7 +271,17 @@ D_{\max} \;=\; \max\ \mathrm{lcm}(g_1,\ldots,g_k)
 \end{equation}
 
 \noindent Zero mismatches against exhaustive enumeration, $N=4\ldots19$, both
-boundary conditions. (The ring needing the budget spent \emph{exactly} rather
+boundary conditions, and independently against Tier-2 R-T21's orbit multisets to
+$N=18$.
+
+\begin{remark}[an implementation trap]
+Maximum-lcm has \emph{no optimal substructure}: the obvious memoised recursion
+$\max_g\, g\cdot\mathrm{Landau}(\text{budget}-g-1)$ is wrong, because the best
+sub-solution for a smaller budget need not be the one that combines best with
+$g$. It returns $45$ instead of $60$ at $N=15$. The implementation here carries
+the whole frontier of achievable lcms with their minimal costs, and agrees with
+brute force; anyone reproducing this should check $N=15$ first.
+\end{remark} (The ring needing the budget spent \emph{exactly} rather
 than at most is the same cyclic-budget effect as R30's parity selection rule.)
 This is Landau's function with a cost penalty, so
 $D_{\max}=\exp\Theta(\sqrt{N\log N})$ --- \textbf{subexponential}. Measured,
@@ -324,15 +336,66 @@ $\;/\ln^2 N$  & $0.253$ & $0.244$ & $0.236$ & $0.230$ & $0.224$ \\
 \bottomrule
 \end{tabular}
 \end{center}
-The first ratio rises and the second falls, so the truth lies between
-$\Theta(\ln N)$ and $\Theta(\ln^2 N)$ and \textbf{these sizes do not separate
-them}. We state that as an open question rather than fit an exponent to five
-points. The mechanism argues for the lower end: with $\Theta(N)$ segments and an
-exponential tail on segment length the longest cycle in a typical label is
-$O(\ln N)$, and all cycle lengths are $O(\ell)$ (Tier-2 R-T21, to $\ell=26$), so
-$\ln\mathrm{lcm}$ should be a sum of $\ln p$ over primes realised below an
-$O(\ln N)$ ceiling --- which gives $\Theta(\ln N)$ with a slowly growing
-correction. Settling it needs $N\sim40$--$60$ on the typical value.
+The first ratio rises and the second falls, and at these sizes the two candidate
+laws are not separated. They have since been separated, by Tier-2 R-T21, and the
+answer is $\Theta(\ln N)$.
+
+\begin{proposition}[Tier-2 R-T21; anchor reproduced here]
+\label{prop:logn}
+Under the \emph{state} measure the mean log orbit length is
+$\langle\ln\ell\rangle \sim \ln N/\ln 2$, and the orbit measure obeys the same
+order.
+\end{proposition}
+
+\noindent The route is worth recording because it removes the enumeration
+entirely. Since $\ln\mathrm{lcm}=\sum_p \ln p\,\max_j v_p(c_j)$ and the state
+measure factorises over gaps, the probability that every gap has
+$v_p(c_j)<e$ is a renewal sum with $K(g)$ replaced by the number of states of
+that gap whose cycle length $c$ has $v_p(c)<e$; then
+$\mathbb{E}[\max_j v_p]=\sum_{e\ge1}(1-\mathbb{P}(\cdot<e))$. For the ascent pair
+each gap is a single cycle of length $g$, so that count is $g$ or $0$ and the
+whole thing is closed form in $O(N^2)$. It gives, for $W_{156}$ at \rt{obc0},
+\begin{center}
+\small
+\begin{tabular}{lrrrrrrr}
+\toprule
+$N$ & $28$ & $60$ & $120$ & $250$ & $500$ & $1000$ & $2000$\\
+\midrule
+$\langle\ln\ell\rangle_{\rm state}$ & $3.3138$ & $4.6269$ & $5.8388$ & $7.1116$ & $8.2812$ & $9.4119$ & $10.5925$\\
+$\;/\ln N$   & $0.9945$ & $1.1301$ & $1.2196$ & $1.2880$ & $1.3325$ & $1.3625$ & $1.3936$\\
+$\;/\ln^2 N$ & $0.2984$ & $0.2760$ & $0.2547$ & $0.2333$ & $0.2144$ & $0.1972$ & $0.1833$\\
+\bottomrule
+\end{tabular}
+\end{center}
+--- the first ratio climbing monotonically towards $1/\ln2=1.442695$ and the
+second still falling at $N=2000$, which excludes $\ln^2N$. The $N=28$ entry is
+$3.3138$, which is exactly the value the histogram gives here, so the two methods
+agree at the one point where both can be evaluated.
+
+The mechanism supplies the constant. Under the state measure the gaps form a
+renewal sequence with $\mathbb{P}(g)\propto K(g)2^{-(g+1)}=g\,2^{-(g+1)}$, mean
+block length $4$; so there are $\sim N/4$ gaps, the largest is $\sim\log_2 N$,
+every integer below it occurs many times, and
+$\ln\mathrm{lcm}\sim\psi(\text{largest gap})\sim\log_2 N$ with $\psi$ Chebyshev's
+function. The approach is slow precisely because $\psi(G)/G\to1$ slowly, which is
+the drift in the table.
+
+Our measure is the orbit one, which is smaller --- the state measure is its
+$\ell$-size-biased version and $\ln\ell$ is increasing, so
+$\mathbb{E}_{\rm orbit}[\ln\ell]\le\mathbb{E}_{\rm state}[\ln\ell]$ by Chebyshev's
+sum inequality. Hence the orbit mean is $O(\ln N)$ as well and $\ln^2N$ is
+excluded for it too. The ratio of the two means drifts from $1.293$ at $N=12$ to
+$1.319$ at $N=24$, which is why $N\le28$ could not separate the laws.
+
+\paragraph{What is still open.} The \emph{constant} for the orbit measure. Its
+weight is $\prod_j c_j/\mathrm{lcm}_j c_j$, and the lcm in the denominator does
+not factorise over gaps the way $\sum_p\ln p\,\max_j v_p$ does, so the $O(N^2)$
+route does not transfer. The order is settled; the prefactor is not. For the
+symmetric pair the same argument gives $\Theta(\ln N)$ with a larger constant
+(the gap law is $F(g-1)2^{-(g+1)}\sim(\varphi/2)^g$, so the largest gap is
+$\sim\ln N/\ln(2/\varphi)$), but that is an argument and not a measurement,
+because the exact route there needs the hyperbolic segment spectra and each costs
+$\varphi^\ell$ states.
 
 \section{Answering the question as asked}
 
@@ -368,6 +431,7 @@ of \emph{more} fragmentation, not less.
 \begin{verbatim}
 python -m qca_fragmentation.scaling.orbit_size_figure
 python -m pytest qca_fragmentation/tests/test_orbit_sizes.py -q     # 66 tests
+python -m pytest qca_fragmentation/tests -q                         # 2034 tests
 \end{verbatim}
 
 \noindent Engine in \fn{scaling/orbit\_sizes.py}, which reuses R30's
