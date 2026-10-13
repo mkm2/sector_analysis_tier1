@@ -194,7 +194,7 @@ LAW_TAG = {
     ("108", "d_max"):       r"$F_{N}$",
     ("201", "d_max"):       r"$F_{N+2}$",
     ("60",  "d_max"):       r"$2^{N-1}$",
-    ("150", "d_max"):       r"$\binom{N+1}{w^{\ast}}$",
+    ("150", "d_max"):       r"$binom{N+1}{w^{\ast}}$",
     # The two grey D_max curves differ by one state in four million, i.e. they
     # are one line on this axis, and they run the full N range, so they get one
     # tag between them and the 2^N guide is switched off underneath.

@@ -8,11 +8,12 @@ TL chain should be arbitrarily long.
 Built here from the SITE picture (project the full e_i onto the kink subspace),
 so it is an independent check and not a re-implementation of their algebra.
 """
+import os
 import sys
 import numpy as np
 
-sys.path.insert(0, "/home/mkmullenbach/Dokumente/Projects/QCA Simulations/"
-                   "Claude Sector Analysis/.claude/worktrees/tier1-analysis/code")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "..", "code"))
 from qca_fragmentation.core import rules as R
 
 SQ2 = np.sqrt(2.0)

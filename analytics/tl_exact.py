@@ -11,11 +11,12 @@ Finally: check the resulting delta against the Jones admissibility condition
 (orthogonal-projector representations of TL need delta >= 2 or
 delta = 2 cos(pi/(m+1))).
 """
+import os
 import sys
 import numpy as np
 
-sys.path.insert(0, "/home/mkmullenbach/Dokumente/Projects/QCA Simulations/"
-                   "Claude Sector Analysis/.claude/worktrees/tier1-analysis/code")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "..", "code"))
 from qca_fragmentation.core import rules as R
 
 SQ2 = np.sqrt(2.0)

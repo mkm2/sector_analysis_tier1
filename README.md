@@ -16,7 +16,7 @@ authoritative specification lives in the two context files:
 
 Conceptual background: `QCA_Circuits.pdf` (this folder).
 
-## Status (Tier 1, branch `worktree-tier1-analysis`)
+## Status (Tier 1, branch `main`)
 
 **Tier 1 implemented and validated.** engine_version `1a.1`.
 

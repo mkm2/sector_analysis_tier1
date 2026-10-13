@@ -6,11 +6,12 @@ Rokhsar-Kivelson state sum_k t^k |k> with t = sqrt2 - 1 = tan(pi/8) in the kink
 coordinate.  Check that, and check whether it is a product state in the SITE
 basis -- if it is not, the fragmentation is quantum, not classical.
 """
+import os
 import sys
 import numpy as np
 
-sys.path.insert(0, "/home/mkmullenbach/Dokumente/Projects/QCA Simulations/"
-                   "Claude Sector Analysis/.claude/worktrees/tier1-analysis/code")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "..", "code"))
 from qca_fragmentation.core import rules as R
 
 SQ2 = np.sqrt(2.0)
