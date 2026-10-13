@@ -470,3 +470,16 @@ def test_a_self_loop_does_not_make_a_state_recurrent():
     st = spy.check_frobenius(100, N, "obc0")
     assert st["n_terminal"] == 60 and st["recurrent"] == 60
     assert loops > st["n_terminal"]
+
+
+def test_export_spy_rule150_shells(tmp_path):
+    """The thesis hand-off export: sectors are the even domain-wall shells."""
+    from math import comb
+    from qca_fragmentation.viz import export_spy
+    for N in (6, 7):
+        s = export_spy.export(150, N, str(tmp_path / f"n{N}"))
+        d = np.load(tmp_path / f"n{N}" / "data.npz")
+        assert sorted(s["sector_w"]) == list(range(0, N + 2, 2))
+        assert [comb(N + 1, w) for w in s["sector_w"]] == s["sector_size"]
+        assert np.array_equal(d["order"][d["position"]], np.arange(1 << N))
+        assert np.all(d["sector"][d["rows"]] == d["sector"][d["cols"]])
