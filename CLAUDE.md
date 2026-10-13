@@ -85,3 +85,22 @@ Reports: `reports/tex/R<n>_*.tex` compile to `reports/pdf/`; each states its che
 - **One checkout, no worktrees** (user-directed; re-unified 2026-10-13). Work directly in this directory on `main`, and push to `origin main` (`git@github.com:mkm2/sector_analysis_tier1.git`). Do not create a git worktree under `.claude/worktrees/`, because past worktrees left `main` and the root checkout stranded on stale commits.
 - Untracked files are the user's own manual work (e.g. `notebooks/final/*_copy.ipynb`, `leo.md`, `Notes_on_QCA.pdf`, `Tier1/task_*.md`, `figures/fig_wcc_scc*`). Never delete, overwrite or `git clean` them.
 - `analytics/tl_*.py` are standalone scripts that put `../code` on `sys.path` relative to their own location. Keep paths repo-relative, never absolute.
+
+## Figure standards (user rule, 2026-10-14)
+
+Every new figure is drawn at its final print size, so font sizes are true sizes. The binding numbers come from the
+thesis figure project (`~/Dokumente/Projects/Figure Generation`, `thesisfig/config.py` and `style.theme()`):
+
+- **Width: thesis text width 422.52348 pt (5.85 in) by default.** Half width for two side-by-side subfigures is 0.49×.
+  The maximum height is 508.4 pt. Never stretch a figure to fit, and never use `bbox_inches="tight"`.
+- **Paper mode, only on the user's request:** single column, 246 pt wide. Ask for the paper's font sizes the first
+  time; don't assume the thesis ones.
+- **Text** goes through LaTeX in Latin Modern (`text.usetex`). Sizes: 10 pt for annotations and ticks, 10.95 pt for axis
+  and panel labels. Text colour is `#222222` and never the series colour.
+- **Colours:** the Okabe-Ito categorical palette, in this order: `#0072B2 #D55E00 #009E73 #E69F00 #CC79A7 #56B4E9`,
+  with grey `#7F7F7F` for neutral items. Sector k gets `palette[k]`, and frozen/trivial sectors get grey. Fills are
+  1 − 0.24·(1 − c) and dark marks 0.78·c.
+- **Strokes:** data lines 1.0 pt, axes 0.6 pt, markers 3.5 pt, dense-scatter dots about 1.05 pt. Raster layers are at
+  ≥ 600 dpi; PDF is the deliverable.
+- **Hand-off:** figures for the thesis go to `Figure Generation/data/<name>/` as `data.npz` and `meta.yaml`, plus
+  `render.py` for custom drawing (see that project's `data/HANDOFF.md`). Never leave files such as `__pycache__` there.
