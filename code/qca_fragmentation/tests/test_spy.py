@@ -483,3 +483,17 @@ def test_export_spy_rule150_shells(tmp_path):
         assert [comb(N + 1, w) for w in s["sector_w"]] == s["sector_size"]
         assert np.array_equal(d["order"][d["position"]], np.arange(1 << N))
         assert np.all(d["sector"][d["rows"]] == d["sector"][d["cols"]])
+
+
+def test_export_graph_matches_spy_sectors(tmp_path):
+    """Graph hand-off: same sectors/indices as the spy export, edges inside sectors."""
+    from qca_fragmentation.viz import export_graph, export_spy
+    g = export_graph.export(150, 7, str(tmp_path / "g"))
+    s = export_spy.export(150, 7, str(tmp_path / "s"))
+    assert g["sector_size"] == s["sector_size"] and g["sector_w"] == s["sector_w"]
+    d = np.load(tmp_path / "g" / "data.npz")
+    ds = np.load(tmp_path / "s" / "data.npz")
+    assert np.array_equal(d["node_sector"], ds["sector"])
+    assert np.all(d["node_sector"][d["edge_u"]] == d["node_sector"][d["edge_v"]])
+    r = np.hypot(d["node_x"], d["node_y"])
+    assert np.all(r <= 1 + 1e-12)
