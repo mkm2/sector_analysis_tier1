@@ -95,6 +95,49 @@ def build(bc: str = "obc0") -> Dict:
     return res
 
 
+def compare_figure(sum_h: Dict, sum_x: Dict, N: int = 14, out_dir: str = None) -> str:
+    """
+    H against X for every rule at ONE common N (open chain).
+    (a) mean half-chain entanglement of the non-degenerate eigenstates over the Page value;
+    (b) X gate: mean cycle length seen by a uniformly random basis state, over 2^N.
+    """
+    from ..viz import thesis_style as ts
+    from .figures import CLASS_ORDER, FIG_DIR
+    plt = ts.use(ts._mode)
+    fig, (a, b) = ts.subplots(2, 1, aspect=0.75, sharex=True)
+    xs, labels, x, groups = [], [], 0, []
+    for name, ws in CLASS_ORDER:
+        g0 = x
+        for w in ws:
+            h, xx = sum_h.get(f"{w}_{N}"), sum_x.get(f"{w}_{N}")
+            if h is None or xx is None:
+                x += 1; continue
+            if h.get("S_mean_nondeg") is not None:
+                a.plot(x - 0.15, h["S_mean_nondeg"] / h["page"], "o", ms=ts.MS, color=ts.PALETTE[0])
+            a.plot(x + 0.15, xx["S_mean"] / xx["page"], "s", ms=ts.MS, color=ts.PALETTE[1])
+            b.bar(x, xx["mean_len_state"] / 2 ** N, width=0.6, color=ts.PALETTE[1])
+            labels.append(f"{w}"); xs.append(x); x += 1
+        groups.append((name, g0, x - 1)); x += 0.6
+    a.axhline(1.0, color=ts.GREY, lw=0.5, ls="-", zorder=0)
+    a.plot([], [], "o", color=ts.PALETTE[0], ms=ts.MS, label=r"$V=H$ (non-degenerate states)")
+    a.plot([], [], "s", color=ts.PALETTE[1], ms=ts.MS, label=r"$V=X$ (cycle Fourier modes)")
+    a.legend(loc="upper left", handlelength=1.0, borderaxespad=0.2)
+    a.set_ylabel(r"$\bar S_\mathrm{vN}/S_\mathrm{Page}$"); a.set_ylim(-0.05, 1.25)
+    b.set_yscale("log"); b.set_ylabel(r"$\langle L\rangle_\mathrm{state}/2^N$ ($X$)")
+    b.set_ylim(top=3)
+    b.set_xticks(xs, labels, rotation=90); b.set_xlabel(rf"rule $W$, $N={N}$, open chain")
+    for name, g0, g1 in groups:
+        b.annotate(name, ((g0 + g1) / 2, 1.0), xycoords=("data", "axes fraction"), xytext=(0, -2),
+                   textcoords="offset points", ha="center", va="top",
+                   fontsize=ts.FS["annot"] - 2, color=ts.GREY)
+    for ax, lab in zip((a, b), "ab"):
+        ts.panel_label(ax, f"({lab})")
+    stem = os.path.join(out_dir or FIG_DIR, f"fig_r32_HX_compare_N{N}")
+    ts.save(fig, stem)
+    plt.close(fig)
+    return stem
+
+
 if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser()
@@ -103,3 +146,85 @@ if __name__ == "__main__":
     res = build(a.bc)
     bad = {k: v["spectrum_check"] for k, v in res.items() if not v["spectrum_check"] < 1e-8}
     print(f"{len(res)} units -> {summary_path(a.bc)}; spectrum check failures: {bad or 'none'}")
+    if a.bc == "obc0":
+        from . import analysis as A
+        hp = A.summary_path("H")
+        if os.path.exists(hp):
+            print("wrote", compare_figure(json.load(open(hp)), res))
+
+
+#: representatives for the cycle-growth figure: (rule, label)
+CYCLE_RULES = [(57, r"57/99 ($k=3$)"), (54, r"54/147 ($k=3$, RCA54)"), (150, r"150 (XOR)"),
+               (153, r"153 (one-sided)"), (201, r"201 ($k=1$, Floquet-PXP)")]
+
+
+def cycle_growth(Nmax_obc: int = 18, Nmax_pbc: int = 18) -> Dict:
+    """Longest cycle and <L>_state / 2^N against N, straight from the permutation (no Julia)."""
+    out = {}
+    for w, _ in CYCLE_RULES:
+        for bc, Ns in (("obc0", range(6, Nmax_obc + 1)), ("pbc", range(6, Nmax_pbc + 1, 2))):
+            rows = []
+            for N in Ns:
+                L = cycle_lengths(w, N, bc)
+                rows.append((N, int(L[0]), float((L.astype(float) ** 2).sum() / 4.0 ** N)))
+            out[f"{w}_{bc}"] = rows
+    return out
+
+
+def cycles_figure(growth: Dict, out_dir: str = None) -> str:
+    """(a) longest cycle against N; (b) <L>_state / 2^N.  Open chain filled, ring open symbols."""
+    from ..viz import thesis_style as ts
+    from .figures import FIG_DIR
+    plt = ts.use(ts._mode)
+    fig, (a, b) = ts.subplots(1, 2, aspect=0.42)
+    for i, (w, lab) in enumerate(CYCLE_RULES):
+        c = ts.PALETTE[i]
+        for bc, mfc, ls in (("obc0", c, "-"), ("pbc", "white", ":")):
+            r = np.array(growth[f"{w}_{bc}"])
+            kw = dict(color=c, mfc=mfc, ms=ts.MS, lw=1.0, ls=ls, marker="o" if bc == "obc0" else "s")
+            a.plot(r[:, 0], r[:, 1], label=lab if bc == "obc0" else None, **kw)
+            b.plot(r[:, 0], r[:, 2], **kw)
+    N = np.arange(6, 19)
+    a.plot(N, 2.0 ** N, color=ts.GREY, lw=0.6, ls="--", zorder=0)
+    a.annotate(r"$2^N$", (16.2, 2.0 ** 16.2), color=ts.GREY, fontsize=ts.FS["annot"], ha="right")
+    a.set_yscale("log"); b.set_yscale("log")
+    a.set_xlabel(r"$N$"); b.set_xlabel(r"$N$")
+    a.set_ylabel(r"longest cycle"); b.set_ylabel(r"$\langle L\rangle_\mathrm{state}/2^N$")
+    b.plot([], [], "ko-", ms=ts.MS, lw=1.0, label="open chain")
+    b.plot([], [], "ks:", mfc="white", ms=ts.MS, lw=1.0, label="ring")
+    a.legend(loc="upper left", fontsize=ts.FS["legend"] - 2, handlelength=1.2, borderaxespad=0.2)
+    b.legend(loc="lower left", fontsize=ts.FS["legend"] - 2, handlelength=1.6, borderaxespad=0.2)
+    for ax, lab in zip((a, b), "ab"):
+        ts.panel_label(ax, f"({lab})")
+    stem = os.path.join(out_dir or FIG_DIR, "fig_r32_X_cycles")
+    ts.save(fig, stem)
+    plt.close(fig)
+    return stem
+
+
+def write_x_table(N: int = 14, out: str = None) -> str:
+    """LaTeX table: X-gate cycle structure and H vs X eigenstate entanglement, both boundaries, one N."""
+    from .. import results_io
+    from . import analysis as A
+    from .figures import CLASS_ORDER
+    sx = {bc: json.load(open(summary_path(bc))) for bc in ("obc0", "pbc")}
+    sh = {bc: json.load(open(A.summary_path("H", bc))) for bc in ("obc0", "pbc")}
+    rows = []
+    for _, ws in CLASS_ORDER:
+        for w in ws:
+            cells = [pattern_class(w), str(w)]
+            for bc in ("obc0", "pbc"):
+                x, h = sx[bc][f"{w}_{N}"], sh[bc][f"{w}_{N}"]
+                hS = h.get("S_mean_nondeg")
+                cells += [str(x["n_cycles"]), str(x["longest"]), f"{x['mean_len_state'] / 2 ** N:.1e}",
+                          f"{max(x['S_mean'], 0.0) / x['page']:.2f}", "--" if hS is None else f"{max(hS, 0.0) / h['page']:.2f}"]
+            rows.append(" & ".join(cells) + r" \\")
+    tex = (r"\begin{tabular}{llrrrrr|rrrrr}" "\n\\toprule\n"
+           r" & & \multicolumn{5}{c|}{open chain} & \multicolumn{5}{c}{ring} \\" "\n"
+           r"$k$ & $W$ & cycles & longest & $\langle L\rangle/2^N$ & $\bar S_X$ & $\bar S_H$ & "
+           r"cycles & longest & $\langle L\rangle/2^N$ & $\bar S_X$ & $\bar S_H$ \\" "\n\\midrule\n"
+           + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex", f"tab_r32_X_N{N}.tex")
+    with open(out, "w") as fh:
+        fh.write(tex)
+    return out

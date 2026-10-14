@@ -42,10 +42,11 @@ def rule_figure(w, gate="H", summary=None, out_dir=FIG_DIR, Nplot=None, bc="obc0
     d = F.load(F.spec_path(gate, N, w, bc))
     th = d["theta"]
     keys = S.block_keys(d)
-    uk, cnt = np.unique(keys, return_counts=True)
+    uk, inv, cnt = np.unique(keys, return_inverse=True, return_counts=True)
+    inv = inv.ravel()
     order = np.argsort(-cnt)
-    rank = {k: i for i, k in enumerate(uk[order])}
-    rk = np.array([rank[k] for k in keys])
+    rank_of = np.empty(uk.size, int); rank_of[order] = np.arange(uk.size)
+    rk = rank_of[inv]
     nondeg = d["degeneracy"] == 1
 
     fig, axs = ts.subplots(2, 2, aspect=0.78)
@@ -59,7 +60,7 @@ def rule_figure(w, gate="H", summary=None, out_dir=FIG_DIR, Nplot=None, bc="obc0
                   linewidths=0, rasterized=True, zorder=2 + (2 - lvl))
     # exact eigenstates of every gate: 1-dim gate-algebra blocks inside sectors of dim >= 3
     secsize = np.asarray(d["sector_sizes"])[d["sector_id"] - 1]
-    bdim1 = np.array([dict(zip(uk, cnt))[k] for k in keys])
+    bdim1 = cnt[inv]       # block dimension per state (a dict rebuilt per state was O(blocks x states))
     spec = (bdim1 == 1) & (secsize >= 3)
     if spec.any():
         a.scatter(th[spec], d["entropy"][spec], s=(1.8 * ts.MS) ** 2, marker="D",
@@ -77,8 +78,7 @@ def rule_figure(w, gate="H", summary=None, out_dir=FIG_DIR, Nplot=None, bc="obc0
 
     # (b) eta
     ref = d.get("s2_block_rand")
-    dims = dict(zip(uk, cnt))
-    dim = np.array([dims[k] for k in keys])
+    dim = cnt[inv]
     if ref is not None:
         ok = (dim >= 2) & (ref > 1e-12)
         eta = np.where(ok, d["s2_haar"] / np.where(ok, ref, 1), np.nan)
@@ -392,7 +392,7 @@ def cand_singlets(summary, gate="H", out_dir=CAND_DIR):
         for n in range(6, 20):
             s = summary.get(f"{w}_{n}")
             if s:
-                xs.append(n); ys.append(sum(1 for b in s["special_blocks"] if b["dim"] == 1))
+                xs.append(n); ys.append(s["n_singlets"])
         ax.plot(xs, ys, marker=mk, ms=ts.MS, color=col, lw=0.8,
                 mfc="white" if mk in "sD" else col, label=lab)
     ax.set_yscale("log"); ax.set_xlabel(r"$N$"); ax.set_ylabel(r"exact gate singlets")

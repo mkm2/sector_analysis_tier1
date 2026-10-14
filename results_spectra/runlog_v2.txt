@@ -1,0 +1,2601 @@
+=== start 2026-10-14T12:32:25+02:00
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:27+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:29+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:31+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:33+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:34+02:00 H obc0 HSFClaude N=Claude wall=1s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:36+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:38+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:40+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:42+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:44+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:45+02:00 H obc0 HSFClaude N=Claude wall=1s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:47+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:49+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:51+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:53+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:55+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:57+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:32:58+02:00 H obc0 HSFSector N=Sector wall=1s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:00+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:02+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:04+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:06+02:00 H obc0 HSFQCA N=QCA wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:08+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:10+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:11+02:00 H obc0 HSFQCA N=QCA wall=1s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'C' in "Claude"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:13+02:00 H obc0 HSFClaude N=Claude wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'S' in "Sector"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+2026-10-14T12:33:15+02:00 H obc0 HSFSector N=Sector wall=2s rc=1
+ERROR: LoadError: ArgumentError: invalid base 10 digit 'Q' in "QCA"
+Stacktrace:
+ [1] tryparse_internal(::Type{Int64}, s::String, startpos::Int64, endpos::Int64, base_::Int64, raise::Bool)
+   @ Base ./parse.jl:143
+ [2] #parse#472
+   @ ./parse.jl:254 [inlined]
+ [3] parse(::Type{Int64}, s::String)
+   @ Base ./parse.jl:253
+ [4] top-level scope
+   @ ~/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:621
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:620
+=== restart after S0 path-splitting fix 2026-10-14T12:33:18+02:00
+=== start 2026-10-14T12:33:26+02:00
+  sector 1 (dim 2048, 5 blocks) done, 7.6 s
+W147 (HSF 7) H obc0 N=11: 1 sectors, 5 blocks, sym=R | res=3.6e-11 orth=9.4e-13 off=1.4e-14 symres=1.6e-08 | 7.7 s
+2026-10-14T12:33:41+02:00 H obc0 HSF7 N=11 wall=15s rc=0
+W204 (HSF 0) H obc0 N=6: 64 sectors, 64 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T12:33:50+02:00 H obc0 HSF0 N=6 wall=9s rc=0
+W102 (HSF 10) H obc0 N=6: 7 sectors, 21 blocks, sym=none | res=7.2e-15 orth=1.4e-15 off=1.2e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:34:00+02:00 H obc0 HSF10 N=6 wall=10s rc=0
+W99 (HSF 11) H obc0 N=6: 1 sectors, 3 blocks, sym=none | res=5.2e-13 orth=5.5e-15 off=4.5e-14 symres=0.0e+00 | 2.8 s
+2026-10-14T12:34:11+02:00 H obc0 HSF11 N=6 wall=11s rc=0
+W60 (HSF 12) H obc0 N=6: 7 sectors, 21 blocks, sym=none | res=4.4e-15 orth=7.8e-16 off=1.3e-13 symres=0.0e+00 | 2.9 s
+2026-10-14T12:34:21+02:00 H obc0 HSF12 N=6 wall=10s rc=0
+W57 (HSF 13) H obc0 N=6: 1 sectors, 3 blocks, sym=none | res=2.7e-13 orth=2.8e-15 off=1.3e-15 symres=0.0e+00 | 2.8 s
+2026-10-14T12:34:31+02:00 H obc0 HSF13 N=6 wall=10s rc=0
+W54 (HSF 14) H obc0 N=6: 2 sectors, 3 blocks, sym=Omega | res=1.5e-12 orth=1.2e-15 off=1.9e-15 symres=6.5e-11 | 3.5 s
+2026-10-14T12:34:42+02:00 H obc0 HSF14 N=6 wall=11s rc=0
+W51 (HSF 15) H obc0 N=6: 1 sectors, 64 blocks, sym=R | res=1.7e-15 orth=0.0e+00 off=1.3e-13 symres=1.3e-13 | 3.6 s
+2026-10-14T12:34:53+02:00 H obc0 HSF15 N=6 wall=11s rc=0
+W201 (HSF 1) H obc0 N=6: 21 sectors, 31 blocks, sym=Omega | res=3.0e-14 orth=2.1e-15 off=8.4e-15 symres=1.1e-13 | 3.5 s
+2026-10-14T12:35:04+02:00 H obc0 HSF1 N=6 wall=11s rc=0
+W198 (HSF 2) H obc0 N=6: 21 sectors, 38 blocks, sym=none | res=1.3e-15 orth=1.3e-15 off=1.5e-14 symres=0.0e+00 | 2.8 s
+2026-10-14T12:35:14+02:00 H obc0 HSF2 N=6 wall=10s rc=0
+W195 (HSF 3) H obc0 N=6: 1 sectors, 7 blocks, sym=none | res=1.5e-13 orth=3.3e-15 off=2.8e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:35:25+02:00 H obc0 HSF3 N=6 wall=11s rc=0
+W156 (HSF 4) H obc0 N=6: 21 sectors, 38 blocks, sym=none | res=8.8e-16 orth=8.9e-16 off=4.7e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:35:35+02:00 H obc0 HSF4 N=6 wall=10s rc=0
+W153 (HSF 5) H obc0 N=6: 1 sectors, 7 blocks, sym=none | res=7.6e-13 orth=6.8e-15 off=8.7e-13 symres=0.0e+00 | 2.9 s
+2026-10-14T12:35:45+02:00 H obc0 HSF5 N=6 wall=10s rc=0
+W150 (HSF 6) H obc0 N=6: 4 sectors, 7 blocks, sym=Omega | res=6.2e-15 orth=1.4e-15 off=3.5e-15 symres=2.1e-14 | 3.5 s
+2026-10-14T12:35:56+02:00 H obc0 HSF6 N=6 wall=11s rc=0
+W147 (HSF 7) H obc0 N=6: 1 sectors, 5 blocks, sym=Omega | res=1.1e-13 orth=1.5e-14 off=1.4e-14 symres=1.1e-12 | 3.5 s
+2026-10-14T12:36:07+02:00 H obc0 HSF7 N=6 wall=11s rc=0
+W108 (HSF 8) H obc0 N=6: 37 sectors, 43 blocks, sym=Omega | res=2.0e-15 orth=5.6e-16 off=4.4e-15 symres=4.7e-15 | 3.4 s
+2026-10-14T12:36:18+02:00 H obc0 HSF8 N=6 wall=11s rc=0
+W105 (HSF 9) H obc0 N=6: 4 sectors, 7 blocks, sym=Omega | res=1.3e-13 orth=6.7e-15 off=4.2e-15 symres=3.8e-13 | 3.5 s
+2026-10-14T12:36:29+02:00 H obc0 HSF9 N=6 wall=11s rc=0
+W204 (HSF 0) H obc0 N=7: 128 sectors, 128 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T12:36:39+02:00 H obc0 HSF0 N=7 wall=10s rc=0
+W102 (HSF 10) H obc0 N=7: 8 sectors, 28 blocks, sym=none | res=3.5e-13 orth=2.2e-14 off=2.3e-13 symres=0.0e+00 | 2.9 s
+2026-10-14T12:36:49+02:00 H obc0 HSF10 N=7 wall=10s rc=0
+W99 (HSF 11) H obc0 N=7: 1 sectors, 3 blocks, sym=none | res=6.5e-13 orth=3.0e-14 off=7.4e-15 symres=0.0e+00 | 2.9 s
+2026-10-14T12:37:00+02:00 H obc0 HSF11 N=7 wall=11s rc=0
+W60 (HSF 12) H obc0 N=7: 8 sectors, 28 blocks, sym=none | res=1.2e-13 orth=2.7e-15 off=4.9e-12 symres=0.0e+00 | 3.0 s
+2026-10-14T12:37:11+02:00 H obc0 HSF12 N=7 wall=11s rc=0
+W57 (HSF 13) H obc0 N=7: 1 sectors, 3 blocks, sym=none | res=1.6e-12 orth=1.3e-14 off=6.6e-14 symres=0.0e+00 | 3.0 s
+2026-10-14T12:37:21+02:00 H obc0 HSF13 N=7 wall=10s rc=0
+W54 (HSF 14) H obc0 N=7: 2 sectors, 3 blocks, sym=R | res=2.2e-12 orth=1.9e-14 off=1.4e-15 symres=2.0e-10 | 3.6 s
+2026-10-14T12:37:32+02:00 H obc0 HSF14 N=7 wall=11s rc=0
+W51 (HSF 15) H obc0 N=7: 1 sectors, 128 blocks, sym=R | res=2.2e-15 orth=0.0e+00 off=2.3e-13 symres=1.5e-13 | 5.7 s
+2026-10-14T12:37:48+02:00 H obc0 HSF15 N=7 wall=16s rc=0
+W201 (HSF 1) H obc0 N=7: 37 sectors, 57 blocks, sym=R | res=1.5e-13 orth=3.1e-15 off=3.6e-15 symres=8.6e-13 | 3.5 s
+2026-10-14T12:38:01+02:00 H obc0 HSF1 N=7 wall=13s rc=0
+W198 (HSF 2) H obc0 N=7: 34 sectors, 75 blocks, sym=none | res=1.1e-15 orth=1.1e-15 off=5.4e-14 symres=0.0e+00 | 2.9 s
+2026-10-14T12:38:11+02:00 H obc0 HSF2 N=7 wall=10s rc=0
+W195 (HSF 3) H obc0 N=7: 1 sectors, 8 blocks, sym=none | res=6.7e-13 orth=1.4e-14 off=5.1e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:38:21+02:00 H obc0 HSF3 N=7 wall=10s rc=0
+W156 (HSF 4) H obc0 N=7: 34 sectors, 75 blocks, sym=none | res=1.7e-15 orth=6.7e-16 off=1.9e-14 symres=0.0e+00 | 2.7 s
+2026-10-14T12:38:31+02:00 H obc0 HSF4 N=7 wall=10s rc=0
+W153 (HSF 5) H obc0 N=7: 1 sectors, 8 blocks, sym=none | res=5.6e-13 orth=1.2e-14 off=6.1e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:38:41+02:00 H obc0 HSF5 N=7 wall=10s rc=0
+W150 (HSF 6) H obc0 N=7: 5 sectors, 8 blocks, sym=R | res=7.8e-13 orth=7.5e-15 off=1.2e-14 symres=5.0e-13 | 3.5 s
+2026-10-14T12:38:52+02:00 H obc0 HSF6 N=7 wall=11s rc=0
+W147 (HSF 7) H obc0 N=7: 1 sectors, 5 blocks, sym=R | res=2.1e-12 orth=1.8e-14 off=1.7e-14 symres=2.9e-11 | 3.5 s
+2026-10-14T12:39:03+02:00 H obc0 HSF7 N=7 wall=11s rc=0
+W108 (HSF 8) H obc0 N=7: 65 sectors, 77 blocks, sym=R | res=3.8e-15 orth=8.9e-16 off=5.3e-15 symres=8.3e-15 | 3.3 s
+2026-10-14T12:39:14+02:00 H obc0 HSF8 N=7 wall=11s rc=0
+W105 (HSF 9) H obc0 N=7: 5 sectors, 8 blocks, sym=R | res=5.6e-14 orth=5.2e-15 off=1.0e-14 symres=2.3e-13 | 3.3 s
+2026-10-14T12:39:24+02:00 H obc0 HSF9 N=7 wall=10s rc=0
+W204 (HSF 0) H obc0 N=8: 256 sectors, 256 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T12:39:34+02:00 H obc0 HSF0 N=8 wall=10s rc=0
+W102 (HSF 10) H obc0 N=8: 9 sectors, 36 blocks, sym=none | res=6.2e-13 orth=1.0e-14 off=9.3e-12 symres=0.0e+00 | 2.8 s
+2026-10-14T12:39:43+02:00 H obc0 HSF10 N=8 wall=9s rc=0
+W99 (HSF 11) H obc0 N=8: 1 sectors, 3 blocks, sym=none | res=7.6e-12 orth=1.6e-13 off=4.5e-15 symres=0.0e+00 | 2.8 s
+2026-10-14T12:39:53+02:00 H obc0 HSF11 N=8 wall=10s rc=0
+W60 (HSF 12) H obc0 N=8: 9 sectors, 36 blocks, sym=none | res=1.0e-12 orth=1.6e-14 off=3.2e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:40:03+02:00 H obc0 HSF12 N=8 wall=10s rc=0
+W57 (HSF 13) H obc0 N=8: 1 sectors, 3 blocks, sym=none | res=5.7e-12 orth=1.7e-13 off=5.4e-14 symres=0.0e+00 | 3.0 s
+2026-10-14T12:40:14+02:00 H obc0 HSF13 N=8 wall=11s rc=0
+W54 (HSF 14) H obc0 N=8: 2 sectors, 3 blocks, sym=Omega | res=4.5e-11 orth=2.5e-14 off=1.3e-15 symres=2.9e-10 | 3.6 s
+2026-10-14T12:40:25+02:00 H obc0 HSF14 N=8 wall=11s rc=0
+W51 (HSF 15) H obc0 N=8: 1 sectors, 256 blocks, sym=R | res=3.6e-15 orth=0.0e+00 off=1.0e-11 symres=1.9e-12 | 3.4 s
+2026-10-14T12:40:35+02:00 H obc0 HSF15 N=8 wall=10s rc=0
+W201 (HSF 1) H obc0 N=8: 65 sectors, 101 blocks, sym=Omega | res=3.4e-13 orth=9.9e-15 off=4.6e-15 symres=2.1e-12 | 3.4 s
+2026-10-14T12:40:46+02:00 H obc0 HSF1 N=8 wall=11s rc=0
+W198 (HSF 2) H obc0 N=8: 55 sectors, 139 blocks, sym=none | res=4.9e-15 orth=1.1e-15 off=3.4e-13 symres=0.0e+00 | 2.6 s
+2026-10-14T12:40:55+02:00 H obc0 HSF2 N=8 wall=9s rc=0
+W195 (HSF 3) H obc0 N=8: 1 sectors, 9 blocks, sym=none | res=9.2e-13 orth=1.8e-14 off=1.4e-12 symres=0.0e+00 | 2.8 s
+2026-10-14T12:41:05+02:00 H obc0 HSF3 N=8 wall=10s rc=0
+W156 (HSF 4) H obc0 N=8: 55 sectors, 139 blocks, sym=none | res=3.0e-15 orth=7.8e-16 off=1.9e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T12:41:15+02:00 H obc0 HSF4 N=8 wall=10s rc=0
+W153 (HSF 5) H obc0 N=8: 1 sectors, 9 blocks, sym=none | res=1.3e-12 orth=2.4e-14 off=6.7e-12 symres=0.0e+00 | 3.0 s
+2026-10-14T12:41:25+02:00 H obc0 HSF5 N=8 wall=10s rc=0
+W150 (HSF 6) H obc0 N=8: 5 sectors, 9 blocks, sym=Omega | res=1.5e-13 orth=4.0e-15 off=1.2e-14 symres=3.7e-12 | 3.7 s
+2026-10-14T12:41:37+02:00 H obc0 HSF6 N=8 wall=12s rc=0
+W147 (HSF 7) H obc0 N=8: 1 sectors, 5 blocks, sym=Omega | res=3.4e-12 orth=2.3e-14 off=1.0e-13 symres=3.8e-10 | 3.4 s
+2026-10-14T12:41:47+02:00 H obc0 HSF7 N=8 wall=10s rc=0
+W108 (HSF 8) H obc0 N=8: 114 sectors, 142 blocks, sym=Omega | res=1.9e-14 orth=2.0e-15 off=9.9e-15 symres=2.6e-14 | 3.2 s
+2026-10-14T12:41:58+02:00 H obc0 HSF8 N=8 wall=11s rc=0
+W105 (HSF 9) H obc0 N=8: 5 sectors, 9 blocks, sym=Omega | res=6.7e-13 orth=1.5e-14 off=1.1e-14 symres=5.9e-12 | 3.3 s
+2026-10-14T12:42:08+02:00 H obc0 HSF9 N=8 wall=10s rc=0
+W204 (HSF 0) H obc0 N=9: 512 sectors, 512 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T12:42:17+02:00 H obc0 HSF0 N=9 wall=9s rc=0
+W201 (HSF 1) H obc0 N=9: 114 sectors, 187 blocks, sym=R | res=9.9e-13 orth=8.7e-15 off=7.8e-14 symres=1.9e-12 | 3.3 s
+2026-10-14T12:42:27+02:00 H obc0 HSF1 N=9 wall=10s rc=0
+W198 (HSF 2) H obc0 N=9: 89 sectors, 264 blocks, sym=none | res=5.2e-14 orth=1.1e-15 off=6.4e-13 symres=0.0e+00 | 2.6 s
+2026-10-14T12:42:36+02:00 H obc0 HSF2 N=9 wall=9s rc=0
+  sector 1 (dim 16384, 3 blocks) done, 827.9 s
+W57 (HSF 13) H obc0 N=14: 1 sectors, 3 blocks, sym=none | res=1.6e-10 orth=1.7e-12 off=8.8e-15 symres=0.0e+00 | 828.1 s
+2026-10-14T12:56:31+02:00 H obc0 HSF13 N=14 wall=835s rc=0
+  sector 1 (dim 16384, 5 blocks) done, 921.5 s
+W147 (HSF 7) H obc0 N=14: 1 sectors, 5 blocks, sym=Omega | res=5.9e-08 orth=6.7e-13 off=5.3e-13 symres=3.1e-07 | 921.6 s
+2026-10-14T13:12:00+02:00 H obc0 HSF7 N=14 wall=929s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 902.9 s
+W54 (HSF 14) H obc0 N=14: 2 sectors, 3 blocks, sym=Omega | res=4.3e-08 orth=4.4e-13 off=7.3e-15 symres=2.1e-07 | 903.0 s
+2026-10-14T13:27:10+02:00 H obc0 HSF14 N=14 wall=910s rc=0
+  sector 1 (dim 16384, 3 blocks) done, 817.1 s
+W99 (HSF 11) H obc0 N=14: 1 sectors, 3 blocks, sym=none | res=2.8e-10 orth=1.5e-12 off=3.8e-14 symres=0.0e+00 | 817.2 s
+2026-10-14T13:40:54+02:00 H obc0 HSF11 N=14 wall=824s rc=0
+  sector 1 (dim 16384, 15 blocks) done, 481.6 s
+W153 (HSF 5) H obc0 N=14: 1 sectors, 15 blocks, sym=none | res=7.4e-09 orth=7.8e-13 off=1.1e-09 symres=0.0e+00 | 481.7 s
+2026-10-14T13:49:03+02:00 H obc0 HSF5 N=14 wall=489s rc=0
+  sector 1 (dim 16384, 15 blocks) done, 475.3 s
+W195 (HSF 3) H obc0 N=14: 1 sectors, 15 blocks, sym=none | res=1.1e-08 orth=4.8e-13 off=2.4e-09 symres=0.0e+00 | 475.4 s
+2026-10-14T13:57:06+02:00 H obc0 HSF3 N=14 wall=483s rc=0
+  sector 1 (dim 16384, 16384 blocks) done, 458.1 s
+W51 (HSF 15) H obc0 N=14: 1 sectors, 16384 blocks, sym=R | res=2.0e-14 orth=0.0e+00 off=5.9e-10 symres=8.1e-10 | 458.2 s
+2026-10-14T14:04:51+02:00 H obc0 HSF15 N=14 wall=465s rc=0
+W204 (HSF 0) H pbc N=6: 64 sectors, 64 blocks, sym=T2+Rsite | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T14:05:00+02:00 H pbc HSF0 N=6 wall=9s rc=0
+W201 (HSF 1) H pbc N=6: 29 sectors, 36 blocks, sym=T2+Rsite | res=8.1e-15 orth=8.8e-16 off=1.3e-15 symres=3.6e-14 | 3.2 s
+2026-10-14T14:05:11+02:00 H pbc HSF1 N=6 wall=11s rc=0
+W198 (HSF 2) H pbc N=6: 19 sectors, 40 blocks, sym=T2 | res=1.3e-15 orth=1.3e-15 off=6.1e-15 symres=0.0e+00 | 2.6 s
+2026-10-14T14:05:20+02:00 H pbc HSF2 N=6 wall=9s rc=0
+W195 (HSF 3) H pbc N=6: 2 sectors, 3 blocks, sym=T2 | res=1.3e-13 orth=1.1e-14 off=7.5e-16 symres=6.4e-13 | 3.3 s
+2026-10-14T14:05:31+02:00 H pbc HSF3 N=6 wall=11s rc=0
+W156 (HSF 4) H pbc N=6: 19 sectors, 40 blocks, sym=T2 | res=7.4e-16 orth=6.7e-16 off=2.8e-15 symres=0.0e+00 | 2.6 s
+2026-10-14T14:05:40+02:00 H pbc HSF4 N=6 wall=9s rc=0
+W153 (HSF 5) H pbc N=6: 2 sectors, 3 blocks, sym=T2 | res=3.8e-13 orth=1.1e-14 off=7.3e-16 symres=1.8e-12 | 3.3 s
+2026-10-14T14:05:50+02:00 H pbc HSF5 N=6 wall=10s rc=0
+W150 (HSF 6) H pbc N=6: 6 sectors, 8 blocks, sym=T2+Rsite | res=3.0e-14 orth=1.1e-14 off=1.4e-15 symres=4.3e-14 | 3.2 s
+2026-10-14T14:06:01+02:00 H pbc HSF6 N=6 wall=11s rc=0
+W147 (HSF 7) H pbc N=6: 2 sectors, 3 blocks, sym=T2+Rsite | res=1.0e-12 orth=4.3e-15 off=9.3e-16 symres=9.4e-11 | 3.4 s
+2026-10-14T14:06:11+02:00 H pbc HSF7 N=6 wall=10s rc=0
+W108 (HSF 8) H pbc N=6: 29 sectors, 36 blocks, sym=T2+Rsite | res=5.4e-15 orth=2.6e-15 off=4.4e-15 symres=1.1e-14 | 3.3 s
+2026-10-14T14:06:21+02:00 H pbc HSF8 N=6 wall=10s rc=0
+W105 (HSF 9) H pbc N=6: 3 sectors, 6 blocks, sym=T2+Rsite | res=1.1e-13 orth=3.2e-15 off=3.8e-15 symres=8.9e-14 | 3.2 s
+2026-10-14T14:06:31+02:00 H pbc HSF9 N=6 wall=10s rc=0
+W102 (HSF 10) H pbc N=6: 2 sectors, 3 blocks, sym=T2 | res=1.1e-11 orth=1.5e-14 off=3.4e-15 symres=2.8e-11 | 3.3 s
+2026-10-14T14:06:42+02:00 H pbc HSF10 N=6 wall=11s rc=0
+W99 (HSF 11) H pbc N=6: 1 sectors, 2 blocks, sym=T2 | res=3.7e-14 orth=2.4e-15 off=6.4e-16 symres=3.3e-13 | 3.3 s
+2026-10-14T14:06:52+02:00 H pbc HSF11 N=6 wall=10s rc=0
+W60 (HSF 12) H pbc N=6: 2 sectors, 3 blocks, sym=T2 | res=1.8e-12 orth=2.7e-14 off=6.6e-15 symres=9.9e-11 | 3.3 s
+2026-10-14T14:07:02+02:00 H pbc HSF12 N=6 wall=10s rc=0
+W57 (HSF 13) H pbc N=6: 1 sectors, 2 blocks, sym=T2 | res=9.8e-14 orth=1.5e-14 off=7.4e-16 symres=7.2e-13 | 3.3 s
+2026-10-14T14:07:13+02:00 H pbc HSF13 N=6 wall=11s rc=0
+W54 (HSF 14) H pbc N=6: 2 sectors, 3 blocks, sym=T2+Rsite | res=6.3e-11 orth=3.2e-15 off=1.1e-15 symres=1.6e-10 | 3.3 s
+2026-10-14T14:07:23+02:00 H pbc HSF14 N=6 wall=10s rc=0
+W51 (HSF 15) H pbc N=6: 1 sectors, 64 blocks, sym=T2+Rsite | res=1.7e-15 orth=0.0e+00 off=1.3e-13 symres=3.9e-13 | 3.5 s
+2026-10-14T14:07:33+02:00 H pbc HSF15 N=6 wall=10s rc=0
+W204 (HSF 0) H pbc N=8: 256 sectors, 256 blocks, sym=T2+Rsite | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T14:07:42+02:00 H pbc HSF0 N=8 wall=9s rc=0
+W201 (HSF 1) H pbc N=8: 90 sectors, 115 blocks, sym=T2+Rsite | res=3.8e-14 orth=2.3e-15 off=3.9e-15 symres=1.0e-13 | 3.3 s
+2026-10-14T14:07:52+02:00 H pbc HSF1 N=8 wall=10s rc=0
+W198 (HSF 2) H pbc N=8: 48 sectors, 132 blocks, sym=T2 | res=3.5e-15 orth=1.8e-15 off=3.4e-13 symres=0.0e+00 | 2.6 s
+2026-10-14T14:08:02+02:00 H pbc HSF2 N=8 wall=10s rc=0
+W195 (HSF 3) H pbc N=8: 2 sectors, 3 blocks, sym=T2 | res=7.5e-12 orth=2.9e-14 off=6.5e-16 symres=2.0e-11 | 3.4 s
+2026-10-14T14:08:12+02:00 H pbc HSF3 N=8 wall=10s rc=0
+W156 (HSF 4) H pbc N=8: 48 sectors, 132 blocks, sym=T2 | res=2.4e-15 orth=1.6e-15 off=5.9e-14 symres=0.0e+00 | 2.6 s
+2026-10-14T14:08:21+02:00 H pbc HSF4 N=8 wall=9s rc=0
+W153 (HSF 5) H pbc N=8: 2 sectors, 3 blocks, sym=T2 | res=1.1e-11 orth=2.3e-14 off=7.0e-16 symres=8.3e-11 | 3.4 s
+2026-10-14T14:08:32+02:00 H pbc HSF5 N=8 wall=11s rc=0
+W150 (HSF 6) H pbc N=8: 7 sectors, 10 blocks, sym=T2+Rsite | res=7.2e-14 orth=2.2e-14 off=1.6e-15 symres=9.1e-14 | 3.3 s
+2026-10-14T14:08:42+02:00 H pbc HSF6 N=8 wall=10s rc=0
+W147 (HSF 7) H pbc N=8: 2 sectors, 3 blocks, sym=T2+Rsite | res=6.7e-12 orth=2.7e-14 off=1.9e-15 symres=9.6e-11 | 3.4 s
+2026-10-14T14:08:52+02:00 H pbc HSF7 N=8 wall=10s rc=0
+W108 (HSF 8) H pbc N=8: 90 sectors, 115 blocks, sym=T2+Rsite | res=6.5e-13 orth=3.5e-15 off=9.9e-15 symres=1.2e-12 | 3.3 s
+2026-10-14T14:09:02+02:00 H pbc HSF8 N=8 wall=10s rc=0
+W105 (HSF 9) H pbc N=8: 7 sectors, 10 blocks, sym=T2+Rsite | res=1.0e-13 orth=4.3e-14 off=5.9e-15 symres=1.4e-13 | 3.3 s
+2026-10-14T14:09:12+02:00 H pbc HSF9 N=8 wall=10s rc=0
+W102 (HSF 10) H pbc N=8: 2 sectors, 3 blocks, sym=T2 | res=7.9e-12 orth=2.0e-14 off=5.3e-15 symres=2.0e-09 | 3.4 s
+2026-10-14T14:09:23+02:00 H pbc HSF10 N=8 wall=11s rc=0
+W99 (HSF 11) H pbc N=8: 1 sectors, 2 blocks, sym=T2 | res=3.8e-12 orth=1.0e-14 off=1.0e-15 symres=3.5e-11 | 3.4 s
+2026-10-14T14:09:33+02:00 H pbc HSF11 N=8 wall=10s rc=0
+W60 (HSF 12) H pbc N=8: 2 sectors, 3 blocks, sym=T2 | res=2.4e-11 orth=2.5e-14 off=8.5e-15 symres=4.5e-09 | 3.4 s
+2026-10-14T14:09:43+02:00 H pbc HSF12 N=8 wall=10s rc=0
+W57 (HSF 13) H pbc N=8: 1 sectors, 2 blocks, sym=T2 | res=1.6e-12 orth=6.3e-14 off=8.6e-16 symres=1.3e-11 | 3.4 s
+2026-10-14T14:09:53+02:00 H pbc HSF13 N=8 wall=10s rc=0
+W54 (HSF 14) H pbc N=8: 2 sectors, 3 blocks, sym=T2+Rsite | res=9.4e-12 orth=1.6e-14 off=6.4e-16 symres=6.4e-10 | 3.5 s
+2026-10-14T14:10:04+02:00 H pbc HSF14 N=8 wall=11s rc=0
+W51 (HSF 15) H pbc N=8: 1 sectors, 256 blocks, sym=T2+Rsite | res=3.6e-15 orth=0.0e+00 off=1.0e-11 symres=2.2e-13 | 3.5 s
+2026-10-14T14:10:14+02:00 H pbc HSF15 N=8 wall=10s rc=0
+W204 (HSF 0) H pbc N=10: 1024 sectors, 1024 blocks, sym=T2+Rsite | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T14:10:23+02:00 H pbc HSF0 N=10 wall=9s rc=0
+W201 (HSF 1) H pbc N=10: 277 sectors, 383 blocks, sym=T2+Rsite | res=1.7e-12 orth=8.9e-15 off=8.7e-15 symres=2.9e-12 | 3.5 s
+2026-10-14T14:10:33+02:00 H pbc HSF1 N=10 wall=10s rc=0
+W198 (HSF 2) H pbc N=10: 124 sectors, 444 blocks, sym=T2 | res=1.0e-13 orth=9.6e-15 off=4.4e-13 symres=0.0e+00 | 2.6 s
+2026-10-14T14:10:43+02:00 H pbc HSF2 N=10 wall=10s rc=0
+W195 (HSF 3) H pbc N=10: 2 sectors, 3 blocks, sym=T2 | res=1.4e-11 orth=5.0e-13 off=1.8e-15 symres=5.6e-10 | 4.1 s
+2026-10-14T14:10:53+02:00 H pbc HSF3 N=10 wall=10s rc=0
+W156 (HSF 4) H pbc N=10: 124 sectors, 444 blocks, sym=T2 | res=3.1e-14 orth=3.0e-15 off=2.1e-13 symres=0.0e+00 | 2.6 s
+2026-10-14T14:11:03+02:00 H pbc HSF4 N=10 wall=10s rc=0
+W153 (HSF 5) H pbc N=10: 2 sectors, 3 blocks, sym=T2 | res=1.2e-11 orth=6.9e-14 off=2.0e-15 symres=5.5e-10 | 4.0 s
+2026-10-14T14:11:14+02:00 H pbc HSF5 N=10 wall=11s rc=0
+W150 (HSF 6) H pbc N=10: 8 sectors, 12 blocks, sym=T2+Rsite | res=6.1e-13 orth=2.1e-13 off=4.6e-15 symres=6.4e-13 | 3.6 s
+2026-10-14T14:11:24+02:00 H pbc HSF6 N=10 wall=10s rc=0
+W147 (HSF 7) H pbc N=10: 2 sectors, 3 blocks, sym=T2+Rsite | res=2.1e-11 orth=2.5e-13 off=1.5e-15 symres=1.3e-09 | 4.3 s
+2026-10-14T14:11:35+02:00 H pbc HSF7 N=10 wall=11s rc=0
+W108 (HSF 8) H pbc N=10: 277 sectors, 383 blocks, sym=T2+Rsite | res=5.3e-13 orth=1.3e-14 off=1.3e-14 symres=1.2e-12 | 3.4 s
+2026-10-14T14:11:46+02:00 H pbc HSF8 N=10 wall=11s rc=0
+W105 (HSF 9) H pbc N=10: 5 sectors, 10 blocks, sym=T2+Rsite | res=1.9e-13 orth=1.4e-13 off=1.2e-14 symres=1.1e-12 | 3.6 s
+2026-10-14T14:11:56+02:00 H pbc HSF9 N=10 wall=10s rc=0
+W102 (HSF 10) H pbc N=10: 2 sectors, 3 blocks, sym=T2 | res=2.8e-10 orth=6.1e-13 off=9.9e-15 symres=1.4e-08 | 4.1 s
+2026-10-14T14:12:07+02:00 H pbc HSF10 N=10 wall=11s rc=0
+W99 (HSF 11) H pbc N=10: 1 sectors, 2 blocks, sym=T2 | res=1.2e-11 orth=3.5e-14 off=1.6e-15 symres=1.4e-10 | 4.1 s
+2026-10-14T14:12:18+02:00 H pbc HSF11 N=10 wall=11s rc=0
+W60 (HSF 12) H pbc N=10: 2 sectors, 3 blocks, sym=T2 | res=5.9e-10 orth=1.2e-13 off=5.2e-15 symres=1.4e-08 | 4.0 s
+2026-10-14T14:12:29+02:00 H pbc HSF12 N=10 wall=11s rc=0
+W57 (HSF 13) H pbc N=10: 1 sectors, 2 blocks, sym=T2 | res=6.6e-12 orth=3.1e-13 off=1.8e-15 symres=5.5e-11 | 4.1 s
+2026-10-14T14:12:40+02:00 H pbc HSF13 N=10 wall=11s rc=0
+W54 (HSF 14) H pbc N=10: 2 sectors, 3 blocks, sym=T2+Rsite | res=4.1e-11 orth=2.4e-13 off=1.5e-15 symres=4.6e-10 | 4.1 s
+2026-10-14T14:12:51+02:00 H pbc HSF14 N=10 wall=11s rc=0
+W51 (HSF 15) H pbc N=10: 1 sectors, 1024 blocks, sym=T2+Rsite | res=4.2e-15 orth=0.0e+00 off=7.9e-12 symres=1.2e-11 | 4.2 s
+2026-10-14T14:13:02+02:00 H pbc HSF15 N=10 wall=11s rc=0
+W204 (HSF 0) H pbc N=12: 4096 sectors, 4096 blocks, sym=T2+Rsite | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T14:13:11+02:00 H pbc HSF0 N=12 wall=9s rc=0
+W201 (HSF 1) H pbc N=12: 853 sectors, 1322 blocks, sym=T2+Rsite | res=5.9e-11 orth=2.1e-13 off=2.9e-13 symres=1.6e-10 | 3.6 s
+2026-10-14T14:13:21+02:00 H pbc HSF1 N=12 wall=10s rc=0
+W198 (HSF 2) H pbc N=12: 323 sectors, 1500 blocks, sym=T2 | res=3.2e-13 orth=1.2e-14 off=3.5e-12 symres=0.0e+00 | 2.7 s
+2026-10-14T14:13:31+02:00 H pbc HSF2 N=12 wall=10s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 20.7 s
+W195 (HSF 3) H pbc N=12: 2 sectors, 3 blocks, sym=T2 | res=1.3e-10 orth=9.6e-14 off=1.1e-15 symres=2.8e-08 | 20.8 s
+2026-10-14T14:13:58+02:00 H pbc HSF3 N=12 wall=27s rc=0
+W156 (HSF 4) H pbc N=12: 323 sectors, 1500 blocks, sym=T2 | res=8.6e-13 orth=7.7e-14 off=3.9e-11 symres=0.0e+00 | 2.8 s
+2026-10-14T14:14:08+02:00 H pbc HSF4 N=12 wall=10s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 20.5 s
+W153 (HSF 5) H pbc N=12: 2 sectors, 3 blocks, sym=T2 | res=1.4e-10 orth=1.8e-13 off=1.3e-15 symres=5.3e-08 | 20.6 s
+2026-10-14T14:14:36+02:00 H pbc HSF5 N=12 wall=28s rc=0
+W150 (HSF 6) H pbc N=12: 9 sectors, 14 blocks, sym=T2+Rsite | res=3.5e-11 orth=2.0e-13 off=3.3e-14 symres=2.3e-11 | 7.3 s
+2026-10-14T14:14:50+02:00 H pbc HSF6 N=12 wall=14s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 22.8 s
+W147 (HSF 7) H pbc N=12: 2 sectors, 3 blocks, sym=T2+Rsite | res=8.6e-11 orth=1.8e-13 off=9.7e-16 symres=1.9e-07 | 22.9 s
+2026-10-14T14:15:20+02:00 H pbc HSF7 N=12 wall=30s rc=0
+W108 (HSF 8) H pbc N=12: 853 sectors, 1322 blocks, sym=T2+Rsite | res=2.5e-11 orth=7.2e-14 off=1.7e-13 symres=1.1e-10 | 3.6 s
+2026-10-14T14:15:30+02:00 H pbc HSF8 N=12 wall=10s rc=0
+W105 (HSF 9) H pbc N=12: 9 sectors, 14 blocks, sym=T2+Rsite | res=6.4e-13 orth=1.6e-13 off=7.4e-15 symres=4.2e-12 | 7.5 s
+2026-10-14T14:15:45+02:00 H pbc HSF9 N=12 wall=15s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 20.7 s
+W102 (HSF 10) H pbc N=12: 2 sectors, 3 blocks, sym=T2 | res=1.3e-09 orth=4.6e-13 off=1.1e-14 symres=8.9e-06 | 20.9 s
+2026-10-14T14:16:13+02:00 H pbc HSF10 N=12 wall=28s rc=0
+  sector 1 (dim 4096, 2 blocks) done, 22.0 s
+W99 (HSF 11) H pbc N=12: 1 sectors, 2 blocks, sym=T2 | res=6.9e-11 orth=1.2e-13 off=1.3e-15 symres=1.2e-09 | 22.2 s
+2026-10-14T14:16:42+02:00 H pbc HSF11 N=12 wall=29s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 21.2 s
+W60 (HSF 12) H pbc N=12: 2 sectors, 3 blocks, sym=T2 | res=7.9e-10 orth=2.7e-13 off=2.1e-14 symres=2.0e-06 | 21.3 s
+2026-10-14T14:17:11+02:00 H pbc HSF12 N=12 wall=29s rc=0
+  sector 1 (dim 4096, 2 blocks) done, 21.6 s
+W57 (HSF 13) H pbc N=12: 1 sectors, 2 blocks, sym=T2 | res=2.0e-10 orth=4.8e-13 off=8.5e-16 symres=9.8e-09 | 21.7 s
+2026-10-14T14:17:39+02:00 H pbc HSF13 N=12 wall=28s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 22.9 s
+W54 (HSF 14) H pbc N=12: 2 sectors, 3 blocks, sym=T2+Rsite | res=4.2e-09 orth=5.5e-13 off=3.9e-15 symres=1.0e-07 | 23.0 s
+2026-10-14T14:18:09+02:00 H pbc HSF14 N=12 wall=30s rc=0
+  sector 1 (dim 4096, 4096 blocks) done, 14.0 s
+W51 (HSF 15) H pbc N=12: 1 sectors, 4096 blocks, sym=T2+Rsite | res=9.1e-15 orth=0.0e+00 off=1.6e-10 symres=2.7e-12 | 14.1 s
+2026-10-14T14:18:31+02:00 H pbc HSF15 N=12 wall=22s rc=0
+=== part 1 runner stopped for reordering after pbc fix 2026-10-14T14:29:29+02:00
+=== start part 2 2026-10-14T14:29:36+02:00
+  sector 1 (dim 16384, 15 blocks) done, 609.5 s
+  sector 2 (dim 8192, 14 blocks) done, 686.7 s
+  sector 3 (dim 4096, 13 blocks) done, 700.8 s
+  sector 4 (dim 2048, 12 blocks) done, 705.0 s
+W60 (HSF 12) H obc0 N=15: 16 sectors, 120 blocks, sym=none | res=1.9e-08 orth=1.5e-12 off=4.1e-09 symres=0.0e+00 | 707.6 s
+W204 (HSF 0) H pbc N=6: 64 sectors, 64 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T14:30:45+02:00 H pbc HSF0 N=6 wall=9s rc=0
+W201 (HSF 1) H pbc N=6: 29 sectors, 36 blocks, sym=OmegaT | res=8.1e-15 orth=8.8e-16 off=1.3e-15 symres=2.7e-14 | 3.7 s
+2026-10-14T14:30:56+02:00 H pbc HSF1 N=6 wall=11s rc=0
+W198 (HSF 2) H pbc N=6: 19 sectors, 40 blocks, sym=OmegaT | res=1.3e-15 orth=1.3e-15 off=6.1e-15 symres=0.0e+00 | 2.8 s
+2026-10-14T14:31:08+02:00 H pbc HSF2 N=6 wall=12s rc=0
+W195 (HSF 3) H pbc N=6: 2 sectors, 3 blocks, sym=OmegaT | res=1.3e-13 orth=1.1e-14 off=7.5e-16 symres=4.2e-13 | 3.9 s
+2026-10-14T14:31:19+02:00 H pbc HSF3 N=6 wall=11s rc=0
+W156 (HSF 4) H pbc N=6: 19 sectors, 40 blocks, sym=OmegaT | res=7.4e-16 orth=6.7e-16 off=2.8e-15 symres=0.0e+00 | 2.7 s
+2026-10-14T14:31:29+02:00 H pbc HSF4 N=6 wall=10s rc=0
+W153 (HSF 5) H pbc N=6: 2 sectors, 3 blocks, sym=OmegaT | res=3.8e-13 orth=1.1e-14 off=7.3e-16 symres=1.1e-12 | 3.8 s
+2026-10-14T14:31:40+02:00 H pbc HSF5 N=6 wall=11s rc=0
+W150 (HSF 6) H pbc N=6: 6 sectors, 8 blocks, sym=OmegaT | res=3.0e-14 orth=1.1e-14 off=1.4e-15 symres=2.3e-14 | 3.6 s
+2026-10-14T14:31:51+02:00 H pbc HSF6 N=6 wall=11s rc=0
+W147 (HSF 7) H pbc N=6: 2 sectors, 3 blocks, sym=OmegaT | res=1.0e-12 orth=4.3e-15 off=9.3e-16 symres=9.0e-11 | 3.8 s
+2026-10-14T14:32:02+02:00 H pbc HSF7 N=6 wall=11s rc=0
+W108 (HSF 8) H pbc N=6: 29 sectors, 36 blocks, sym=OmegaT | res=5.4e-15 orth=2.6e-15 off=4.4e-15 symres=1.1e-14 | 3.8 s
+2026-10-14T14:32:14+02:00 H pbc HSF8 N=6 wall=12s rc=0
+W105 (HSF 9) H pbc N=6: 3 sectors, 6 blocks, sym=OmegaT | res=1.1e-13 orth=3.2e-15 off=3.8e-15 symres=9.6e-14 | 3.7 s
+2026-10-14T14:32:25+02:00 H pbc HSF9 N=6 wall=11s rc=0
+W102 (HSF 10) H pbc N=6: 2 sectors, 3 blocks, sym=OmegaT | res=1.1e-11 orth=1.5e-14 off=3.4e-15 symres=2.5e-11 | 4.0 s
+2026-10-14T14:32:37+02:00 H pbc HSF10 N=6 wall=12s rc=0
+W99 (HSF 11) H pbc N=6: 1 sectors, 2 blocks, sym=OmegaT | res=3.7e-14 orth=2.4e-15 off=6.4e-16 symres=4.6e-13 | 3.8 s
+2026-10-14T14:32:48+02:00 H pbc HSF11 N=6 wall=11s rc=0
+W60 (HSF 12) H pbc N=6: 2 sectors, 3 blocks, sym=OmegaT | res=1.8e-12 orth=2.7e-14 off=6.6e-15 symres=8.7e-11 | 3.8 s
+2026-10-14T14:32:59+02:00 H pbc HSF12 N=6 wall=11s rc=0
+W57 (HSF 13) H pbc N=6: 1 sectors, 2 blocks, sym=OmegaT | res=9.8e-14 orth=1.5e-14 off=7.4e-16 symres=1.1e-12 | 3.8 s
+2026-10-14T14:33:10+02:00 H pbc HSF13 N=6 wall=11s rc=0
+W54 (HSF 14) H pbc N=6: 2 sectors, 3 blocks, sym=OmegaT | res=6.3e-11 orth=3.2e-15 off=1.1e-15 symres=1.2e-10 | 3.8 s
+2026-10-14T14:33:21+02:00 H pbc HSF14 N=6 wall=11s rc=0
+W51 (HSF 15) H pbc N=6: 1 sectors, 64 blocks, sym=OmegaT | res=1.7e-15 orth=0.0e+00 off=1.3e-13 symres=7.8e-15 | 4.0 s
+2026-10-14T14:33:32+02:00 H pbc HSF15 N=6 wall=11s rc=0
+W204 (HSF 0) H pbc N=8: 256 sectors, 256 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T14:33:42+02:00 H pbc HSF0 N=8 wall=10s rc=0
+W201 (HSF 1) H pbc N=8: 90 sectors, 115 blocks, sym=OmegaT | res=3.8e-14 orth=2.3e-15 off=3.9e-15 symres=8.6e-14 | 3.7 s
+2026-10-14T14:33:53+02:00 H pbc HSF1 N=8 wall=11s rc=0
+W198 (HSF 2) H pbc N=8: 48 sectors, 132 blocks, sym=OmegaT | res=3.5e-15 orth=1.8e-15 off=3.4e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T14:34:03+02:00 H pbc HSF2 N=8 wall=10s rc=0
+W195 (HSF 3) H pbc N=8: 2 sectors, 3 blocks, sym=OmegaT | res=7.5e-12 orth=2.9e-14 off=6.5e-16 symres=1.8e-11 | 3.9 s
+2026-10-14T14:34:14+02:00 H pbc HSF3 N=8 wall=11s rc=0
+W156 (HSF 4) H pbc N=8: 48 sectors, 132 blocks, sym=OmegaT | res=2.4e-15 orth=1.6e-15 off=5.9e-14 symres=0.0e+00 | 2.8 s
+2026-10-14T14:34:25+02:00 H pbc HSF4 N=8 wall=11s rc=0
+W153 (HSF 5) H pbc N=8: 2 sectors, 3 blocks, sym=OmegaT | res=1.1e-11 orth=2.3e-14 off=7.0e-16 symres=7.3e-11 | 3.9 s
+2026-10-14T14:34:36+02:00 H pbc HSF5 N=8 wall=11s rc=0
+W150 (HSF 6) H pbc N=8: 7 sectors, 10 blocks, sym=OmegaT | res=7.2e-14 orth=2.2e-14 off=1.6e-15 symres=7.7e-14 | 3.9 s
+2026-10-14T14:34:47+02:00 H pbc HSF6 N=8 wall=11s rc=0
+W147 (HSF 7) H pbc N=8: 2 sectors, 3 blocks, sym=OmegaT | res=6.7e-12 orth=2.7e-14 off=1.9e-15 symres=1.1e-10 | 4.1 s
+2026-10-14T14:34:59+02:00 H pbc HSF7 N=8 wall=12s rc=0
+W108 (HSF 8) H pbc N=8: 90 sectors, 115 blocks, sym=OmegaT | res=6.5e-13 orth=3.5e-15 off=9.9e-15 symres=6.8e-13 | 3.8 s
+2026-10-14T14:35:10+02:00 H pbc HSF8 N=8 wall=11s rc=0
+W105 (HSF 9) H pbc N=8: 7 sectors, 10 blocks, sym=OmegaT | res=1.0e-13 orth=4.3e-14 off=5.9e-15 symres=1.7e-13 | 3.7 s
+2026-10-14T14:35:21+02:00 H pbc HSF9 N=8 wall=11s rc=0
+W102 (HSF 10) H pbc N=8: 2 sectors, 3 blocks, sym=OmegaT | res=7.9e-12 orth=2.0e-14 off=5.3e-15 symres=2.3e-09 | 3.9 s
+2026-10-14T14:35:33+02:00 H pbc HSF10 N=8 wall=12s rc=0
+W99 (HSF 11) H pbc N=8: 1 sectors, 2 blocks, sym=OmegaT | res=3.8e-12 orth=1.0e-14 off=1.0e-15 symres=3.0e-11 | 3.9 s
+2026-10-14T14:35:44+02:00 H pbc HSF11 N=8 wall=11s rc=0
+W60 (HSF 12) H pbc N=8: 2 sectors, 3 blocks, sym=OmegaT | res=2.4e-11 orth=2.5e-14 off=8.5e-15 symres=3.5e-09 | 3.7 s
+2026-10-14T14:35:55+02:00 H pbc HSF12 N=8 wall=11s rc=0
+W57 (HSF 13) H pbc N=8: 1 sectors, 2 blocks, sym=OmegaT | res=1.6e-12 orth=6.3e-14 off=8.6e-16 symres=1.6e-11 | 3.8 s
+2026-10-14T14:36:06+02:00 H pbc HSF13 N=8 wall=11s rc=0
+W54 (HSF 14) H pbc N=8: 2 sectors, 3 blocks, sym=OmegaT | res=9.4e-12 orth=1.6e-14 off=6.4e-16 symres=6.6e-10 | 3.9 s
+2026-10-14T14:36:17+02:00 H pbc HSF14 N=8 wall=11s rc=0
+W51 (HSF 15) H pbc N=8: 1 sectors, 256 blocks, sym=OmegaT | res=3.6e-15 orth=0.0e+00 off=1.0e-11 symres=1.0e-14 | 4.2 s
+2026-10-14T14:36:28+02:00 H pbc HSF15 N=8 wall=11s rc=0
+W204 (HSF 0) H pbc N=10: 1024 sectors, 1024 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T14:36:38+02:00 H pbc HSF0 N=10 wall=10s rc=0
+W201 (HSF 1) H pbc N=10: 277 sectors, 383 blocks, sym=OmegaT | res=1.7e-12 orth=8.9e-15 off=8.7e-15 symres=2.1e-12 | 3.8 s
+2026-10-14T14:36:49+02:00 H pbc HSF1 N=10 wall=11s rc=0
+W198 (HSF 2) H pbc N=10: 124 sectors, 444 blocks, sym=OmegaT | res=1.0e-13 orth=9.6e-15 off=4.4e-13 symres=0.0e+00 | 3.0 s
+2026-10-14T14:37:00+02:00 H pbc HSF2 N=10 wall=11s rc=0
+W195 (HSF 3) H pbc N=10: 2 sectors, 3 blocks, sym=OmegaT | res=1.4e-11 orth=5.0e-13 off=1.8e-15 symres=4.1e-10 | 4.6 s
+2026-10-14T14:37:11+02:00 H pbc HSF3 N=10 wall=11s rc=0
+W156 (HSF 4) H pbc N=10: 124 sectors, 444 blocks, sym=OmegaT | res=3.1e-14 orth=3.0e-15 off=2.1e-13 symres=0.0e+00 | 2.8 s
+2026-10-14T14:37:22+02:00 H pbc HSF4 N=10 wall=11s rc=0
+W153 (HSF 5) H pbc N=10: 2 sectors, 3 blocks, sym=OmegaT | res=1.2e-11 orth=6.9e-14 off=2.0e-15 symres=4.8e-10 | 4.8 s
+2026-10-14T14:37:34+02:00 H pbc HSF5 N=10 wall=12s rc=0
+W150 (HSF 6) H pbc N=10: 8 sectors, 12 blocks, sym=OmegaT | res=6.1e-13 orth=2.1e-13 off=4.6e-15 symres=7.3e-13 | 4.7 s
+2026-10-14T14:37:46+02:00 H pbc HSF6 N=10 wall=12s rc=0
+W147 (HSF 7) H pbc N=10: 2 sectors, 3 blocks, sym=OmegaT | res=2.1e-11 orth=2.5e-13 off=1.5e-15 symres=7.7e-10 | 4.8 s
+2026-10-14T14:37:59+02:00 H pbc HSF7 N=10 wall=13s rc=0
+W108 (HSF 8) H pbc N=10: 277 sectors, 383 blocks, sym=OmegaT | res=5.3e-13 orth=1.3e-14 off=1.3e-14 symres=9.0e-13 | 4.0 s
+2026-10-14T14:38:10+02:00 H pbc HSF8 N=10 wall=11s rc=0
+W105 (HSF 9) H pbc N=10: 5 sectors, 10 blocks, sym=OmegaT | res=1.9e-13 orth=1.4e-13 off=1.2e-14 symres=8.2e-13 | 4.2 s
+2026-10-14T14:38:22+02:00 H pbc HSF9 N=10 wall=12s rc=0
+W102 (HSF 10) H pbc N=10: 2 sectors, 3 blocks, sym=OmegaT | res=2.8e-10 orth=6.1e-13 off=9.9e-15 symres=1.3e-08 | 4.8 s
+2026-10-14T14:38:34+02:00 H pbc HSF10 N=10 wall=12s rc=0
+W99 (HSF 11) H pbc N=10: 1 sectors, 2 blocks, sym=OmegaT | res=1.2e-11 orth=3.5e-14 off=1.6e-15 symres=9.1e-11 | 5.1 s
+2026-10-14T14:38:48+02:00 H pbc HSF11 N=10 wall=14s rc=0
+W60 (HSF 12) H pbc N=10: 2 sectors, 3 blocks, sym=OmegaT | res=5.9e-10 orth=1.2e-13 off=5.2e-15 symres=9.1e-09 | 5.0 s
+2026-10-14T14:39:01+02:00 H pbc HSF12 N=10 wall=13s rc=0
+W57 (HSF 13) H pbc N=10: 1 sectors, 2 blocks, sym=OmegaT | res=6.6e-12 orth=3.1e-13 off=1.8e-15 symres=4.5e-11 | 5.0 s
+2026-10-14T14:39:14+02:00 H pbc HSF13 N=10 wall=13s rc=0
+W54 (HSF 14) H pbc N=10: 2 sectors, 3 blocks, sym=OmegaT | res=4.1e-11 orth=2.4e-13 off=1.5e-15 symres=3.5e-10 | 4.6 s
+2026-10-14T14:39:26+02:00 H pbc HSF14 N=10 wall=12s rc=0
+W51 (HSF 15) H pbc N=10: 1 sectors, 1024 blocks, sym=OmegaT | res=4.2e-15 orth=0.0e+00 off=7.9e-12 symres=1.3e-14 | 4.7 s
+2026-10-14T14:39:38+02:00 H pbc HSF15 N=10 wall=12s rc=0
+W204 (HSF 0) H pbc N=12: 4096 sectors, 4096 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.5 s
+2026-10-14T14:39:48+02:00 H pbc HSF0 N=12 wall=10s rc=0
+W201 (HSF 1) H pbc N=12: 853 sectors, 1322 blocks, sym=OmegaT | res=5.9e-11 orth=2.1e-13 off=2.9e-13 symres=1.0e-10 | 4.5 s
+2026-10-14T14:40:01+02:00 H pbc HSF1 N=12 wall=13s rc=0
+W198 (HSF 2) H pbc N=12: 323 sectors, 1500 blocks, sym=OmegaT | res=3.2e-13 orth=1.2e-14 off=3.5e-12 symres=0.0e+00 | 2.9 s
+2026-10-14T14:40:11+02:00 H pbc HSF2 N=12 wall=10s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 22.8 s
+W195 (HSF 3) H pbc N=12: 2 sectors, 3 blocks, sym=OmegaT | res=1.3e-10 orth=9.6e-14 off=1.1e-15 symres=2.8e-08 | 23.0 s
+2026-10-14T14:40:42+02:00 H pbc HSF3 N=12 wall=31s rc=0
+W156 (HSF 4) H pbc N=12: 323 sectors, 1500 blocks, sym=OmegaT | res=8.6e-13 orth=7.7e-14 off=3.9e-11 symres=0.0e+00 | 3.0 s
+2026-10-14T14:40:52+02:00 H pbc HSF4 N=12 wall=10s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 25.1 s
+W153 (HSF 5) H pbc N=12: 2 sectors, 3 blocks, sym=OmegaT | res=1.4e-10 orth=1.8e-13 off=1.3e-15 symres=4.0e-08 | 25.2 s
+2026-10-14T14:41:25+02:00 H pbc HSF5 N=12 wall=33s rc=0
+W150 (HSF 6) H pbc N=12: 9 sectors, 14 blocks, sym=OmegaT | res=3.5e-11 orth=2.0e-13 off=3.3e-14 symres=2.5e-11 | 8.5 s
+2026-10-14T14:41:41+02:00 H pbc HSF6 N=12 wall=16s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 23.1 s
+W147 (HSF 7) H pbc N=12: 2 sectors, 3 blocks, sym=OmegaT | res=8.6e-11 orth=1.8e-13 off=9.7e-16 symres=1.0e-07 | 23.2 s
+2026-10-14T14:42:12+02:00 H pbc HSF7 N=12 wall=31s rc=0
+W108 (HSF 8) H pbc N=12: 853 sectors, 1322 blocks, sym=OmegaT | res=2.5e-11 orth=7.2e-14 off=1.7e-13 symres=7.5e-11 | 4.1 s
+2026-10-14T14:42:24+02:00 H pbc HSF8 N=12 wall=12s rc=0
+W105 (HSF 9) H pbc N=12: 9 sectors, 14 blocks, sym=OmegaT | res=6.4e-13 orth=1.6e-13 off=7.4e-15 symres=2.9e-12 | 8.0 s
+2026-10-14T14:42:39+02:00 H pbc HSF9 N=12 wall=15s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 22.1 s
+W102 (HSF 10) H pbc N=12: 2 sectors, 3 blocks, sym=OmegaT | res=1.3e-09 orth=4.6e-13 off=1.1e-14 symres=9.4e-06 | 22.2 s
+2026-10-14T14:43:09+02:00 H pbc HSF10 N=12 wall=30s rc=0
+  sector 1 (dim 4096, 2 blocks) done, 23.4 s
+W99 (HSF 11) H pbc N=12: 1 sectors, 2 blocks, sym=OmegaT | res=6.9e-11 orth=1.2e-13 off=1.3e-15 symres=2.1e-09 | 23.5 s
+2026-10-14T14:43:40+02:00 H pbc HSF11 N=12 wall=31s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 24.2 s
+W60 (HSF 12) H pbc N=12: 2 sectors, 3 blocks, sym=OmegaT | res=7.9e-10 orth=2.7e-13 off=2.1e-14 symres=2.4e-06 | 24.4 s
+2026-10-14T14:44:12+02:00 H pbc HSF12 N=12 wall=32s rc=0
+  sector 1 (dim 4096, 2 blocks) done, 24.6 s
+W57 (HSF 13) H pbc N=12: 1 sectors, 2 blocks, sym=OmegaT | res=2.0e-10 orth=4.8e-13 off=8.5e-16 symres=6.9e-09 | 24.7 s
+2026-10-14T14:44:45+02:00 H pbc HSF13 N=12 wall=33s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 23.0 s
+W54 (HSF 14) H pbc N=12: 2 sectors, 3 blocks, sym=OmegaT | res=4.2e-09 orth=5.5e-13 off=3.9e-15 symres=1.5e-07 | 23.2 s
+2026-10-14T14:45:16+02:00 H pbc HSF14 N=12 wall=31s rc=0
+  sector 1 (dim 4096, 4096 blocks) done, 16.3 s
+W51 (HSF 15) H pbc N=12: 1 sectors, 4096 blocks, sym=OmegaT | res=9.1e-15 orth=0.0e+00 off=1.6e-10 symres=4.0e-15 | 16.4 s
+2026-10-14T14:45:40+02:00 H pbc HSF15 N=12 wall=24s rc=0
+  sector 1 (dim 16384, 2 blocks) done, 1014.6 s
+W57 (HSF 13) H pbc N=14: 1 sectors, 2 blocks, sym=OmegaT | res=4.4e-09 orth=1.9e-12 off=6.4e-16 symres=1.3e-08 | 1014.7 s
+2026-10-14T15:02:42+02:00 H pbc HSF13 N=14 wall=1022s rc=0
+  sector 1 (dim 16384, 2 blocks) done, 1066.8 s
+W99 (HSF 11) H pbc N=14: 1 sectors, 2 blocks, sym=OmegaT | res=2.3e-09 orth=3.5e-12 off=5.3e-16 symres=1.0e-08 | 1067.0 s
+2026-10-14T15:20:36+02:00 H pbc HSF11 N=14 wall=1074s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 964.0 s
+W147 (HSF 7) H pbc N=14: 2 sectors, 3 blocks, sym=OmegaT | res=2.2e-09 orth=3.0e-12 off=8.6e-16 symres=2.8e-07 | 964.1 s
+2026-10-14T15:36:48+02:00 H pbc HSF7 N=14 wall=972s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 1001.8 s
+W54 (HSF 14) H pbc N=14: 2 sectors, 3 blocks, sym=OmegaT | res=1.2e-08 orth=2.3e-13 off=8.3e-15 symres=9.4e-08 | 1001.9 s
+2026-10-14T15:53:37+02:00 H pbc HSF14 N=14 wall=1009s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 943.8 s
+W60 (HSF 12) H pbc N=14: 2 sectors, 3 blocks, sym=OmegaT | res=2.9e-08 orth=8.0e-12 off=2.1e-14 symres=6.5e-06 | 943.9 s
+2026-10-14T16:09:29+02:00 H pbc HSF12 N=14 wall=952s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 968.3 s
+W102 (HSF 10) H pbc N=14: 2 sectors, 3 blocks, sym=OmegaT | res=6.5e-08 orth=2.8e-12 off=2.9e-14 symres=5.1e-06 | 968.4 s
+2026-10-14T16:25:44+02:00 H pbc HSF10 N=14 wall=975s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 959.0 s
+W153 (HSF 5) H pbc N=14: 2 sectors, 3 blocks, sym=OmegaT | res=1.0e-08 orth=2.6e-12 off=1.2e-15 symres=1.8e-06 | 959.1 s
+2026-10-14T16:41:51+02:00 H pbc HSF5 N=14 wall=967s rc=0
+  sector 1 (dim 16383, 2 blocks) done, 953.3 s
+W195 (HSF 3) H pbc N=14: 2 sectors, 3 blocks, sym=OmegaT | res=3.9e-08 orth=1.8e-11 off=1.0e-15 symres=4.1e-06 | 953.4 s
+2026-10-14T16:57:52+02:00 H pbc HSF3 N=14 wall=961s rc=0
+  sector 1 (dim 16384, 15 blocks) done, 538.4 s
+  sector 2 (dim 8192, 14 blocks) done, 618.3 s
+  sector 3 (dim 4096, 13 blocks) done, 629.1 s
+  sector 4 (dim 2048, 12 blocks) done, 631.3 s
+W102 (HSF 10) H obc0 N=15: 16 sectors, 120 blocks, sym=none | res=1.2e-08 orth=1.2e-12 off=3.9e-09 symres=0.0e+00 | 632.3 s
+2026-10-14T17:08:31+02:00 H obc0 HSF10 N=15 wall=639s rc=0
+  sector 1 (dim 12870, 2 blocks) done, 481.8 s
+  sector 2 (dim 8008, 2 blocks) done, 611.6 s
+  sector 3 (dim 8008, 2 blocks) done, 750.4 s
+W150 (HSF 6) H obc0 N=15: 9 sectors, 16 blocks, sym=R | res=9.5e-10 orth=3.0e-12 off=1.4e-14 symres=3.3e-08 | 757.7 s
+2026-10-14T17:21:16+02:00 H obc0 HSF6 N=15 wall=765s rc=0
+  sector 1 (dim 12870, 2 blocks) done, 474.5 s
+  sector 2 (dim 8008, 2 blocks) done, 594.2 s
+  sector 3 (dim 8008, 2 blocks) done, 702.0 s
+W105 (HSF 9) H obc0 N=15: 9 sectors, 16 blocks, sym=R | res=1.3e-11 orth=2.7e-12 off=2.0e-14 symres=1.2e-09 | 708.3 s
+2026-10-14T17:33:12+02:00 H obc0 HSF9 N=15 wall=716s rc=0
+W204 (HSF 0) H obc0 N=15: 32768 sectors, 32768 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 8.7 s
+2026-10-14T17:33:28+02:00 H obc0 HSF0 N=15 wall=16s rc=0
+W204 (HSF 0) H obc0 N=16: 65536 sectors, 65536 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 22.1 s
+2026-10-14T17:33:57+02:00 H obc0 HSF0 N=16 wall=29s rc=0
+W156 (HSF 4) H obc0 N=15: 1597 sectors, 10581 blocks, sym=none | res=3.2e-12 orth=2.2e-14 off=5.9e-11 symres=0.0e+00 | 4.6 s
+2026-10-14T17:34:09+02:00 H obc0 HSF4 N=15 wall=12s rc=0
+W198 (HSF 2) H obc0 N=15: 1597 sectors, 10581 blocks, sym=none | res=2.1e-12 orth=3.6e-14 off=1.1e-11 symres=0.0e+00 | 4.6 s
+2026-10-14T17:34:21+02:00 H obc0 HSF2 N=15 wall=12s rc=0
+W108 (HSF 8) H obc0 N=15: 5842 sectors, 10547 blocks, sym=R | res=3.5e-11 orth=5.6e-14 off=1.8e-11 symres=9.7e-12 | 6.6 s
+2026-10-14T17:34:35+02:00 H obc0 HSF8 N=15 wall=14s rc=0
+W156 (HSF 4) H obc0 N=16: 2584 sectors, 19477 blocks, sym=none | res=1.9e-12 orth=1.0e-13 off=3.3e-10 symres=0.0e+00 | 7.1 s
+2026-10-14T17:34:49+02:00 H obc0 HSF4 N=16 wall=14s rc=0
+W198 (HSF 2) H obc0 N=16: 2584 sectors, 19477 blocks, sym=none | res=1.5e-12 orth=6.7e-14 off=2.6e-10 symres=0.0e+00 | 7.1 s
+2026-10-14T17:35:04+02:00 H obc0 HSF2 N=16 wall=15s rc=0
+W108 (HSF 8) H obc0 N=16: 10252 sectors, 19543 blocks, sym=Omega | res=2.8e-10 orth=4.2e-13 off=2.0e-11 symres=8.1e-10 | 11.5 s
+2026-10-14T17:35:22+02:00 H obc0 HSF8 N=16 wall=18s rc=0
+W156 (HSF 4) H obc0 N=17: 4181 sectors, 35854 blocks, sym=none | res=7.2e-12 orth=1.4e-13 off=1.1e-10 symres=0.0e+00 | 12.9 s
+2026-10-14T17:35:43+02:00 H obc0 HSF4 N=17 wall=21s rc=0
+W198 (HSF 2) H obc0 N=17: 4181 sectors, 35854 blocks, sym=none | res=2.0e-11 orth=5.3e-14 off=4.9e-10 symres=0.0e+00 | 13.0 s
+2026-10-14T17:36:03+02:00 H obc0 HSF2 N=17 wall=20s rc=0
+W108 (HSF 8) H obc0 N=17: 17991 sectors, 36212 blocks, sym=R | res=1.1e-08 orth=1.0e-12 off=1.0e-10 symres=1.4e-08 | 24.5 s
+2026-10-14T17:36:35+02:00 H obc0 HSF8 N=17 wall=32s rc=0
+W156 (HSF 4) H obc0 N=18: 6765 sectors, 65967 blocks, sym=none | res=2.4e-11 orth=6.1e-14 off=2.3e-09 symres=0.0e+00 | 27.4 s
+2026-10-14T17:37:09+02:00 H obc0 HSF4 N=18 wall=34s rc=0
+W198 (HSF 2) H obc0 N=18: 6765 sectors, 65967 blocks, sym=none | res=3.5e-11 orth=9.0e-14 off=3.6e-10 symres=0.0e+00 | 26.3 s
+2026-10-14T17:37:43+02:00 H obc0 HSF2 N=18 wall=34s rc=0
+  sector 1 (dim 2584, 2 blocks) done, 10.6 s
+W108 (HSF 8) H obc0 N=18: 31572 sectors, 67081 blocks, sym=Omega | res=4.3e-08 orth=1.5e-12 off=9.2e-10 symres=1.8e-09 | 64.3 s
+2026-10-14T17:38:55+02:00 H obc0 HSF8 N=18 wall=72s rc=0
+W156 (HSF 4) H obc0 N=19: 10946 sectors, 121370 blocks, sym=none | res=1.7e-11 orth=1.2e-13 off=7.0e-09 symres=0.0e+00 | 63.1 s
+2026-10-14T17:40:05+02:00 H obc0 HSF4 N=19 wall=70s rc=0
+W198 (HSF 2) H obc0 N=19: 10946 sectors, 121370 blocks, sym=none | res=1.9e-11 orth=8.0e-13 off=1.4e-09 symres=0.0e+00 | 60.4 s
+2026-10-14T17:41:13+02:00 H obc0 HSF2 N=19 wall=68s rc=0
+  sector 1 (dim 4181, 2 blocks) done, 23.9 s
+  sector 2 (dim 2584, 2 blocks) done, 29.6 s
+  sector 3 (dim 2584, 2 blocks) done, 35.2 s
+W108 (HSF 8) H obc0 N=19: 55405 sectors, 124233 blocks, sym=R | res=4.0e-08 orth=8.5e-13 off=8.2e-10 symres=2.4e-08 | 192.2 s
+2026-10-14T17:44:32+02:00 H obc0 HSF8 N=19 wall=199s rc=0
+W156 (HSF 4) H obc0 N=20: 17711 sectors, 223261 blocks, sym=none | res=4.1e-11 orth=3.1e-13 off=1.0e-08 symres=0.0e+00 | 190.1 s
+2026-10-14T17:47:50+02:00 H obc0 HSF4 N=20 wall=198s rc=0
+W198 (HSF 2) H obc0 N=20: 17711 sectors, 223262 blocks, sym=none | res=2.7e-11 orth=2.6e-13 off=3.4e-09 symres=0.0e+00 | 176.4 s
+2026-10-14T17:50:55+02:00 H obc0 HSF2 N=20 wall=185s rc=0
+  sector 1 (dim 6765, 2 blocks) done, 87.1 s
+  sector 2 (dim 4181, 2 blocks) done, 106.4 s
+  sector 3 (dim 4181, 2 blocks) done, 140.9 s
+  sector 4 (dim 2584, 2 blocks) done, 147.4 s
+  sector 5 (dim 2584, 2 blocks) done, 153.6 s
+  sector 6 (dim 2584, 2 blocks) done, 159.3 s
+W108 (HSF 8) H obc0 N=20: 97229 sectors, 230020 blocks, sym=Omega | res=5.8e-08 orth=3.2e-12 off=2.2e-09 symres=6.8e-09 | 610.7 s
+2026-10-14T18:01:13+02:00 H obc0 HSF8 N=20 wall=618s rc=0
+W201 (HSF 1) H obc0 N=15: 3329 sectors, 7673 blocks, sym=R | res=1.2e-09 orth=5.0e-13 off=3.7e-11 symres=1.3e-07 | 8.0 s
+2026-10-14T18:01:28+02:00 H obc0 HSF1 N=15 wall=15s rc=0
+  sector 1 (dim 2584, 2 blocks) done, 9.9 s
+W201 (HSF 1) H obc0 N=16: 5842 sectors, 14200 blocks, sym=Omega | res=6.1e-10 orth=2.5e-13 off=5.0e-11 symres=6.4e-08 | 17.0 s
+2026-10-14T18:01:52+02:00 H obc0 HSF1 N=16 wall=24s rc=0
+  sector 1 (dim 4181, 2 blocks) done, 22.8 s
+W201 (HSF 1) H obc0 N=17: 10252 sectors, 26283 blocks, sym=R | res=3.9e-09 orth=9.3e-13 off=2.9e-10 symres=1.2e-08 | 43.3 s
+2026-10-14T18:02:43+02:00 H obc0 HSF1 N=17 wall=51s rc=0
+  sector 1 (dim 6765, 2 blocks) done, 81.8 s
+W201 (HSF 1) H obc0 N=18: 17991 sectors, 48635 blocks, sym=Omega | res=6.4e-09 orth=5.8e-12 off=2.6e-10 symres=4.8e-07 | 152.6 s
+2026-10-14T18:05:23+02:00 H obc0 HSF1 N=18 wall=160s rc=0
+  sector 1 (dim 10946, 2 blocks) done, 315.5 s
+  sector 2 (dim 2584, 2 blocks) done, 321.0 s
+  sector 3 (dim 2584, 2 blocks) done, 326.6 s
+W201 (HSF 1) H obc0 N=19: 31572 sectors, 89945 blocks, sym=R | res=1.7e-08 orth=3.3e-12 off=1.4e-08 symres=4.0e-07 | 491.3 s
+2026-10-14T18:13:42+02:00 H obc0 HSF1 N=19 wall=499s rc=0
+W201 (HSF 1) H obc0 N=6: 21 sectors, 31 blocks, sym=Omega | res=3.0e-14 orth=2.1e-15 off=8.4e-15 symres=1.1e-13 | 3.7 s
+2026-10-14T18:13:53+02:00 H obc0 HSF1 N=6 wall=11s rc=0
+W150 (HSF 6) H obc0 N=6: 4 sectors, 7 blocks, sym=Omega | res=6.2e-15 orth=1.4e-15 off=3.5e-15 symres=2.1e-14 | 3.8 s
+2026-10-14T18:14:04+02:00 H obc0 HSF6 N=6 wall=11s rc=0
+W147 (HSF 7) H obc0 N=6: 1 sectors, 5 blocks, sym=Omega | res=1.1e-13 orth=1.5e-14 off=1.4e-14 symres=1.1e-12 | 3.7 s
+2026-10-14T18:14:15+02:00 H obc0 HSF7 N=6 wall=11s rc=0
+W108 (HSF 8) H obc0 N=6: 37 sectors, 43 blocks, sym=Omega | res=2.0e-15 orth=5.6e-16 off=4.4e-15 symres=4.7e-15 | 3.6 s
+2026-10-14T18:14:27+02:00 H obc0 HSF8 N=6 wall=11s rc=0
+W105 (HSF 9) H obc0 N=6: 4 sectors, 7 blocks, sym=Omega | res=1.3e-13 orth=6.7e-15 off=4.2e-15 symres=3.8e-13 | 3.9 s
+2026-10-14T18:14:38+02:00 H obc0 HSF9 N=6 wall=11s rc=0
+W54 (HSF 14) H obc0 N=6: 2 sectors, 3 blocks, sym=Omega | res=1.5e-12 orth=1.2e-15 off=1.9e-15 symres=6.5e-11 | 3.7 s
+2026-10-14T18:14:50+02:00 H obc0 HSF14 N=6 wall=12s rc=0
+W201 (HSF 1) H obc0 N=8: 65 sectors, 101 blocks, sym=Omega | res=3.4e-13 orth=9.9e-15 off=4.6e-15 symres=2.1e-12 | 3.8 s
+2026-10-14T18:15:01+02:00 H obc0 HSF1 N=8 wall=11s rc=0
+W150 (HSF 6) H obc0 N=8: 5 sectors, 9 blocks, sym=Omega | res=1.5e-13 orth=4.0e-15 off=1.2e-14 symres=3.7e-12 | 3.7 s
+2026-10-14T18:15:12+02:00 H obc0 HSF6 N=8 wall=11s rc=0
+W147 (HSF 7) H obc0 N=8: 1 sectors, 5 blocks, sym=Omega | res=3.4e-12 orth=2.3e-14 off=1.0e-13 symres=3.8e-10 | 4.0 s
+2026-10-14T18:15:24+02:00 H obc0 HSF7 N=8 wall=12s rc=0
+W108 (HSF 8) H obc0 N=8: 114 sectors, 142 blocks, sym=Omega | res=1.9e-14 orth=2.0e-15 off=9.9e-15 symres=2.6e-14 | 3.7 s
+2026-10-14T18:15:35+02:00 H obc0 HSF8 N=8 wall=11s rc=0
+W105 (HSF 9) H obc0 N=8: 5 sectors, 9 blocks, sym=Omega | res=6.7e-13 orth=1.5e-14 off=1.1e-14 symres=5.9e-12 | 3.8 s
+2026-10-14T18:15:47+02:00 H obc0 HSF9 N=8 wall=12s rc=0
+W54 (HSF 14) H obc0 N=8: 2 sectors, 3 blocks, sym=Omega | res=4.5e-11 orth=2.5e-14 off=1.3e-15 symres=2.9e-10 | 3.9 s
+2026-10-14T18:15:58+02:00 H obc0 HSF14 N=8 wall=11s rc=0
+W201 (HSF 1) H obc0 N=10: 200 sectors, 352 blocks, sym=Omega | res=2.6e-12 orth=1.7e-14 off=2.2e-13 symres=2.2e-11 | 3.8 s
+2026-10-14T18:16:09+02:00 H obc0 HSF1 N=10 wall=11s rc=0
+W150 (HSF 6) H obc0 N=10: 6 sectors, 11 blocks, sym=Omega | res=7.5e-13 orth=2.1e-13 off=2.8e-14 symres=1.0e-11 | 4.1 s
+2026-10-14T18:16:21+02:00 H obc0 HSF6 N=10 wall=12s rc=0
+W147 (HSF 7) H obc0 N=10: 1 sectors, 5 blocks, sym=Omega | res=2.0e-11 orth=1.3e-13 off=2.5e-12 symres=6.1e-09 | 4.8 s
+2026-10-14T18:16:33+02:00 H obc0 HSF7 N=10 wall=12s rc=0
+W108 (HSF 8) H obc0 N=10: 351 sectors, 487 blocks, sym=Omega | res=1.5e-13 orth=4.5e-15 off=4.6e-14 symres=6.9e-13 | 3.9 s
+2026-10-14T18:16:46+02:00 H obc0 HSF8 N=10 wall=13s rc=0
+W105 (HSF 9) H obc0 N=10: 6 sectors, 11 blocks, sym=Omega | res=1.9e-12 orth=3.3e-14 off=1.8e-14 symres=3.4e-11 | 4.2 s
+2026-10-14T18:16:57+02:00 H obc0 HSF9 N=10 wall=12s rc=0
+W54 (HSF 14) H obc0 N=10: 2 sectors, 3 blocks, sym=Omega | res=6.6e-12 orth=1.4e-13 off=2.4e-15 symres=7.4e-10 | 4.8 s
+2026-10-14T18:17:10+02:00 H obc0 HSF14 N=10 wall=12s rc=0
+W201 (HSF 1) H obc0 N=12: 616 sectors, 1205 blocks, sym=Omega | res=4.7e-12 orth=2.7e-14 off=1.6e-12 symres=2.1e-11 | 4.1 s
+2026-10-14T18:17:22+02:00 H obc0 HSF1 N=12 wall=12s rc=0
+W150 (HSF 6) H obc0 N=12: 7 sectors, 13 blocks, sym=Omega | res=1.2e-12 orth=1.0e-12 off=1.7e-14 symres=2.0e-11 | 7.8 s
+2026-10-14T18:17:37+02:00 H obc0 HSF6 N=12 wall=15s rc=0
+  sector 1 (dim 4096, 5 blocks) done, 24.0 s
+W147 (HSF 7) H obc0 N=12: 1 sectors, 5 blocks, sym=Omega | res=4.4e-09 orth=7.9e-14 off=1.1e-13 symres=3.6e-07 | 24.1 s
+2026-10-14T18:18:09+02:00 H obc0 HSF7 N=12 wall=32s rc=0
+W108 (HSF 8) H obc0 N=12: 1081 sectors, 1659 blocks, sym=Omega | res=3.1e-12 orth=2.9e-14 off=3.7e-13 symres=3.5e-12 | 4.0 s
+2026-10-14T18:18:20+02:00 H obc0 HSF8 N=12 wall=11s rc=0
+W105 (HSF 9) H obc0 N=12: 7 sectors, 13 blocks, sym=Omega | res=1.7e-11 orth=2.5e-12 off=1.8e-14 symres=2.3e-10 | 7.9 s
+2026-10-14T18:18:35+02:00 H obc0 HSF9 N=12 wall=15s rc=0
+  sector 1 (dim 4095, 2 blocks) done, 21.8 s
+W54 (HSF 14) H obc0 N=12: 2 sectors, 3 blocks, sym=Omega | res=4.9e-10 orth=8.7e-13 off=4.4e-15 symres=7.2e-08 | 21.9 s
+2026-10-14T18:19:05+02:00 H obc0 HSF14 N=12 wall=29s rc=0
+  sector 1 (dim 16384, 5 blocks) done, 1048.6 s
+W147 (HSF 7) H obc0 N=14: 1 sectors, 5 blocks, sym=Omega | res=5.9e-08 orth=6.7e-13 off=5.3e-13 symres=3.1e-07 | 1048.7 s
+2026-10-14T18:36:41+02:00 H obc0 HSF7 N=14 wall=1056s rc=0
+2026-10-14T18:36:41+02:00 DEADLINE: skip H obc0 N=14 HSF14
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF6
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF9
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF1
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF2
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF4
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF8
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF0
+2026-10-14T18:36:41+02:00 DEADLINE: skip H pbc N=14 HSF15
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF0
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF1
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF2
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF3
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF4
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF5
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF6
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF7
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF8
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF9
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF10
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF11
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF12
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF13
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF14
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=6 HSF15
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF0
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF1
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF2
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF3
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF4
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF5
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF6
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF7
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF8
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF9
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF10
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF11
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF12
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF13
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF14
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=7 HSF15
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF0
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF1
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF2
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF3
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF4
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF5
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF6
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF7
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF8
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF9
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF10
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF11
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF12
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF13
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF14
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=8 HSF15
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF0
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF1
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF2
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF3
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF4
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF5
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF6
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF7
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF8
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF9
+2026-10-14T18:36:41+02:00 DEADLINE: skip X obc0 N=9 HSF10
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=9 HSF11
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=9 HSF12
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=9 HSF13
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=9 HSF14
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=9 HSF15
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF0
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF1
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF2
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF3
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF4
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF5
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF6
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF7
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF8
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF9
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF10
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF11
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF12
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF13
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF14
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=10 HSF15
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF0
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF1
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF2
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF3
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF4
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF5
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF6
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF7
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF8
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF9
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF10
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF11
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF12
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF13
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF14
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=11 HSF15
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF0
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF1
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF2
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF3
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF4
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF5
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF6
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF7
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF8
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF9
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF10
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF11
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF12
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF13
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF14
+2026-10-14T18:36:42+02:00 DEADLINE: skip X obc0 N=12 HSF15
+=== done part 2 2026-10-14T18:36:42+02:00
+=== start part 3 2026-10-14T18:36:46+02:00
+W201 (HSF 1) H obc0 N=14: 1897 sectors, 4143 blocks, sym=Omega | res=5.8e-09 orth=2.1e-13 off=1.5e-11 symres=3.1e-08 | 6.1 s
+2026-10-14T18:37:03+02:00 H obc0 HSF1 N=14 wall=13s rc=0
+  sector 1 (dim 6435, 2 blocks) done, 96.6 s
+  sector 2 (dim 5005, 2 blocks) done, 165.5 s
+  sector 3 (dim 3003, 2 blocks) done, 178.9 s
+W150 (HSF 6) H obc0 N=14: 8 sectors, 15 blocks, sym=Omega | res=4.2e-12 orth=1.6e-13 off=1.6e-14 symres=3.4e-10 | 181.5 s
+2026-10-14T18:40:13+02:00 H obc0 HSF6 N=14 wall=190s rc=0
+W108 (HSF 8) H obc0 N=14: 3329 sectors, 5694 blocks, sym=Omega | res=2.0e-11 orth=1.3e-13 off=2.2e-12 symres=8.2e-12 | 5.6 s
+2026-10-14T18:40:26+02:00 H obc0 HSF8 N=14 wall=13s rc=0
+  sector 1 (dim 6435, 2 blocks) done, 110.0 s
+  sector 2 (dim 5005, 2 blocks) done, 157.6 s
+  sector 3 (dim 3003, 2 blocks) done, 172.0 s
+W105 (HSF 9) H obc0 N=14: 8 sectors, 15 blocks, sym=Omega | res=8.2e-11 orth=3.2e-13 off=2.2e-14 symres=3.1e-09 | 174.7 s
+2026-10-14T18:43:29+02:00 H obc0 HSF9 N=14 wall=183s rc=0
+=== machine shut down ~20:08 (54 obc0 N=14 rerun lost); restart part 3 + 4 2026-10-14T21:22:00+02:00
+=== start part 3 2026-10-14T21:22:05+02:00
+
+[7467] signal 15: Beendet
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:641
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+#wait#398 at ./condition.jl:141
+wait at ./condition.jl:136 [inlined]
+_trywait at ./asyncevent.jl:185
+profile_printing_listener at ./Base.jl:332
+#start_profile_listener##0 at ./Base.jl:352
+jfptr_YY.start_profile_listenerYY.YY.0_7469.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+start_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:1249
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f8e620910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f8e62094a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f8e621268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+dsymv_kernel_4x4.constprop.0 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dsymv_U_HASWELL at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+symv_kernel at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+exec_blas at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dsymv_thread_U at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dsymv_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dlatrd_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dsytrd_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dsyevr_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+syevr! at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/lapack.jl:5405
+#eigen!#252 at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/symmetriceigen.jl:24 [inlined]
+eigen! at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/symmetriceigen.jl:18 [inlined]
+#run#12 at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:576
+run at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:485
+unknown function (ip: 0x7f8d6ab7a9a8) at (unknown file)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+do_call at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:123
+eval_value at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:243
+eval_stmt_value at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:194 [inlined]
+eval_body at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:707
+jl_interpret_toplevel_thunk at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:898
+jl_toplevel_eval_flex at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:1035
+jl_toplevel_eval_flex at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:975
+ijl_toplevel_eval at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:1047
+ijl_toplevel_eval_in at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:1092
+eval at ./boot.jl:489
+include_string at ./loading.jl:2867
+_include at ./loading.jl:2927
+include at ./Base.jl:306
+exec_options at ./client.jl:317
+_start at ./client.jl:550
+jfptr__start_47004.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+true_main at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/jlapi.c:971
+jl_repl_entrypoint at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f8e62029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+unknown function (ip: (nil)) at (unknown file)
+Allocations: 16906627 (Pool: 16906352; Big: 275); GC: 32
+=== stopped by user for a reboot 2026-10-14T21:22:40+02:00 (54 obc0 N=14 rerun not finished)
+=== resume after reboot 2026-10-14T21:24:52+02:00
+=== start part 3 2026-10-14T21:24:52+02:00
+  sector 1 (dim 16383, 2 blocks) done, 967.9 s
+W54 (HSF 14) H obc0 N=14: 2 sectors, 3 blocks, sym=Omega | res=4.3e-08 orth=4.4e-13 off=7.3e-15 symres=2.1e-07 | 968.1 s
+2026-10-14T21:41:13+02:00 H obc0 HSF14 N=14 wall=977s rc=0
+  sector 1 (dim 6006, 2 blocks) done, 74.7 s
+  sector 2 (dim 6006, 2 blocks) done, 136.6 s
+  sector 3 (dim 2002, 2 blocks) done, 140.5 s
+  sector 4 (dim 2002, 2 blocks) done, 144.6 s
+W150 (HSF 6) H pbc N=14: 10 sectors, 16 blocks, sym=OmegaT | res=7.1e-12 orth=3.5e-13 off=6.6e-14 symres=2.7e-11 | 144.7 s
+2026-10-14T21:43:45+02:00 H pbc HSF6 N=14 wall=152s rc=0
+  sector 1 (dim 6864, 2 blocks) done, 85.4 s
+  sector 2 (dim 4004, 2 blocks) done, 104.0 s
+  sector 3 (dim 4004, 2 blocks) done, 123.2 s
+W105 (HSF 9) H pbc N=14: 7 sectors, 14 blocks, sym=OmegaT | res=8.7e-12 orth=5.0e-12 off=2.8e-14 symres=9.6e-10 | 124.2 s
+2026-10-14T21:45:57+02:00 H pbc HSF9 N=14 wall=132s rc=0
+W201 (HSF 1) H pbc N=14: 2627 sectors, 4511 blocks, sym=OmegaT | res=6.0e-11 orth=1.8e-13 off=5.1e-12 symres=9.9e-10 | 5.7 s
+2026-10-14T21:46:10+02:00 H pbc HSF1 N=14 wall=13s rc=0
+W198 (HSF 2) H pbc N=14: 844 sectors, 5072 blocks, sym=OmegaT | res=7.4e-13 orth=1.1e-14 off=2.3e-10 symres=0.0e+00 | 3.9 s
+2026-10-14T21:46:22+02:00 H pbc HSF2 N=14 wall=12s rc=0
+W156 (HSF 4) H pbc N=14: 844 sectors, 5072 blocks, sym=OmegaT | res=3.6e-13 orth=3.5e-14 off=1.0e-10 symres=0.0e+00 | 3.9 s
+2026-10-14T21:46:34+02:00 H pbc HSF4 N=14 wall=12s rc=0
+W108 (HSF 8) H pbc N=14: 2627 sectors, 4511 blocks, sym=OmegaT | res=2.3e-10 orth=1.4e-13 off=2.2e-12 symres=1.5e-10 | 5.9 s
+2026-10-14T21:46:47+02:00 H pbc HSF8 N=14 wall=13s rc=0
+W204 (HSF 0) H pbc N=14: 16384 sectors, 16384 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 4.8 s
+2026-10-14T21:47:00+02:00 H pbc HSF0 N=14 wall=13s rc=0
+  sector 1 (dim 16384, 16384 blocks) done, 505.4 s
+W51 (HSF 15) H pbc N=14: 1 sectors, 16384 blocks, sym=OmegaT | res=2.0e-14 orth=0.0e+00 off=5.9e-10 symres=1.9e-15 | 505.5 s
+2026-10-14T21:55:33+02:00 H pbc HSF15 N=14 wall=513s rc=0
+W204 (HSF 0) X obc0 N=6: 64 sectors, 64 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T21:55:43+02:00 X obc0 HSF0 N=6 wall=10s rc=0
+W201 (HSF 1) X obc0 N=6: 26 sectors, 26 blocks, sym=Omega | res=1.9e-15 orth=2.1e-15 off=0.0e+00 symres=5.7e-15 | 2.8 s
+2026-10-14T21:55:53+02:00 X obc0 HSF1 N=6 wall=10s rc=0
+W198 (HSF 2) X obc0 N=6: 22 sectors, 22 blocks, sym=none | res=1.0e-15 orth=7.7e-16 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T21:56:03+02:00 X obc0 HSF2 N=6 wall=10s rc=0
+W195 (HSF 3) X obc0 N=6: 8 sectors, 8 blocks, sym=none | res=1.3e-15 orth=8.9e-16 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T21:56:14+02:00 X obc0 HSF3 N=6 wall=11s rc=0
+W156 (HSF 4) X obc0 N=6: 22 sectors, 22 blocks, sym=none | res=1.0e-15 orth=7.7e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T21:56:23+02:00 X obc0 HSF4 N=6 wall=9s rc=0
+W153 (HSF 5) X obc0 N=6: 8 sectors, 8 blocks, sym=none | res=1.7e-15 orth=2.3e-15 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T21:56:33+02:00 X obc0 HSF5 N=6 wall=10s rc=0
+W150 (HSF 6) X obc0 N=6: 10 sectors, 10 blocks, sym=Omega | res=1.3e-15 orth=7.2e-16 off=0.0e+00 symres=1.3e-15 | 3.1 s
+2026-10-14T21:56:44+02:00 X obc0 HSF6 N=6 wall=11s rc=0
+W147 (HSF 7) X obc0 N=6: 8 sectors, 8 blocks, sym=Omega | res=2.9e-15 orth=5.9e-15 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T21:56:55+02:00 X obc0 HSF7 N=6 wall=11s rc=0
+W108 (HSF 8) X obc0 N=6: 40 sectors, 40 blocks, sym=Omega | res=7.8e-16 orth=6.7e-16 off=0.0e+00 symres=9.6e-16 | 3.5 s
+2026-10-14T21:57:07+02:00 X obc0 HSF8 N=6 wall=12s rc=0
+W105 (HSF 9) X obc0 N=6: 10 sectors, 10 blocks, sym=Omega | res=1.3e-15 orth=7.2e-16 off=0.0e+00 symres=1.3e-15 | 3.5 s
+2026-10-14T21:57:20+02:00 X obc0 HSF9 N=6 wall=13s rc=0
+W102 (HSF 10) X obc0 N=6: 12 sectors, 12 blocks, sym=none | res=1.6e-15 orth=2.0e-15 off=0.0e+00 symres=0.0e+00 | 2.5 s
+2026-10-14T21:57:31+02:00 X obc0 HSF10 N=6 wall=11s rc=0
+W99 (HSF 11) X obc0 N=6: 2 sectors, 2 blocks, sym=none | res=5.9e-15 orth=3.3e-14 off=0.0e+00 symres=0.0e+00 | 2.5 s
+2026-10-14T21:57:44+02:00 X obc0 HSF11 N=6 wall=13s rc=0
+W60 (HSF 12) X obc0 N=6: 12 sectors, 12 blocks, sym=none | res=1.2e-15 orth=5.6e-16 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T21:57:54+02:00 X obc0 HSF12 N=6 wall=10s rc=0
+W57 (HSF 13) X obc0 N=6: 2 sectors, 2 blocks, sym=none | res=4.8e-15 orth=3.1e-14 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T21:58:05+02:00 X obc0 HSF13 N=6 wall=11s rc=0
+W54 (HSF 14) X obc0 N=6: 8 sectors, 8 blocks, sym=Omega | res=2.4e-15 orth=4.3e-15 off=0.0e+00 symres=9.3e-15 | 3.3 s
+2026-10-14T21:58:17+02:00 X obc0 HSF14 N=6 wall=12s rc=0
+W51 (HSF 15) X obc0 N=6: 32 sectors, 32 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.7 s
+2026-10-14T21:58:28+02:00 X obc0 HSF15 N=6 wall=11s rc=0
+W204 (HSF 0) X obc0 N=7: 128 sectors, 128 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T21:58:38+02:00 X obc0 HSF0 N=7 wall=10s rc=0
+W201 (HSF 1) X obc0 N=7: 48 sectors, 48 blocks, sym=R | res=2.6e-15 orth=4.8e-15 off=0.0e+00 symres=7.2e-15 | 2.7 s
+2026-10-14T21:58:49+02:00 X obc0 HSF1 N=7 wall=11s rc=0
+W198 (HSF 2) X obc0 N=7: 42 sectors, 42 blocks, sym=none | res=1.2e-15 orth=7.7e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T21:58:59+02:00 X obc0 HSF2 N=7 wall=10s rc=0
+W195 (HSF 3) X obc0 N=7: 16 sectors, 16 blocks, sym=none | res=1.3e-15 orth=8.9e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T21:59:08+02:00 X obc0 HSF3 N=7 wall=9s rc=0
+W156 (HSF 4) X obc0 N=7: 42 sectors, 42 blocks, sym=none | res=1.2e-15 orth=7.7e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T21:59:18+02:00 X obc0 HSF4 N=7 wall=10s rc=0
+W153 (HSF 5) X obc0 N=7: 16 sectors, 16 blocks, sym=none | res=1.3e-15 orth=1.6e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T21:59:27+02:00 X obc0 HSF5 N=7 wall=9s rc=0
+W150 (HSF 6) X obc0 N=7: 20 sectors, 20 blocks, sym=R | res=1.4e-15 orth=2.1e-15 off=0.0e+00 symres=2.6e-15 | 2.5 s
+2026-10-14T21:59:37+02:00 X obc0 HSF6 N=7 wall=10s rc=0
+W147 (HSF 7) X obc0 N=7: 14 sectors, 14 blocks, sym=R | res=2.7e-15 orth=4.8e-15 off=0.0e+00 symres=1.2e-16 | 2.6 s
+2026-10-14T21:59:47+02:00 X obc0 HSF7 N=7 wall=10s rc=0
+W108 (HSF 8) X obc0 N=7: 72 sectors, 72 blocks, sym=R | res=1.4e-15 orth=6.8e-16 off=0.0e+00 symres=1.9e-15 | 2.5 s
+2026-10-14T21:59:56+02:00 X obc0 HSF8 N=7 wall=9s rc=0
+W105 (HSF 9) X obc0 N=7: 20 sectors, 20 blocks, sym=R | res=1.5e-15 orth=2.4e-15 off=0.0e+00 symres=1.5e-15 | 2.4 s
+2026-10-14T22:00:06+02:00 X obc0 HSF9 N=7 wall=10s rc=0
+W102 (HSF 10) X obc0 N=7: 20 sectors, 20 blocks, sym=none | res=1.6e-15 orth=2.0e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:00:16+02:00 X obc0 HSF10 N=7 wall=10s rc=0
+W99 (HSF 11) X obc0 N=7: 4 sectors, 4 blocks, sym=none | res=5.8e-15 orth=1.1e-13 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:00:25+02:00 X obc0 HSF11 N=7 wall=9s rc=0
+W60 (HSF 12) X obc0 N=7: 20 sectors, 20 blocks, sym=none | res=1.2e-15 orth=5.6e-16 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:00:34+02:00 X obc0 HSF12 N=7 wall=9s rc=0
+W57 (HSF 13) X obc0 N=7: 4 sectors, 4 blocks, sym=none | res=3.7e-15 orth=1.7e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:00:44+02:00 X obc0 HSF13 N=7 wall=10s rc=0
+W54 (HSF 14) X obc0 N=7: 14 sectors, 14 blocks, sym=R | res=3.8e-15 orth=4.4e-15 off=0.0e+00 symres=7.0e-15 | 2.5 s
+2026-10-14T22:00:53+02:00 X obc0 HSF14 N=7 wall=9s rc=0
+W51 (HSF 15) X obc0 N=7: 64 sectors, 64 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.5 s
+2026-10-14T22:01:03+02:00 X obc0 HSF15 N=7 wall=10s rc=0
+W204 (HSF 0) X obc0 N=8: 256 sectors, 256 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:01:13+02:00 X obc0 HSF0 N=8 wall=10s rc=0
+W201 (HSF 1) X obc0 N=8: 88 sectors, 88 blocks, sym=Omega | res=2.8e-15 orth=3.9e-15 off=0.0e+00 symres=3.4e-15 | 2.8 s
+2026-10-14T22:01:23+02:00 X obc0 HSF1 N=8 wall=10s rc=0
+W198 (HSF 2) X obc0 N=8: 66 sectors, 66 blocks, sym=none | res=2.6e-15 orth=5.7e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:01:32+02:00 X obc0 HSF2 N=8 wall=9s rc=0
+W195 (HSF 3) X obc0 N=8: 16 sectors, 16 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:01:42+02:00 X obc0 HSF3 N=8 wall=10s rc=0
+W156 (HSF 4) X obc0 N=8: 66 sectors, 66 blocks, sym=none | res=3.2e-15 orth=5.7e-15 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:01:51+02:00 X obc0 HSF4 N=8 wall=9s rc=0
+W153 (HSF 5) X obc0 N=8: 16 sectors, 16 blocks, sym=none | res=3.3e-15 orth=8.4e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:02:01+02:00 X obc0 HSF5 N=8 wall=10s rc=0
+W150 (HSF 6) X obc0 N=8: 30 sectors, 30 blocks, sym=Omega | res=2.3e-15 orth=1.7e-15 off=0.0e+00 symres=2.1e-15 | 3.3 s
+2026-10-14T22:02:12+02:00 X obc0 HSF6 N=8 wall=11s rc=0
+W147 (HSF 7) X obc0 N=8: 20 sectors, 20 blocks, sym=Omega | res=3.4e-15 orth=5.8e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:02:22+02:00 X obc0 HSF7 N=8 wall=10s rc=0
+W108 (HSF 8) X obc0 N=8: 130 sectors, 130 blocks, sym=Omega | res=1.8e-15 orth=2.2e-15 off=0.0e+00 symres=5.6e-15 | 2.8 s
+2026-10-14T22:02:33+02:00 X obc0 HSF8 N=8 wall=11s rc=0
+W105 (HSF 9) X obc0 N=8: 30 sectors, 30 blocks, sym=Omega | res=2.2e-15 orth=1.6e-15 off=0.0e+00 symres=3.7e-15 | 2.8 s
+2026-10-14T22:02:43+02:00 X obc0 HSF9 N=8 wall=10s rc=0
+W102 (HSF 10) X obc0 N=8: 36 sectors, 36 blocks, sym=none | res=1.8e-15 orth=2.4e-15 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:02:53+02:00 X obc0 HSF10 N=8 wall=10s rc=0
+W99 (HSF 11) X obc0 N=8: 6 sectors, 6 blocks, sym=none | res=6.2e-15 orth=3.9e-13 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:03:03+02:00 X obc0 HSF11 N=8 wall=10s rc=0
+W60 (HSF 12) X obc0 N=8: 36 sectors, 36 blocks, sym=none | res=1.2e-15 orth=5.6e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:03:12+02:00 X obc0 HSF12 N=8 wall=9s rc=0
+W57 (HSF 13) X obc0 N=8: 6 sectors, 6 blocks, sym=none | res=8.2e-15 orth=1.9e-13 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:03:22+02:00 X obc0 HSF13 N=8 wall=10s rc=0
+W54 (HSF 14) X obc0 N=8: 20 sectors, 20 blocks, sym=Omega | res=5.5e-15 orth=4.1e-15 off=0.0e+00 symres=9.9e-15 | 2.9 s
+2026-10-14T22:03:33+02:00 X obc0 HSF14 N=8 wall=11s rc=0
+W51 (HSF 15) X obc0 N=8: 128 sectors, 128 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.5 s
+2026-10-14T22:03:43+02:00 X obc0 HSF15 N=8 wall=10s rc=0
+W204 (HSF 0) X obc0 N=9: 512 sectors, 512 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:03:53+02:00 X obc0 HSF0 N=9 wall=10s rc=0
+W201 (HSF 1) X obc0 N=9: 162 sectors, 162 blocks, sym=R | res=3.9e-15 orth=5.7e-15 off=0.0e+00 symres=2.0e-14 | 2.4 s
+2026-10-14T22:04:02+02:00 X obc0 HSF1 N=9 wall=9s rc=0
+W198 (HSF 2) X obc0 N=9: 126 sectors, 126 blocks, sym=none | res=3.6e-15 orth=5.7e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:04:12+02:00 X obc0 HSF2 N=9 wall=10s rc=0
+W195 (HSF 3) X obc0 N=9: 32 sectors, 32 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:04:21+02:00 X obc0 HSF3 N=9 wall=9s rc=0
+W156 (HSF 4) X obc0 N=9: 126 sectors, 126 blocks, sym=none | res=3.6e-15 orth=5.7e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:04:30+02:00 X obc0 HSF4 N=9 wall=9s rc=0
+W153 (HSF 5) X obc0 N=9: 32 sectors, 32 blocks, sym=none | res=4.1e-15 orth=1.8e-14 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:04:40+02:00 X obc0 HSF5 N=9 wall=10s rc=0
+W150 (HSF 6) X obc0 N=9: 56 sectors, 56 blocks, sym=R | res=3.0e-15 orth=6.3e-15 off=0.0e+00 symres=7.9e-15 | 2.4 s
+2026-10-14T22:04:49+02:00 X obc0 HSF6 N=9 wall=9s rc=0
+W147 (HSF 7) X obc0 N=9: 36 sectors, 36 blocks, sym=R | res=4.3e-15 orth=1.2e-14 off=0.0e+00 symres=2.1e-15 | 2.6 s
+2026-10-14T22:04:59+02:00 X obc0 HSF7 N=9 wall=10s rc=0
+W108 (HSF 8) X obc0 N=9: 236 sectors, 236 blocks, sym=R | res=2.6e-15 orth=2.2e-15 off=0.0e+00 symres=7.2e-15 | 2.5 s
+2026-10-14T22:05:09+02:00 X obc0 HSF8 N=9 wall=10s rc=0
+W105 (HSF 9) X obc0 N=9: 52 sectors, 52 blocks, sym=R | res=3.0e-15 orth=6.6e-15 off=0.0e+00 symres=2.3e-16 | 2.5 s
+2026-10-14T22:05:19+02:00 X obc0 HSF9 N=9 wall=10s rc=0
+W102 (HSF 10) X obc0 N=9: 52 sectors, 52 blocks, sym=none | res=3.6e-15 orth=9.2e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:05:28+02:00 X obc0 HSF10 N=9 wall=9s rc=0
+W99 (HSF 11) X obc0 N=9: 6 sectors, 6 blocks, sym=none | res=4.4e-15 orth=5.4e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:05:38+02:00 X obc0 HSF11 N=9 wall=10s rc=0
+W60 (HSF 12) X obc0 N=9: 52 sectors, 52 blocks, sym=none | res=3.6e-15 orth=5.3e-15 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:05:47+02:00 X obc0 HSF12 N=9 wall=9s rc=0
+W57 (HSF 13) X obc0 N=9: 6 sectors, 6 blocks, sym=none | res=2.4e-14 orth=4.3e-13 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:05:57+02:00 X obc0 HSF13 N=9 wall=10s rc=0
+W54 (HSF 14) X obc0 N=9: 36 sectors, 36 blocks, sym=R | res=4.6e-15 orth=2.2e-14 off=0.0e+00 symres=2.8e-14 | 2.4 s
+2026-10-14T22:06:07+02:00 X obc0 HSF14 N=9 wall=10s rc=0
+W51 (HSF 15) X obc0 N=9: 256 sectors, 256 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.4 s
+2026-10-14T22:06:16+02:00 X obc0 HSF15 N=9 wall=9s rc=0
+W204 (HSF 0) X obc0 N=10: 1024 sectors, 1024 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:06:26+02:00 X obc0 HSF0 N=10 wall=10s rc=0
+W201 (HSF 1) X obc0 N=10: 300 sectors, 300 blocks, sym=Omega | res=4.5e-15 orth=7.3e-15 off=0.0e+00 symres=3.3e-14 | 2.9 s
+2026-10-14T22:06:36+02:00 X obc0 HSF1 N=10 wall=10s rc=0
+W198 (HSF 2) X obc0 N=10: 212 sectors, 212 blocks, sym=none | res=4.4e-15 orth=2.0e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:06:45+02:00 X obc0 HSF2 N=10 wall=9s rc=0
+W195 (HSF 3) X obc0 N=10: 64 sectors, 64 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:06:55+02:00 X obc0 HSF3 N=10 wall=10s rc=0
+W156 (HSF 4) X obc0 N=10: 212 sectors, 212 blocks, sym=none | res=4.1e-15 orth=2.3e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:07:04+02:00 X obc0 HSF4 N=10 wall=9s rc=0
+W153 (HSF 5) X obc0 N=10: 64 sectors, 64 blocks, sym=none | res=4.6e-15 orth=9.4e-15 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:07:14+02:00 X obc0 HSF5 N=10 wall=10s rc=0
+W150 (HSF 6) X obc0 N=10: 94 sectors, 94 blocks, sym=Omega | res=3.6e-15 orth=3.4e-15 off=0.0e+00 symres=9.3e-15 | 2.8 s
+2026-10-14T22:07:24+02:00 X obc0 HSF6 N=10 wall=10s rc=0
+W147 (HSF 7) X obc0 N=10: 60 sectors, 60 blocks, sym=Omega | res=4.5e-15 orth=1.9e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:07:33+02:00 X obc0 HSF7 N=10 wall=9s rc=0
+W108 (HSF 8) X obc0 N=10: 430 sectors, 430 blocks, sym=Omega | res=2.6e-15 orth=2.5e-15 off=0.0e+00 symres=5.6e-15 | 2.9 s
+2026-10-14T22:07:43+02:00 X obc0 HSF8 N=10 wall=10s rc=0
+W105 (HSF 9) X obc0 N=10: 94 sectors, 94 blocks, sym=Omega | res=3.5e-15 orth=3.3e-15 off=0.0e+00 symres=9.7e-15 | 2.7 s
+2026-10-14T22:07:53+02:00 X obc0 HSF9 N=10 wall=10s rc=0
+W102 (HSF 10) X obc0 N=10: 84 sectors, 84 blocks, sym=none | res=4.3e-15 orth=1.7e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:08:03+02:00 X obc0 HSF10 N=10 wall=10s rc=0
+W99 (HSF 11) X obc0 N=10: 12 sectors, 12 blocks, sym=none | res=8.4e-15 orth=1.8e-13 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:08:12+02:00 X obc0 HSF11 N=10 wall=9s rc=0
+W60 (HSF 12) X obc0 N=10: 84 sectors, 84 blocks, sym=none | res=3.6e-15 orth=5.3e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:08:22+02:00 X obc0 HSF12 N=10 wall=10s rc=0
+W57 (HSF 13) X obc0 N=10: 12 sectors, 12 blocks, sym=none | res=7.1e-15 orth=1.0e-13 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:08:31+02:00 X obc0 HSF13 N=10 wall=9s rc=0
+W54 (HSF 14) X obc0 N=10: 60 sectors, 60 blocks, sym=Omega | res=5.3e-15 orth=1.1e-14 off=0.0e+00 symres=3.4e-14 | 2.9 s
+2026-10-14T22:08:42+02:00 X obc0 HSF14 N=10 wall=11s rc=0
+W51 (HSF 15) X obc0 N=10: 512 sectors, 512 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.5 s
+2026-10-14T22:08:52+02:00 X obc0 HSF15 N=10 wall=10s rc=0
+W204 (HSF 0) X obc0 N=11: 2048 sectors, 2048 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T22:09:01+02:00 X obc0 HSF0 N=11 wall=9s rc=0
+W201 (HSF 1) X obc0 N=11: 548 sectors, 548 blocks, sym=R | res=4.7e-15 orth=1.8e-14 off=0.0e+00 symres=2.0e-14 | 2.6 s
+2026-10-14T22:09:11+02:00 X obc0 HSF1 N=11 wall=10s rc=0
+W198 (HSF 2) X obc0 N=11: 394 sectors, 394 blocks, sym=none | res=4.8e-15 orth=2.0e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:09:21+02:00 X obc0 HSF2 N=11 wall=10s rc=0
+W195 (HSF 3) X obc0 N=11: 128 sectors, 128 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:09:30+02:00 X obc0 HSF3 N=11 wall=9s rc=0
+W156 (HSF 4) X obc0 N=11: 394 sectors, 394 blocks, sym=none | res=4.8e-15 orth=2.3e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:09:39+02:00 X obc0 HSF4 N=11 wall=9s rc=0
+W153 (HSF 5) X obc0 N=11: 128 sectors, 128 blocks, sym=none | res=4.9e-15 orth=1.6e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:09:49+02:00 X obc0 HSF5 N=11 wall=10s rc=0
+W150 (HSF 6) X obc0 N=11: 180 sectors, 180 blocks, sym=R | res=4.3e-15 orth=8.3e-15 off=0.0e+00 symres=7.1e-15 | 2.5 s
+2026-10-14T22:09:59+02:00 X obc0 HSF6 N=11 wall=10s rc=0
+W147 (HSF 7) X obc0 N=11: 108 sectors, 108 blocks, sym=R | res=5.3e-15 orth=2.6e-14 off=0.0e+00 symres=1.4e-16 | 2.6 s
+2026-10-14T22:10:09+02:00 X obc0 HSF7 N=11 wall=10s rc=0
+W108 (HSF 8) X obc0 N=11: 786 sectors, 786 blocks, sym=R | res=4.3e-15 orth=3.9e-15 off=0.0e+00 symres=2.7e-14 | 2.5 s
+2026-10-14T22:10:18+02:00 X obc0 HSF8 N=11 wall=9s rc=0
+W105 (HSF 9) X obc0 N=11: 180 sectors, 180 blocks, sym=R | res=4.6e-15 orth=9.7e-15 off=0.0e+00 symres=1.2e-15 | 2.6 s
+2026-10-14T22:10:28+02:00 X obc0 HSF9 N=11 wall=10s rc=0
+W102 (HSF 10) X obc0 N=11: 148 sectors, 148 blocks, sym=none | res=5.0e-15 orth=1.7e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:10:38+02:00 X obc0 HSF10 N=11 wall=10s rc=0
+W99 (HSF 11) X obc0 N=11: 10 sectors, 10 blocks, sym=none | res=1.3e-13 orth=4.4e-12 off=0.0e+00 symres=0.0e+00 | 3.3 s
+2026-10-14T22:10:48+02:00 X obc0 HSF11 N=11 wall=10s rc=0
+W60 (HSF 12) X obc0 N=11: 148 sectors, 148 blocks, sym=none | res=3.6e-15 orth=5.3e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:10:58+02:00 X obc0 HSF12 N=11 wall=10s rc=0
+W57 (HSF 13) X obc0 N=11: 10 sectors, 10 blocks, sym=none | res=2.2e-13 orth=7.1e-12 off=0.0e+00 symres=0.0e+00 | 3.3 s
+2026-10-14T22:11:08+02:00 X obc0 HSF13 N=11 wall=10s rc=0
+W54 (HSF 14) X obc0 N=11: 108 sectors, 108 blocks, sym=R | res=5.2e-15 orth=3.5e-14 off=0.0e+00 symres=2.7e-14 | 2.6 s
+2026-10-14T22:11:18+02:00 X obc0 HSF14 N=11 wall=10s rc=0
+W51 (HSF 15) X obc0 N=11: 1024 sectors, 1024 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.5 s
+2026-10-14T22:11:28+02:00 X obc0 HSF15 N=11 wall=10s rc=0
+W204 (HSF 0) X obc0 N=12: 4096 sectors, 4096 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.6 s
+2026-10-14T22:11:38+02:00 X obc0 HSF0 N=12 wall=10s rc=0
+W201 (HSF 1) X obc0 N=12: 1018 sectors, 1018 blocks, sym=Omega | res=5.1e-15 orth=1.8e-14 off=0.0e+00 symres=3.9e-14 | 3.1 s
+2026-10-14T22:11:49+02:00 X obc0 HSF1 N=12 wall=11s rc=0
+W198 (HSF 2) X obc0 N=12: 688 sectors, 688 blocks, sym=none | res=6.2e-15 orth=2.8e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:11:58+02:00 X obc0 HSF2 N=12 wall=9s rc=0
+W195 (HSF 3) X obc0 N=12: 256 sectors, 256 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:12:07+02:00 X obc0 HSF3 N=12 wall=9s rc=0
+W156 (HSF 4) X obc0 N=12: 688 sectors, 688 blocks, sym=none | res=6.2e-15 orth=4.5e-14 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:12:17+02:00 X obc0 HSF4 N=12 wall=10s rc=0
+W153 (HSF 5) X obc0 N=12: 256 sectors, 256 blocks, sym=none | res=4.3e-15 orth=2.1e-14 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:12:27+02:00 X obc0 HSF5 N=12 wall=10s rc=0
+W150 (HSF 6) X obc0 N=12: 316 sectors, 316 blocks, sym=Omega | res=4.3e-15 orth=4.9e-15 off=0.0e+00 symres=7.5e-15 | 3.0 s
+2026-10-14T22:12:37+02:00 X obc0 HSF6 N=12 wall=10s rc=0
+W147 (HSF 7) X obc0 N=12: 188 sectors, 188 blocks, sym=Omega | res=4.9e-15 orth=3.2e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:12:47+02:00 X obc0 HSF7 N=12 wall=10s rc=0
+W108 (HSF 8) X obc0 N=12: 1442 sectors, 1442 blocks, sym=Omega | res=4.3e-15 orth=8.2e-15 off=0.0e+00 symres=3.0e-14 | 3.0 s
+2026-10-14T22:12:57+02:00 X obc0 HSF8 N=12 wall=10s rc=0
+W105 (HSF 9) X obc0 N=12: 316 sectors, 316 blocks, sym=Omega | res=4.3e-15 orth=5.9e-15 off=0.0e+00 symres=7.7e-15 | 2.9 s
+2026-10-14T22:13:07+02:00 X obc0 HSF9 N=12 wall=10s rc=0
+W102 (HSF 10) X obc0 N=12: 276 sectors, 276 blocks, sym=none | res=5.0e-15 orth=1.7e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:13:17+02:00 X obc0 HSF10 N=12 wall=10s rc=0
+W99 (HSF 11) X obc0 N=12: 16 sectors, 16 blocks, sym=none | res=7.7e-14 orth=3.6e-12 off=0.0e+00 symres=0.0e+00 | 5.5 s
+2026-10-14T22:13:30+02:00 X obc0 HSF11 N=12 wall=13s rc=0
+W60 (HSF 12) X obc0 N=12: 276 sectors, 276 blocks, sym=none | res=3.6e-15 orth=5.3e-15 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:13:39+02:00 X obc0 HSF12 N=12 wall=9s rc=0
+W57 (HSF 13) X obc0 N=12: 16 sectors, 16 blocks, sym=none | res=1.3e-13 orth=5.7e-12 off=0.0e+00 symres=0.0e+00 | 5.6 s
+2026-10-14T22:13:52+02:00 X obc0 HSF13 N=12 wall=13s rc=0
+W54 (HSF 14) X obc0 N=12: 188 sectors, 188 blocks, sym=Omega | res=6.6e-15 orth=3.4e-14 off=0.0e+00 symres=5.0e-14 | 3.2 s
+2026-10-14T22:14:02+02:00 X obc0 HSF14 N=12 wall=10s rc=0
+W51 (HSF 15) X obc0 N=12: 2048 sectors, 2048 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.7 s
+2026-10-14T22:14:12+02:00 X obc0 HSF15 N=12 wall=10s rc=0
+W204 (HSF 0) X obc0 N=13: 8192 sectors, 8192 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 3.0 s
+2026-10-14T22:14:23+02:00 X obc0 HSF0 N=13 wall=11s rc=0
+W201 (HSF 1) X obc0 N=13: 1878 sectors, 1878 blocks, sym=R | res=5.3e-15 orth=5.1e-14 off=0.0e+00 symres=2.7e-14 | 3.0 s
+2026-10-14T22:14:33+02:00 X obc0 HSF1 N=13 wall=10s rc=0
+W198 (HSF 2) X obc0 N=13: 1292 sectors, 1292 blocks, sym=none | res=6.2e-15 orth=2.8e-14 off=0.0e+00 symres=0.0e+00 | 2.5 s
+2026-10-14T22:14:43+02:00 X obc0 HSF2 N=13 wall=10s rc=0
+W195 (HSF 3) X obc0 N=13: 512 sectors, 512 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T22:14:53+02:00 X obc0 HSF3 N=13 wall=10s rc=0
+W156 (HSF 4) X obc0 N=13: 1292 sectors, 1292 blocks, sym=none | res=6.2e-15 orth=4.5e-14 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T22:15:03+02:00 X obc0 HSF4 N=13 wall=10s rc=0
+W153 (HSF 5) X obc0 N=13: 512 sectors, 512 blocks, sym=none | res=4.6e-15 orth=2.0e-14 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T22:15:13+02:00 X obc0 HSF5 N=13 wall=10s rc=0
+W150 (HSF 6) X obc0 N=13: 596 sectors, 596 blocks, sym=R | res=3.9e-15 orth=1.1e-14 off=0.0e+00 symres=1.5e-14 | 2.9 s
+2026-10-14T22:15:23+02:00 X obc0 HSF6 N=13 wall=10s rc=0
+W147 (HSF 7) X obc0 N=13: 352 sectors, 352 blocks, sym=R | res=5.4e-15 orth=3.6e-14 off=0.0e+00 symres=2.8e-15 | 3.1 s
+2026-10-14T22:15:33+02:00 X obc0 HSF7 N=13 wall=10s rc=0
+W108 (HSF 8) X obc0 N=13: 2646 sectors, 2646 blocks, sym=R | res=4.7e-15 orth=1.6e-14 off=0.0e+00 symres=2.7e-14 | 3.1 s
+2026-10-14T22:15:44+02:00 X obc0 HSF8 N=13 wall=11s rc=0
+W105 (HSF 9) X obc0 N=13: 586 sectors, 586 blocks, sym=R | res=4.8e-15 orth=1.1e-14 off=0.0e+00 symres=1.9e-16 | 2.8 s
+2026-10-14T22:15:54+02:00 X obc0 HSF9 N=13 wall=10s rc=0
+W102 (HSF 10) X obc0 N=13: 532 sectors, 532 blocks, sym=none | res=5.0e-15 orth=1.7e-14 off=0.0e+00 symres=0.0e+00 | 2.4 s
+2026-10-14T22:16:04+02:00 X obc0 HSF10 N=13 wall=10s rc=0
+W99 (HSF 11) X obc0 N=13: 30 sectors, 30 blocks, sym=none | res=7.6e-14 orth=1.6e-12 off=0.0e+00 symres=0.0e+00 | 17.5 s
+2026-10-14T22:16:29+02:00 X obc0 HSF11 N=13 wall=25s rc=0
+W60 (HSF 12) X obc0 N=13: 532 sectors, 532 blocks, sym=none | res=3.6e-15 orth=5.3e-15 off=0.0e+00 symres=0.0e+00 | 2.5 s
+2026-10-14T22:16:39+02:00 X obc0 HSF12 N=13 wall=10s rc=0
+W57 (HSF 13) X obc0 N=13: 30 sectors, 30 blocks, sym=none | res=9.2e-14 orth=1.6e-12 off=0.0e+00 symres=0.0e+00 | 17.0 s
+2026-10-14T22:17:08+02:00 X obc0 HSF13 N=13 wall=29s rc=0
+W54 (HSF 14) X obc0 N=13: 352 sectors, 352 blocks, sym=R | res=6.3e-15 orth=3.8e-14 off=0.0e+00 symres=4.9e-14 | 3.0 s
+2026-10-14T22:17:18+02:00 X obc0 HSF14 N=13 wall=10s rc=0
+W51 (HSF 15) X obc0 N=13: 4096 sectors, 4096 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 3.0 s
+2026-10-14T22:17:29+02:00 X obc0 HSF15 N=13 wall=11s rc=0
+W204 (HSF 0) X obc0 N=14: 16384 sectors, 16384 blocks, sym=R | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 4.5 s
+2026-10-14T22:17:41+02:00 X obc0 HSF0 N=14 wall=12s rc=0
+W201 (HSF 1) X obc0 N=14: 3492 sectors, 3492 blocks, sym=Omega | res=6.1e-15 orth=6.4e-14 off=0.0e+00 symres=4.2e-14 | 3.9 s
+2026-10-14T22:17:52+02:00 X obc0 HSF1 N=14 wall=11s rc=0
+W198 (HSF 2) X obc0 N=14: 2280 sectors, 2280 blocks, sym=none | res=6.4e-15 orth=1.3e-13 off=0.0e+00 symres=0.0e+00 | 2.9 s
+2026-10-14T22:18:02+02:00 X obc0 HSF2 N=14 wall=10s rc=0
+W195 (HSF 3) X obc0 N=14: 1024 sectors, 1024 blocks, sym=none | res=3.5e-15 orth=8.7e-15 off=0.0e+00 symres=0.0e+00 | 2.7 s
+2026-10-14T22:18:12+02:00 X obc0 HSF3 N=14 wall=10s rc=0
+W156 (HSF 4) X obc0 N=14: 2280 sectors, 2280 blocks, sym=none | res=8.3e-15 orth=9.7e-14 off=0.0e+00 symres=0.0e+00 | 2.8 s
+2026-10-14T22:18:22+02:00 X obc0 HSF4 N=14 wall=10s rc=0
+W153 (HSF 5) X obc0 N=14: 1024 sectors, 1024 blocks, sym=none | res=4.8e-15 orth=2.0e-14 off=0.0e+00 symres=0.0e+00 | 2.8 s
+2026-10-14T22:18:33+02:00 X obc0 HSF5 N=14 wall=11s rc=0
+W150 (HSF 6) X obc0 N=14: 1096 sectors, 1096 blocks, sym=Omega | res=1.4e-14 orth=5.3e-14 off=0.0e+00 symres=2.1e-14 | 3.8 s
+2026-10-14T22:18:44+02:00 X obc0 HSF6 N=14 wall=11s rc=0
+W147 (HSF 7) X obc0 N=14: 632 sectors, 632 blocks, sym=Omega | res=5.1e-15 orth=3.7e-14 off=0.0e+00 symres=0.0e+00 | 3.0 s
+2026-10-14T22:18:54+02:00 X obc0 HSF7 N=14 wall=10s rc=0
+W108 (HSF 8) X obc0 N=14: 4868 sectors, 4868 blocks, sym=Omega | res=7.0e-15 orth=3.8e-14 off=0.0e+00 symres=4.9e-14 | 4.0 s
+2026-10-14T22:19:05+02:00 X obc0 HSF8 N=14 wall=11s rc=0
+W105 (HSF 9) X obc0 N=14: 1096 sectors, 1096 blocks, sym=Omega | res=9.1e-15 orth=3.3e-14 off=0.0e+00 symres=2.1e-14 | 3.7 s
+2026-10-14T22:19:16+02:00 X obc0 HSF9 N=14 wall=11s rc=0
+W102 (HSF 10) X obc0 N=14: 1044 sectors, 1044 blocks, sym=none | res=5.0e-15 orth=1.7e-14 off=0.0e+00 symres=0.0e+00 | 2.8 s
+2026-10-14T22:19:26+02:00 X obc0 HSF10 N=14 wall=10s rc=0
+W99 (HSF 11) X obc0 N=14: 34 sectors, 34 blocks, sym=none | res=6.3e-13 orth=1.4e-11 off=0.0e+00 symres=0.0e+00 | 53.1 s
+2026-10-14T22:20:27+02:00 X obc0 HSF11 N=14 wall=61s rc=0
+W60 (HSF 12) X obc0 N=14: 1044 sectors, 1044 blocks, sym=none | res=3.6e-15 orth=5.3e-15 off=0.0e+00 symres=0.0e+00 | 2.8 s
+2026-10-14T22:20:37+02:00 X obc0 HSF12 N=14 wall=10s rc=0
+W57 (HSF 13) X obc0 N=14: 34 sectors, 34 blocks, sym=none | res=2.1e-13 orth=2.4e-12 off=0.0e+00 symres=0.0e+00 | 53.8 s
+2026-10-14T22:21:38+02:00 X obc0 HSF13 N=14 wall=61s rc=0
+W54 (HSF 14) X obc0 N=14: 632 sectors, 632 blocks, sym=Omega | res=9.2e-15 orth=5.8e-14 off=0.0e+00 symres=7.0e-14 | 4.1 s
+2026-10-14T22:21:50+02:00 X obc0 HSF14 N=14 wall=12s rc=0
+W51 (HSF 15) X obc0 N=14: 8192 sectors, 8192 blocks, sym=R | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 4.0 s
+2026-10-14T22:22:01+02:00 X obc0 HSF15 N=14 wall=11s rc=0
+W204 (HSF 0) X pbc N=6: 64 sectors, 64 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:22:11+02:00 X pbc HSF0 N=6 wall=10s rc=0
+W201 (HSF 1) X pbc N=6: 32 sectors, 32 blocks, sym=OmegaT | res=8.1e-16 orth=6.7e-16 off=0.0e+00 symres=5.6e-16 | 2.9 s
+2026-10-14T22:22:21+02:00 X pbc HSF1 N=6 wall=10s rc=0
+W198 (HSF 2) X pbc N=6: 22 sectors, 22 blocks, sym=OmegaT | res=7.9e-16 orth=4.4e-16 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:22:30+02:00 X pbc HSF2 N=6 wall=9s rc=0
+W195 (HSF 3) X pbc N=6: 8 sectors, 8 blocks, sym=OmegaT | res=3.2e-15 orth=1.3e-15 off=0.0e+00 symres=5.6e-16 | 2.9 s
+2026-10-14T22:22:40+02:00 X pbc HSF3 N=6 wall=10s rc=0
+W156 (HSF 4) X pbc N=6: 22 sectors, 22 blocks, sym=OmegaT | res=7.9e-16 orth=4.4e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:22:50+02:00 X pbc HSF4 N=6 wall=10s rc=0
+W153 (HSF 5) X pbc N=6: 8 sectors, 8 blocks, sym=OmegaT | res=5.6e-15 orth=2.3e-14 off=0.0e+00 symres=5.6e-16 | 3.0 s
+2026-10-14T22:23:00+02:00 X pbc HSF5 N=6 wall=10s rc=0
+W150 (HSF 6) X pbc N=6: 24 sectors, 24 blocks, sym=OmegaT | res=5.6e-16 orth=4.4e-16 off=0.0e+00 symres=7.8e-16 | 2.9 s
+2026-10-14T22:23:10+02:00 X pbc HSF6 N=6 wall=10s rc=0
+W147 (HSF 7) X pbc N=6: 12 sectors, 12 blocks, sym=OmegaT | res=1.8e-15 orth=1.0e-15 off=0.0e+00 symres=1.4e-15 | 2.8 s
+2026-10-14T22:23:20+02:00 X pbc HSF7 N=6 wall=10s rc=0
+W108 (HSF 8) X pbc N=6: 32 sectors, 32 blocks, sym=OmegaT | res=7.8e-16 orth=6.7e-16 off=0.0e+00 symres=7.8e-16 | 2.9 s
+2026-10-14T22:23:31+02:00 X pbc HSF8 N=6 wall=11s rc=0
+W105 (HSF 9) X pbc N=6: 12 sectors, 12 blocks, sym=OmegaT | res=1.0e-15 orth=7.7e-16 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:23:40+02:00 X pbc HSF9 N=6 wall=9s rc=0
+W102 (HSF 10) X pbc N=6: 8 sectors, 8 blocks, sym=OmegaT | res=4.0e-15 orth=4.1e-15 off=0.0e+00 symres=7.8e-16 | 2.9 s
+2026-10-14T22:23:50+02:00 X pbc HSF10 N=6 wall=10s rc=0
+W99 (HSF 11) X pbc N=6: 12 sectors, 12 blocks, sym=OmegaT | res=1.4e-15 orth=2.4e-15 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:23:59+02:00 X pbc HSF11 N=6 wall=9s rc=0
+W60 (HSF 12) X pbc N=6: 8 sectors, 8 blocks, sym=OmegaT | res=3.1e-15 orth=2.2e-15 off=0.0e+00 symres=7.8e-16 | 3.0 s
+2026-10-14T22:24:10+02:00 X pbc HSF12 N=6 wall=11s rc=0
+W57 (HSF 13) X pbc N=6: 12 sectors, 12 blocks, sym=OmegaT | res=1.5e-15 orth=2.4e-15 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:24:19+02:00 X pbc HSF13 N=6 wall=9s rc=0
+W54 (HSF 14) X pbc N=6: 12 sectors, 12 blocks, sym=OmegaT | res=2.1e-15 orth=1.2e-15 off=0.0e+00 symres=2.7e-15 | 2.8 s
+2026-10-14T22:24:29+02:00 X pbc HSF14 N=6 wall=10s rc=0
+W51 (HSF 15) X pbc N=6: 32 sectors, 32 blocks, sym=OmegaT | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:24:38+02:00 X pbc HSF15 N=6 wall=9s rc=0
+W204 (HSF 0) X pbc N=8: 256 sectors, 256 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:24:48+02:00 X pbc HSF0 N=8 wall=10s rc=0
+W201 (HSF 1) X pbc N=8: 114 sectors, 114 blocks, sym=OmegaT | res=1.6e-15 orth=2.5e-15 off=0.0e+00 symres=1.5e-15 | 2.8 s
+2026-10-14T22:24:58+02:00 X pbc HSF1 N=8 wall=10s rc=0
+W198 (HSF 2) X pbc N=8: 72 sectors, 72 blocks, sym=OmegaT | res=1.2e-15 orth=4.4e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:25:08+02:00 X pbc HSF2 N=8 wall=10s rc=0
+W195 (HSF 3) X pbc N=8: 24 sectors, 24 blocks, sym=OmegaT | res=4.7e-15 orth=8.3e-15 off=0.0e+00 symres=5.6e-16 | 2.9 s
+2026-10-14T22:25:18+02:00 X pbc HSF3 N=8 wall=10s rc=0
+W156 (HSF 4) X pbc N=8: 72 sectors, 72 blocks, sym=OmegaT | res=1.2e-15 orth=4.4e-16 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:25:27+02:00 X pbc HSF4 N=8 wall=9s rc=0
+W153 (HSF 5) X pbc N=8: 24 sectors, 24 blocks, sym=OmegaT | res=2.8e-15 orth=5.8e-15 off=0.0e+00 symres=5.6e-16 | 2.9 s
+2026-10-14T22:25:37+02:00 X pbc HSF5 N=8 wall=10s rc=0
+W150 (HSF 6) X pbc N=8: 70 sectors, 70 blocks, sym=OmegaT | res=1.2e-15 orth=2.2e-16 off=0.0e+00 symres=1.5e-15 | 2.8 s
+2026-10-14T22:25:47+02:00 X pbc HSF6 N=8 wall=10s rc=0
+W147 (HSF 7) X pbc N=8: 30 sectors, 30 blocks, sym=OmegaT | res=6.3e-15 orth=3.6e-14 off=0.0e+00 symres=4.6e-14 | 3.0 s
+2026-10-14T22:25:58+02:00 X pbc HSF7 N=8 wall=11s rc=0
+W108 (HSF 8) X pbc N=8: 114 sectors, 114 blocks, sym=OmegaT | res=1.8e-15 orth=8.3e-16 off=0.0e+00 symres=1.5e-15 | 2.8 s
+2026-10-14T22:26:08+02:00 X pbc HSF8 N=8 wall=10s rc=0
+W105 (HSF 9) X pbc N=8: 70 sectors, 70 blocks, sym=OmegaT | res=1.2e-15 orth=2.2e-16 off=0.0e+00 symres=1.5e-15 | 2.9 s
+2026-10-14T22:26:18+02:00 X pbc HSF9 N=8 wall=10s rc=0
+W102 (HSF 10) X pbc N=8: 24 sectors, 24 blocks, sym=OmegaT | res=4.1e-15 orth=9.0e-15 off=0.0e+00 symres=7.8e-16 | 2.8 s
+2026-10-14T22:26:28+02:00 X pbc HSF10 N=8 wall=10s rc=0
+W99 (HSF 11) X pbc N=8: 32 sectors, 32 blocks, sym=OmegaT | res=5.1e-15 orth=3.5e-14 off=0.0e+00 symres=8.9e-15 | 2.9 s
+2026-10-14T22:26:38+02:00 X pbc HSF11 N=8 wall=10s rc=0
+W60 (HSF 12) X pbc N=8: 24 sectors, 24 blocks, sym=OmegaT | res=3.8e-15 orth=5.5e-15 off=0.0e+00 symres=7.8e-16 | 2.9 s
+2026-10-14T22:26:48+02:00 X pbc HSF12 N=8 wall=10s rc=0
+W57 (HSF 13) X pbc N=8: 32 sectors, 32 blocks, sym=OmegaT | res=4.6e-15 orth=2.1e-14 off=0.0e+00 symres=9.1e-15 | 2.8 s
+2026-10-14T22:26:58+02:00 X pbc HSF13 N=8 wall=10s rc=0
+W54 (HSF 14) X pbc N=8: 30 sectors, 30 blocks, sym=OmegaT | res=4.0e-15 orth=6.7e-15 off=0.0e+00 symres=2.7e-14 | 2.9 s
+2026-10-14T22:27:08+02:00 X pbc HSF14 N=8 wall=10s rc=0
+W51 (HSF 15) X pbc N=8: 128 sectors, 128 blocks, sym=OmegaT | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 2.8 s
+2026-10-14T22:27:19+02:00 X pbc HSF15 N=8 wall=11s rc=0
+W204 (HSF 0) X pbc N=10: 1024 sectors, 1024 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:27:28+02:00 X pbc HSF0 N=10 wall=9s rc=0
+W201 (HSF 1) X pbc N=10: 364 sectors, 364 blocks, sym=OmegaT | res=4.3e-15 orth=2.6e-15 off=0.0e+00 symres=4.0e-15 | 2.8 s
+2026-10-14T22:27:38+02:00 X pbc HSF1 N=10 wall=10s rc=0
+W198 (HSF 2) X pbc N=10: 214 sectors, 214 blocks, sym=OmegaT | res=4.0e-15 orth=5.2e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:27:48+02:00 X pbc HSF2 N=10 wall=10s rc=0
+W195 (HSF 3) X pbc N=10: 32 sectors, 32 blocks, sym=OmegaT | res=8.7e-15 orth=6.4e-14 off=0.0e+00 symres=5.6e-16 | 3.0 s
+2026-10-14T22:27:58+02:00 X pbc HSF3 N=10 wall=10s rc=0
+W156 (HSF 4) X pbc N=10: 214 sectors, 214 blocks, sym=OmegaT | res=4.3e-15 orth=5.2e-15 off=0.0e+00 symres=0.0e+00 | 2.0 s
+2026-10-14T22:28:07+02:00 X pbc HSF4 N=10 wall=9s rc=0
+W153 (HSF 5) X pbc N=10: 32 sectors, 32 blocks, sym=OmegaT | res=5.4e-15 orth=1.6e-13 off=0.0e+00 symres=5.6e-16 | 3.0 s
+2026-10-14T22:28:17+02:00 X pbc HSF5 N=10 wall=10s rc=0
+W150 (HSF 6) X pbc N=10: 208 sectors, 208 blocks, sym=OmegaT | res=8.5e-16 orth=6.7e-16 off=0.0e+00 symres=1.0e-15 | 2.8 s
+2026-10-14T22:28:28+02:00 X pbc HSF6 N=10 wall=11s rc=0
+W147 (HSF 7) X pbc N=10: 84 sectors, 84 blocks, sym=OmegaT | res=4.8e-15 orth=2.1e-14 off=0.0e+00 symres=5.7e-15 | 3.0 s
+2026-10-14T22:28:38+02:00 X pbc HSF7 N=10 wall=10s rc=0
+W108 (HSF 8) X pbc N=10: 364 sectors, 364 blocks, sym=OmegaT | res=4.5e-15 orth=2.9e-15 off=0.0e+00 symres=4.2e-15 | 3.0 s
+2026-10-14T22:28:48+02:00 X pbc HSF8 N=10 wall=10s rc=0
+W105 (HSF 9) X pbc N=10: 104 sectors, 104 blocks, sym=OmegaT | res=3.0e-15 orth=6.5e-15 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:28:57+02:00 X pbc HSF9 N=10 wall=9s rc=0
+W102 (HSF 10) X pbc N=10: 32 sectors, 32 blocks, sym=OmegaT | res=4.8e-15 orth=1.5e-13 off=0.0e+00 symres=7.8e-16 | 3.0 s
+2026-10-14T22:29:08+02:00 X pbc HSF10 N=10 wall=11s rc=0
+W99 (HSF 11) X pbc N=10: 88 sectors, 88 blocks, sym=OmegaT | res=3.7e-15 orth=3.1e-14 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:29:17+02:00 X pbc HSF11 N=10 wall=9s rc=0
+W60 (HSF 12) X pbc N=10: 32 sectors, 32 blocks, sym=OmegaT | res=7.2e-15 orth=1.5e-13 off=0.0e+00 symres=7.8e-16 | 3.0 s
+2026-10-14T22:29:27+02:00 X pbc HSF12 N=10 wall=10s rc=0
+W57 (HSF 13) X pbc N=10: 88 sectors, 88 blocks, sym=OmegaT | res=4.3e-15 orth=1.8e-14 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:29:37+02:00 X pbc HSF13 N=10 wall=10s rc=0
+W54 (HSF 14) X pbc N=10: 84 sectors, 84 blocks, sym=OmegaT | res=4.4e-15 orth=2.2e-14 off=0.0e+00 symres=6.7e-15 | 3.0 s
+2026-10-14T22:29:47+02:00 X pbc HSF14 N=10 wall=10s rc=0
+W51 (HSF 15) X pbc N=10: 512 sectors, 512 blocks, sym=OmegaT | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=0.0e+00 | 2.1 s
+2026-10-14T22:29:57+02:00 X pbc HSF15 N=10 wall=10s rc=0
+W204 (HSF 0) X pbc N=12: 4096 sectors, 4096 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 2.5 s
+2026-10-14T22:30:06+02:00 X pbc HSF0 N=12 wall=9s rc=0
+W201 (HSF 1) X pbc N=12: 1226 sectors, 1226 blocks, sym=OmegaT | res=3.0e-15 orth=8.3e-15 off=0.0e+00 symres=4.3e-15 | 3.1 s
+2026-10-14T22:30:17+02:00 X pbc HSF1 N=12 wall=11s rc=0
+W198 (HSF 2) X pbc N=12: 652 sectors, 652 blocks, sym=OmegaT | res=4.9e-15 orth=2.3e-14 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:30:26+02:00 X pbc HSF2 N=12 wall=9s rc=0
+W195 (HSF 3) X pbc N=12: 160 sectors, 160 blocks, sym=OmegaT | res=5.8e-15 orth=4.7e-14 off=0.0e+00 symres=5.6e-16 | 3.1 s
+2026-10-14T22:30:37+02:00 X pbc HSF3 N=12 wall=11s rc=0
+W156 (HSF 4) X pbc N=12: 652 sectors, 652 blocks, sym=OmegaT | res=4.8e-15 orth=2.0e-14 off=0.0e+00 symres=0.0e+00 | 2.3 s
+2026-10-14T22:30:46+02:00 X pbc HSF4 N=12 wall=9s rc=0
+W153 (HSF 5) X pbc N=12: 160 sectors, 160 blocks, sym=OmegaT | res=6.6e-15 orth=4.0e-14 off=0.0e+00 symres=5.6e-16 | 3.2 s
+2026-10-14T22:30:57+02:00 X pbc HSF5 N=12 wall=11s rc=0
+W150 (HSF 6) X pbc N=12: 700 sectors, 700 blocks, sym=OmegaT | res=1.3e-15 orth=8.3e-16 off=0.0e+00 symres=1.9e-15 | 2.9 s
+2026-10-14T22:31:07+02:00 X pbc HSF6 N=12 wall=10s rc=0
+W147 (HSF 7) X pbc N=12: 220 sectors, 220 blocks, sym=OmegaT | res=1.2e-14 orth=3.4e-13 off=0.0e+00 symres=1.1e-13 | 3.3 s
+2026-10-14T22:31:18+02:00 X pbc HSF7 N=12 wall=11s rc=0
+W108 (HSF 8) X pbc N=12: 1226 sectors, 1226 blocks, sym=OmegaT | res=3.6e-15 orth=8.1e-15 off=0.0e+00 symres=6.0e-15 | 3.0 s
+2026-10-14T22:31:28+02:00 X pbc HSF8 N=12 wall=10s rc=0
+W105 (HSF 9) X pbc N=12: 700 sectors, 700 blocks, sym=OmegaT | res=1.3e-15 orth=8.3e-16 off=0.0e+00 symres=0.0e+00 | 2.2 s
+2026-10-14T22:31:38+02:00 X pbc HSF9 N=12 wall=10s rc=0
+W102 (HSF 10) X pbc N=12: 160 sectors, 160 blocks, sym=OmegaT | res=6.3e-15 orth=3.2e-14 off=0.0e+00 symres=7.8e-16 | 3.2 s
+2026-10-14T22:31:48+02:00 X pbc HSF10 N=12 wall=10s rc=0
+W99 (HSF 11) X pbc N=12: 182 sectors, 182 blocks, sym=OmegaT | res=1.0e-14 orth=3.2e-13 off=0.0e+00 symres=3.0e-14 | 3.4 s
+2026-10-14T22:31:59+02:00 X pbc HSF11 N=12 wall=11s rc=0
+W60 (HSF 12) X pbc N=12: 160 sectors, 160 blocks, sym=OmegaT | res=6.2e-15 orth=3.9e-14 off=0.0e+00 symres=7.8e-16 | 3.3 s
+2026-10-14T22:32:09+02:00 X pbc HSF12 N=12 wall=10s rc=0
+W57 (HSF 13) X pbc N=12: 182 sectors, 182 blocks, sym=OmegaT | res=7.5e-15 orth=5.2e-13 off=0.0e+00 symres=3.3e-14 | 3.4 s
+2026-10-14T22:32:20+02:00 X pbc HSF13 N=12 wall=11s rc=0
+W54 (HSF 14) X pbc N=12: 220 sectors, 220 blocks, sym=OmegaT | res=7.1e-15 orth=2.3e-13 off=0.0e+00 symres=8.0e-14 | 3.3 s
+2026-10-14T22:32:31+02:00 X pbc HSF14 N=12 wall=11s rc=0
+W51 (HSF 15) X pbc N=12: 2048 sectors, 2048 blocks, sym=OmegaT | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=1.1e-16 | 3.1 s
+2026-10-14T22:32:41+02:00 X pbc HSF15 N=12 wall=10s rc=0
+W204 (HSF 0) X pbc N=14: 16384 sectors, 16384 blocks, sym=OmegaT | res=0.0e+00 orth=0.0e+00 off=0.0e+00 symres=0.0e+00 | 4.6 s
+2026-10-14T22:32:53+02:00 X pbc HSF0 N=14 wall=12s rc=0
+W201 (HSF 1) X pbc N=14: 4156 sectors, 4156 blocks, sym=OmegaT | res=6.0e-15 orth=3.2e-14 off=0.0e+00 symres=1.8e-14 | 4.0 s
+2026-10-14T22:33:04+02:00 X pbc HSF1 N=14 wall=11s rc=0
+W198 (HSF 2) X pbc N=14: 2202 sectors, 2202 blocks, sym=OmegaT | res=5.0e-15 orth=2.7e-14 off=0.0e+00 symres=0.0e+00 | 2.8 s
+2026-10-14T22:33:14+02:00 X pbc HSF2 N=14 wall=10s rc=0
+W195 (HSF 3) X pbc N=14: 300 sectors, 300 blocks, sym=OmegaT | res=4.4e-14 orth=4.7e-13 off=0.0e+00 symres=6.1e-15 | 5.0 s
+2026-10-14T22:33:27+02:00 X pbc HSF3 N=14 wall=13s rc=0
+W156 (HSF 4) X pbc N=14: 2202 sectors, 2202 blocks, sym=OmegaT | res=5.1e-15 orth=7.0e-14 off=0.0e+00 symres=0.0e+00 | 2.9 s
+2026-10-14T22:33:37+02:00 X pbc HSF4 N=14 wall=10s rc=0
+W153 (HSF 5) X pbc N=14: 300 sectors, 300 blocks, sym=OmegaT | res=1.6e-14 orth=2.2e-13 off=0.0e+00 symres=7.5e-15 | 5.0 s
+2026-10-14T22:33:49+02:00 X pbc HSF5 N=14 wall=12s rc=0
+W150 (HSF 6) X pbc N=14: 2344 sectors, 2344 blocks, sym=OmegaT | res=2.1e-15 orth=1.3e-15 off=0.0e+00 symres=1.2e-15 | 3.5 s
+2026-10-14T22:34:00+02:00 X pbc HSF6 N=14 wall=11s rc=0
+W147 (HSF 7) X pbc N=14: 732 sectors, 732 blocks, sym=OmegaT | res=1.2e-14 orth=2.8e-13 off=0.0e+00 symres=8.3e-14 | 4.1 s
+2026-10-14T22:34:11+02:00 X pbc HSF7 N=14 wall=11s rc=0
+W108 (HSF 8) X pbc N=14: 4156 sectors, 4156 blocks, sym=OmegaT | res=6.5e-15 orth=2.5e-13 off=0.0e+00 symres=7.6e-14 | 4.0 s
+2026-10-14T22:34:23+02:00 X pbc HSF8 N=14 wall=12s rc=0
+W105 (HSF 9) X pbc N=14: 1172 sectors, 1172 blocks, sym=OmegaT | res=4.2e-15 orth=1.0e-14 off=0.0e+00 symres=0.0e+00 | 2.8 s
+2026-10-14T22:34:33+02:00 X pbc HSF9 N=14 wall=10s rc=0
+W102 (HSF 10) X pbc N=14: 300 sectors, 300 blocks, sym=OmegaT | res=2.8e-14 orth=2.4e-13 off=0.0e+00 symres=1.5e-14 | 5.2 s
+2026-10-14T22:34:45+02:00 X pbc HSF10 N=14 wall=12s rc=0
+W99 (HSF 11) X pbc N=14: 500 sectors, 500 blocks, sym=OmegaT | res=4.6e-14 orth=6.2e-13 off=0.0e+00 symres=0.0e+00 | 5.0 s
+2026-10-14T22:34:57+02:00 X pbc HSF11 N=14 wall=12s rc=0
+W60 (HSF 12) X pbc N=14: 300 sectors, 300 blocks, sym=OmegaT | res=2.4e-14 orth=2.2e-13 off=0.0e+00 symres=1.1e-14 | 5.1 s
+2026-10-14T22:35:10+02:00 X pbc HSF12 N=14 wall=13s rc=0
+W57 (HSF 13) X pbc N=14: 500 sectors, 500 blocks, sym=OmegaT | res=2.5e-14 orth=5.2e-13 off=0.0e+00 symres=0.0e+00 | 4.9 s
+2026-10-14T22:35:22+02:00 X pbc HSF13 N=14 wall=12s rc=0
+W54 (HSF 14) X pbc N=14: 732 sectors, 732 blocks, sym=OmegaT | res=2.4e-14 orth=2.4e-13 off=0.0e+00 symres=6.9e-14 | 4.1 s
+2026-10-14T22:35:34+02:00 X pbc HSF14 N=14 wall=12s rc=0
+W51 (HSF 15) X pbc N=14: 8192 sectors, 8192 blocks, sym=OmegaT | res=0.0e+00 orth=2.2e-16 off=0.0e+00 symres=0.0e+00 | 3.5 s
+2026-10-14T22:35:44+02:00 X pbc HSF15 N=14 wall=10s rc=0
+
+[40525] signal 15: Beendet
+in expression starting at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:641
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/gc-stock.c:3626
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+task_done_hook at ./task.jl:868
+jfptr_task_done_hook_68128.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_finish_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:345
+jl_threadfun at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:122
+unknown function (ip: 0x7f4b09e94a82) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: 0x7f4b09f268df) at /lib/x86_64-linux-gnu/libc.so.6
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0x7f4b09e910d5) at /lib/x86_64-linux-gnu/libc.so.6
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/scheduler.c:523
+poptask at ./task.jl:1216
+wait at ./task.jl:1228
+#wait#398 at ./condition.jl:141
+wait at ./condition.jl:136 [inlined]
+_trywait at ./asyncevent.jl:185
+profile_printing_listener at ./Base.jl:332
+#start_profile_listener##0 at ./Base.jl:352
+jfptr_YY.start_profile_listenerYY.YY.0_7469.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+start_task at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/task.c:1249
+unknown function (ip: (nil)) at (unknown file)
+dlaset_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dlarrv_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dstemr_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+dsyevr_64_ at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/bin/../lib/julia/libopenblas64_.so (unknown line)
+syevr! at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/lapack.jl:5405
+#eigen!#252 at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/symmetriceigen.jl:24 [inlined]
+eigen! at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/symmetriceigen.jl:18 [inlined]
+#run#12 at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:576
+run at /home/mkmullenbach/Dokumente/Projects/QCA Simulations/HSF/generate_spectral_data_v2.jl:485
+unknown function (ip: 0x7f4a185778d8) at (unknown file)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+do_call at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:123
+eval_value at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:243
+eval_stmt_value at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:194 [inlined]
+eval_body at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:707
+jl_interpret_toplevel_thunk at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/interpreter.c:898
+jl_toplevel_eval_flex at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:1035
+jl_toplevel_eval_flex at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:975
+ijl_toplevel_eval at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:1047
+ijl_toplevel_eval_in at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/toplevel.c:1092
+eval at ./boot.jl:489
+include_string at ./loading.jl:2867
+_include at ./loading.jl:2927
+include at ./Base.jl:306
+exec_options at ./client.jl:317
+_start at ./client.jl:550
+jfptr__start_47004.1 at /home/mkmullenbach/.julia/juliaup/julia-1.12.2+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+true_main at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/jlapi.c:971
+jl_repl_entrypoint at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/builder-amdci5-2/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f4b09e29d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+unknown function (ip: (nil)) at (unknown file)
+Allocations: 16923828 (Pool: 16923553; Big: 275); GC: 29
+=== 2026-10-14T22:55:02+02:00 all background jobs stopped by the Claude Code memory reaper (~22:45) during H obc0 153 N=15 (peak >17 GB); not restarted

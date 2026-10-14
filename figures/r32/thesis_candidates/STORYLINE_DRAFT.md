@@ -25,7 +25,10 @@ fragmented into Poissonian pieces, whatever the boundary.
 
 3. **Main result: a classification by k, the number of firing patterns** (candidate figure A):
    - k = 0 or 4: trivial, U = 1 or H^⊗N.
-   - k = 1: exponential fragmentation; inside each block, Poisson (tensor products of independent rooms).
+   - k = 1: exponential fragmentation. Compared at one common N (19), two pairs: 108/201 (fire on 11 / 00, large
+     blocks) are Poisson, as expected for tensor products of independent rooms; 156/198 (fire on 10 / 01, blocks of at
+     most about 100 states) sit at ⟨r⟩ ≈ 0.42, above Poisson but far from GOE, consistent with structured sums of a few
+     small rooms.
    - k = 2 XOR (150, 105): arithmetic spectra, 3^m distinct levels (connects to the earlier rule-150 chapter).
    - k = 2 one-sided: a boundary-driven tower of blocks; statistics near Poisson but drifting.
    - **k = 3: GOE chaos.**

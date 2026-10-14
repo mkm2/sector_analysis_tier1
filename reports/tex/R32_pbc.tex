@@ -2,9 +2,8 @@
 % Numbers come from the generated tables tab_r32_bc_H_N14.tex and tab_r32_shape_H_pbc_N14.tex
 % (qca_fragmentation.spectral.analysis.write_bc_table / write_shape_table).
 The user asked whether the classes survive a change of boundary condition. The obvious suspects are the one-sided
-rules, whose block tower is anchored at the open ends. All sixteen rules were run on rings of even length $N=6\ldots12$.
-The eight rules with $k\ge2$ that are not arithmetic were also run at $N=14$ (one $\approx16\,000$-dimensional sector each,
-about 16~min per run).
+rules, whose block tower is anchored at the open ends. All sixteen rules were run on rings of even length $N=6\ldots14$. At $N=14$, the eight rules with $k\ge2$ that are not
+arithmetic have one $\approx16\,000$-dimensional sector each, and each run took about 16~min.
 
 \subsection{What is resolved on the ring, and which ensemble to expect}
 On an even ring, translation by one site $T_1$ maps layer $A$ onto layer $B$, for every rule. The half-step
@@ -40,10 +39,10 @@ recomputed: none of the 145 units changed.
 \subsection{Results}
 \begin{table}[h]
 \centering\small
-\input{tab_r32_bc_H_N14.tex}
-\caption{Open chain against ring at $N=14$, the eight rules with a $16\,000$-dimensional ring sector. ``naive ref.''\ is
+\resizebox{\textwidth}{!}{\input{tab_r32_bc_H_N14.tex}}
+\caption{Open chain against ring at $N=14$, all sixteen rules. ``naive ref.''\ is
 the expectation for the complex sectors from the identified symmetries (mirror $\Rightarrow$ COE). The one-sided rules
-violate it (Table~\ref{tab:shape}). The $N=12$ table for all sixteen rules is \fn{tab\_r32\_bc\_H\_N12.tex}.}
+violate it (Table~\ref{tab:shape}). The $N=12$ table is \fn{tab\_r32\_bc\_H\_N12.tex}.}
 \label{tab:bc}
 \end{table}
 
@@ -95,15 +94,20 @@ The consequence for the classification is that \textbf{the one-sided class is de
 the tower splits the space into $N+1$ blocks and the statistics stay near Poisson. On the ring the same bulk dynamics is
 chaotic.
 
-\paragraph{$k=2$ XOR: still arithmetic.} The ring makes the spectra of 150 and 105 \emph{more} degenerate. At $N=12$,
-150 has 137 distinct quasienergies (obc: $729=3^6$) and 105 has 59 (obc: 729). The number of blocks grows (150: 39
-against 19), and $\langle r\rangle$ of the few large blocks stays between Poisson and COE ($0.45$ to $0.50$). These are
-arithmetic, not chaotic, spectra, as on the open chain.
+\paragraph{$k=2$ XOR: still arithmetic.} The ring makes the spectra of 150 and 105 \emph{more} degenerate. At $N=14$,
+150 has 255 distinct quasienergies and 105 has 251, against $2187=3^7$ for both on the open chain. Their statistics
+are not those of a chaotic spectrum either: $\langle r\rangle=0.440$ (150) and $0.391$ (105) in the complex sectors,
+with a small-$r$ tail of $P(r<0.15)=0.22$ and $0.45$ (Poisson: 0.26; $\beta=1$: 0.06). That tail is the signature of
+near-coincident levels in an arithmetic spectrum (Table~\ref{tab:shape}). The spectra are arithmetic, not chaotic, as on
+the open chain.
 
-\paragraph{$k=1$: still exponentially fragmented.} The ring has a similar number of sectors (108: 853 against 1081 at
-$N=12$). The largest block has dimension 59 (obc: 88), so statistics are available only for 108 and 201, from a few
-hundred ratios. They lie between 0.37 and 0.47, consistent with Poisson rooms within the large uncertainty of such small
-blocks.
+\paragraph{$k=1$: still exponentially fragmented.} At $N=14$ the ring has 2627 sectors for 108 and 201 (open chain:
+3329 and 1897) and 844 for 156 and 198 (open: 987). The blocks stay small: the largest has 143 states for 108/201 and 25
+for 156/198. On the ring, 108 and 201 have \emph{identical} block structures (sectors, blocks, singlets and the count
+of distinct levels), but different statistics ($0.399$ and $0.417$, from 2547 ratios each). This is consistent with a
+relabelling of the basis that maps one rule's sector graph onto the other's, while the gate $H$ is not invariant under
+it. The same holds for 156 and 198, which are mirror images. Within the large uncertainty of such small blocks, the
+statistics stay between Poisson and the structured value of the open chain.
 
 \paragraph{Exact singlets on the ring.} Every $k=3$ and one-sided rule has exactly \emph{one} gate singlet on the ring, at
 $\theta=0$, for every $N$ (the XOR rules keep about one per sector, as on the open chain). The singlets at $\theta=\pi$ of the open chain are gone, so they are boundary states. For

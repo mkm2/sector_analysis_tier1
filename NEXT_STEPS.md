@@ -1447,7 +1447,7 @@ growth is the unitary parent the paper already introduces". If a third figure is
 wanted anyway, the cheap defensible one is the operator Schmidt rank of the
 CHANNEL through absorption on the six bounded rules, where it saturates.
 
-## R32 -- Floquet spectra of the 16 unitary rules (2026-10-14) -- IN PROGRESS
+## R32 -- Floquet spectra of the 16 unitary rules (2026-10-14) -- DONE (report final; thesis figures NOT handed off)
 Overnight task: literature review (EE, gap ratio, scars for Floquet operators), complete spectral dataset (<= 8 h
 compute), per-rule figures, interpretation, storyline draft + candidate thesis figures (to be SHOWN to the user before
 any hand-off), optional X gate; user added: resolve symmetries; check the classes with pbc.
@@ -1462,7 +1462,26 @@ any hand-off), optional X gate; user added: resolve symmetries; check the classe
   singlets (2/2/4 product states, 1 entangled for 54, its S decreasing 0.47->0.24 over N=6..14 -- an earlier 'S=0.29 at every N' was a generalisation from N=12 and is withdrawn); k=1 Poisson inside rooms, exponentially many singlets;
   k=2 XOR arithmetic (150: 3^m distinct levels, R8 law, to N=14); k=2 one-sided boundary tower, <r> drifting up
   (UNDECIDED); k=0,4 trivial.
-- STOPPED at 02:51 by the session memory reaper (dense U for chaotic rules, not the eigensolver). Fixed in v2
-  (peak 4.5 GB at N=13, est. 15-16 GB at N=14). NOT restarted -- awaiting user permission.
-  Missing: N=14 for 51,54,57,99,147,153,195; N>=15 stages; pbc production; X gate.
+- First night STOPPED at 02:51 by the session memory reaper (dense U); fixed in v2, resumed with the user's go-ahead.
+- Continuation (user lifted the 8 h cap, "finish within 12 h"): 485 runs, 7.1 h (H obc0 3.55 h, H pbc 2.92 h, X 0.67 h).
+  Interruptions: machine shutdown ~20:08, user reboot ~21:22, memory reaper ~22:45 during 153 N=15 (>17 GB; the only
+  run never finished, not restarted).  Sizes stop where the largest Krylov SECTOR (diagonalised densely) exceeds
+  ~16k states: 153/195 N=15, 60/102 N=16, 150/105 N=16, 201 N=20 not attempted.  Next optimisation: block-first
+  diagonalisation (project onto gate-algebra blocks before the dense step).
+- USER RULE: rules of one class are compared at the SAME N (analysis.class_N): k=3 and one-sided N=14, XOR N=15,
+  k=1 N=19 (obc0); ring N=14 for all.
+- Final findings:
+  * k=1 at common N=19 splits: 108/201 Poisson (0.392/0.389), 156/198 0.421 (tiny blocks, structured sums).
+  * Rings (Omega_T = T1 L_A resolved; T2 momentum blocks): k=3 survives -- 57/99 CUE 0.602 (no mirror), 147 COE
+    (0.518, rising), 54 slower (0.483).  ONE-SIDED rules lose the tower and become beta=1 chaotic in SHAPE (153:
+    chi2 27 vs GOE, 385 for best Poisson+CUE mix) although not mirror symmetric -- antiunitary symmetry NOT identified
+    (spectral/symsearch.py, exact search over D L R^a T_s, finds only the reflection of 147).  XOR stays arithmetic,
+    k=1 unchanged.  One theta=0 singlet survives on the ring; the theta=pi singlets are boundary states.
+  * X gate (224 runs): 54/147 = integrable RCA54, 201/108 = Floquet-PXP, XOR and one-sided linear/affine; only 57/99
+    have orbits filling a finite fraction of 2^N (open chain only).  H-chaos tracks k=3, not classical chaos.
+- CORRECTIONS (visible): conjugation-symmetry test failed for a level at 0 = 2 pi (ring j=0 misclassified; obc0
+  numbers unchanged); summary loops O(blocks x states) replaced (identical output); mirror-rule even-N reruns with phi
+  (147 N=14 0.5275 -> 0.5274; k=1 singlet counts -few); 54 singlet "S=0.29 at every N" withdrawn (earlier).
+- OPEN: one-sided antiunitary symmetry on the ring; L_A R in the real ring sectors of mirror rules; identity of the
+  entangled singlet shared by 54 (both bc) and 60/102 (ring); the N-stable 57 outliers.
 - Report: reports/pdf/R32_floquet_spectra.pdf.  Storyline + candidates: figures/r32/thesis_candidates/ (NOT handed off).

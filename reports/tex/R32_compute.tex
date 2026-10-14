@@ -1,36 +1,69 @@
-% R32: compute log, the memory incident, and the resume plan
-\paragraph{Compute used.} Production started at 01:53 and was stopped at 02:51 (about 1~h of wall time; all runs on one
-12th-gen i7, 31~GB). In that hour it produced 137 obc0 units: all 16 rules for $N=6\ldots13$, plus $N=14$ for 9 rules
-(the largest, rule~60/102 with a $2^{13}$-dimensional sector, took 100~s). Validation and memory tests added about 20
-minutes. The 8-hour budget is therefore largely unused.
+% R32: compute log, memory, and the interruptions (numbers from results_spectra/runlog_v2.txt)
+\paragraph{Budget and what was used.} The task came with a budget of 8 hours of compute. The user later lifted it
+(``finish within the next 12 hours''). All runs used one 12th-generation i7 with 31~GB of memory, one job at a time.
+\begin{itemize}
+\item First night (v1 pipeline, 01:53 to 02:51): obc0, all 16 rules for $N=6\ldots13$ and $N=14$ for 9 rules; about
+  1.7~h including validation and memory tests.
+\item Continuation (v2 pipeline, from 12:32 on 2026-10-14): 485 successful runs and 7.1~h of wall time.
+  \begin{center}\small
+  \begin{tabular}{p{0.6\textwidth}rr}
+  \toprule
+  stage & runs & wall time \\
+  \midrule
+  $H$, obc0 (rest of $N=14$; $N=15\ldots20$ by rule; even-$N$ reruns of the mirror rules with $\varphi$) & 117 & 3.55~h \\
+  $H$, rings $N=6\ldots14$ (with $\Omega_T$) & 144 & 2.92~h \\
+  $X$, obc0 $N=6\ldots14$ & 144 & 0.44~h \\
+  $X$, rings $N=6\ldots14$ & 80 & 0.23~h \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+  Every completed run exited with code 0. Runs cut off by the interruptions below were rerun, except rule~153 at
+  $N=15$. The 27 non-zero exit codes in the log are the 12:32 start of the runner, which split paths at the spaces in the repository path; those runs
+  failed instantly and were rerun after the fix.
+\end{itemize}
+The most expensive runs are the single $\approx16\,000$-dimensional sectors at $N=14$: 15 to 18~minutes each, with a peak
+resident memory of 14~GB.
 
-\paragraph{What stopped it.} The session's memory reaper stopped all background jobs while rule~51 at $N=14$ was being
-processed (a single $16384$-dimensional sector). Instrumenting the phases at $N=12$ showed that the memory went
-\emph{not} into the dense linear algebra but into $U$ itself. For the chaotic rules $U$ is effectively dense (each column
-has up to $2^N$ entries), so storing it as a sparse matrix, and running Graphs.jl's component search over that adjacency,
-cost 1.1~GB at $N=12$. That extrapolates to about 18~GB at $N=14$.
+\paragraph{Interruptions.}
+\begin{enumerate}
+\item \emph{First night, 02:51}: the session's memory reaper stopped all jobs. The cause was the dense $U$ of the chaotic
+  rules: for these rules $U$ is effectively dense, and storing it as a sparse matrix and running a component search
+  over it cost 1.1~GB at $N=12$, or about 18~GB at $N=14$. Fixed in v2 (below); resumed with the user's go-ahead.
+\item \emph{About 20:08}: the machine shut down. The run lost was 54 at $N=14$, whose old file had already been removed for
+  the rerun with $\varphi$. The user then stopped the runs for a second reboot. The rerun was done after the restart.
+\item \emph{About 22:45}: the memory reaper stopped all jobs during rule~153 at $N=15$ (above 17~GB). That run is the
+  only one that never finished. It was not restarted (see the next paragraph).
+\end{enumerate}
 
-\paragraph{The fix (v2, \fn{generate\_spectral\_data\_v2.jl}).}
+\paragraph{Why the sizes stop where they do.} The pipeline diagonalises each Krylov sector densely (the gate-algebra
+blocks are resolved inside it), so the memory is set by the largest \emph{sector}. A $16\,383$-dimensional sector peaks at
+about 14~GB, and the memory grows faster than the square of the dimension (201: 2.6~GB at $N=18$, sector 6765; 7.7~GB at
+$N=19$, sector $10\,946$). The next sizes would need:
+\begin{itemize}
+\item 153/195 at $N=15$ and 60/102 at $N=16$: a sector of $2^{15}$, about 50~GB;
+\item 150/105 at $N=16$: about twice the $12\,870$-dimensional sector of $N=15$, more than 30~GB;
+\item 201 at $N=20$: a sector of $17\,711$ ($F_{22}$), about 20 to 23~GB, which is too close to the limit at which the
+  session reaper stops every job.
+\end{itemize}
+These sizes were therefore not attempted, so every class is compared at the largest $N$ that all its members share. That
+is $N=14$ for $k=3$ and for the one-sided rules, $N=15$ for XOR, and $N=19$ for $k=1$ on the open chain; on the ring,
+$N=14$ for every rule. Going further would need a block-first diagonalisation, which projects onto the gate-algebra
+blocks before the dense step. That is the obvious next optimisation.
+
+\paragraph{The v2 pipeline (\fn{generate\_spectral\_data\_v2.jl}).}
 \begin{enumerate}
 \item $U$ is never formed: $Uv=L_B(L_Av)$ with the two sparse layers (a few MB at $N=14$).
 \item Krylov sectors come from a union-find over the supports of the \emph{individual gates}. For $V=H$ this is the same
   partition as the components of $\mathrm{supp}(U)$ (R-T19 Prop.~4), and it is asserted against the old construction
   for every $N\le10$ run. For $V=X$, $U$ is a permutation and is formed directly.
-\item Symmetry checks are random-vector tests through the layers. Dense sector blocks are assembled column-chunk-wise.
-  Inside each block, the products $AV$, $SV$ and $EV$ are computed per batch of at most 2048 columns.
+\item Symmetry checks are random-vector tests through the layers. Dense sector blocks are assembled column-chunk-wise,
+  and the products inside each block are computed per batch of at most 2048 columns.
 \end{enumerate}
 \emph{Validation:} v2 reproduces v1 block by block (sector size, block size, sorted quasienergies, $S_2^\mathrm{Haar}$,
-degeneracies) for seven rules at $N=9$. Its pbc spectra match the exact Python engine to $<10^{-14}$. Non-degenerate
-eigenvectors agree to $10^{-15}$ in $S_\mathrm{vN}$; degenerate ones are basis dependent by construction.
+degeneracies) for seven rules at $N=9$. Its ring spectra match the exact Python engine to $<10^{-14}$, for both gates.
+Non-degenerate eigenvectors agree to $10^{-15}$ in $S_\mathrm{vN}$; degenerate ones are basis dependent by construction.
 
-\emph{Measured} (rule 147, $N=13$, $8192$-dimensional sector): peak resident memory 4.5~GB (v1: 7.4~GB), run time 124~s
-(v1: 224~s). Expected peak at $N=14$: about 15--16~GB.
-
-\paragraph{How to resume (not done without permission).} From the repository root:
-\begin{verbatim}
-bash results_spectra/run_H.sh      # obc0: rest of N=14, N=15-18
-bash results_spectra/run_H_pbc.sh  # pbc, even N=6..14
-bash results_spectra/run_X.sh      # optional: X gate
-\end{verbatim}
-(all three scripts now call v2; finished units are skipped.)
-Estimated wall time: about 1.5~h (obc0 remainder), 1--1.5~h (pbc), and under 1~h (X): well inside the remaining budget.
+\paragraph{Analysis cost.} The first analysis pass looped over blocks with one boolean mask per block, which is
+$O(\text{blocks}\times\text{states})$: about $10^{11}$ operations for the $k=1$ rules at $N=20$. It now groups the
+states by a single sort (\fn{stats.groups}). The full summary of 173 obc0 units takes 70~s, and its output is identical
+to the old one on every unit that was not rerun.

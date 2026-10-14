@@ -1,0 +1,103 @@
+% R32 section 6: the X gate, compared with H (input by R32_floquet_spectra.tex)
+% Numbers: tab_r32_X_N14.tex (spectral.xgate.write_x_table), results_spectra/summary_X*.json,
+% results_spectra/X_cycle_growth.json (spectral.xgate.cycle_growth).
+With $V=X$ every rule is a classical reversible cellular automaton. $U$ permutes the basis, so its spectrum is fixed
+by the cycle structure alone: a cycle of length $L$ contributes the $L$-th roots of unity, once each. The eigenvectors
+are the Fourier modes of the cycles,
+\[
+  |q,c\rangle = L^{-1/2}\sum_{t=0}^{L-1} e^{2\pi i q t/L}\,U^t|x_c\rangle .
+\]
+Level statistics therefore measure orbit arithmetic, not chaos, and are not reported. The informative quantities are
+the cycle-length distribution and the entanglement of the Fourier modes. A mode is supported on $L$ basis states, so
+its Schmidt rank is at most $L$ and $S_\mathrm{vN}\le\ln L$: short cycles force low entanglement.
+
+\paragraph{Data and checks.} All sixteen rules were run with the same Julia pipeline, on the open chain for $N=6\ldots14$
+and on rings for even $N=6\ldots14$: 224 runs and 40~minutes in total, with no failure. For every run, the stored
+quasienergies equal the union of the roots of unity over the cycles to $2\times10^{-14}$. The cycles were computed
+independently in Python from the permutation (\fn{spectral.xgate.cycle\_lengths}). A test checks this against the dense
+permutation matrix at $N=8$, for both boundaries. The cycle growth in Fig.~\ref{fig:xcycles} was computed in Python up
+to $N=18$.
+
+\subsection{What the sixteen automata are, classically}
+Writing $m,n$ for the left and right neighbour, the X-gate update is $x_i\to x_i\oplus f(m,n)$, with $f$ the firing
+pattern:
+\begin{itemize}
+\item \textbf{Linear or affine} ($f$ of degree one): the XOR rules 150 ($f=m\oplus n$) and 105 ($1\oplus m\oplus n$),
+  and all one-sided rules (60: $f=m$; 102: $f=n$; 153: $1\oplus n$; 195: $1\oplus m$). These are solvable by linear
+  algebra over $\mathbb F_2$.
+\item \textbf{Known interacting integrable automata.} 54 fires iff at least one neighbour is 1: this is RCA54, the
+  interacting integrable Rule~54 with solitons~\cite{buca2021}. 201 fires iff both neighbours are 0: this is the
+  Floquet-PXP automaton~\cite{wilkinson2020}. On the ring the global spin flip is a symmetry of the X automata. It maps
+  147 onto 54, 108 onto 201, 156 onto 198 and 57 onto 99. With $H$ it is not a symmetry, and the obc0 boundary (ghost sites
+  fixed to 0) breaks it too: for example, 108 and 201 have 4868 and 3492 cycles on the open chain at $N=14$, but 4156
+  each on the ring.
+\item \textbf{Trivial}: 204 ($U=1$) and 51 ($U=X^{\otimes N}$).
+\item \textbf{Nonlinear and not known to be integrable}: only 57 and 99 (fire unless $(m,n)=(0,1)$, or $(1,0)$).
+\end{itemize}
+
+\subsection{Cycle structure: only 57/99 have exponentially long orbits}
+\begin{figure}[h]
+\centering
+\ifgraphic{../../figures/r32/fig_r32_X_cycles.pdf}{\textwidth}
+\caption{X gate: (a) the longest cycle and (b) the mean cycle length seen by a uniformly random basis state,
+$\langle L\rangle_\mathrm{state}=\sum_c L_c^2/2^N$, over $2^N$. Filled: open chain; open symbols: ring. Computed from the
+permutation up to $N=18$.}
+\label{fig:xcycles}
+\end{figure}
+On the open chain, the longest cycle of 57/99 holds a \emph{finite fraction} of the Hilbert space: $129\,880$ of $2^{18}$
+states at $N=18$. A random state lies on a cycle of average length $0.22$ to $0.50$ times $2^N$ for every $N$ from 6 to 18.
+Classically, this is an ergodic orbit structure. Every other rule has orbits that grow at most linearly:
+\begin{itemize}
+\item RCA54: longest cycle $3N-5$ for 54 (147, which is RCA54 only on the ring: 26 at $N=14$);
+\item XOR: $N+1$;
+\item one-sided: 16 or 32, independent of $N$ (a period that is a power of two, as for linear automata);
+\item Floquet-PXP (201, 108): slow growth, 187 states at $N=18$.
+\end{itemize}
+On the ring, the cycles of 57/99 still grow exponentially, but more slowly (4428 states at $N=18$), and their share of the
+space falls to $\langle L\rangle_\mathrm{state}/2^N=0.007$ at $N=14$. The classically ergodic orbit of 57/99 on the open
+chain needs the boundary. This is the mirror image of the one-sided rules with $H$, which need the ring to become chaotic.
+
+\subsection{Eigenstate entanglement: H against X at one N}
+\begin{table}[h]
+\centering\scriptsize
+\input{tab_r32_X_N14.tex}
+\caption{X gate at $N=14$, both boundaries: number of cycles, the longest, $\langle L\rangle_\mathrm{state}/2^N$, and the
+mean half-chain entanglement of all eigenstates over the Page value ($\bar S_X$). $\bar S_H$ is the same mean for the H
+gate, over its non-degenerate eigenstates (degenerate ones have basis-dependent entanglement).}
+\label{tab:x}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\ifgraphic{../../figures/r32/fig_r32_HX_compare_N14.pdf}{\textwidth}
+\caption{H against X at $N=14$, open chain. (a) Mean eigenstate entanglement over the Page value. (b) X gate:
+$\langle L\rangle_\mathrm{state}/2^N$.}
+\label{fig:hx}
+\end{figure}
+
+Table~\ref{tab:x} and Fig.~\ref{fig:hx} give the following picture:
+\begin{itemize}
+\item \textbf{57/99:} on the open chain, X and H are \emph{equally} thermal ($0.98$ of Page). The cycle Fourier modes of an
+  ergodic orbit look like random states. On the ring, the X value drops to $0.69$ with the shorter cycles, while H stays
+  at $0.99$.
+\item \textbf{54/147 (RCA54):} X gives $0.70$, bounded by its short orbits ($\ln 37=3.6$ against Page 4.35). H gives
+  $0.89$ and $0.93$, and its spectrum is GOE (Sec.~\ref{sec:results}). \textbf{The Hadamard turns an interacting integrable
+  classical automaton into a chaotic quantum circuit.}
+\item \textbf{One-sided:} $0.44$ to $0.47$ (X) against $0.47$ to $0.66$ (H) on the open chain. On the ring both rise
+  (X: $0.84$; H: $0.89$ to $0.92$), but only H is chaotic there; X stays affine, with period at most a few hundred.
+\item \textbf{XOR:} X ($0.59$) is slightly \emph{above} H ($0.52$) on the open chain; both are arithmetic.
+\item \textbf{$k=1$:} both are low (X $0.11$ to $0.14$; H $0.02$ to $0.07$). These are fragmented rooms, whatever the gate.
+\end{itemize}
+
+\subsection{What the comparison says}
+\begin{enumerate}
+\item Quantum chaos with $H$ does \emph{not} require classical chaos with $X$. Two of the four chaotic $k=3$ rules, 54 and
+  147, are the interacting integrable RCA54 with $X$, yet GOE-chaotic with $H$. On the ring, 57/99 keeps its CUE chaos
+  with $H$, although its X orbits no longer fill a finite share of the space. What the chaotic rules share is the firing
+  count $k=3$, not the classical dynamics. Deforming classical automata by non-commuting gates is the setting of
+  Ref.~\cite{iadecola2020}; for these rules, the deformation by $H$ yields chaos.
+\item Conversely, the only classically ergodic automaton (57/99 on the open chain) is also chaotic with $H$.
+\item With $X$, every rule splits into cycles, so ``fragmentation'' is total and carries no information. With $H$, the
+  fragmentation is a property of the rule class: exponential at $k=1$ on both boundaries, and boundary-driven for the
+  one-sided rules.
+\end{enumerate}

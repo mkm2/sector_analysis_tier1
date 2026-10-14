@@ -29,6 +29,7 @@ from . import stats as S
 NMIN = 20        # minimum distinct half-levels for a block to enter the r statistics
 SCAR_ETA = 0.5   # eta below this in a block of dim >= SCAR_DIM counts as scar-like
 SCAR_DIM = 20
+SPECIAL_CAP = 64   # gate singlets/doublets listed per unit in the summary (counts are complete)
 
 
 def _pooled(d, keys, nmin=NMIN):
@@ -98,6 +99,8 @@ def summarize(d) -> Dict:
                       "n_r": int(r_big.size), "dim": int(mbig.sum())},
         "deg": S.degeneracy_summary(d),
         "page": S.page_entropy(NA, NB),
+        "S_mean_nondeg": float(np.mean(d["entropy"][d["degeneracy"] == 1]))
+        if np.any(d["degeneracy"] == 1) else None,
         "S_mean_largest_nondeg": float(np.mean(d["entropy"][mbig & (d["degeneracy"] == 1)]))
         if np.any(mbig & (d["degeneracy"] == 1)) else None,
         "checks": {"max_residual": float(d["max_residual"]),
@@ -119,7 +122,12 @@ def summarize(d) -> Dict:
             special.append({"dim": int(c), "sector_dim": int(secsize[m][0]),
                             "theta": [round(float(t), 6) for t in th[m]],
                             "S_vN": [round(float(x), 6) for x in d["entropy"][m]]})
-    out["special_blocks"] = special
+    # counts are exact; the list itself is capped (k = 1 has ~10^5 singlets at N = 20,
+    # which made summary_H.json exceed GitHub's 100 MB file limit)
+    out["n_singlets"] = sum(1 for b in special if b["dim"] == 1)
+    out["n_doublets"] = sum(1 for b in special if b["dim"] == 2)
+    out["special_blocks"] = special[:SPECIAL_CAP]
+    out["special_blocks_truncated"] = len(special) > SPECIAL_CAP
     if ref is not None:
         ok = (dim >= 2) & (ref > 1e-12)
         eta = np.full(th.size, np.nan)
@@ -196,7 +204,7 @@ def write_table(summary: Dict, gate: str = "H", bc: str = "obc0", out: str = Non
         s = summary[f"{w}_{N}"]
         f = lambda v: "--" if v["r_mean"] is None or v["n_r"] < 30 else f"{v['r_mean']:.3f}"
         e = s.get("eta") or {}
-        n1 = sum(1 for b in s["special_blocks"] if b["dim"] == 1)
+        n1 = s["n_singlets"]
         rows.append(
             f"{pattern_class(w)} & {w} & {N} & {s['symmetry'].replace('_', ' ')} & "
             f"{s['n_sectors']} & {s['n_blocks']} & {f(s['r_none'])} & {f(s['r_full'])} & "
@@ -229,7 +237,7 @@ def write_bc_table(sum_obc: Dict, sum_pbc: Dict, N: int, gate: str = "H", out: s
     rules = sorted({int(k.split("_")[0]) for k in sum_pbc},
                    key=lambda w: (order.index(pattern_class(w)), w))
     f = lambda v: "--" if v["r_mean"] is None or v["n_r"] < 30 else f"{v['r_mean']:.3f}"
-    n1 = lambda s: sum(1 for b in s["special_blocks"] if b["dim"] == 1)
+    n1 = lambda s: s["n_singlets"]
     rows = []
     for w in rules:
         o, p = sum_obc.get(f"{w}_{N}"), sum_pbc.get(f"{w}_{N}")
