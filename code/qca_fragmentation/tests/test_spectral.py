@@ -158,3 +158,27 @@ def test_ring_classes_at_N14():
     t153 = A.shape_test(A.complex_sector_ratios(F.load(F.spec_path("H", 14, 153, "pbc"))))
     assert abs(t153["r_mean"] - S.R_GOE) < 0.01
     assert t153["chi2_goe"] < 0.2 * min(t153["chi2_gue"], t153["chi2_mix"])
+
+
+@pytest.mark.parametrize("w,bc", [(57, "obc0"), (57, "pbc"), (150, "obc0"), (60, "pbc")])
+def test_xgate_cycles_give_the_spectrum(w, bc):
+    # independent of the Julia pipeline: the eigenphases of the dense X-gate U are the
+    # union over cycles of the L-th roots of unity
+    from qca_fragmentation.spectral import xgate as XG
+    N = 8
+    L = XG.cycle_lengths(w, N, bc)
+    assert L.sum() == 2 ** N
+    ev = np.sort(np.mod(np.angle(np.linalg.eigvals(F.floquet_matrix(w, N, "X", bc))), 2 * np.pi))
+    ref = np.sort(np.concatenate([2 * np.pi * np.arange(l) / l for l in L]))
+    # multiset match on sorted lists, after mapping 2 pi -> 0
+    ev = np.sort(np.where(2 * np.pi - ev < 1e-9, 0.0, ev))
+    assert np.allclose(ev, ref, atol=1e-9)
+
+
+def test_class_N_is_common_within_a_class():
+    from qca_fragmentation.spectral import analysis as A
+    summ = {f"{w}_{N}": {} for w, Ns in {108: [18, 19, 20], 156: [19, 20], 198: [20], 201: [19],
+                                         57: [13, 14]}.items() for N in Ns}
+    summ["198_19"] = {}
+    assert A.class_N(summ, 108) == 19 and A.class_N(summ, 201) == 19
+    assert A.class_N(summ, 57) == 14

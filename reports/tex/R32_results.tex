@@ -88,15 +88,28 @@ spaced tower, and their number does not grow. This points to a localised structu
 background) rather than a PXP-type scar band. In 147, by contrast, the low-$\eta$ states are numerous (72--83) and spread
 over $\theta$: the finite-size tail of the thermal distribution.
 
-\subsection{$k=1$: exponential fragmentation, Poisson inside}
-Rules 108, 156, 198 and 201 fire on a single pattern and have exponentially many Krylov sectors (R2, R19). With the gate
-algebra resolved, the sectors split further: at $N=14$, 156 has 987 sectors and 5740 blocks, and 201 has 1897 sectors and
-4161 blocks. Most blocks are too small for level statistics. 156 and 198 never reach 20 distinct half-levels in one block
-up to $N=14$. Where blocks are large enough (108, 201), $\langle r\rangle$ pooled over them is Poissonian and
-$N$-independent: $0.384, 0.385, 0.386, 0.383$ for 108 at $N=11\ldots14$. This matches the structure found in the commutant
-study (R-T18/R-T27): a block is a tensor product of independent rooms, so its quasienergies are sums of room
-quasienergies, and sums of independent spectra are Poissonian. The gate singlets here are exponentially many (2074 for 108
-and 2439 for 156 at $N=14$, roughly doubling with each added site). These are the dark states of the rooms.
+\subsection{$k=1$: exponential fragmentation; two pairs at the same $N$}
+Rules 108, 156, 198 and 201 fire on a single pattern (108 on $11$, 201 on $00$, 156 on $10$, 198 on $01$) and have
+exponentially many Krylov sectors (R2, R19). They were run to $N=20$ (201 to $N=19$; see below). The class is compared
+at the largest $N$ that all four rules share, $N=19$ (Table~\ref{tab:summary}), and not each rule at its own maximum.
+\begin{itemize}
+\item \textbf{108 and 201} (fire on $11$ or $00$; mirror symmetric) have large blocks: the largest has 2583 and 5544
+  states at $N=19$. Pooled over them, $\langle r\rangle=0.3922\pm0.0010$ (108) and $0.3891\pm0.0009$ (201), with
+  $7\times10^4$ to $10^5$ ratios. This is Poisson ($0.3863$) up to a small, statistically resolved excess of
+  0.003 to 0.006, which is stable from $N=17$ on.
+\item \textbf{156 and 198} (fire on $10$ or $01$; a reflection pair, computed independently and identical) stay
+  \emph{tiny}: the largest block has 100 states at $N=19$ (125 at $N=20$), and only $2139$ of the $2^{19}$ quasienergies are
+  distinct. $\langle r\rangle=0.4209\pm0.0038$ at $N=19$ and $0.4172\pm0.0023$ at $N=20$, stable from $N=17$ on.
+  This is clearly \emph{above} Poisson but far below GOE.
+\end{itemize}
+The block structure explains both values. The commutant study (R-T18/R-T27) shows that a block is a tensor product of
+independent rooms, so its quasienergies are sums of room quasienergies. When many rooms of different sizes contribute
+(108, 201), the sums are effectively independent and the statistics are Poisson. When a block is built from a few small,
+repeated rooms (156, 198), the sums are \emph{structured}. Exact coincidences are removed, but (our reading, not tested) the surviving levels keep
+an arithmetic regularity that suppresses small spacings. Neither pair shows level repulsion growing with $N$.
+
+The gate singlets are exponentially many (at $N=19$: 52\,688 for 108, 37\,812 for 156 and 198, and 39\,872 for 201;
+roughly doubling with each added site). These are the dark states of the rooms.
 
 \subsection{$k=2$, XOR: arithmetic spectra}
 150 and 105 have only a handful of Krylov sectors (the domain-wall shells, R8) and large blocks, but their spectra are

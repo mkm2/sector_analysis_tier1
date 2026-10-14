@@ -190,7 +190,7 @@ def overview_figure(summary, gate="H", out_dir=FIG_DIR):
             Ns = sorted(int(k.split("_")[1]) for k in summary if k.startswith(f"{w}_"))
             if not Ns:
                 x += 1; continue
-            s = summary[f"{w}_{max(Ns)}"]
+            s = summary[f"{w}_{A.class_N(summary, w)}"]     # same N within a class
             for lvl, mk, col, fc, dx in (("r_none", "o", ts.GREY, "none", -0.18),
                                          ("r_full", "o", ts.PALETTE[0], None, 0.18)):
                 v = s[lvl]
@@ -239,10 +239,12 @@ def bc_figure(sum_obc, sum_pbc, gate="H", out_dir=FIG_DIR, N_common=None):
     fig, (a, b) = ts.subplots(2, 1, aspect=0.75, sharex=True)
 
     def common_N(w):
-        # the largest even N present for BOTH boundary conditions
-        Ns = [set(int(k.split("_")[1]) for k in sm if k.startswith(f"{w}_"))
-              for sm in (sum_obc, sum_pbc)]
-        Ns = [n for n in Ns[0] & Ns[1] if n % 2 == 0 and (N_common is None or n <= N_common)]
+        # the largest even N present for BOTH boundary conditions and for EVERY rule of
+        # w's class (rules of one class are compared at the same N)
+        members = [v for _, ws in CLASS_ORDER for v in ws if A.pattern_class(v) == A.pattern_class(w)]
+        Ns = set.intersection(*[set(int(k.split("_")[1]) for k in sm if k.startswith(f"{v}_"))
+                                for sm in (sum_obc, sum_pbc) for v in members])
+        Ns = [n for n in Ns if n % 2 == 0 and (N_common is None or n <= N_common)]
         return max(Ns) if Ns else None
 
     def dot(ax, x, v, **kw):

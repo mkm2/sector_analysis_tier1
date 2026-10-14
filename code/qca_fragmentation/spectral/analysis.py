@@ -34,11 +34,12 @@ SCAR_DIM = 20
 def _pooled(d, keys, nmin=NMIN):
     """Ratios pooled over blocks (defined by keys) with >= nmin - 2 ratios."""
     rs, nst = [], 0
-    for k in np.unique(keys):
-        m = keys == k
+    for k, m in S.groups(keys):
+        if m.size < nmin - 2:          # cannot reach nmin - 2 ratios
+            continue
         r = S.block_ratios(S.block_levels_var(d, m))
         if r.size >= nmin - 2:
-            rs.append(r); nst += int(m.sum())
+            rs.append(r); nst += int(m.size)
     r = np.concatenate(rs) if rs else np.empty(0)
     n = r.size
     return {"r_mean": float(r.mean()) if n else None,
@@ -53,8 +54,9 @@ def _pooled_by_type(d, keys, nmin=NMIN):
     'complex' = not symmetric (full circle; e.g. ring momentum j != -j, beta = 2, 0.5996).
     """
     out = {"real": [], "complex": []}
-    for k in np.unique(keys):
-        m = keys == k
+    for k, m in S.groups(keys):
+        if m.size < nmin - 2:
+            continue
         x = np.mod(S.block_levels_var(d, m), 2 * np.pi)
         r = S.block_ratios(x)
         if r.size < nmin - 2:
@@ -76,15 +78,14 @@ def summarize(d) -> Dict:
     full = S.block_keys(d)
     krylov = d["sector_id"].astype(np.int64)
     none = np.zeros_like(krylov)
-    uk, cnt = np.unique(full, return_counts=True)
+    uk, inv, cnt = np.unique(full, return_inverse=True, return_counts=True)
     big = uk[np.argmax(cnt)]
     mbig = full == big
     r_big = S.block_ratios(S.block_levels_var(d, mbig))
 
     NA, NB = N // 2, N - N // 2
     # eta per state, only in blocks of dim >= 2 with a positive reference
-    bdim = dict(zip(uk, cnt))
-    dim = np.array([bdim[k] for k in full])
+    dim = cnt[inv.ravel()]
     ref = d.get("s2_block_rand")
     out = {
         "rule": d["rule_wolfram"], "rule_hsf": d["rule_hsf"], "N": N,
@@ -109,9 +110,12 @@ def summarize(d) -> Dict:
     # exact eigenstates of U for any gate order -- candidate exact scars
     secsize = np.asarray(d["sector_sizes"])[d["sector_id"] - 1]
     special = []
-    for k, c in zip(uk, cnt):
-        m = full == k
-        if c <= 2 and secsize[m][0] >= 3:
+    small = np.isin(full, uk[cnt <= 2])
+    for k, m in S.groups(np.where(small, full, -1)):
+        if k == -1:
+            continue
+        c = m.size
+        if secsize[m][0] >= 3:
             special.append({"dim": int(c), "sector_dim": int(secsize[m][0]),
                             "theta": [round(float(t), 6) for t in th[m]],
                             "S_vN": [round(float(x), 6) for x in d["entropy"][m]]})
@@ -170,14 +174,25 @@ def pattern_class(w: int) -> str:
     return str(k)
 
 
+def class_N(summary: Dict, w: int) -> int:
+    """
+    The N at which rule w is compared: the largest N computed for EVERY rule of its class
+    (user rule: rules of one class are compared at the same N, not each at its own maximum).
+    """
+    Ns = lambda v: {int(k.split("_")[1]) for k in summary if k.startswith(f"{v}_")}
+    members = {int(k.split("_")[0]) for k in summary}
+    common = set.intersection(*[Ns(v) for v in members if pattern_class(v) == pattern_class(w)])
+    return max(common) if common else max(Ns(w))
+
+
 def write_table(summary: Dict, gate: str = "H", bc: str = "obc0", out: str = None) -> str:
-    """LaTeX table of the per-rule summary at each rule's largest N (R32)."""
+    """LaTeX table of the per-rule summary, each class at its common largest N (class_N)."""
     from .. import results_io
     rows = []
     order = ["0", "1", "2 one-sided", "2 XOR", "3", "4"]
     for w in sorted({int(k.split("_")[0]) for k in summary},
                     key=lambda w: (order.index(pattern_class(w)), w)):
-        N = max(int(k.split("_")[1]) for k in summary if k.startswith(f"{w}_"))
+        N = class_N(summary, w)
         s = summary[f"{w}_{N}"]
         f = lambda v: "--" if v["r_mean"] is None or v["n_r"] < 30 else f"{v['r_mean']:.3f}"
         e = s.get("eta") or {}
@@ -272,10 +287,11 @@ def complex_sector_ratios(d) -> np.ndarray:
     """Pooled ratios of the resolved blocks that are NOT conjugation-symmetric (ring j != -j)."""
     keys = S.block_keys(d)
     rs = []
-    for k in np.unique(keys):
-        m = keys == k
+    for k, m in S.groups(keys):
+        if m.size < NMIN:
+            continue
         x = S.block_levels_var(d, m)
-        if m.sum() >= NMIN and not S.conj_symmetric(x):
+        if not S.conj_symmetric(x):
             rs.append(S.block_ratios(x))
     return np.concatenate(rs) if rs else np.empty(0)
 

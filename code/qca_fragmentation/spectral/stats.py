@@ -95,6 +95,17 @@ def block_levels_var(d, m) -> np.ndarray:
     return d["theta"][m]
 
 
+def groups(keys: np.ndarray):
+    """
+    (key, index array) per distinct key, by one stable sort: O(n log n).  (A boolean
+    mask per key is O(n_keys * n) -- 10^11 operations for the k = 1 rules at N = 20.)
+    """
+    keys = np.asarray(keys)
+    order = np.argsort(keys, kind="stable")
+    uk, start = np.unique(keys[order], return_index=True)
+    return zip(uk, np.split(order, start[1:]))
+
+
 def block_keys(d) -> np.ndarray:
     """Integer key per eigenvector identifying its statistics block
     (sector, gate-algebra block, true symmetry label)."""
@@ -134,14 +145,13 @@ def block_table(d, nmin: int = 20) -> List[Dict]:
     """One row per block: size, distinct half-levels, <r>, degeneracy share."""
     keys = block_keys(d)
     rows = []
-    for k in np.unique(keys):
-        m = keys == k
+    for k, m in groups(keys):
         lev = unique_levels(d["theta"][m])
         r = block_ratios(block_levels_var(d, m))
         rows.append({
             "key": int(k), "sector": int(d["sector_id"][m][0]),
             "block": int(d["block_id"][m][0]), "label": int(d["sym_label"][m][0]),
-            "dim": int(m.sum()), "n_half_levels": int(lev.size),
+            "dim": int(m.size), "n_half_levels": int(lev.size),
             "r_mean": float(r.mean()) if r.size else np.nan, "n_r": int(r.size),
             "deg_frac": float(np.mean(d["degeneracy"][m] > 1)),
             "used": bool(lev.size >= nmin),
@@ -153,11 +163,12 @@ def pooled_r(d, nmin: int = 20):
     """All ratios from blocks with >= nmin distinct half-levels, and summary."""
     keys = block_keys(d)
     rs, nstates = [], 0
-    for k in np.unique(keys):
-        m = keys == k
+    for k, m in groups(keys):
+        if m.size < nmin - 2:          # cannot reach nmin - 2 ratios
+            continue
         r = block_ratios(block_levels_var(d, m))
         if r.size >= nmin - 2:
-            rs.append(r); nstates += int(m.sum())
+            rs.append(r); nstates += int(m.size)
     r = np.concatenate(rs) if rs else np.empty(0)
     n = r.size
     return r, {"r_mean": float(r.mean()) if n else np.nan,
