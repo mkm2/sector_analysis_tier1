@@ -130,3 +130,46 @@ if __name__ == "__main__":
     a = ap.parse_args()
     res = build(a.gate, a.bc)
     print(f"{len(res)} units -> {summary_path(a.gate, a.bc)}")
+
+
+#: the R32 classes: number k of neighbour patterns (00, 01, 10, 11) that fire the gate
+def pattern_class(w: int) -> str:
+    t = F.rules.wolfram_to_tuple(w)
+    k = sum(s == "V" for s in t)
+    if k == 2:
+        # one-sided: the firing set depends on one neighbour only
+        on = {i for i, s in enumerate(t) if s == "V"}      # index 2m + n
+        one_sided = on in ({0, 1}, {2, 3}, {0, 2}, {1, 3})
+        return "2 one-sided" if one_sided else "2 XOR"
+    return str(k)
+
+
+def write_table(summary: Dict, gate: str = "H", bc: str = "obc0", out: str = None) -> str:
+    """LaTeX table of the per-rule summary at each rule's largest N (R32)."""
+    from .. import results_io
+    rows = []
+    order = ["0", "1", "2 one-sided", "2 XOR", "3", "4"]
+    for w in sorted({int(k.split("_")[0]) for k in summary},
+                    key=lambda w: (order.index(pattern_class(w)), w)):
+        N = max(int(k.split("_")[1]) for k in summary if k.startswith(f"{w}_"))
+        s = summary[f"{w}_{N}"]
+        f = lambda v: "--" if v["r_mean"] is None or v["n_r"] < 30 else f"{v['r_mean']:.3f}"
+        e = s.get("eta") or {}
+        n1 = sum(1 for b in s["special_blocks"] if b["dim"] == 1)
+        rows.append(
+            f"{pattern_class(w)} & {w} & {N} & {s['symmetry'].replace('_', ' ')} & "
+            f"{s['n_sectors']} & {s['n_blocks']} & {f(s['r_none'])} & {f(s['r_full'])} & "
+            f"{s['r_full']['n_r']} & {s['deg']['n_distinct_global'] / 2 ** N:.3g} & "
+            + (f"{e['mean_largest']:.2f}" if e.get("mean_largest") is not None else "--")
+            + f" & {n1} \\\\")
+    body = "\n".join(rows)
+    tex = (r"\begin{tabular}{llrlrrrrrrrr}" "\n\\toprule\n"
+           r"$k$ & $W$ & $N$ & sym. & sectors & blocks & $\langle r\rangle_\mathrm{none}$ & "
+           r"$\langle r\rangle_\mathrm{full}$ & \#$r$ & distinct $\theta/2^N$ & "
+           r"$\bar\eta_\mathrm{big}$ & singlets \\" "\n\\midrule\n" + body +
+           "\n\\bottomrule\n\\end{tabular}\n")
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex",
+                              f"tab_r32_summary_{gate}" + ("" if bc == "obc0" else f"_{bc}") + ".tex")
+    with open(out, "w") as fh:
+        fh.write(tex)
+    return out

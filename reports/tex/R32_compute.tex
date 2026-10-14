@@ -1,0 +1,36 @@
+% R32: compute log, the memory incident, and the resume plan
+\paragraph{Compute used.} Production started at 01:53 and was stopped at 02:51 (about 1~h of wall time; all runs on one
+12th-gen i7, 31~GB). In that hour it produced 137 obc0 units: all 16 rules for $N=6\ldots13$, plus $N=14$ for 9 rules
+(the largest, rule~60/102 with a $2^{13}$-dimensional sector, took 100~s). Validation and memory tests added about 20
+minutes. The 8-hour budget is therefore largely unused.
+
+\paragraph{What stopped it.} The session's memory reaper stopped all background jobs while rule~51 at $N=14$ was being
+processed (a single $16384$-dimensional sector). Instrumenting the phases at $N=12$ showed that the memory went
+\emph{not} into the dense linear algebra but into $U$ itself. For the chaotic rules $U$ is effectively dense (each column
+has up to $2^N$ entries), so storing it as a sparse matrix, and running Graphs.jl's component search over that adjacency,
+cost 1.1~GB at $N=12$. That extrapolates to about 18~GB at $N=14$.
+
+\paragraph{The fix (v2, \fn{generate\_spectral\_data\_v2.jl}).}
+\begin{enumerate}
+\item $U$ is never formed: $Uv=L_B(L_Av)$ with the two sparse layers (a few MB at $N=14$).
+\item Krylov sectors come from a union-find over the supports of the \emph{individual gates}. For $V=H$ this is the same
+  partition as the components of $\mathrm{supp}(U)$ (R-T19 Prop.~4), and it is asserted against the old construction
+  for every $N\le10$ run. For $V=X$, $U$ is a permutation and is formed directly.
+\item Symmetry checks are random-vector tests through the layers. Dense sector blocks are assembled column-chunk-wise.
+  Inside each block, the products $AV$, $SV$ and $EV$ are computed per batch of at most 2048 columns.
+\end{enumerate}
+\emph{Validation:} v2 reproduces v1 block by block (sector size, block size, sorted quasienergies, $S_2^\mathrm{Haar}$,
+degeneracies) for seven rules at $N=9$. Its pbc spectra match the exact Python engine to $<10^{-14}$. Non-degenerate
+eigenvectors agree to $10^{-15}$ in $S_\mathrm{vN}$; degenerate ones are basis dependent by construction.
+
+\emph{Measured} (rule 147, $N=13$, $8192$-dimensional sector): peak resident memory 4.5~GB (v1: 7.4~GB), run time 124~s
+(v1: 224~s). Expected peak at $N=14$: about 15--16~GB.
+
+\paragraph{How to resume (not done without permission).} From the repository root:
+\begin{verbatim}
+bash results_spectra/run_H.sh      # obc0: rest of N=14, N=15-18
+bash results_spectra/run_H_pbc.sh  # pbc, even N=6..14
+bash results_spectra/run_X.sh      # optional: X gate
+\end{verbatim}
+(all three scripts now call v2; finished units are skipped.)
+Estimated wall time: about 1.5~h (obc0 remainder), 1--1.5~h (pbc), and under 1~h (X): well inside the remaining budget.

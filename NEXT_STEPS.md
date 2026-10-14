@@ -1446,3 +1446,23 @@ the dissipative rules inherit fragmentation, and the object with the linear
 growth is the unitary parent the paper already introduces". If a third figure is
 wanted anyway, the cheap defensible one is the operator Schmidt rank of the
 CHANNEL through absorption on the six bounded rules, where it saturates.
+
+## R32 -- Floquet spectra of the 16 unitary rules (2026-10-14) -- IN PROGRESS
+Overnight task: literature review (EE, gap ratio, scars for Floquet operators), complete spectral dataset (<= 8 h
+compute), per-rule figures, interpretation, storyline draft + candidate thesis figures (to be SHOWN to the user before
+any hand-off), optional X gate; user added: resolve symmetries; check the classes with pbc.
+
+- Pipeline: Julia HSF/generate_spectral_data_v2.jl (U never formed; Krylov sectors by union-find over gate supports,
+  = supp(U) components for V=H; gate-algebra blocks via generic K; R / half-step Omega (Omega^2 = U) for obc0;
+  T2 momentum + site-centred reflection for pbc, even N only).  Python: code/qca_fragmentation/spectral/.
+  Checks: engine vs Julia spectra (16 rules, N=6..8); v2 == v1 block by block; pbc vs engine 1e-14.
+- Reference ensemble is beta=1 on the HALF spectrum (U real orthogonal, product of two reflections); verified with
+  random reflections: 0.533 +- 0.004.
+- Classes by k = number of firing neighbour patterns: k=3 (54,57,99,147) GOE chaos + N-independent exact gate
+  singlets (2/2/4 product states, 1 entangled S=0.29 for 54); k=1 Poisson inside rooms, exponentially many singlets;
+  k=2 XOR arithmetic (150: 3^m distinct levels, R8 law, to N=14); k=2 one-sided boundary tower, <r> drifting up
+  (UNDECIDED); k=0,4 trivial.
+- STOPPED at 02:51 by the session memory reaper (dense U for chaotic rules, not the eigensolver). Fixed in v2
+  (peak 4.5 GB at N=13, est. 15-16 GB at N=14). NOT restarted -- awaiting user permission.
+  Missing: N=14 for 51,54,57,99,147,153,195; N>=15 stages; pbc production; X gate.
+- Report: reports/pdf/R32_floquet_spectra.pdf.  Storyline + candidates: figures/r32/thesis_candidates/ (NOT handed off).

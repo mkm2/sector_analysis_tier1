@@ -13,7 +13,7 @@ run() {   # N rule
   f=$(ls "$OUT"/spec_N$1_X_HSF$2_W*.jld2 2>/dev/null)
   if [ -n "$f" ]; then echo "skip N=$1 HSF$2 (exists)" >> "$LOG"; return; fi
   local t0=$(date +%s)
-  (cd "$HSF" && julia --project=. -t 20 generate_spectral_data.jl "$1" "$2" X "$OUT") >> "$LOG" 2>&1
+  (cd "$HSF" && julia --project=. -t 20 generate_spectral_data_v2.jl "$1" "$2" X "$OUT" obc0) >> "$LOG" 2>&1
   local rc=$?
   echo "$(date -Is) HSF$2 N=$1 wall=$(( $(date +%s) - t0 ))s rc=$rc" >> "$LOG"
 }

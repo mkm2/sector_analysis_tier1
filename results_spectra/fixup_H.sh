@@ -10,7 +10,7 @@ for f in sorted(glob.glob('$HERE/H/*.jld2')):
     if 's2_block_rand' not in h5py.File(f,'r'): print(f)"); do
   b=$(basename "$f"); N=$(echo "$b" | sed -E 's/spec_N([0-9]+)_.*/\1/'); r=$(echo "$b" | sed -E 's/.*_HSF([0-9]+)_.*/\1/')
   t0=$(date +%s); rm -f "$f"
-  (cd "$HSF" && julia --project=. -t 20 generate_spectral_data.jl "$N" "$r" H "$HERE/H") >> "$LOG" 2>&1
+  (cd "$HSF" && julia --project=. -t 20 generate_spectral_data_v2.jl "$N" "$r" H "$HERE/H" obc0) >> "$LOG" 2>&1
   echo "$(date -Is) fixup HSF$r N=$N wall=$(( $(date +%s) - t0 ))s rc=$?" >> "$LOG"
 done
 echo "=== fixup done $(date -Is)" >> "$LOG"
