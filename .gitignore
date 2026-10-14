@@ -34,3 +34,8 @@ reports/tex/*.out
 # so the generator and the summary table are tracked and the blobs are not.
 figures/sector_graphs/*.dot
 figures/sector_graphs/*.png
+
+# R32 spectra above N=18 are large (60-250 MB); kept locally, regenerable with run_R32_continue.sh
+results_spectra/*/spec_N19_*.jld2
+results_spectra/*/spec_N2[0-9]_*.jld2
+results_spectra/H_pbc_T2only/

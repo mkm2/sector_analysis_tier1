@@ -17,9 +17,11 @@ class & rules & spectral signature (obc0) \\
 \midrule
 $k=0$ & $204$ & $U=I$ (identity) \\
 $k=1$ & $108,156,198,201$ & exponential fragmentation; Poisson inside the pooled blocks \\
-$k=2$ one-sided & $60,102,153,195$ & a tower of gate-algebra blocks; $\langle r\rangle$ near Poisson, drifting up with $N$ \\
+$k=2$ one-sided & $60,102,153,195$ & a tower of gate-algebra blocks; $\langle r\rangle$ near Poisson, drifting up with $N$.
+  \emph{On a ring: no tower, chaotic} (Sec.~\ref{sec:pbc}) \\
 $k=2$ XOR & $105,150$ & arithmetic spectrum, $3^m$ distinct quasienergies (W150) \\
-$k=3$ & $54,57,99,147$ & \textbf{chaotic (GOE)}, plus a fixed number of exact gate-singlet eigenstates \\
+$k=3$ & $54,57,99,147$ & \textbf{chaotic (GOE)}, plus a fixed number of exact gate-singlet eigenstates.
+  On a ring: chaotic, CUE or COE by symmetry \\
 $k=4$ & $51$ & $U=H^{\otimes N}$, non-interacting \\
 \bottomrule
 \end{tabular}
@@ -49,17 +51,19 @@ quasienergies in the whole spectrum (log scale). Rules grouped by the number $k$
 \end{figure}
 
 \subsection{$k=3$: chaos, with exact scars that do not grow}
-The four rules on which the gate fires on all but one pattern are the only chaotic ones.
+With open boundaries, the four rules on which the gate fires on all but one pattern are the only chaotic ones. (On a
+ring, the one-sided $k=2$ rules join them; Sec.~\ref{sec:pbc}.)
 \begin{itemize}
-\item \textbf{57 and 99} (mirror images; computed independently, identical to all digits): $\langle r\rangle=0.535$ at $N=13$,
-  on the GOE value $0.5307$ from $N=10$ on: $0.525, 0.523, 0.527, 0.535$ for $N=10\ldots13$. $P(r)$ follows the $\beta=1$
+\item \textbf{57 and 99} (mirror images; computed independently, identical to all digits): $\langle r\rangle=0.5311\pm0.0028$
+  at $N=14$ (8190 ratios), on the GOE value $0.5307$ from $N=10$ on: $0.525, 0.523, 0.527, 0.535, 0.531$ for
+  $N=10\ldots14$. $P(r)$ follows the $\beta=1$
   surmise over the whole range (Fig.~\ref{fig:rule57}). The eigenstates in the big block are thermal \emph{within that
   block}: $\bar\eta=0.95$.
-\item \textbf{147}: $\langle r\rangle_\mathrm{full}=0.526$ ($N=13$), but only after resolving the reflection (odd $N$) or the
-  half step $\Omega$ (even $N$). Unresolved, the same spectrum gives $0.424$. This is the textbook symmetry-mixing effect,
+\item \textbf{147}: $\langle r\rangle_\mathrm{full}=0.526$ ($N=13$) and $0.5275\pm0.0028$ ($N=14$), but only after resolving
+  the reflection (odd $N$) or the half step $\Omega$ (even $N$). Unresolved, the same spectra give $0.424$ and $0.422$. This is the textbook symmetry-mixing effect,
   and here it is the difference between ``integrable'' and ``chaotic''.
-\item \textbf{54}: $\langle r\rangle_\mathrm{full}$ rises steadily, $0.441, 0.456, 0.502, 0.510$ for $N=10\ldots13$, towards
-  GOE. Its frozen vacuum $|0\ldots0\rangle$ is a separate Krylov sector.
+\item \textbf{54}: $\langle r\rangle_\mathrm{full}$ rises steadily, $0.441, 0.456, 0.502, 0.510, 0.523$ for
+  $N=10\ldots14$, towards GOE. Its frozen vacuum $|0\ldots0\rangle$ is a separate Krylov sector.
 \end{itemize}
 
 \paragraph{Gate singlets.} Inside the chaotic block, each of these rules carries one-dimensional blocks of the gate
@@ -67,8 +71,10 @@ algebra: states that are eigenvectors of \emph{every individual gate} $g_i$, hen
 gate applications. Their number does not depend on $N$ ($N=6\ldots13$):
 \begin{itemize}
 \item two for 57 and 99, and four for 147, all \emph{product} states ($S=0$) at $\theta\in\{0,\pi\}$;
-\item exactly one for 54, at $\theta=0$, which is \emph{entangled}, with $S_\mathrm{vN}=0.29$ at every $N$: an area-law
-  state.
+\item exactly one for 54, at $\theta=0$, which is \emph{entangled}. Its entanglement \emph{decreases} with $N$:
+  $S_\mathrm{vN}=0.470, 0.430, 0.405, 0.371, 0.345, 0.315, 0.291, 0.265, 0.243$ for $N=6\ldots14$ ($S_2$ from 0.35 to
+  0.13). It is an area-law state that approaches a product state as the chain grows. (An earlier draft of this report said
+  ``0.29 at every $N$''; that generalised from the single value at $N=12$ and is withdrawn.)
 \end{itemize}
 These are exact many-body scars in the sense of Refs.~\cite{shiraishi2017,moudgalya2022review}: non-thermal eigenstates
 embedded in a GOE spectrum. The embedding is exact here, by the gate algebra, not approximate. Because they are
@@ -113,7 +119,9 @@ $H$ is site $j$. The sites to its left are frozen in the dressed $+1$ state, and
 chain. The entanglement accordingly falls into bands, one per block (Fig.~\ref{fig:rule153}). Within the blocks,
 $\langle r\rangle$ is near Poisson but \emph{increases} steadily with $N$: for 60, $0.334, 0.351, 0.360, 0.369, 0.381,
 0.395$ for $N=9\ldots14$; for 153, $0.37$--$0.414$ for $N=9\ldots13$. Integrability and a slow crossover towards GOE cannot
-be told apart at these sizes. The tower itself is a boundary effect: on a ring it is absent (Sec.~\ref{sec:pbc}).
+be told apart at these sizes \emph{on the open chain}. The tower itself is a boundary effect. On a ring it is absent, and
+the same rules are chaotic with $\beta=1$ statistics ($\langle r\rangle=0.531$ for 153 at $N=14$; Sec.~\ref{sec:pbc}). So
+on the open chain, the non-ergodicity of this class is produced by the ends.
 
 \subsection{$k=0$ and $k=4$: trivial}
 204 is the identity (one distinct quasienergy). In 51 every site gets $H$ in its layer, so $U=H^{\otimes N}$ exactly. Its
@@ -123,7 +131,7 @@ with $S=0$.
 \begin{figure}[p]
 \centering
 \ifgraphic{../../figures/r32/fig_r32_rule_H_W57.pdf}{\textwidth}
-\caption{Rule 57 ($k=3$), $N=13$, obc0. (a)~Half-chain entanglement against quasienergy. Coloured: non-degenerate states,
+\caption{Rule 57 ($k=3$), largest $N$, obc0. (a)~Half-chain entanglement against quasienergy. Coloured: non-degenerate states,
 by block. Grey: states in a degenerate eigenspace, whose entanglement depends on the basis. Diamonds: gate singlets (exact
 eigenstates of every gate; product states at $\theta=0,\pi$). (b)~$\eta=S_2^\mathrm{Haar}/S_2^\mathrm{rand}(\mathrm{block})$,
 basis independent. (c)~$P(r)$ of the fully resolved half spectrum against the Poisson, GOE and GUE surmises. (d)~$\langle
@@ -134,7 +142,7 @@ r\rangle$ against $N$ at three resolution levels.}
 \begin{figure}[p]
 \centering
 \ifgraphic{../../figures/r32/fig_r32_rule_H_W147.pdf}{\textwidth}
-\caption{Rule 147 ($k=3$), $N=13$; panels as in Fig.~\ref{fig:rule57}. In (d) the Krylov-only statistics (here the whole
+\caption{Rule 147 ($k=3$), largest $N$; panels as in Fig.~\ref{fig:rule57}. In (d) the Krylov-only statistics (here the whole
 spectrum) stay near Poisson, while resolving the spatial symmetry ($R$ for odd $N$, the half step $\Omega$ for even $N$)
 brings $\langle r\rangle$ to the GOE value.}
 \label{fig:rule147}
@@ -143,7 +151,7 @@ brings $\langle r\rangle$ to the GOE value.}
 \begin{figure}[p]
 \centering
 \ifgraphic{../../figures/r32/fig_r32_rule_H_W153.pdf}{\textwidth}
-\caption{Rule 153 ($k=2$, one-sided), $N=13$; panels as in Fig.~\ref{fig:rule57}. The entanglement bands in (a) are the
+\caption{Rule 153 ($k=2$, one-sided), largest $N$, obc0; panels as in Fig.~\ref{fig:rule57}. The entanglement bands in (a) are the
 blocks of the boundary-driven tower (sizes $2^{N-1},2^{N-2},\ldots$). $P(r)$ is close to Poisson, while $\langle r\rangle$
 drifts upward with $N$.}
 \label{fig:rule153}

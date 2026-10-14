@@ -31,18 +31,43 @@ SCAR_ETA = 0.5   # eta below this in a block of dim >= SCAR_DIM counts as scar-l
 SCAR_DIM = 20
 
 
-def _pooled(theta, keys, nmin=NMIN):
+def _pooled(d, keys, nmin=NMIN):
+    """Ratios pooled over blocks (defined by keys) with >= nmin - 2 ratios."""
     rs, nst = [], 0
     for k in np.unique(keys):
         m = keys == k
-        lev = S.unique_levels(theta[m])
-        if lev.size >= nmin:
-            rs.append(S.ratios(lev)); nst += int(m.sum())
+        r = S.block_ratios(S.block_levels_var(d, m))
+        if r.size >= nmin - 2:
+            rs.append(r); nst += int(m.sum())
     r = np.concatenate(rs) if rs else np.empty(0)
     n = r.size
     return {"r_mean": float(r.mean()) if n else None,
             "r_err": float(r.std(ddof=1) / np.sqrt(n)) if n > 1 else None,
-            "n_r": int(n), "n_blocks": len(rs), "state_frac": nst / len(theta)}
+            "n_r": int(n), "n_blocks": len(rs), "state_frac": nst / len(keys)}
+
+
+def _pooled_by_type(d, keys, nmin=NMIN):
+    """
+    Like _pooled for the fully resolved blocks, but split by block type:
+    'real' = conjugation-symmetric (folded; reference beta = 1, GOE 0.5307),
+    'complex' = not symmetric (full circle; e.g. ring momentum j != -j, beta = 2, 0.5996).
+    """
+    out = {"real": [], "complex": []}
+    for k in np.unique(keys):
+        m = keys == k
+        x = np.mod(S.block_levels_var(d, m), 2 * np.pi)
+        r = S.block_ratios(x)
+        if r.size < nmin - 2:
+            continue
+        out["real" if S.conj_symmetric(x) else "complex"].append(r)
+    res = {}
+    for t, rs in out.items():
+        r = np.concatenate(rs) if rs else np.empty(0)
+        n = r.size
+        res[t] = {"r_mean": float(r.mean()) if n else None,
+                  "r_err": float(r.std(ddof=1) / np.sqrt(n)) if n > 1 else None,
+                  "n_r": int(n), "n_blocks": len(rs)}
+    return res
 
 
 def summarize(d) -> Dict:
@@ -54,7 +79,7 @@ def summarize(d) -> Dict:
     uk, cnt = np.unique(full, return_counts=True)
     big = uk[np.argmax(cnt)]
     mbig = full == big
-    r_big = S.ratios(S.unique_levels(th[mbig]))
+    r_big = S.block_ratios(S.block_levels_var(d, mbig))
 
     NA, NB = N // 2, N - N // 2
     # eta per state, only in blocks of dim >= 2 with a positive reference
@@ -65,8 +90,9 @@ def summarize(d) -> Dict:
         "rule": d["rule_wolfram"], "rule_hsf": d["rule_hsf"], "N": N,
         "symmetry": d["symmetry"], "n_sectors": int(len(d["sector_sizes"])),
         "n_blocks": int(len(uk)), "largest_block": int(cnt.max()),
-        "r_none": _pooled(th, none), "r_krylov": _pooled(th, krylov),
-        "r_full": _pooled(th, full),
+        "r_none": _pooled({"theta": th}, none), "r_krylov": _pooled({"theta": th}, krylov),
+        "r_full": _pooled(d, full),
+        "r_full_by_type": _pooled_by_type(d, full),
         "r_largest": {"r_mean": float(r_big.mean()) if r_big.size else None,
                       "n_r": int(r_big.size), "dim": int(mbig.sum())},
         "deg": S.degeneracy_summary(d),
@@ -170,6 +196,108 @@ def write_table(summary: Dict, gate: str = "H", bc: str = "obc0", out: str = Non
            "\n\\bottomrule\n\\end{tabular}\n")
     out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex",
                               f"tab_r32_summary_{gate}" + ("" if bc == "obc0" else f"_{bc}") + ".tex")
+    with open(out, "w") as fh:
+        fh.write(tex)
+    return out
+
+
+def write_bc_table(sum_obc: Dict, sum_pbc: Dict, N: int, gate: str = "H", out: str = None) -> str:
+    """
+    LaTeX table: obc0 vs pbc at the same (even) N, per rule (R32 boundary check).
+    On the ring the resolved blocks are T2-momentum sectors j.  j = 0, N/4 are real
+    (conjugation maps them to themselves; folded, beta = 1).  j != -j are complex:
+    their reference is CUE (beta = 2) unless the rule is mirror symmetric, in which
+    case K R maps j to itself (antiunitary) and the reference is COE (beta = 1).
+    """
+    from .. import results_io
+    order = ["0", "1", "2 one-sided", "2 XOR", "3", "4"]
+    rules = sorted({int(k.split("_")[0]) for k in sum_pbc},
+                   key=lambda w: (order.index(pattern_class(w)), w))
+    f = lambda v: "--" if v["r_mean"] is None or v["n_r"] < 30 else f"{v['r_mean']:.3f}"
+    n1 = lambda s: sum(1 for b in s["special_blocks"] if b["dim"] == 1)
+    rows = []
+    for w in rules:
+        o, p = sum_obc.get(f"{w}_{N}"), sum_pbc.get(f"{w}_{N}")
+        if o is None or p is None:
+            continue
+        t = p["r_full_by_type"]
+        ref = "COE" if is_mirror(w) else "CUE"
+        rows.append(f"{pattern_class(w)} & {w} & {o['n_sectors']} & {p['n_sectors']} & "
+                    f"{o['n_blocks']} & {p['n_blocks']} & {f(o['r_full'])} & {f(t['real'])} & "
+                    f"{f(t['complex'])} & {ref} & {n1(o)} & {n1(p)} \\\\")
+    tex = (r"\begin{tabular}{llrrrrrrrlrr}" "\n\\toprule\n"
+           r" & & \multicolumn{2}{c}{sectors} & \multicolumn{2}{c}{blocks} & obc & "
+           r"\multicolumn{3}{c}{pbc $\langle r\rangle$} & \multicolumn{2}{c}{singlets} \\" "\n"
+           r"$k$ & $W$ & obc & pbc & obc & pbc & $\langle r\rangle_\mathrm{full}$ & real $j$ & "
+           r"complex $j$ & naive ref. & obc & pbc \\" "\n\\midrule\n"
+           + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex", f"tab_r32_bc_{gate}_N{N}.tex")
+    with open(out, "w") as fh:
+        fh.write(tex)
+    return out
+
+
+def is_mirror(w: int) -> bool:
+    """Rule invariant under the spatial reflection (R32: K R is then a symmetry of every ring sector j)."""
+    return F.rules.reflect_wolfram(w) == w
+
+
+#: bins for the shape test of P(r)
+_BETA_EDGES = np.linspace(0.0, 1.0, 11)
+
+
+def shape_test(r: np.ndarray) -> Dict:
+    """
+    Which ensemble does the SHAPE of P(r) follow (not only its mean)?  chi^2 of the
+    10-bin histogram against the Atas surmises (Poisson, beta = 1, beta = 2), and the
+    best Poisson + beta=2 mixture: a crossover towards CUE can pass through the COE
+    mean, but its small-r tail (P(r) ~ r^beta) is then too heavy.
+    Note: the surmise itself deviates from large-N RMT by ~1%, so chi^2 of a few
+    tens at n ~ 10^4 is a good fit.
+    """
+    from scipy.integrate import quad
+    e = _BETA_EDGES
+    ref = {b: np.array([quad(lambda x: S.surmise(x, b), lo, hi)[0] for lo, hi in zip(e[:-1], e[1:])])
+           for b in (0, 1, 2)}
+    h = np.histogram(r, e)[0]
+    n = r.size
+    chi = lambda p: float(((h - n * p) ** 2 / (n * p)).sum())
+    mix = min((chi(a * ref[0] + (1 - a) * ref[2]), float(a)) for a in np.linspace(0, 1, 101))
+    return {"n_r": int(n), "r_mean": float(r.mean()), "small_r": float((r < 0.15).mean()),
+            "chi2_poisson": chi(ref[0]), "chi2_goe": chi(ref[1]), "chi2_gue": chi(ref[2]),
+            "chi2_mix": mix[0], "mix_poisson_weight": mix[1]}
+
+
+def complex_sector_ratios(d) -> np.ndarray:
+    """Pooled ratios of the resolved blocks that are NOT conjugation-symmetric (ring j != -j)."""
+    keys = S.block_keys(d)
+    rs = []
+    for k in np.unique(keys):
+        m = keys == k
+        x = S.block_levels_var(d, m)
+        if m.sum() >= NMIN and not S.conj_symmetric(x):
+            rs.append(S.block_ratios(x))
+    return np.concatenate(rs) if rs else np.empty(0)
+
+
+def write_shape_table(N: int, gate: str = "H", bc: str = "pbc", rules=None, out: str = None) -> str:
+    """LaTeX table of shape_test on the complex momentum sectors (R32 ring check)."""
+    from .. import results_io
+    rules = rules or [57, 99, 147, 54, 60, 102, 153, 195]
+    rows = []
+    for w in rules:
+        path = F.spec_path(gate, N, w, bc)
+        if not os.path.exists(path):
+            continue
+        t = shape_test(complex_sector_ratios(F.load(path)))
+        rows.append(f"{pattern_class(w)} & {w} & {'yes' if is_mirror(w) else 'no'} & {t['n_r']} & "
+                    f"{t['r_mean']:.3f} & {t['small_r']:.3f} & {t['chi2_poisson']:.0f} & "
+                    f"{t['chi2_goe']:.0f} & {t['chi2_gue']:.0f} & {t['chi2_mix']:.0f} \\\\")
+    tex = (r"\begin{tabular}{llrrrrrrrr}" "\n\\toprule\n"
+           r"$k$ & $W$ & mirror & \#$r$ & $\langle r\rangle$ & $P(r<0.15)$ & "
+           r"$\chi^2_\mathrm{P}$ & $\chi^2_{\beta=1}$ & $\chi^2_{\beta=2}$ & $\chi^2_\mathrm{P+\beta=2}$ \\"
+           "\n\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    out = out or os.path.join(results_io.REPO_ROOT, "reports", "tex", f"tab_r32_shape_{gate}_{bc}_N{N}.tex")
     with open(out, "w") as fh:
         fh.write(tex)
     return out

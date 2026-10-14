@@ -1459,7 +1459,7 @@ any hand-off), optional X gate; user added: resolve symmetries; check the classe
 - Reference ensemble is beta=1 on the HALF spectrum (U real orthogonal, product of two reflections); verified with
   random reflections: 0.533 +- 0.004.
 - Classes by k = number of firing neighbour patterns: k=3 (54,57,99,147) GOE chaos + N-independent exact gate
-  singlets (2/2/4 product states, 1 entangled S=0.29 for 54); k=1 Poisson inside rooms, exponentially many singlets;
+  singlets (2/2/4 product states, 1 entangled for 54, its S decreasing 0.47->0.24 over N=6..14 -- an earlier 'S=0.29 at every N' was a generalisation from N=12 and is withdrawn); k=1 Poisson inside rooms, exponentially many singlets;
   k=2 XOR arithmetic (150: 3^m distinct levels, R8 law, to N=14); k=2 one-sided boundary tower, <r> drifting up
   (UNDECIDED); k=0,4 trivial.
 - STOPPED at 02:51 by the session memory reaper (dense U for chaotic rules, not the eigensolver). Fixed in v2

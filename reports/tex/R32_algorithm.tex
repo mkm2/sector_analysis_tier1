@@ -1,0 +1,159 @@
+% R32: the algorithm and the optimisation choices (input by R32_floquet_spectra.tex)
+\section{Algorithm and optimisation choices}
+\label{sec:algorithm}
+
+This section documents the production code, \fn{HSF/generate\_spectral\_data\_v2.jl} (Julia), step by step. For every
+design choice it gives the reason, the measured effect, and how the change was validated. The original pipeline
+(\fn{generate\_EE\_data.jl}, untouched) and the first rewrite (v1, \fn{generate\_spectral\_data.jl}) serve as references.
+All timings are on one 12th-generation Intel i7-12700H (6 performance + 8 efficiency cores, 20 hardware threads, 31~GB),
+with OpenBLAS.
+
+\subsection{The algorithm}
+For one unit (rule $r$, size $N$, gate $V\in\{H,X\}$, boundary condition obc0 or pbc):
+\begin{enumerate}
+\item \textbf{Local gates from bit operations.} Each controlled gate $g_i$ is a sparse $2^N\times2^N$ matrix with at most
+  two entries per column. It is built by reading the two neighbour bits of each basis state (vacuum outside the chain
+  for obc0, wrap-around for pbc). For obc0 every $g_i$ is asserted equal to HSF's Kronecker-product construction.
+\item \textbf{The Floquet operator is never formed.} $L_A=\prod_{i\ \mathrm{odd}}g_i$ and $L_B=\prod_{i\ \mathrm{even}}g_i$
+  are sparse (at most $2^{N/2}$ entries per column). $U$ is applied as $Uv=L_B(L_Av)$.
+\item \textbf{Krylov sectors.} For $V=H$: union-find over the supports of the individual gates. This is the same
+  partition as the connected components of $\mathrm{supp}(U)$ (R-T19 Prop.~4), asserted at run time for every $N\le10$.
+  For $V=X$, $U$ is a permutation and is formed directly; its orbits are the sectors.
+\item \textbf{Spatial symmetry}, detected and verified by random-vector tests through the layers:
+  \begin{itemize}
+  \item obc0: the reflection $R$ if $RUR=U$; otherwise the half step $\Omega=RL_A$, if $RL_AR=L_B$ (asserting $\Omega^2=U$
+    and $[\Omega,U]=0$).
+  \item pbc: translation $T_2$ by two sites, and the site-centred reflection if it commutes with $U$.
+  \end{itemize}
+\item \textbf{Per Krylov sector $S$} ($d=|S|$):
+  \begin{enumerate}
+  \item \emph{Gate-algebra blocks} (Sec.~\ref{sec:symres}): diagonalise $K=\sum_ia_ig_i|_S$ (random $a_i$, fixed seed),
+    transform $K'=\sum_ib_ig_i|_S$ into that eigenbasis $Q$, and take connected components. Skipped for $V=X$, whose
+    orbits are finer than the gate-algebra blocks, and for $d\le2$.
+  \item \emph{Dense sector block} $U_S$, assembled from the layers in column chunks. Then $Q^TU_SQ$, and each block
+    $A_b=Q_b^TU_SQ_b$. Check: the largest off-block element is stored.
+  \item \emph{Per block}: real-symmetric eigensolve of $C=(A_b+A_b^T)/2$; clustering of $\cos\theta$; within each
+    cluster, the Hermitian matrix $iV_c^TS_bV_c$, with $S_b=(A_b-A_b^T)/2$, separates $\theta$ from
+    $-\theta$. Then quasienergy
+    groups (degeneracies); symmetry labels by successive diagonalisation inside each degenerate eigenspace;
+    entanglement.
+  \end{enumerate}
+\item \textbf{Output} (JLD2, readable with h5py): per eigenvector the sector, block, symmetry label, $\theta$,
+  $S_\mathrm{vN}$, degeneracy, $S_2^\mathrm{Haar}$ of its eigenspace, and $S_2^\mathrm{rand}$ of its block. Per unit: the
+  sector and block sizes, the symmetry, and five checks (eigen-residual, orthonormality, off-block leakage, symmetry
+  residual, run time).
+\end{enumerate}
+
+\subsection{Optimisation choices, with measured effect}
+
+\paragraph{1. Real-symmetric eigensolver instead of a complex non-Hermitian one.} $U$ is real orthogonal, so
+$C=(U+U^T)/2$ is real symmetric with eigenvalues $\cos\theta$, and it commutes with $S=(U-U^T)/2$.
+\begin{itemize}
+\item \emph{Speed:} at $n=2048$ (4 BLAS threads) the complex \fn{eigen(U)} takes 11.0~s, a real non-symmetric
+  \fn{eigen(U)} 4.4~s, and the real-symmetric \fn{eigen!(Symmetric(C))} 2.2~s, a factor 5.
+\item \emph{Correctness:} a general eigensolver does not return orthonormal eigenvectors inside degenerate eigenspaces,
+  and these spectra are highly degenerate (up to 95\,\% of the states for 105/150). The symmetric solver does, so every
+  stored entanglement belongs to a properly normalised, mutually orthogonal basis.
+\item \emph{Splitting:} $\theta$ and $-\theta$ share $\cos\theta$. Inside each $\cos$-cluster, $S$ restricted to the
+  cluster is antisymmetric, and $iS$ is Hermitian with eigenvalues $\pm\sin\theta$. Clusters are tiny (mostly pairs),
+  so this costs nothing.
+\item \emph{Workspace:} the MRRR driver needs $O(n)$ workspace, against $O(n^2)$ for divide and conquer, which matters
+  at $n=16384$.
+\end{itemize}
+
+\paragraph{2. BLAS threading.} Dense LAPACK on this hybrid CPU is fastest with 4--6 BLAS threads. Measured for a
+$4096\times4096$ symmetric eigensolve:
+\begin{center}\small
+\begin{tabular}{lrrrr}
+\toprule
+BLAS threads & 1 & 4 & 10 & 20 \\
+\midrule
+eigensolve (s, Julia $-$t~1) & 9.7 & 5.1 & 6.4 & 32.9 \\
+eigensolve (s, Julia $-$t~20) & 11.6 & 5.7 & 6.6 & 7.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Production uses 6 BLAS threads for the dense stages and Julia's 20 threads (with BLAS set to 1) for the per-cluster loop.
+
+\paragraph{3. Batched products instead of per-cluster ones.} The first version multiplied the full $d\times d$ matrices
+by each cluster's few columns separately. With about $d/2$ clusters, this streams the full matrices from memory
+$d/2$ times and is memory-bound: 39 of 74~s at $N=12$ (rule 147). Doing $AV$, $SV$ and $EV$ as matrix--matrix products
+cut the run to 35~s.
+
+\paragraph{4. Never forming $U$} (the memory incident). Profiling the phases at $N=12$ showed 1.1~GB live after
+\emph{building $U$ and finding its sectors}, before any dense algebra. For the chaotic rules $U$ is effectively dense: a
+sparse matrix with up to $2^N$ entries per column, plus Graphs.jl's adjacency lists for the component search. That
+extrapolates to about 18~GB at $N=14$, which is what triggered the memory reaper. Applying $U$ through the two sparse
+layers, and finding sectors from the individual gates, removes this entirely. Peak memory for rule 147 at $N=13$: 7.4~GB
+(v1) $\to$ 4.5~GB (v2); run time 224~s $\to$ 124~s.
+
+\paragraph{5. Shared lookup instead of sparse slicing.} \fn{SparseArrays}' \fn{getindex} allocates an $m$-length cache
+per call. With $N$ gates sliced per sector and $10^3$--$10^4$ sectors at $N\ge16$, this alone would cost terabytes of
+memory traffic. All restrictions now use one shared position vector, set and reset per sector.
+
+\paragraph{6. Entanglement in compressed coordinates.} The entanglement of an eigenvector supported on a sector $S$ only
+involves the rows and columns of the $2^{N_B}\times2^{N_A}$ reshaped matrix that $S$ occupies. Zero rows and columns
+change neither the singular values nor $\operatorname{Tr}P_A^2$ and $\operatorname{Tr}P_B^2$, so the code works with the
+occupied rows and columns only. For fragmented rules this shrinks every SVD from $256\times256$ (at $N=16$) to a few
+dozen. Effect for rule 156: $N=16$ from $>10$~minutes (aborted) to 15~s; $N=18$ in 36~s with 1.3~GB peak. These are what
+make the per-rule larger sizes possible.
+
+\paragraph{7. Smaller choices.}
+\begin{itemize}
+\item The orthonormality check uses 64 sampled columns for blocks larger than 2048 (the full $V^TV$ would be another
+  $d\times d$ matrix).
+\item Garbage collection is forced only after blocks with $d>2000$. Forcing it after every block made rule 156 at $N=9$
+  ten times slower (2.2~s $\to$ 21~s), since it has hundreds of tiny blocks.
+\item Block bases are stored as contiguous copies, not views. A view with non-contiguous columns made $E\,V$ fall back
+  from BLAS to Julia's generic single-threaded product (observed: about 1.2 cores busy).
+\item $Q^TXQ$ is formed in column chunks. This did \emph{not} lower the measured peak (4.5~GB either way): the peak sits
+  in the block eigensolve itself (block, basis, eigenvectors, LAPACK workspace).
+\item Julia runs with \fn{--heap-size-hint=14G}, so the collector works harder before the machine runs short.
+\end{itemize}
+Expected peak at $N=14$ (a $16384$-dimensional block): about 15~GB.
+
+\subsection{How every change was validated}
+No optimisation was accepted on the strength of its own checks. Each one was compared against the previous version, and
+the whole chain against independent constructions:
+\begin{center}\small
+\begin{tabular}{p{0.36\textwidth}p{0.2\textwidth}p{0.36\textwidth}}
+\toprule
+comparison & scope & result \\
+\midrule
+v1 vs HSF eigendata (complex \fn{eigen} per sector) & rules 4, 6, 15, $N=9$ & $\theta$ to $10^{-14}$; $S_\mathrm{vN}$ (non-degenerate) to $10^{-15}$ \\
+exact Python engine vs Julia & all 16 rules, $N=6,7,8$ & spectra to $<10^{-9}$ (test suite) \\
+v2 vs v1, after each change & 6--8 rules, $N=9$ & block by block identical$^\dagger$ \\
+v2 (pbc) vs exact engine (pbc) & 7 rules, $N=8$ & spectra to $<10^{-14}$ \\
+run-time assertions & every run & gates $=$ kron (obc0); sectors $=$ components of $\mathrm{supp}(U)$ ($N\le10$); $\Omega^2=U$, $[\Omega,U]=0$, $[T_2,U]=0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+$^\dagger$ Compared as multisets per block: sector size, block size, sorted quasienergies, $S_2^\mathrm{Haar}$,
+degeneracies, $S_\mathrm{vN}$ of the non-degenerate states, and $S_2^\mathrm{rand}$.
+
+\subsection{Pitfalls caught, recorded so they are not repeated}
+\begin{enumerate}
+\item \textbf{Shared variables in threaded closures (Julia).} Twice, a variable assigned inside a
+  \fn{Threads.@threads} loop had the same name as one in the enclosing function (\fn{SV}, then \fn{G}). Julia then
+  shares one boxed variable across threads, a race that produced dimension errors. Fixed by renaming. Any new variable in
+  \fn{process\_block!} must not reuse a name assigned in the loop body.
+\item \textbf{Comparing angles on a circle.} Sorting raw angles misaligns lists when a level at $\theta=0$ is computed as
+  $-10^{-16}$ and wraps to $2\pi$. A first comparison therefore reported a spurious 0.7~rad disagreement and briefly
+  stopped production. All comparisons now cut the circle in the largest gap (\fn{floquet.circle\_distance}).
+\item \textbf{Sort-key comparisons.} Pairing states by a sort on (sector, block, $\theta$ rounded) misaligns nearly
+  degenerate levels and reported a false mismatch between two correct versions. All comparisons are now block-wise
+  multisets.
+\item \textbf{Shell tooling.} \fn{pkill -f} with a pattern that also appears in one's own command line kills that
+  command. A \fn{for} loop over paths split them at the spaces in ``QCA Simulations'' (caught after one minute; the
+  deletions targeted non-existent fragments, so no file was lost).
+\item \textbf{An incomplete symmetry analysis on the ring.} The first pbc runs resolved only $T_2$ and folded every
+  block to $|\theta|$. The chaotic rules then came out at $\langle r\rangle\approx0.43$ on the ring against $0.53$ with
+  open boundaries, a typical two-sector mixture. Two errors were responsible. First, the half-translation
+  $\Omega_T=T_1L_A$ commutes with $U$ for every rule on an even ring and was not resolved. Second, a momentum sector
+  $j\ne-j$ is not conjugation-symmetric, so folding it pairs unrelated levels. Both were fixed (Sec.~\ref{sec:symres}),
+  the 64 affected files regenerated (the old ones kept in \fn{results\_spectra/H\_pbc\_T2only/}), and the
+  statistics given a numerical fold test. The same analysis showed that the $\pm1$ label of $\Omega$ (obc0, even $N$)
+  flips at the branch cut. Its blocks were therefore regenerated with the eigenphase $\varphi$ stored.
+\item \textbf{The memory reaper.} Background jobs that push the machine to critically low memory are stopped by the
+  session and must not be restarted without permission. This was the motivation for items~4--7.
+\end{enumerate}

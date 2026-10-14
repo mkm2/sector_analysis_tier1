@@ -165,9 +165,6 @@ def main(argv=None):
         print("wrote", bc_figure(json.load(open(po)), json.load(open(pp)), a.gate))
 
 
-if __name__ == "__main__":
-    main()
-
 
 #: display order: the R32 classes, by the number k of neighbour patterns that fire
 #: the gate (and, for k = 2, whether only one neighbour matters)
@@ -241,25 +238,30 @@ def bc_figure(sum_obc, sum_pbc, gate="H", out_dir=FIG_DIR, N_common=None):
     plt = ts.use(ts._mode)
     fig, (a, b) = ts.subplots(2, 1, aspect=0.75, sharex=True)
 
-    def pick(sm, w):
-        Ns = sorted(int(k.split("_")[1]) for k in sm if k.startswith(f"{w}_"))
-        Ns = [n for n in Ns if n % 2 == 0 and (N_common is None or n <= N_common)]
-        return sm.get(f"{w}_{max(Ns)}") if Ns else None
+    def common_N(w):
+        # the largest even N present for BOTH boundary conditions
+        Ns = [set(int(k.split("_")[1]) for k in sm if k.startswith(f"{w}_"))
+              for sm in (sum_obc, sum_pbc)]
+        Ns = [n for n in Ns[0] & Ns[1] if n % 2 == 0 and (N_common is None or n <= N_common)]
+        return max(Ns) if Ns else None
+
+    def dot(ax, x, v, **kw):
+        if v["r_mean"] is not None and v["n_r"] >= 30:
+            ax.errorbar(x, v["r_mean"], yerr=v["r_err"] or 0, ms=ts.MS, lw=0.8, capsize=0, **kw)
 
     xs, labels, x, groups = [], [], 0, []
     for name, ws in CLASS_ORDER:
         g0 = x
         for w in ws:
-            for sm, col, mk, dx in ((sum_obc, ts.PALETTE[0], "o", -0.18),
-                                    (sum_pbc, ts.PALETTE[1], "s", 0.18)):
-                s = pick(sm, w)
-                if s is None:
-                    continue
-                v = s["r_full"]
-                if v["r_mean"] is not None and v["n_r"] >= 30:
-                    a.errorbar(x + dx, v["r_mean"], yerr=v["r_err"] or 0, marker=mk,
-                               ms=ts.MS, color=col, lw=0.8, capsize=0)
-                b.plot(x + dx, s["n_blocks"], marker=mk, ms=ts.MS, color=col, ls="none")
+            N = common_N(w)
+            if N is None:
+                x += 1; continue
+            o, p = sum_obc[f"{w}_{N}"], sum_pbc[f"{w}_{N}"]
+            dot(a, x - 0.2, o["r_full"], marker="o", color=ts.PALETTE[0])
+            dot(a, x + 0.05, p["r_full_by_type"]["real"], marker="s", color=ts.PALETTE[1], mfc="none")
+            dot(a, x + 0.25, p["r_full_by_type"]["complex"], marker="s", color=ts.PALETTE[1])
+            b.plot(x - 0.18, o["n_blocks"], marker="o", ms=ts.MS, color=ts.PALETTE[0], ls="none")
+            b.plot(x + 0.18, p["n_blocks"], marker="s", ms=ts.MS, color=ts.PALETTE[1], ls="none")
             labels.append(f"{w}"); xs.append(x); x += 1
         groups.append((name, g0, x - 1)); x += 0.6
     for val, lab, ls in ((S.R_GUE, "GUE", ":"), (S.R_GOE, "GOE", "-"),
@@ -268,11 +270,12 @@ def bc_figure(sum_obc, sum_pbc, gate="H", out_dir=FIG_DIR, N_common=None):
         a.annotate(lab, (1, val), xycoords=("axes fraction", "data"), xytext=(3, 0),
                    textcoords="offset points", ha="left", va="center",
                    fontsize=ts.FS["annot"] - 1, color=ts.GREY, annotation_clip=False)
-    a.plot([], [], "o", color=ts.PALETTE[0], ms=ts.MS, label="open (obc0)")
-    a.plot([], [], "s", color=ts.PALETTE[1], ms=ts.MS, label="periodic")
-    a.legend(loc="upper left", ncol=2, handlelength=1.0, borderaxespad=0.2)
+    a.plot([], [], "o", color=ts.PALETTE[0], ms=ts.MS, label="open")
+    a.plot([], [], "s", color=ts.PALETTE[1], ms=ts.MS, mfc="none", label=r"ring, real $j$")
+    a.plot([], [], "s", color=ts.PALETTE[1], ms=ts.MS, label=r"ring, complex $j$")
+    a.legend(loc="upper left", ncol=3, handlelength=1.0, borderaxespad=0.2)
     a.set_ylabel(r"$\langle r\rangle$ (resolved)"); a.set_ylim(0.3, 0.68)
-    b.set_yscale("log"); b.set_ylabel(r"resolved blocks")
+    b.set_yscale("log"); b.set_ylabel(r"resolved blocks"); b.set_ylim(top=4e4)
     b.set_xticks(xs, labels, rotation=90); b.set_xlabel(r"rule $W$")
     for name, g0, g1 in groups:
         b.annotate(name, ((g0 + g1) / 2, 1.0), xycoords=("data", "axes fraction"),
@@ -397,3 +400,7 @@ def cand_singlets(summary, gate="H", out_dir=CAND_DIR):
     stem = os.path.join(out_dir, "cand_D_singlets")
     ts.save(fig, stem); plt.close(fig)
     return stem
+
+
+if __name__ == "__main__":
+    main()

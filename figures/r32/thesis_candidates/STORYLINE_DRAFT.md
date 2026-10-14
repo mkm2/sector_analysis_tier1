@@ -1,12 +1,15 @@
 # Storyline draft: ergodicity in the 16 unitary Hadamard QCA (R32)
 
 **Status:** draft for discussion. Nothing has been handed off to the thesis figure project.
-**Data:** open boundaries (obc0), N ≤ 13/14. The periodic-boundary check is still pending; see the open points below.
+**Data:** open boundaries (obc0), N ≤ 14 (up to 20 for the fragmented rules). Rings (pbc): even N = 6 … 14, with
+translation, the half-step Ω_T and the gate blocks resolved.
 
 ## One-sentence message
-Among the 16 unitary rules, chaos needs the gate to fire on **three of the four neighbour patterns**. Exactly those rules
-are GOE-chaotic, and each carries a fixed number of exact, gate-protected scar states, which do not grow with N. Every
-other rule is trivial, free or arithmetic, or fragmented into Poissonian pieces.
+On the open chain, chaos needs the gate to fire on **three of the four neighbour patterns**. Exactly those rules are
+GOE-chaotic, and each carries a fixed number of exact, gate-protected scar states, which do not grow with N. The
+**one-sided** rules (two patterns, one neighbour) are the exception that proves the boundary matters: chaotic in the bulk
+(on a ring), but fragmented into a boundary-anchored tower on the open chain. Every other rule is trivial, arithmetic, or
+fragmented into Poissonian pieces, whatever the boundary.
 
 ## Proposed arc (one thesis section, about 4 pages)
 
@@ -37,6 +40,11 @@ other rule is trivial, free or arithmetic, or fragmented into Poissonian pieces.
    (2, 2, 4 and 1), linear for the one-sided rules (2N − 4), about one per sector for XOR, and exponential for k = 1.
    Scars in a chaotic spectrum versus a whole manifold of dark states in a fragmented one.
 
+7. **Boundaries** (candidate figure E): on a ring, the k = 3 rules stay chaotic, now CUE (57/99, no mirror) or COE (147),
+   as the symmetry dictates. The one-sided rules lose their tower and become chaotic with β = 1 statistics, an
+   antiunitary symmetry we have not yet identified. The XOR and k = 1 classes are unchanged. The scars at θ = π are
+   boundary states; one singlet at θ = 0 survives on the ring.
+
 ## Candidate figures (thesis width, thesis style; local drafts)
 | | file | content | aspect |
 |---|---|---|---|
@@ -44,16 +52,17 @@ other rule is trivial, free or arithmetic, or fragmented into Poissonian pieces.
 | B | `cand_B_chaos_scars_W57.pdf` | rule 57: S vs θ with exact scars marked + P(r) vs Poisson / GOE | 0.42 |
 | C | `cand_C_resolution.pdf` | ⟨r⟩ vs N for 147 and 54, Krylov-only vs fully resolved | 0.42 |
 | D | `cand_D_singlets.pdf` | number of exact gate singlets vs N per class (log scale) | 0.55 |
+| E | `../fig_r32_bc_compare_H.pdf` | open chain vs ring: ⟨r⟩ (ring: real / complex momentum sectors) and block counts | 0.75 |
 
 Optional, if space allows: a per-rule appendix figure (4 panels) for each of the 16 rules
 (`../fig_r32_rule_H_W*.pdf`).
 
 ## Open points before this can be a thesis claim
-1. **Periodic boundaries.** On a ring the one-sided rules lose their tower (seen at N = 8). Whether they then become
-   chaotic, and whether the k = 3 rules remain GOE with the same scars, needs the pbc runs, which are pending.
-2. **N = 14 for the k = 3 rules.** These runs were stopped by the memory reaper. The memory-lean pipeline is ready (see
-   R32, section "Compute").
-3. **One-sided drift.** ⟨r⟩ rises with N (60: 0.334 to 0.395 over N = 9 to 14). Larger N, or the pbc data, will show
-   whether these rules are integrable or slowly chaotic.
-4. **The gate singlets of rule 54 and the 57 outliers.** These want an analytic form; the entangled singlet of 54 has
-   S = 0.29 at every N.
+1. **The one-sided antiunitary symmetry.** On the ring, 153/195 are β = 1 in the shape of P(r) (χ² = 27 against GOE,
+   385 for the best Poisson+GUE mixture at N = 14), but they have no mirror symmetry. The symmetry was not found by a
+   brute-force search over reflections, translations and uniform or sublattice on-site X/Z/H. 60/102 are still rising
+   (0.511 at N = 14).
+2. **Rule 54** approaches its ensemble more slowly than the others on both boundaries (ring 0.483 at N = 14).
+3. **The entangled singlet** of 54 (both boundaries) and of 60/102 (ring only) has the same entropy for all of them,
+   0.4045 / 0.3447 / 0.2908 / 0.2430 for N = 8 … 14, and it decreases with N. It wants an analytic form.
+4. **The 57 outliers** (N-stable, θ/π ≈ ±0.312, ±0.688) are unexplained.

@@ -32,7 +32,7 @@ untouched. The analysis is done in Python, in \fn{code/qca\_fragmentation/spectr
   basis independent.
 \end{itemize}
 
-\subsection{Diagonalisation}
+\subsection{Diagonalisation (details and optimisation in Sec.~\ref{sec:algorithm})}
 $U$ is real orthogonal (Sec.~\ref{sec:lit}). Each block is diagonalised by
 \begin{enumerate}
 \item solving the real symmetric problem $C=(A+A^T)/2$, whose eigenvalues are
@@ -75,28 +75,42 @@ Each eigenvector carries three labels, all found and verified at run time:
   (\fn{max\_offblock}).
 \item \textbf{Spatial label.}
   \begin{itemize}
-  \item For odd $N$ and mirror-symmetric rules ($r_{01}=r_{10}$), the reflection
-    $R$ commutes with $U$, and every eigenvector gets a parity $\pm1$.
-  \item For even $N$, $R$ exchanges the two layers ($RL_AR=L_B$), so $R$ alone is
-    no symmetry. The half step $\Omega=RL_A$ is one, however: it commutes with
-    $U$ and $\Omega^2=U$ (both asserted at run time). Inside an eigenspace of $U$,
-    $\Omega e^{i\theta/2}$ is Hermitian with eigenvalues $s=\pm1$, and $s$ is the
-    label.
+  \item obc0, odd $N$, mirror-symmetric rules ($r_{01}=r_{10}$): the reflection $R$ commutes with $U$, and every
+    eigenvector gets a parity $\pm1$, a true quantum number.
+  \item obc0, even $N$: $R$ exchanges the two layers ($RL_AR=L_B$), so $R$ alone is no symmetry. The half step
+    $\Omega=RL_A$ is one: it commutes with $U$ and $\Omega^2=U$ (both asserted at run time).
+  \item pbc (even $N$ only), every rule: translation by \emph{one} site maps layer $A$ onto layer $B$, so the
+    half-translation $\Omega_T=T_1L_A$ commutes with $U$ and $\Omega_T^2=UT_2$, with $T_2$ the translation by two sites
+    (asserted). It resolves the $T_2$ momentum $j=0,\ldots,N/2-1$ and splits each momentum sector once more. The
+    site-centred reflection does not commute with $\Omega_T$ in general and is not resolved on the ring: a residual
+    $\mathbb{Z}_2$ can remain in the $j=0$ and $j=N/4$ sectors of mirror-symmetric rules.
   \end{itemize}
-  Labels are obtained by diagonalising the symmetry inside each degenerate
-  eigenspace of $U$, so the stored eigenvectors are symmetry adapted. The
-  symmetry is used for a block only if the block is checked to be invariant
-  under it. The invariance residual is stored.
+  For the square-root symmetries ($\Omega$, $\Omega_T$) the stored quantity is their eigenphase $\varphi$, obtained by
+  diagonalising the symmetry inside each degenerate eigenspace of $U$ (with the same orthonormal $\cos$/$\sin$
+  two-step as for $U$). The resolved spectrum of a block is the spectrum of $\varphi$, not of $\theta$: a $\pm1$
+  ``sheet'' label derived from $e^{i\theta/2}$ would flip at the branch cut $\theta=\pm\pi$ and mix the two halves
+  there. Labels are used for a block only if the block is checked to be invariant under the symmetry, and the invariance
+  residual is stored.
 \end{enumerate}
 Time reversal ($T=L_AK$, $T^2=1$) fixes the reference ensemble to $\beta=1$
 (Sec.~\ref{sec:lit}).
 
 \subsection{Statistics}
-Gap ratios are computed per fully resolved block on the de-duplicated half
-spectrum $|\theta|\in[0,\pi]$. Only blocks with at least $20$ distinct
-half-levels are used, and the ratios of all such blocks are pooled. For
-comparison the same statistic is computed at two coarser resolutions: per
-Krylov sector only, and for the whole spectrum as one list.
+Gap ratios are computed per fully resolved block (sector, gate-algebra block, true symmetry label), on the block's level
+variable ($\varphi$ where a square-root symmetry was resolved, otherwise $\theta$), with exact degeneracies removed.
+\begin{itemize}
+\item \emph{Folding is decided numerically per block.} If the block spectrum is symmetric under $x\to-x$ (complex
+  conjugation maps the block to itself: every block of a real symmetry), only $|x|\in[0,\pi]$ is used. Otherwise, e.g.\
+  in a ring-momentum sector $j\ne-j$ whose conjugate partner is another sector, the full circle is used, including the
+  wrap-around spacing.
+\item \emph{The reference ensemble depends on the block.} Self-conjugate blocks carry the time reversal $T=L_AK$ and are
+  compared with $\beta=1$ ($0.5307$). In momentum sectors $j\ne-j$, $T$ maps $j\to-j$, so no antiunitary symmetry is
+  left within the sector, and a chaotic sector is $\beta=2$ (CUE, $0.5996$). Both branches are tested against random
+  matrices: CUE through the full-circle branch gives $0.597\pm0.005$, and products of random reflections through the
+  folding branch give $0.534\pm0.007$.
+\item Only blocks with at least 18 ratios are used, and the ratios of all such blocks are pooled. For comparison the
+  same statistic is computed at two coarser resolutions: per Krylov sector only, and for the whole spectrum as one list.
+\end{itemize}
 
 \subsection{Entanglement and the fair reference}
 For every eigenvector the half-chain von Neumann entropy $S_\mathrm{vN}$ is

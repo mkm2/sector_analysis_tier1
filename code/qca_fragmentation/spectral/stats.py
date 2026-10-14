@@ -41,7 +41,70 @@ def surmise(r, beta):
     return 2 * (r + r * r) ** beta / Z / (1 + r + r * r) ** (1 + 1.5 * beta)
 
 
+def conj_symmetric(x: np.ndarray, tol: float = 1e-7) -> bool:
+    """
+    True if the multiset {e^{ix}} is closed under complex conjugation, to tol.
+    Every -x is matched to its nearest level on the circle.  (Comparing the sorted
+    x and -x elementwise is wrong when a level sits at 0 = 2 pi: a rounding of
+    +-1e-16 moves it to the other end of the sorted list and shifts every pair.)
+    """
+    x = np.sort(np.mod(np.asarray(x, float), 2 * np.pi))
+    if x.size == 0:
+        return True
+    y = np.mod(-x, 2 * np.pi)
+    i = np.searchsorted(x, y)
+    lo, hi = x[(i - 1) % x.size], x[i % x.size]
+    circ = lambda a: np.minimum(np.abs(a), 2 * np.pi - np.abs(a))
+    return bool(np.all(np.minimum(circ(y - lo), circ(y - hi)) < tol))
+
+
+def block_ratios(x: np.ndarray, tol: float = TOL) -> np.ndarray:
+    """
+    Gap ratios of one resolved block from its level variable x (theta, or the
+    eigenphase phi of a square-root symmetry), exact degeneracies removed.
+
+    If the block spectrum is symmetric under x -> -x (complex conjugation maps the
+    block to itself: every real symmetry sector), the independent data are |x| in
+    [0, pi] and ratios are taken on that interval.  Otherwise (e.g. a ring-momentum
+    sector j != -j, whose conjugate partner is another sector) the full circle is
+    used, with the wrap-around spacing.  The test is numerical, not assumed.
+    """
+    x = np.mod(np.asarray(x, float), 2 * np.pi)
+    if x.size < 3:
+        return np.empty(0)
+    s = np.sort(x)
+    if conj_symmetric(x):
+        return ratios(unique_levels(np.where(x > np.pi, x - 2 * np.pi, x), tol))
+    keep = np.concatenate(([True], np.diff(s) > tol))
+    u = s[keep]
+    if u.size > 1 and (u[0] + 2 * np.pi - u[-1]) < tol:
+        u = u[:-1]
+    if u.size < 3:
+        return np.empty(0)
+    sp = np.diff(np.concatenate((u, [u[0] + 2 * np.pi])))      # cyclic spacings
+    a, b = sp, np.roll(sp, -1)
+    return np.minimum(a, b) / np.maximum(a, b)
+
+
+def block_levels_var(d, m) -> np.ndarray:
+    """The level variable of a block: phi where stored and finite, else theta."""
+    if "phi" in d:
+        ph = d["phi"][m]
+        if ph.size and np.all(np.isfinite(ph)):
+            return ph
+    return d["theta"][m]
+
+
 def block_keys(d) -> np.ndarray:
+    """Integer key per eigenvector identifying its statistics block
+    (sector, gate-algebra block, true symmetry label)."""
+    lab = d["stat_label"] if "stat_label" in d else d["sym_label"]
+    # labels: obc0 v1 in {-1, 0, 1}; v2 stat labels 10 j + (r + 1) <= 10 (N/2) + 2 < 999
+    return (d["sector_id"].astype(np.int64) * 1_000_003 + d["block_id"].astype(np.int64)) * 1000 \
+        + (lab.astype(np.int64) + 1)
+
+
+def _block_keys_old(d) -> np.ndarray:
     """Integer key per eigenvector identifying its (sector, block, label)."""
     # labels: obc0 v1 in {-1, 0, 1}; v2 / pbc 10 j + (r + 1) <= 10 (N/2) + 2 < 999
     return (d["sector_id"].astype(np.int64) * 1_000_003 + d["block_id"].astype(np.int64)) * 1000 \
@@ -74,7 +137,7 @@ def block_table(d, nmin: int = 20) -> List[Dict]:
     for k in np.unique(keys):
         m = keys == k
         lev = unique_levels(d["theta"][m])
-        r = ratios(lev)
+        r = block_ratios(block_levels_var(d, m))
         rows.append({
             "key": int(k), "sector": int(d["sector_id"][m][0]),
             "block": int(d["block_id"][m][0]), "label": int(d["sym_label"][m][0]),
@@ -92,9 +155,9 @@ def pooled_r(d, nmin: int = 20):
     rs, nstates = [], 0
     for k in np.unique(keys):
         m = keys == k
-        lev = unique_levels(d["theta"][m])
-        if lev.size >= nmin:
-            rs.append(ratios(lev)); nstates += int(m.sum())
+        r = block_ratios(block_levels_var(d, m))
+        if r.size >= nmin - 2:
+            rs.append(r); nstates += int(m.sum())
     r = np.concatenate(rs) if rs else np.empty(0)
     n = r.size
     return r, {"r_mean": float(r.mean()) if n else np.nan,
@@ -108,7 +171,7 @@ def largest_block_r(d):
     keys = block_keys(d)
     uk, cnt = np.unique(keys, return_counts=True)
     m = keys == uk[np.argmax(cnt)]
-    r = ratios(unique_levels(d["theta"][m]))
+    r = block_ratios(block_levels_var(d, m))
     return r, int(m.sum())
 
 
