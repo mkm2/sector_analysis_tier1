@@ -1,0 +1,16 @@
+{
+ "rule": 54,
+ "N": 16,
+ "j": 2,
+ "dim": 8220,
+ "n_components_gate_test": 1,
+ "component_sizes": [
+  8220
+ ],
+ "krylov_components": [
+  8220
+ ],
+ "K_min_gap": 2.6710708169730424e-05,
+ "omega_invariance": 2.089609621416101e-15,
+ "runtime": 244.66727757453918
+}

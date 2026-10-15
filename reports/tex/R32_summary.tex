@@ -1,0 +1,156 @@
+% R32 opening chapter: detailed summary (2026-10-15).  Input by R32_floquet_spectra.tex.
+% Every number here appears, with its provenance, in a later section or a generated table.
+\section{Summary}
+\label{sec:summary}
+
+\subsection{Question and model}
+The Krylov analysis of the earlier reports describes \emph{how} the Hilbert space of the sixteen unitary rules falls
+apart. This report asks whether the dynamics \emph{inside} the pieces thermalise.
+
+The circuits are the quantum elementary cellular automata of Hillberry and coworkers~\cite{hillberry2016,hillberry2021}
+(Sec.~\ref{sec:lit-known}):
+\begin{itemize}
+\item On a chain of $N$ qubits, the Hadamard $H$ acts on site $j$ iff the neighbour pattern $(x_{j-1},x_{j+1})$ is one of
+  the rule's \emph{firing patterns}.
+\item Even sites are updated first, then odd sites (brickwork), and one period is $U=L_BL_A$.
+\item Two boundaries are studied: open with ghost neighbours fixed to 0 (obc0), and rings of even length.
+\item The $X$ gate turns every rule into a classical reversible automaton and serves as the comparison.
+\end{itemize}
+
+The tools are applied to $U$ itself, not to a Hamiltonian:
+\begin{itemize}
+\item the quasienergy gap ratio $\langle r\rangle$ after \emph{full} symmetry resolution (Krylov sectors, gate-algebra
+  blocks, reflection or the half step $\Omega$ on the chain, and momentum with the half step $\Omega_T$ on the ring);
+\item the eigenstate entanglement against the Page value;
+\item the spectral form factor;
+\item ETH for a local observable;
+\item quench dynamics.
+\end{itemize}
+
+\subsection{The classification}
+One combinatorial number organises the sixteen rules: the count $k$ of the four neighbour patterns that fire the gate,
+and, for $k=2$, whether the firing set depends on one neighbour or on both (Table~\ref{tab:summary-classes}).
+\begin{table}[h]
+\centering\small
+\begin{tabular}{p{0.13\textwidth}p{0.12\textwidth}p{0.31\textwidth}p{0.31\textwidth}}
+\toprule
+class & rules & open chain & ring \\
+\midrule
+$k=3$ & 54, 57, 99, 147 & \textbf{chaotic}: $\langle r\rangle=0.523$--$0.531$ at $N=14$ (GOE 0.531) & \textbf{chaotic}: 57/99 CUE
+($0.5985$ at $N=16$), 147 COE ($0.528$), 54 COE but slow ($0.510$, rising) \\
+$k=2$ one-sided & 60, 102, 153, 195 & tower of conserved boundary projectors; $\langle r\rangle\approx0.424$, flat for
+$N=13\ldots16$ & \textbf{chaotic}, COE ($0.523$--$0.527$ at $N=16$), protected by a hidden time reversal \\
+$k=2$ XOR & 105, 150 & arithmetic: exactly $3^m$ distinct levels for 150 ($N=6\ldots15$) & arithmetic (150 is free
+fermions) \\
+$k=1$ & 108, 156, 198, 201 & exponential fragmentation; 108/201 Poisson, 156/198 $\langle r\rangle\approx0.42$ (common
+$N=19$) & unchanged \\
+$k=0$, $4$ & 204, 51 & trivial ($U=1$, $U=H^{\otimes N}$) & trivial \\
+\bottomrule
+\end{tabular}
+\caption{The sixteen rules with $V=H$. Each class is compared at one common $N$ (Sec.~\ref{sec:results}); ring values are
+for the complex momentum sectors (Sec.~\ref{sec:pbc}).}
+\label{tab:summary-classes}
+\end{table}
+
+\paragraph{Only the $k=3$ class is chaotic on both boundaries.} Its ensemble follows the symmetry. With open boundaries
+every block carries the time reversal $KL_A$ (COE). On the ring, the mirror rules 54 and 147 keep a time reversal $KL_AR$
+(COE). 57 and 99 have none inside a momentum sector, so they are CUE, with a GUE-shaped $P(r)$ (Sec.~\ref{sec:pbc}).
+Without symmetry resolution, 147 looks integrable ($0.42$ against $0.53$).
+
+\paragraph{The one-sided class is a boundary phenomenon.}
+\begin{itemize}
+\item \emph{Open chain:} the free end carries a chain of conserved projectors onto Hadamard eigenstates, which builds a
+  tower of blocks of size $2^{N-1},2^{N-2},\ldots$. Inside the largest block the statistics plateau at
+  $\langle r\rangle\approx0.424$ for $N=13\ldots16$: neither Poisson nor GOE, and not drifting.
+\item \emph{Ring:} there is no tower and the rules are COE-chaotic, although they have no mirror symmetry. The time
+  reversal is a newly identified \emph{dressed bond reflection}: the reflection is combined with a rotation of one
+  sublattice into the Hadamard eigenbasis (Sec.~\ref{sec:answers}).
+\item \emph{Dynamics:} random product states reach only 0.72 (60) and 0.91 (153) of the Page entanglement on the open
+  chain, but 0.99 to 1.00 on the ring.
+\end{itemize}
+
+\paragraph{XOR and $k=1$ do not thermalise.} 150 with $H$ is a free-fermion circuit~\cite{hillberry2024}; its
+arithmetic spectrum reproduces R8's level count exactly. The $k=1$ rules split into exponentially many small blocks.
+\begin{itemize}
+\item In 156/198 a block is a product of segments, each holding one mobile kink with the exact dispersion
+  $\cos\theta=-\sin^2(\pi m/(L+1))$. The sums of these few levels give $\langle r\rangle\approx0.42$.
+\item 108/201 have larger, many-body rooms and Poisson statistics.
+\end{itemize}
+
+\subsection{Thermalisation}
+All diagnostics give the same ordering (Sec.~\ref{sec:thermal}, Table~\ref{tab:thermal}):
+\begin{itemize}
+\item \emph{57/99 thermalise fastest and most cleanly:} ETH fluctuations decay as $d^{-0.40}$, close to $d^{-1/2}$; the
+  SFF approaches the ramp after $t_2=78$ periods at $N=16$; random states reach Page.
+\item \emph{153, 147, 60 and 54} are chaotic on the ring but converge progressively more slowly. Their ETH exponents
+  are $-0.24$ to $-0.13$, $t_2$ is 5 to 13 times longer, and the SFF has a large short-time excess.
+\item \emph{XOR and $k=1$} stay far from thermal in every diagnostic.
+\end{itemize}
+The gap ratio is the most robust single diagnostic, but not a sufficient one: the chaotic rules contain non-thermal
+eigenstates and slow states (next subsection).
+
+\subsection{Exact structures behind the classes}
+\begin{itemize}
+\item \textbf{One universal scar.} $|h_+\rangle^{\otimes N}$, the product of $+1$ Hadamard eigenstates, is an eigenstate
+  of \emph{every} controlled-Hadamard gate, for every rule and boundary. It explains all exact scars of the chaotic
+  rules:
+  \begin{itemize}
+  \item the state itself ($\theta=0$);
+  \item its projection off a frozen vacuum (the entangled singlet of 54, 60 and 102, with entanglement in closed form,
+    decreasing with $N$);
+  \item $|h_-\rangle$ on boundary sites whose gate is control-independent ($\theta=\pi$; the counts 2/2/4/1 follow
+    exactly).
+  \end{itemize}
+  Close to this vacuum live the quasi-bound edge mode of 57 (quasienergy $\pm0.312\pi$) and the slowly relaxing defect
+  states of 54 and 147.
+\item \textbf{Flip partners.} $X^{\otimes N}U_W(H)X^{\otimes N}=U_{W'}(XHX)\cong U_{W'}(-H)$: the partner rule with a
+  $-1$ on every firing. This explains why flip partners share their block structure but not their spectra, and the obc0
+  boundary breaks the flip even for $X$.
+\item \textbf{The $X$ gate.} Classically, 54/147 is the integrable RCA54, 201/108 is the Floquet-PXP automaton, and
+  XOR and the one-sided rules are linear. X-102 is exactly the solvable deterministic Floquet quantum East
+  model~\cite{bertini2024det}. Only 57/99 have orbits that fill a finite fraction of the space, and only on the open
+  chain; on the ring a conserved domain-wall number confines them. \emph{Quantum chaos with $H$ therefore follows the
+  firing count, not the classical dynamics}: the integrable RCA54 becomes a chaotic circuit with $H$.
+\end{itemize}
+
+\subsection{What is known and what is new}
+\emph{Known:}
+\begin{itemize}
+\item the model and its numbering~\cite{hillberry2016,hillberry2021};
+\item entanglement-spectrum (Brody) indications that $T_{13}$ and $T_{14}$ (our 57, 54) are chaotic and $T_1$ (201) is
+  not~\cite{hillberry2021};
+\item the free-fermion nature and the domain-wall charge of the Hadamard Goldilocks rule 150~\cite{hillberry2024};
+\item the classical integrable parents, and the solvable DFQEM (= X-102)~\cite{buca2021,wilkinson2020,bertini2024det}.
+\end{itemize}
+\emph{New, as far as we found} (Sec.~\ref{sec:lit-known}):
+\begin{itemize}
+\item the symmetry-resolved quasienergy classification of all sixteen rules on both boundaries, organised by $k$;
+\item the boundary origin of the one-sided class and its hidden time reversal;
+\item the universal scar and its consequences;
+\item the exact kink dispersion of 156/198;
+\item the flip map;
+\item the domain-wall charge of X-57;
+\item the SFF, ETH and quench characterisation of all classes.
+\end{itemize}
+
+\subsection{Open questions}
+\begin{enumerate}
+\item Why the one-sided rules plateau at $\langle r\rangle\approx0.424$ on the open chain. The tower block is the same
+  chain with one boundary site fixed in $|h_-\rangle$; some further structure seems to be at work.
+\item The origin of the large short-time SFF excess and the slow ETH convergence of 54, 60 and 147, presumably tied to
+  the $|h_+\rangle$ vacuum and its slow defects.
+\item An analytic form of the 57 edge mode.
+\item Whether 54 reaches COE on the ring (0.510 at $N=16$, still rising).
+\end{enumerate}
+
+\paragraph{Reading guide.}
+\begin{itemize}
+\item Sec.~\ref{sec:lit}: the tools for Floquet operators and the literature on these circuits.
+\item Secs.~\ref{sec:methods}--\ref{sec:algorithm}: methods and the optimised pipeline.
+\item Sec.~\ref{sec:results}: open-chain results.
+\item Sec.~\ref{sec:pbc}: rings.
+\item Sec.~\ref{sec:x}: the X gate.
+\item Sec.~\ref{sec:thermal}: thermalisation.
+\item Sec.~\ref{sec:answers}: the exact structures and the runs beyond the dense limit.
+\item Sec.~\ref{sec:memory}: compute.
+\end{itemize}

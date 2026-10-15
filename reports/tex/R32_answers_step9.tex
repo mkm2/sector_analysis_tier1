@@ -1,0 +1,60 @@
+% R32: beyond the dense-sector limit (step 9), eigenvectors at small N (step 10), and the checks of their assumptions.
+% Data: results_spectra/blockfirst/{ring,tower,verify}_*; code: spectral/blockfirst.py; tests: test_blockfirst_matches_pipeline.
+\subsection{Beyond the dense-sector limit (block-first)}
+The production pipeline diagonalises whole Krylov sectors densely, so its memory is set by the largest \emph{sector}
+(Sec.~\ref{sec:memory}). For the cases that matter for the open questions, an exactly known symmetry was used to split
+the space \emph{before} the dense step, by a sparse construction (\fn{spectral/blockfirst.py}), and only eigenvalues were
+computed.
+\begin{itemize}
+\item \emph{Ring, $N=16$} (57, 54, 147, 153, 60): $T_2$-momentum orbit bases first ($\approx8200$ states per sector),
+  then the half step $\Omega_T$ inside each sector. The eigenphases come from a Cayley transform, a Hermitian
+  eigenvalue problem.
+\item \emph{Open chain, one-sided rules:} the largest tower block, built directly in its product basis. For 153 it is
+  $|h_-\rangle$ on site 0 with the other sites free ($N=15$); for 60 it is site $0=|1\rangle$ and site $N-1=|h_-\rangle$
+  ($N=16$). Each has $16\,384$ states.
+\end{itemize}
+Validation against the production data: the ring code reproduces the Julia $\varphi$ of every momentum sector to
+$10^{-14}$ ($N=12$) and the per-block $\langle r\rangle$ to $10^{-11}$ ($N=12$, 14). The tower blocks reproduce the
+Julia largest blocks level by level to $10^{-13}$ ($N=10\ldots13$).
+
+\emph{One pitfall, caught by that comparison:} computing $|\theta|$ from $\arccos$ of the eigenvalues of
+$(U+U^{\mathsf T})/2$ smears exactly degenerate eigenvalues $\pm1$ by $\sqrt{\epsilon}\approx10^{-8}$ into spurious
+near-duplicates. The real tower blocks therefore use the eigenvalues of $U$ directly.
+
+\emph{Results} (Secs.~\ref{sec:pbc} and \ref{sec:results}):
+\begin{itemize}
+\item On the ring at $N=16$: 57 is $0.5985\pm0.0011$ (CUE), 147 is $0.528$ and 153 is $0.527$ (COE-shaped), and 60
+  ($0.523$) and 54 ($0.510$) are still rising, now COE-shaped.
+\item On the open chain the one-sided statistics stop drifting: $\langle r\rangle\approx0.424$ for 153 at $N=15$ and for
+  60 at $N=16$.
+\end{itemize}
+
+\paragraph{Checking the assumptions (user request).} Block-first assumes that nothing splits the pieces further. This
+was tested at the production sizes with the generic-$K$ trick:
+\begin{itemize}
+\item \emph{Ring:} restricted to a momentum sector, $K$ is a generic combination of $T_2$-invariant elements of the gate
+  algebra ($S_A$, $S_B$, $\{S_A,S_B\}$, $U+U^\dagger$). One component per Krylov sector means that no hidden symmetry
+  splits the sector: any such symmetry would also split this subalgebra.
+\item \emph{Tower:} $K=\sum_ia_ig_i$ restricted to the block.
+\end{itemize}
+Results:
+\begin{itemize}
+\item In every tested complex momentum sector at $N=16$ (57 $j{=}1$; 54, 153 $j{=}1,2$; 147 $j{=}1$; 60 $j{=}1,3$) the
+  test gives exactly one component, equal to the single Krylov component. $K$ is non-degenerate (gaps
+  $4\times10^{-6}$ to $2\times10^{-4}$), and the sector is invariant under $\Omega_T$ to $2\times10^{-15}$.
+\item The tower block of 153 at $N=15$ is irreducible: one component of $16\,384$, gap $2.3\times10^{-6}$, and the gates
+  leave the block invariant to $1.4\times10^{-14}$.
+\item The tower block of 60 at $N=16$ is irreducible: one component of $16\,384$, gap $2.3\times10^{-7}$, and gate
+  invariance $2\times10^{-14}$.
+\end{itemize}
+In the \emph{real} momentum sectors the same test splits the space into two halves. This is how the residual
+$\mathbb Z_2$ of the one-sided rules was found, which led to their time reversal (above). The conclusions use only the
+complex sectors.
+
+\paragraph{Eigenvectors at small $N$ (step 10).} The scar analyses use eigenvectors from the exact engine at
+$N\le12$:
+\begin{itemize}
+\item the gate singlets, from the one-dimensional gate-algebra blocks;
+\item the outliers of 57 and the ETH matrix elements, from the dense eigenvectors of $U$ in the largest block.
+\end{itemize}
+The Julia pipeline was not changed, so no full recompute was needed.

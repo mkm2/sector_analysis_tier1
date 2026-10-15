@@ -1482,6 +1482,27 @@ any hand-off), optional X gate; user added: resolve symmetries; check the classe
 - CORRECTIONS (visible): conjugation-symmetry test failed for a level at 0 = 2 pi (ring j=0 misclassified; obc0
   numbers unchanged); summary loops O(blocks x states) replaced (identical output); mirror-rule even-N reruns with phi
   (147 N=14 0.5275 -> 0.5274; k=1 singlet counts -few); 54 singlet "S=0.29 at every N" withdrawn (earlier).
-- OPEN: one-sided antiunitary symmetry on the ring; L_A R in the real ring sectors of mirror rules; identity of the
-  entangled singlet shared by 54 (both bc) and 60/102 (ring); the N-stable 57 outliers.
+- FOLLOW-UP 2026-10-15 (user: answer the open points, push past the dense limit for relevant cases, verify
+  assumptions, SFF/ETH/dynamics, second literature pass). Results:
+  * Flip map: X^N U_W(H) X^N = U_W'(XHX), XHX = -ZHZ => U_W(H) ~ U_W'(-H) (conditional sign); explains equal block
+    structure / different spectra of flip partners; obc0 breaks the flip even for X.
+  * One-sided hidden time reversal FOUND: S = B_e D R_bond B_e^T (B_e = Hadamard eigenbasis on even sites; D = X^N for
+    153/195, signs for 60/102); [S,U]=0, S flips momentum, A = K L_A S inverts U and Omega_T, A^2 = +1 (COE).
+    CORRECTION: S leaves an unresolved Z2 in the REAL ring sectors of the one-sided rules too (not only mirror rules).
+  * Universal scar |h+>^N (eigenstate of every controlled-H gate); 54/60/102 entangled singlet = its projection off the
+    frozen vacuum (closed-form entropy, matches to 1e-6); boundary |h-> singlets, counts 2/2/4/1 predicted; 57 outliers
+    = left-edge mode on that vacuum (+-0.312 pi, +pi with the right |h-> singlet).
+  * 156/198: one kink per segment, cos(theta_m) = -sin^2(pi m/(L+1)) + theta = 0; sums reproduce exact sector spectra.
+  * X-57 conserves domain-wall number on the ring only (why its ergodic orbits need the open boundary).
+  * Block-first (spectral/blockfirst.py): ring N = 16 (momentum + Omega_T, Cayley eigenphases): 57 0.5985 CUE,
+    147 0.528, 153 0.527, 60 0.523 (rising), 54 0.510 (rising). Open chain tower blocks (conserved Hadamard-basis
+    projectors at the free end): 153 N=15 and 60 N=16 plateau at <r> ~ 0.424 (no drift N = 13..16).
+    Verified at production sizes by generic-K tests (all complex sectors irreducible; tower blocks irreducible).
+  * Thermalisation (spectral/thermal.py): ETH exponent (ring) 57 -0.40, 147 -0.27, 153 -0.24, 60 -0.17, 54 -0.13;
+    SFF t_2(N=16) 57: 78, others 426..990 periods; quenches N=14: k=3 to Page, one-sided only on the ring
+    (obc 0.72 / 0.91), XOR 0.56..0.69, k=1 ~0.1.
+  * Literature: model = Hillberry QECA (T_S = HSF S); 150 = free fermions (Hillberry et al. 2024/2026);
+    X-102 = deterministic Floquet quantum East model (Bertini et al. PRL 132, 120402; De Fazio-Lesanovsky-Perfetto 2026).
+- OPEN: why the one-sided rules plateau at 0.424 on the open chain; origin of the short-time SFF excess / slow ETH for
+  54, 60, 147; analytic 57 edge mode; whether 54 reaches COE on the ring.
 - Report: reports/pdf/R32_floquet_spectra.pdf.  Storyline + candidates: figures/r32/thesis_candidates/ (NOT handed off).

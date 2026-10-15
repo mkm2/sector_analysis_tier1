@@ -2599,3 +2599,41 @@ unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x
 unknown function (ip: (nil)) at (unknown file)
 Allocations: 16923828 (Pool: 16923553; Big: 275); GC: 29
 === 2026-10-14T22:55:02+02:00 all background jobs stopped by the Claude Code memory reaper (~22:45) during H obc0 153 N=15 (peak >17 GB); not restarted
+=== start blockfirst 2026-10-15T00:37:19+02:00
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/tower_N15_W153.npz
+2026-10-15T00:57:29+02:00 blockfirst tower W153 N=15 wall=1210s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/ring_N16_W57.npz
+2026-10-15T01:09:27+02:00 blockfirst ring W57 N=16 wall=718s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/ring_N16_W54.npz
+2026-10-15T01:21:18+02:00 blockfirst ring W54 N=16 wall=711s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/ring_N16_W153.npz
+2026-10-15T01:33:41+02:00 blockfirst ring W153 N=16 wall=743s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/ring_N16_W147.npz
+2026-10-15T01:47:10+02:00 blockfirst ring W147 N=16 wall=809s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/ring_N16_W60.npz
+2026-10-15T01:59:39+02:00 blockfirst ring W60 N=16 wall=749s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/tower_N16_W60.npz
+2026-10-15T02:16:19+02:00 blockfirst tower W60 N=16 wall=1000s rc=0
+=== done blockfirst 2026-10-15T02:16:19+02:00
+=== start verify 2026-10-15T02:19:55+02:00
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vtower_N15_W153.json
+2026-10-15T02:28:20+02:00 verify vtower 153 15 wall=505s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W57_j1.json
+2026-10-15T02:31:38+02:00 verify vring 57 16 1 wall=198s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W153_j1.json
+2026-10-15T02:35:33+02:00 verify vring 153 16 1 wall=235s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W153_j2.json
+2026-10-15T02:39:50+02:00 verify vring 153 16 2 wall=257s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W54_j1.json
+2026-10-15T02:43:51+02:00 verify vring 54 16 1 wall=241s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W54_j2.json
+2026-10-15T02:47:56+02:00 verify vring 54 16 2 wall=245s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W147_j1.json
+2026-10-15T02:52:03+02:00 verify vring 147 16 1 wall=247s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W60_j1.json
+2026-10-15T02:56:14+02:00 verify vring 60 16 1 wall=251s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vring_N16_W60_j3.json
+2026-10-15T02:59:58+02:00 verify vring 60 16 3 wall=224s rc=0
+/home/mkmullenbach/Dokumente/Projects/QCA Simulations/Claude Sector Analysis/results_spectra/blockfirst/verify_vtower_N16_W60.json
+2026-10-15T03:07:18+02:00 verify vtower 60 16 wall=440s rc=0
+=== done verify 2026-10-15T03:07:18+02:00

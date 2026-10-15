@@ -70,7 +70,8 @@ $k\ge2$ non-arithmetic rules, $N=12$ otherwise). (a) Resolved $\langle r\rangle$
 57 and 99 have no mirror symmetry and become CUE on the ring: $\langle r\rangle=0.602\pm0.002$, with a GUE-shaped
 $P(r)$ ($\chi^2=47$, against 1083 for $\beta=1$). This is the textbook outcome for a chaotic system once its momentum
 sectors are complex. 147 (mirror) is COE-shaped and approaches $0.531$ from below ($0.469$, $0.496$, $0.518$ for
-$N=10,12,14$). 54 (mirror) follows more slowly ($0.458$, $0.472$, $0.483$). On the open chain, 54 also lagged the other
+$N=10,12,14$), and reaches $0.528$ at $N=16$ (block-first, Sec.~\ref{sec:answers}). 54 (mirror) follows more slowly
+($0.458$, $0.472$, $0.483$, and $0.510$ at $N=16$, now COE-shaped). On the open chain, 54 also lagged the other
 three rules by about two sizes.
 
 \paragraph{One-sided rules: the tower is a boundary effect, and on the ring they are chaotic.}
@@ -79,16 +80,18 @@ $N=14$). In the complex sectors their statistics are $\beta=1$ in \emph{shape}:
 \begin{itemize}
 \item 153 and 195: $\langle r\rangle=0.531$, $P(r<0.15)=0.063$, and $\chi^2_{\beta=1}=27$ against 385 for the best
   Poisson+CUE mixture.
-\item 60 and 102: still rising ($0.423$, $0.471$, $0.511$), and already closer to COE than to any mixture.
+\item 60 and 102: still rising ($0.423$, $0.471$, $0.511$, and $0.523$ at $N=16$), and closer to COE than to any
+  mixture.
 \end{itemize}
 This contradicts the naive reference: these rules are \emph{not} mirror symmetric, so one expects CUE. There must
-therefore be an antiunitary symmetry inside each momentum sector that we have not identified. A search at $N=8$ found nothing beyond the known layer swap $T_1UT_1^{-1}=U^{-1}$, which preserves $j$ and so gives no
+therefore be an antiunitary symmetry inside each momentum sector. It is identified in Sec.~\ref{sec:answers}: a bond
+reflection dressed by a rotation of one sublattice into the Hadamard eigenbasis. A search at $N=8$ found nothing beyond the known layer swap $T_1UT_1^{-1}=U^{-1}$, which preserves $j$ and so gives no
 time reversal inside a sector. It looked for $W$ with $WUW^{-1}=U^{\pm1}$, and separately with
 $W\Omega_TW^{-1}=\Omega_T^{-1}$, over $W=D\,L\,R^aT_s$: $a\in\{0,1\}$, all $s$, $L$ the identity or a uniform or
 sublattice product of $X$ or $H$ (and of $Z$ without $D$), and $D$ an \emph{arbitrary} diagonal phase operator, solved
 exactly as a consistency problem on the support graph. For 147 the search returns the reflection, which validates it.
-The symmetry is an open point
-(Sec.~\ref{sec:open-pbc}).
+This first search failed because the dressing rotation maps the computational basis to the Hadamard eigenbasis (a
+rotation by $\pi/8$), which is not among the single-site operators tried; the same search in the mixed frame finds it.
 
 The consequence for the classification is that \textbf{the one-sided class is defined by its boundary}. With open ends
 the tower splits the space into $N+1$ blocks and the statistics stay near Poisson. On the ring the same bulk dynamics is
@@ -113,8 +116,8 @@ statistics stay between Poisson and the structured value of the open chain.
 $\theta=0$, for every $N$ (the XOR rules keep about one per sector, as on the open chain). The singlets at $\theta=\pi$ of the open chain are gone, so they are boundary states. For
 57, 99, 147, 153 and 195 the ring singlet is a product state ($S_\mathrm{vN}=0$). For 54, and also for 60 and 102, it is
 entangled, with the \emph{same} entropy as the entangled singlet of 54 on the open chain:
-$S_\mathrm{vN}=0.4045,\ 0.3447,\ 0.2908,\ 0.2430$ for $N=8,10,12,14$. Equal entropies across two rules and two boundary
-conditions suggest one and the same state. The eigenvectors were not stored, so overlaps could not be checked.
+$S_\mathrm{vN}=0.4045,\ 0.3447,\ 0.2908,\ 0.2430$ for $N=8,10,12,14$. It is one and the same state (overlap $1$ at $N=10$): $|h_+\rangle^{\otimes N}$ projected off the frozen vacuum, with
+its entropy in closed form (Sec.~\ref{sec:answers}).
 
 \subsection{What survives}
 \label{sec:open-pbc}
@@ -124,7 +127,8 @@ conditions suggest one and the same state. The eigenvectors were not stored, so 
 class & open chain & ring \\
 \midrule
 $k=3$ & chaotic (COE) & chaotic: CUE (57, 99) or COE (147, 54), as the symmetry dictates \\
-$k=2$ one-sided & boundary tower, near Poisson & tower gone, chaotic ($\beta=1$ shape) \\
+$k=2$ one-sided & boundary tower, intermediate ($\langle r\rangle\approx0.424$, flat) & tower gone, chaotic (COE,
+dressed-reflection time reversal) \\
 $k=2$ XOR & arithmetic & arithmetic, even more degenerate \\
 $k=1$ & exponential fragmentation & unchanged \\
 $k=0,4$ & trivial & trivial \\
@@ -135,10 +139,11 @@ The $k=3$, XOR, $k=1$ and trivial classes are robust. The one-sided class is not
 from the open ends. ``Chaos needs three firing patterns'' is therefore a statement about the open chain. On the ring,
 two firing patterns suffice if they depend on a single neighbour.
 
-\paragraph{Open points.}
+\paragraph{Open points (status 2026-10-15).}
 \begin{enumerate}
-\item The antiunitary symmetry behind the $\beta=1$ statistics of the one-sided rules on the ring.
-\item Resolving $L_AR$ in the real sectors of the mirror rules, which needs the stored eigenvectors or one extra
-  symmetry in the Julia pipeline.
-\item The identity of the entangled singlet shared by 54 (both boundaries) and 60/102 (ring).
+\item \emph{Resolved:} the antiunitary symmetry of the one-sided rules (Sec.~\ref{sec:answers}).
+\item \emph{Resolved:} the identity of the entangled singlet shared by 54 and 60/102 (Sec.~\ref{sec:answers}).
+\item \emph{Open, not needed for any conclusion:} resolving the residual $\mathbb Z_2$ in the real momentum sectors
+  ($L_AR$ for the mirror rules, and the dressed reflection $S$ for the one-sided rules). Both operators are now explicit,
+  so this needs only one extra symmetry in the pipeline.
 \end{enumerate}

@@ -1,0 +1,105 @@
+% R32 section: follow-up (2026-10-15) -- the open points, answered.  Input by R32_floquet_spectra.tex.
+% Every statement here is pinned by a test in code/qca_fragmentation/tests/test_spectral.py.
+\section{Exact structures behind the classes}
+\label{sec:answers}
+This section collects the exact structures found in the follow-up (2026-10-15), which explain the classes: the flip map,
+the hidden time reversal of the one-sided rules, the universal scar, the kink dispersion of 156/198 and the domain-wall
+charge of X-57. It also reports the block-first runs beyond the dense-sector limit (step~9), the eigenvector analyses at
+small $N$ (step~10), and the checks of the assumptions those runs make. Every statement is pinned by a test in
+\fn{code/qca\_fragmentation/tests/test\_spectral.py}.
+
+\subsection{Flip partners: the X flip turns $H$ into $XHX$}
+The physical spin flip is $X^{\otimes N}$. It maps a rule $W$ onto its partner $W'$ (the firing pattern
+$f(m,n)\to f(1-m,1-n)$), but the gate changes with it:
+\begin{equation}
+  X^{\otimes N}\,U_W(H)\,X^{\otimes N}=U_{W'}(XHX),\qquad XHX=\tfrac{1}{\sqrt2}(X-Z)=-ZHZ .
+\end{equation}
+Because $Z^{\otimes N}$ commutes with the controls, $Z^{\otimes N}U_{W'}(G)Z^{\otimes N}=U_{W'}(ZGZ)$. So
+$U_W(H)\cong U_{W'}(-H)$ up to the basis change $Z^{\otimes N}$: the partner rule with a $-1$ on every firing. This is a
+conditional phase, not a global one. Verified as operators at $N=8$, on the ring, for the pairs 54/147, 108/201, 60/195,
+102/153 and 57/99. The consequences are:
+\begin{itemize}
+\item On the ring, flip partners have \emph{identical} supports, hence identical Krylov sectors and blocks, but
+  \emph{different} spectra. Examples: 108 and 201 ($\langle r\rangle=0.399$ and $0.417$ from identical block structures),
+  60/102 and 153/195 (0.511 and 0.531), and 54 and 147 (0.483 and 0.518).
+\item The obc0 boundary (ghost sites fixed to $0$) breaks the flip already for $X$. With $X$ on the ring, 108 and 201 have
+  4156 cycles each; on the open chain they have 4868 and 3492.
+\item 57/99 and 156/198 are also \emph{reflection} partners, and the reflection is an exact symmetry with either gate.
+  Their spectra are identical in every dataset.
+\end{itemize}
+
+\subsection{The hidden symmetry of the one-sided rules}
+On the ring, the one-sided rules have $\beta=1$ statistics without mirror symmetry (Sec.~\ref{sec:pbc}). The
+time-reversal symmetry behind this is now identified:
+\begin{equation}
+  S=B_e\,D\,R_\mathrm{bond}\,B_e^{\mathsf T},\qquad A=K\,L_A\,S,
+\end{equation}
+where:
+\begin{itemize}
+\item $R_\mathrm{bond}$ is the bond-centred reflection $i\to1-i$, which exchanges the two sublattices;
+\item $B_e$ rotates the even sites into the eigenbasis $\{|h_+\rangle,|h_-\rangle\}$ of the Hadamard;
+\item $D=X^{\otimes N}$ for 153/195, and a diagonal sign operator for 60/102.
+\end{itemize}
+Verified as explicit operators at $N=8$ and $10$, for all four rules, to $10^{-13}$:
+\begin{itemize}
+\item $S$ is real, $[S,U]=0$, and $ST_2S^{-1}=T_2^{-1}$ ($S$ flips the momentum);
+\item $A$ preserves the momentum and maps $U\to U^{-1}$ and $\Omega_T\to\Omega_T^{-1}$;
+\item $A^2=+1$: COE, not Kramers pairs.
+\end{itemize}
+In the mixed frame (Hadamard basis on the targets of one layer, computational basis on its controls) that layer is
+diagonal, and $S$ becomes a dressed reflection. This is why a search in the computational basis could not find it. The
+single-site rotation needed is $V=(|h_+\rangle,|h_-\rangle)$, a rotation by $\pi/8$, not $H$. For 57/99 the same search
+returns nothing, consistent with CUE.
+
+\paragraph{Correction to Sec.~\ref{sec:pbc}.} In the real momentum sectors ($j=0$, $N/4$), $S$ preserves $j$ and commutes
+with $U$. So the real sectors of the one-sided rules carry an unresolved $\mathbb Z_2$, exactly as the reflection does for
+the mirror rules. Their real-sector values (0.414 and 0.428 at $N=14$) mix two symmetry sectors and are not
+diagnostic. The conclusions used only the complex sectors, so they are unchanged.
+
+\subsection{Scars: one universal eigenstate, edge-projected}
+\textbf{$|h_+\rangle^{\otimes N}$ is a $+1$ eigenvector of every controlled-Hadamard gate, for every rule and boundary},
+because $H|h_+\rangle=|h_+\rangle$ whatever the controls read. All gate singlets of the chaotic rules follow from it
+(found from the gate algebra at $N\le12$ and identified site by site):
+\begin{itemize}
+\item \emph{$\theta=0$:} $|h_+\rangle^{\otimes N}$ itself.
+\item \emph{Rules with a frozen vacuum} (54 on both boundaries, 60/102 on the ring): its projection off the vacuum,
+  $|\psi\rangle\propto|h_+\rangle^{\otimes N}-\cos^N(\pi/8)\,|0\ldots0\rangle$. This is the ``entangled singlet''. It has
+  Schmidt rank 2, its entanglement follows in closed form and matches the data to $10^{-6}$ for $N=6\ldots14$, and it
+  falls to zero as $\cos^N(\pi/8)\to0$. It is the same state in all three rules (overlap $1$).
+\item \emph{Boundary singlets} ($\theta=\pi$, or $0$ with two of them): $|h_-\rangle$ on an end site whose gate fires
+  for both values of the inner neighbour. With the ghost fixed to $0$, that site picks up $-1$ per period
+  deterministically. This predicts the counts exactly: 57 (right end) 2, 99 (left end) 2, 147 (both ends) 4, 54 (neither
+  end, vacuum frozen) 1. On the ring there are no ends, hence exactly one singlet.
+\end{itemize}
+These are exact scars, but of the simplest kind: a product eigenstate of the gate (or its projection) embedded in a
+chaotic spectrum, in the spirit of the projector embedding~\cite{shiraishi2017}.
+
+\paragraph{The outliers of 57.} These are \emph{not} singlets. They are an \emph{edge mode on the
+$|h_+\rangle^{\otimes N}$ vacuum}: away from the left end the state is $|h_+\rangle$ on every site (overlap rising from
+0.86 to 0.93 into the bulk), and the disturbance is localised on the first four sites. The two quasienergies are one
+mode: $\pm0.3122\pi$ alone, and $\pm0.6877\pi=\pm0.3122\pi+\pi$ together with the right-end $|h_-\rangle$ singlet. The mode
+lives at the left end because there 57's gate depends on the inner neighbour (it fires on $00$, not on $01$); the right
+end is inert. On the ring the strongly non-thermal states disappear (minimum $\eta$ 0.41 to 0.55, against 0.13 to 0.27
+on the open chain).
+
+\subsection{156/198: one kink per segment, with an exact dispersion}
+For 156 (fires only on left $=1$, right $=0$), a $01$ domain wall is frozen and a $10$ wall is mobile. Between two frozen
+walls a segment of $L$ free sites holds exactly one kink, in $L+1$ positions. No gate couples two segments, so
+$U=\bigotimes_s U_s$. The single-kink spectrum is
+\begin{equation}
+  \cos\theta_m=-\sin^2\!\frac{\pi m}{L+1},\quad m=1\ldots\lfloor(L+1)/2\rfloor\ (\pm\text{ pairs; }\theta=\pi\text{ at }m=\tfrac{L+1}{2}),
+  \qquad\text{plus }\theta=0,
+\end{equation}
+i.e.\ $\cos\theta(q)=(\cos q-1)/2$ with $q=2\pi m/(L+1)$. It does not depend on the brickwork offset, and it reproduces
+the exact spectra of the largest Krylov sectors at $N=12$ as sums over their segments (including the end segments).
+Blocks have at most about 125 states, so their levels are sums of a handful of values from this small set. That gives
+many exact and near coincidences, hence $\langle r\rangle\approx0.42$: neither independent levels nor level repulsion.
+
+\subsection{X-57: the ergodic orbits need the boundary}
+On the ring, X-57 (and X-99) \emph{conserves the number of domain walls}. A search over sublattice-resolved 3- and
+4-site densities finds exactly this one local charge (plus its 4-site extension) on the ring, and none on the open
+chain. There the ghost sites create and annihilate walls. Ring orbits are confined to fixed wall number, so their share
+of $2^N$ decays (0.007 at $N=14$). On the open chain the boundary mixes the wall sectors and the orbits fill a finite
+fraction. For contrast, 54 and 150 keep local charges on both boundaries.
+
+\IfFileExists{R32_answers_step9.tex}{\input{R32_answers_step9.tex}}{}

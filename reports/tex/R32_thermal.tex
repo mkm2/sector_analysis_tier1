@@ -1,0 +1,98 @@
+% R32 section: thermalisation beyond the gap ratio (2026-10-15).  Input by R32_floquet_spectra.tex.
+% Numbers: tab_r32_thermal.tex (spectral.thermal.write_thermal_table), results_spectra/thermal_*.{json,npz}.
+\section{Thermalisation beyond the gap ratio}
+\label{sec:thermal}
+The gap ratio is the most robust single diagnostic, but it probes only nearest-neighbour level correlations of whole
+symmetry blocks. Three complementary diagnostics were added:
+\begin{itemize}
+\item the \emph{spectral form factor} (SFF), which measures long-range spectral correlations and the time scale of
+  ergodicity;
+\item \emph{ETH for a local observable}, i.e.\ whether the individual eigenstates are thermal;
+\item \emph{quench dynamics} from product states, i.e.\ whether specific initial states thermalise.
+\end{itemize}
+Thermal means infinite temperature inside the block a state lives in.
+
+\begin{table}[h]
+\centering\small
+\input{tab_r32_thermal.tex}
+\caption[Thermalisation summary.]{Thermalisation summary. Ring $\langle r\rangle$: complex momentum sectors at the
+largest $N$ (in brackets). ETH exponent: slope of $\log\sigma$ against $\log d$ for the eigenstate-to-eigenstate
+fluctuation $\sigma$ of the magnetisation density $m=\sum_iZ_i/N$ in the complex ring sectors ($N=8\ldots14$); ETH
+predicts $-1/2$. It is shown only for rules whose momentum sectors are single Krylov sectors. $t_2$: time after which
+the log-binned SFF stays within a factor 2 of the RMT ramp, at $N=16$. Last four columns: $S_\mathrm{half}/S_\mathrm{Page}$
+averaged over $t=200\ldots300$ after a quench at $N=14$, from random computational product states (average of 8) and
+from $|h_+\rangle^{\otimes N}$ with one $|h_-\rangle$ in the middle.}
+\label{tab:thermal}
+\end{table}
+
+\subsection{Spectral form factor}
+The SFF $K(t)=\langle|\mathrm{Tr}_bU^t|^2\rangle/d$ was computed over the complex momentum sectors on the ring. There each
+block's eigenphases fill the circle and the reference is COE or CUE (Sec.~\ref{sec:pbc}). On the open chain every block is
+real, with a $\pm\theta$-symmetric spectrum, so the standard form factors do not apply. A single circuit has no ensemble,
+and the SFF does not self-average, so the curves were averaged over the sectors and over logarithmic time bins. At
+$t\gtrsim100$ each bin pools hundreds of points, so the residual noise is a few percent.
+
+Fig.~\ref{fig:ethsff}(b) shows two systematic features:
+\begin{enumerate}
+\item A non-universal excess at short times ($t\approx5\ldots30$ periods): at $N=16$ about $10^2$ times the ramp for 57
+  and 153, and $10^3$ to $10^4$ for 54, 60 and 147. It grows with $N$ for every rule, most strongly for 147 and 60.
+\item A slow approach to the ramp. For 57, $K/K_\mathrm{RMT}\approx1.4$--$1.6$ persists over two decades and reaches 1.1
+  only near the Heisenberg time $D$.
+\end{enumerate}
+A sharp Thouless time (agreement within $\pm30\%$) is therefore not reached well before $D$ at these sizes. The robust
+proxy $t_2$ ranks the rules clearly (Fig.~\ref{fig:ethsff}(c)). For 57 it grows slowly, from 25 to 78 periods for
+$N=10\ldots16$ (roughly as $D^{0.3}$). For the other chaotic rules it is 5 to 13 times longer at $N=16$ and grows faster.
+The early excess suggests that part of the space of these rules has approximately periodic dynamics. This is a tentative
+reading; it fits the slow scar-defect dynamics below.
+
+\subsection{ETH for a local observable}
+The diagonal matrix elements $\langle n|m|n\rangle$ of the magnetisation density were computed in all non-degenerate
+eigenstates of the complex ring sectors ($N=8\ldots14$). On the open chain the central $Z$ was used in the largest
+gate-algebra block, at even $N$; this gives the same ordering. For 57 the fluctuation $\sigma$ falls as
+$d^{-0.40}$ (open chain: $d^{-0.36}$), close to the ETH value $d^{-1/2}$ at these sizes. The other chaotic rules converge
+markedly more slowly: $-0.27$ (147), $-0.24$ (153), $-0.17$ (60) and $-0.13$ (54). This is the same ordering as their
+$\langle r\rangle$ and SFF convergence. For 150 nearly all eigenstates are degenerate (free fermions), so a diagonal ETH
+test is meaningless there. The $k=1$ momentum sectors contain many Krylov sectors, so the test does not apply to them
+either.
+
+\begin{figure}[h]
+\centering
+\ifgraphic{../../figures/r32/fig_r32_eth_sff.pdf}{\textwidth}
+\caption{(a) ETH: eigenstate-to-eigenstate fluctuation of the magnetisation density in the complex ring sectors, against
+the sector dimension; dashed: $d^{-1/2}$. (b) SFF over the RMT ramp at $N=16$, log-binned. (c) $t_2$ against $N$.
+Colours as in (a).}
+\label{fig:ethsff}
+\end{figure}
+
+\subsection{Quench dynamics}
+Product states were evolved with the sparse layers at $N=14$ for 300 periods (Fig.~\ref{fig:dyn},
+Table~\ref{tab:thermal}). The findings, class by class:
+\begin{itemize}
+\item \emph{$k=3$:} random product states reach the Page value on both boundaries (0.99 to 1.00). For 57 so do Néel and
+  the scar with one defect.
+\item \emph{One-sided, a boundary effect in real time:} random states saturate at 0.72 (60) and 0.91 (153) of Page on
+  the open chain, but at 0.99 to 1.00 on the ring.
+\item \emph{XOR (150):} stays well below Page (0.56 to 0.69). Néel does not move at all on the ring.
+\item \emph{$k=1$:} hardly entangles (201: 0.08 to 0.14, 156: about 0); this is the fragmentation.
+\item \emph{The scar:} $|h_+\rangle^{\otimes N}$ returns with probability 1 for every rule.
+\item \emph{One $|h_-\rangle$ defect on top of the scar:} slow for 54 and 147. Their entanglement is still rising at
+  $t=300$ (0.3 to 0.6 of Page), while for 57 it saturates within about 100 periods. This is a bulk analogue of the edge
+  mode of 57: a localised excitation on the inert $|h_+\rangle$ vacuum that leaks into the bulk only slowly. On the open
+  chain the one-sided rules keep the defect state at exactly zero half-chain entanglement. Everything to the left of the
+  defect is the inert $|h_+\rangle$ part of the tower, so the cut sees a product state.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\ifgraphic{../../figures/r32/fig_r32_dynamics_N14.pdf}{\textwidth}
+\caption{Half-chain entanglement over the Page value after quenches, $N=14$. (a) Random computational product states,
+open chain (average of 8); (b) the same on the ring; (c) $|h_+\rangle^{\otimes N}$ with one $|h_-\rangle$ in the middle,
+for the $k=3$ rules (solid: open chain, dotted: ring).}
+\label{fig:dyn}
+\end{figure}
+
+\paragraph{Verdict.} The ordering of all diagnostics is the same: 57/99 are the fastest and cleanest thermalisers
+(CUE/COE statistics, ETH-like fluctuations, short $t_2$). Behind them come 153, 147, 60 and 54, all chaotic on the
+ring, with the convergence slowing in that order. XOR and $k=1$ do not thermalise. The non-thermal exceptions inside the
+chaotic rules are all tied to the inert $|h_+\rangle$ vacuum: the exact scars, the edge mode of 57, and the slow defect
+states of 54 and 147.

@@ -1,0 +1,12 @@
+{
+ "rule": 60,
+ "N": 16,
+ "dim": 16384,
+ "n_components": 1,
+ "component_sizes": [
+  16384
+ ],
+ "K_min_gap": 2.2598322590994258e-07,
+ "gate_invariance": 2.1316282072803006e-14,
+ "runtime": 439.7827033996582
+}

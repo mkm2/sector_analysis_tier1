@@ -182,3 +182,149 @@ def test_class_N_is_common_within_a_class():
     summ["198_19"] = {}
     assert A.class_N(summ, 108) == 19 and A.class_N(summ, 201) == 19
     assert A.class_N(summ, 57) == 14
+
+
+# --- R32 answers (2026-10-15): symmetry, scars, segments, X charges, block-first ---------
+
+def _kr(N, fac):
+    M = np.ones((1, 1))
+    for i in range(N):
+        M = np.kron(fac(i), M)             # site 0 = LSB = last factor
+    return M
+
+
+def _perm(N, f):
+    n = 1 << N; x = np.arange(n); y = np.zeros(n, dtype=np.int64)
+    for i in range(N):
+        y |= ((x >> i) & 1) << f(i)
+    P = np.zeros((n, n)); P[y, x] = 1
+    return P
+
+
+@pytest.mark.parametrize("w", [153, 195])
+def test_one_sided_dual_reflection_gives_time_reversal(w):
+    # S = B_e X^N R_bond B_e^T (B_e: Hadamard eigenbasis on even sites, R_bond: i -> 1 - i):
+    # real, [S, U] = 0, S T2 S^-1 = T2^-1; A = K L_A S preserves momentum, inverts U and
+    # Omega_T, A^2 = +1  =>  COE in every ring momentum sector although W is not mirror symmetric
+    from qca_fragmentation.spectral import blockfirst as B
+    N = 8
+    V = np.column_stack([B.H_PLUS, B.H_MINUS])
+    Be = _kr(N, lambda i: V if i % 2 == 0 else np.eye(2))
+    S = Be @ _kr(N, lambda i: np.array([[0, 1.], [1, 0]])) @ _perm(N, lambda i: (1 - i) % N) @ Be.T
+    LA = B.layer_sparse(w, N, 0, "pbc").toarray(); U = B.layer_sparse(w, N, 1, "pbc").toarray() @ LA
+    T1, T2 = _perm(N, lambda i: (i + 1) % N), _perm(N, lambda i: (i + 2) % N)
+    Om = T1 @ LA; LS = LA @ S
+    assert np.allclose(S @ U, U @ S) and np.allclose(S @ T2 @ S.T, T2.T)
+    assert np.allclose(LS @ U @ LS.T, U.T) and np.allclose(LS @ Om @ LS.T, Om.T)
+    assert np.allclose(LS @ LS, np.eye(1 << N))
+
+
+def test_h_plus_product_state_is_eigenstate_of_every_gate():
+    from qca_fragmentation.spectral import blockfirst as B
+    N = 6
+    v = _kr(N, lambda i: B.H_PLUS.reshape(2, 1)).ravel()
+    for w in (54, 57, 60, 105, 108, 147, 150, 153, 156, 201):
+        for bc in ("obc0", "pbc"):
+            for i in range(N):
+                assert np.allclose(B.gate_sparse(w, N, i, bc) @ v, v)
+
+
+def test_rule54_singlet_closed_form():
+    # the entangled singlet of 54 = |h+>^N projected off the frozen vacuum; its entropy
+    import json
+    from qca_fragmentation.spectral import analysis as A
+    o = json.load(open(A.summary_path("H")))
+    c = np.cos(np.pi / 8)
+    for N in range(6, 15):
+        NA, NB = N // 2, N - N // 2
+        oA, oB, x = c ** NA, c ** NB, c ** N
+        bas = lambda o_: np.array([[1.0, o_], [0.0, np.sqrt(1 - o_ * o_)]])
+        C = np.outer(bas(oA)[:, 0], bas(oB)[:, 0]) - x * np.outer(bas(oA)[:, 1], bas(oB)[:, 1])
+        p = np.linalg.svd(C / np.linalg.norm(C), compute_uv=False) ** 2
+        S = -(p[p > 1e-16] * np.log(p[p > 1e-16])).sum()
+        data = [b["S_vN"][0] for b in o[f"54_{N}"]["special_blocks"] if b["dim"] == 1]
+        assert len(data) == 1 and abs(data[0] - S) < 1e-6
+
+
+def test_rule156_segment_dispersion():
+    # one mobile kink per segment of L free sites: cos(theta_m) = -sin^2(pi m/(L+1)), plus theta = 0
+    from qca_fragmentation.spectral import blockfirst as B
+    for L in range(1, 7):
+        N = L + 3
+        U = (B.layer_sparse(156, N, 1, "obc0") @ B.layer_sparse(156, N, 0, "obc0")).toarray()
+        idx = [sum(1 << i for i in [0, L + 2] + list(range(1, 1 + c))) for c in range(L + 1)]
+        th = np.angle(np.linalg.eigvals(U[np.ix_(idx, idx)]))
+        pred = [0.0]
+        for m in range(1, (L + 1) // 2 + 1):
+            t = np.arccos(-np.sin(np.pi * m / (L + 1)) ** 2)
+            pred += [t] if 2 * m == L + 1 else [t, -t]
+        assert np.allclose(np.sort(np.exp(1j * th)), np.sort(np.exp(1j * np.array(pred))), atol=1e-9) or \
+            np.allclose(np.sort(np.mod(th, 2 * np.pi)), np.sort(np.mod(pred, 2 * np.pi)), atol=1e-9)
+
+
+def test_x57_domain_walls_conserved_on_ring_only():
+    from qca_fragmentation.permutation import xca
+    def walls(x, N, ring):
+        b = [(x >> i) & 1 for i in range(N)]
+        pairs = range(N) if ring else range(N - 1)
+        return sum(b[i] != b[(i + 1) % N] for i in pairs)
+    N = 10
+    f = np.asarray(xca.step_table(57, N, "pbc"))
+    assert all(walls(int(f[x]), N, True) == walls(x, N, True) for x in range(1 << N))
+    f = np.asarray(xca.step_table(57, N, "obc0"))
+    assert any(walls(int(f[x]), N, False) != walls(x, N, False) for x in range(1 << N))
+
+
+def test_blockfirst_matches_pipeline():
+    # ring: per-momentum phi spectra; open chain: the largest tower block of 153 and 60
+    from qca_fragmentation.spectral import blockfirst as B
+    for w in (57, 153):
+        path = F.spec_path("H", 10, w, "pbc")
+        if not os.path.exists(path):
+            continue
+        d = F.load(path)
+        R = B.ring_phases(w, 10)
+        mine = np.concatenate([np.concatenate(v["phi"]) for v in R.values()])
+        assert mine.size == 2 ** 10
+        ref = np.exp(1j * d["phi"][np.isfinite(d["phi"])])       # 1-state sectors carry no phi
+        dist = np.abs(np.exp(1j * mine)[:, None] - ref[None, :]).min(axis=1)
+        assert np.sum(dist > 1e-9) <= np.sum(~np.isfinite(d["phi"]))
+    for w, N in ((153, 10), (60, 10)):
+        Ub = B.fixed_site_block(w, N, B.TOWER_BLOCKS[w](N))
+        assert np.allclose(Ub.T @ Ub, np.eye(Ub.shape[0]))
+        d = F.load(F.spec_path("H", N, w))
+        big = max(S.groups(S.block_keys(d)), key=lambda km: km[1].size)[1]
+        assert np.allclose(S.unique_levels(np.angle(np.linalg.eigvals(Ub))), S.unique_levels(d["theta"][big]), atol=1e-9)
+
+
+def test_x102_is_the_deterministic_floquet_quantum_east_model():
+    # DFQEM (Bertini, De Fazio, Garrahan, Klobas, PRL 132, 120402): CNOT brickwork on a ring, a qubit flips iff its
+    # RIGHT neighbour is 1.  Equal to our X-gate rule 102 up to the one-site shift.
+    from qca_fragmentation.spectral import blockfirst as B
+    N = 8; n = 1 << N; x = np.arange(n)
+    def layer(targets):
+        y = x.copy()
+        for t in targets:
+            y = y ^ (((x >> ((t + 1) % N)) & 1) << t)
+        P = np.zeros((n, n)); P[y, x] = 1
+        return P
+    U_d = layer(range(0, N, 2)) @ layer(range(1, N, 2))
+    U = (B.layer_sparse(102, N, 1, "pbc", gate="X") @ B.layer_sparse(102, N, 0, "pbc", gate="X")).toarray()
+    T1 = _perm(N, lambda i: (i + 1) % N)
+    assert np.allclose(U, U_d) or np.allclose(T1 @ U @ T1.T, U_d) or np.allclose(T1.T @ U @ T1, U_d)
+
+
+def test_thermal_tools():
+    from qca_fragmentation.spectral import thermal as T
+    # RMT form factors: CUE ramp tau, COE 2 tau - tau ln(1 + 2 tau); both -> 1 at large tau
+    assert np.isclose(T.sff_rmt(0.3, 2), 0.3) and np.isclose(T.sff_rmt(0.3, 1), 0.6 - 0.3 * np.log(1.6))
+    assert abs(T.sff_rmt(20.0, 1) - 1) < 1e-2
+    # Poisson levels: SFF ~ 1 at all t
+    rng = np.random.default_rng(0)
+    t, K = T.sff([rng.uniform(-np.pi, np.pi, 2000) for _ in range(5)], 50)
+    assert abs(K[5:].mean() - 1) < 0.2
+    # the scar |h+>^N never moves; a computational basis state of a chaotic rule spreads
+    q = T.quench(57, 8, "obc0", "hplus", 20)
+    assert np.allclose(q["R"], 1) and np.allclose(q["S"], 0, atol=1e-10)
+    q = T.quench(57, 8, "pbc", "neel", 50)
+    assert q["S"][-10:].mean() > 1.5

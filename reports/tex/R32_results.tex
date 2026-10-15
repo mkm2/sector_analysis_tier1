@@ -76,16 +76,20 @@ gate applications. Their number does not depend on $N$ ($N=6\ldots14$):
   0.13). It is an area-law state that approaches a product state as the chain grows. (An earlier draft of this report said
   ``0.29 at every $N$''; that generalised from the single value at $N=12$ and is withdrawn.)
 \end{itemize}
-These are exact many-body scars in the sense of Refs.~\cite{shiraishi2017,moudgalya2022review}: non-thermal eigenstates
-embedded in a GOE spectrum. The embedding is exact here, by the gate algebra, not approximate. Because they are
+All of them descend from one universal eigenstate, $|h_+\rangle^{\otimes N}$ (Sec.~\ref{sec:answers}). The entangled
+singlet of 54 is its projection off the frozen vacuum, $\propto|h_+\rangle^{\otimes N}-\cos^N(\pi/8)|0\ldots0\rangle$,
+whose entropy follows in closed form and reproduces the list above. The $\theta=\pi$ states put $|h_-\rangle$ on a
+boundary site whose gate fires whatever its inner neighbour is. These are exact many-body scars in the sense of
+Refs.~\cite{shiraishi2017,moudgalya2022review}: non-thermal eigenstates embedded in a GOE spectrum. The embedding is exact here, by the gate algebra, not approximate. Because they are
 eigenstates of every gate, they are also stationary under any reordering of the circuit, which a Hamiltonian scar cannot
 offer.
 
 \paragraph{N-stable outliers in 57/99.} Besides the singlets, 57 has a handful of anomalously weakly entangled eigenstates
 in the big block ($\eta\approx0.2$): 4 at $N=11$ and $13$, and 10 at $N=12$. Their quasienergies are stable with $N$
 ($\theta/\pi=\pm0.6877\to\pm0.6879$ from $N=11$ to $13$, and $\pm0.3122$ at $N=12$ and $13$). They do not form an equally
-spaced tower, and their number does not grow. This points to a localised structure (a single defect in a frozen
-background) rather than a PXP-type scar band. In 147, by contrast, the low-$\eta$ states are numerous (72--83) and spread
+spaced tower, and their number does not grow. They are an edge mode bound to the left end on top of the $|h_+\rangle^{\otimes N}$ vacuum. The two
+quasienergies are one mode, $\pm0.3122\pi$, the second shifted by $\pi$ by the right-end $|h_-\rangle$ singlet
+(Sec.~\ref{sec:answers}). They are not a PXP-type scar band. In 147, by contrast, the low-$\eta$ states are numerous (72--83) and spread
 over $\theta$: the finite-size tail of the thermal distribution.
 
 \subsection{$k=1$: exponential fragmentation; two pairs at the same $N$}
@@ -105,8 +109,10 @@ at the largest $N$ that all four rules share, $N=19$ (Table~\ref{tab:summary}), 
 The block structure explains both values. The commutant study (R-T18/R-T27) shows that a block is a tensor product of
 independent rooms, so its quasienergies are sums of room quasienergies. When many rooms of different sizes contribute
 (108, 201), the sums are effectively independent and the statistics are Poisson. When a block is built from a few small,
-repeated rooms (156, 198), the sums are \emph{structured}. Exact coincidences are removed, but (our reading, not tested) the surviving levels keep
-an arithmetic regularity that suppresses small spacings. Neither pair shows level repulsion growing with $N$.
+repeated rooms (156, 198), the sums are \emph{structured}. This is now exact (Sec.~\ref{sec:answers}): each
+segment between frozen $01$ walls holds one mobile kink with $\cos\theta_m=-\sin^2(\pi m/(L+1))$, and a block
+spectrum is the set of sums over its short segments, so a handful of values recur with many exact and near coincidences. Neither pair shows level
+repulsion growing with $N$.
 
 The gate singlets are exponentially many (at $N=19$: 52\,688 for 108, 37\,812 for 156 and 198, and 39\,872 for 201;
 roughly doubling with each added site). These are the dark states of the rooms.
@@ -117,22 +123,28 @@ roughly doubling with each added site). These are the dark states of the rooms.
 $N$ ($m=\lceil N/2\rceil$) at every $N=6\ldots15$, reproducing R8's law from an independent diagonalisation. 105 shares
 the even-$N$ counts but has far fewer at odd $N$ (251 against 1093 at $N=13$). Up to 95\,\% of the eigenstates lie in
 degenerate eigenspaces, and spacings repeat exactly. $\langle r\rangle$ (0.39 for 150 and 0.50 for 105 at their common $N=15$) is therefore no measure of chaos
-here. The right description is the free wall walk with sign defects of R8. Each Krylov sector contains one gate singlet at
+here. The right description is the free wall walk with sign defects of R8. Equivalently, 150 with $V=H$ is a
+free-fermion circuit~\cite{hillberry2024}, which explains both the degeneracies and the exact level counting. Each Krylov sector contains one gate singlet at
 $\theta=0$, an entangled dark state ($S$ between 0.13 and 1.14).
 
-\subsection{$k=2$, one-sided: a boundary-driven tower, statistics undecided}
+\subsection{$k=2$, one-sided: a boundary tower with intermediate statistics}
 In 60/102 (gate fires iff the left or right neighbour is 1) and 153/195 (iff it is 0), the gate on a site is controlled by
 one neighbour only. With open boundaries the gate algebra then produces a tower:
 \begin{itemize}
 \item 153/195: $N+1$ blocks of sizes $2^{N-1},2^{N-2},\ldots,2,1$, plus two singlets;
 \item 60/102: $2N-4$ singlets and many small blocks.
 \end{itemize}
-At $N=5$ the dominant basis states of block $j$ (153) are those whose first site from the left in the $-1$ eigenstate of
-$H$ is site $j$. The sites to its left are frozen in the dressed $+1$ state, and the right part is a smaller copy of the
-chain. The entanglement accordingly falls into bands, one per block (Fig.~\ref{fig:rule153}). Within the blocks,
+The tower is exact. For 153 the projectors $Q_j=\prod_{s<j}P^+_s\,P^-_j$ onto Hadamard eigenstates commute with $U$,
+so block $j$ is $|h_+\rangle^{\otimes j}|h_-\rangle\otimes$(the remaining sites), i.e.\ the same chain shortened, with
+one boundary site fixed. For 60 the same holds from the right end, inside the sector ``site 0 $=1$''
+(Sec.~\ref{sec:answers}). The entanglement accordingly falls into bands, one per block (Fig.~\ref{fig:rule153}). Within the blocks,
 $\langle r\rangle$ is near Poisson but \emph{increases} steadily with $N$: for 60, $0.334, 0.351, 0.360, 0.369, 0.381, 0.395, 0.405$ for $N=9\ldots15$; for 153, $0.370$ to $0.421$ for
-$N=9\ldots14$. Integrability and a slow crossover towards GOE cannot be told apart at these sizes \emph{on the open chain}. The tower itself is a boundary effect. On a ring it is absent, and
-the same rules are chaotic with $\beta=1$ statistics ($\langle r\rangle=0.531$ for 153 at $N=14$; Sec.~\ref{sec:pbc}). So
+$N=9\ldots14$. Built directly from the tower (Sec.~\ref{sec:answers}), the largest block reaches $N=15$ for 153 and $N=16$ for 60.
+There the drift stops: $\langle r\rangle=0.4236$ (60, $N=14$), $0.4216$ ($N=15$) and $0.4238$ ($N=16$), and $0.4239$
+and $0.4236$ for 153 at $N=13$ and 15. On the open chain the statistics plateau at an intermediate value; they are not
+heading to GOE. The tower itself is a boundary effect. On a ring it is absent, and
+the same rules are chaotic with $\beta=1$ statistics ($\langle r\rangle=0.527$ and $0.523$ for 153 and 60 at $N=16$;
+Sec.~\ref{sec:pbc}), protected by a dressed-reflection time reversal (Sec.~\ref{sec:answers}). So
 on the open chain, the non-ergodicity of this class is produced by the ends.
 
 \subsection{$k=0$ and $k=4$: trivial}

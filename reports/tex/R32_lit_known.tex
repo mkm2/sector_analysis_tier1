@@ -1,0 +1,85 @@
+% R32: literature second pass (2026-10-15) -- what is known about THESE sixteen circuits.  Input by R32_lit_review.tex.
+\subsection{What is known about these sixteen circuits}
+\label{sec:lit-known}
+\paragraph{The model is Hillberry's quantum elementary cellular automaton.} Our circuits are exactly the ``quantum
+elementary cellular automata'' (QECA) introduced by Hillberry in his 2016 Master's thesis~\cite{hillberry2016}. They are
+the ``T-type'' rules of Hillberry \emph{et al.}~\cite{hillberry2021}:
+\begin{itemize}
+\item a single-qubit unitary $V$ acts on site $j$ iff the neighbour pattern $(m,n)$ is selected by the rule number
+  $S=8s_{11}+4s_{10}+2s_{01}+s_{00}$, which is our HSF numbering, so $T_S$ is our HSF rule $S$;
+\item even sites are updated first, then odd sites (their ``alt'' mode, our brickwork);
+\item the boundary neighbours are fixed to $|0\rangle$ (our obc0);
+\item the main choice of gate is $V=HP(\theta)$ with phase angle $\theta=0$, i.e.\ $V=H$.
+\end{itemize}
+The dictionary is $T_1=201$, $T_6=150$, $T_{13}=57$ and $T_{14}=54$.
+
+\paragraph{What those works established.}
+\begin{itemize}
+\item \emph{Hillberry 2016~\cite{hillberry2016}:} exact dynamics from single-excitation initial states at $L\le27$:
+  bond entropy, mutual-information networks, Fourier spectra of $\langle\sigma^z_j\rangle$, and transport. Rule 6 (our
+  150) is singled out as uniquely ``complex'', with persistent, slowly equilibrating entanglement. Rules 5, 7 and 11
+  (our 153, 147, 99) grow entanglement fast. There is no spectral or symmetry analysis.
+\item \emph{Hillberry et al.\ 2021~\cite{hillberry2021}:} the ``Goldilocks'' rule $T_6$ (our 150) generates complexity
+  (mutual-information networks, persistent entropy fluctuations, and Page curves closer to an area law). A Brody
+  parameter fitted to \emph{entanglement spectra} of states evolved from one $|1\rangle$ ($L=19$) reaches chaotic values
+  for $T_{13}$ and $T_{14}$ (our 57 and 54) and stays Poissonian for $T_1$ (our 201). For $T_6$ it ``defies the
+  paradigm'' (many eigenvalues $\approx0$). The authors state that QECA ``defy the chaos/integrability classification''.
+  $T_6$ was later run on up to 23 superconducting qubits~\cite{jones2022}.
+\item \emph{Hillberry, Piroli, Vernier, Yunger Halpern, Prosen and Carr~\cite{hillberry2024}:} the Goldilocks
+  (XOR-controlled) circuits conserve the number of domain walls $Q_1=\sum_j\sigma^z_j\sigma^z_{j+1}$ for any $V$. They
+  are \emph{free fermions}, proved both by Jordan--Wigner and by a six-vertex mapping, for
+  $V_\mathrm{free}(\alpha,\beta,\pm)$. This family contains the Hadamard ($\alpha=\pi/4$, $\beta=0$, $-$ sign), i.e.\ the
+  experimentally implemented $T_6$ and our 150. For generic $V$, symmetry-resolved quasienergy statistics on a ring
+  ($L=16$, sectors of momentum and $Q_1$) approach Wigner--Dyson.
+\item \emph{Classical parents ($V=X$):} RCA54 is the interacting integrable Rule~54~\cite{buca2021}, and 201 is the
+  Floquet-PXP automaton~\cite{wilkinson2020}. Deforming a classical automaton by non-commuting gates gives chaotic Floquet
+  circuits with exact non-thermal eigenstates on classical periodic orbits~\cite{iadecola2020}. The PXP-type quantum
+  automaton (the constraint of our 201) shows ergodicity breaking carried by chiral quasiparticles~\cite{sellapillay2022}.
+  A different quantum deformation of RCA54 is integrable~\cite{paletta2026}: $X$ is kept on the active patterns and only
+  the $00$ pattern carries a general $U(2)$ gate. It does not contain our 54, which acts with $H$ on the active patterns
+  and with the identity on $00$.
+\item \emph{One-sided constraint: the Floquet quantum East family.} In the deterministic Floquet quantum East model
+  (DFQEM) a qubit flips iff its \emph{right} neighbour is $1$. The CNOT gates are laid out as a brickwork on a ring, so
+  the DFQEM is exactly our \emph{X-gate rule 102}, and 60 is its left-facilitated mirror image. Results:
+  \begin{itemize}
+  \item Its quench dynamics are solved exactly~\cite{bertini2024det}. Entanglement grows at half the speed allowed by
+    locality, and blocks relax to infinite temperature. The solvability is tied to a hierarchical generalisation of dual
+    unitarity~\cite{yu2024}.
+  \item The latest work builds on that solution. De Fazio, Lesanovsky and Perfetto compute the exact first-detection
+    probability of a locally monitored region~\cite{defazio2026}. The monitored, stochastic and hardware versions show
+    dynamical phase coexistence~\cite{klobas2024,defazio2024,cech2026a,cech2026b}.
+  \item With periodic boundaries the fully de-excited (vacuum) state decouples as an exceptional stationary
+    state~\cite{cech2026a}.
+  \item For the non-deterministic Floquet quantum East family $e^{-i\omega n\,\sigma^x}$, a disorder-free localisation
+    transition exists~\cite{bertini2024east}.
+  \end{itemize}
+  Our 102 and 60 with $V=H$ are a different deformation of the DFQEM, with the same constraint but a Hadamard instead of
+  $X$, outside the $e^{-i\omega\sigma^x}$ family. None of these results applies to them directly. Two points of contact
+  are new: the vacuum that decouples there is the frozen Krylov sector of our 60/102 on the ring, and our entangled scar
+  of 60/102 is $|h_+\rangle^{\otimes N}$ projected off exactly that state.
+\end{itemize}
+
+\paragraph{What R32 adds.} Measured against these works, the following results appear to be new; we found none of them
+in the literature above or in the works cited there.
+\begin{enumerate}
+\item A \emph{symmetry-resolved quasienergy classification of all sixteen rules} with $V=H$, on both boundaries. It
+  resolves Krylov sectors, gate-algebra blocks, reflection or the half step $\Omega$ ($\Omega_T$ on the ring), and
+  momentum. The organising number is the firing count $k$. The earlier chaos/integrability statements for four rules
+  rested on Brody fits to entanglement spectra of single trajectories; the quasienergy statistics confirm them where
+  they overlap ($T_{13}$, $T_{14}$ chaotic; $T_1$ not) and complete them.
+\item The \emph{boundary dependence} of the one-sided class: a tower of conserved Hadamard-basis projectors at the free
+  end on the open chain, and COE chaos on the ring. The latter is protected by a newly identified time reversal, a
+  dressed bond reflection.
+\item The \emph{exact scars} of the chaotic rules as one universal state, $|h_+\rangle^{\otimes N}$: its projection off a
+  frozen vacuum (the entangled singlet of 54, 60 and 102, in closed form), and boundary $|h_-\rangle$ states, whose
+  counts are predicted. Also the edge mode of 57 on that vacuum.
+\item The \emph{exact single-kink dispersion} of 156/198, and the explanation of their $\langle r\rangle\approx0.42$.
+\item The \emph{flip map} $X^{\otimes N}U_W(H)X^{\otimes N}=U_{W'}(XHX)\cong U_{W'}(-H)$, which explains why flip
+  partners share block structures but not spectra.
+\item For the \emph{X gate}: the domain-wall charge of X-57 on the ring, and the resulting boundary dependence of its
+  orbit structure.
+\end{enumerate}
+Known and only confirmed here are: the exact solvability of X-gate rule 102 (= the DFQEM~\cite{bertini2024det}) and of its mirror 60, whose short,
+$N$-independent obc0 cycle lengths (16 or 32) are consistent with their linearity; the free-fermion (hence arithmetic) nature of the Hadamard Goldilocks rule 150, with
+our exact level counting $3^m$ consistent with it; its domain-wall charge; and the classical integrability of RCA54 and of
+Floquet-PXP.

@@ -1,6 +1,6 @@
 # Storyline draft: ergodicity in the 16 unitary Hadamard QCA (R32)
 
-**Status:** draft for discussion. Nothing has been handed off to the thesis figure project.
+**Status:** draft for discussion (revised 2026-10-15). Nothing has been handed off to the thesis figure project.
 **Data:** open boundaries (obc0), N ≤ 14 (up to 20 for the fragmented rules). Rings (pbc): even N = 6 … 14, with
 translation, the half-step Ω_T and the gate blocks resolved.
 
@@ -48,6 +48,21 @@ fragmented into Poissonian pieces, whatever the boundary.
    antiunitary symmetry we have not yet identified. The XOR and k = 1 classes are unchanged. The scars at θ = π are
    boundary states; one singlet at θ = 0 survives on the ring.
 
+8. **Thermalisation, directly** (candidate figures F, G): quenches from product states thermalise to the Page value
+   only in the chaotic classes, and for the one-sided rules only on the ring (open chain: 0.72 / 0.91 of Page). The
+   ETH fluctuations and the spectral form factor give the same ordering: 57/99 are fastest; 153, 147, 60 and 54 are
+   progressively slower.
+9. **One scar for all** (no new figure; candidate D covers the counts): every exact scar is |h+>^N, its projection off
+   a frozen vacuum, or a boundary |h->. The 57 outliers are an edge mode on that vacuum; the 54/147 defect states relax
+   slowly.
+10. **Quantum vs classical** (candidate figure H): with X, 54 is the integrable RCA54 and X-102 is the solvable
+    deterministic Floquet quantum East model. Only 57/99 have ergodic classical orbits, and only on the open chain
+    (a domain-wall charge confines them on the ring). Chaos with H follows k, not the classical dynamics.
+11. **Positioning**: the model is Hillberry's QECA (T_S = our HSF S). Known: Brody hints from entanglement spectra
+    (2021), and free fermions for the Hadamard Goldilocks rule 150 (2024). New: the full symmetry-resolved
+    classification, the boundary origin of the one-sided class and its hidden time reversal, the universal scar, the
+    kink dispersion, and the thermalisation characterisation.
+
 ## Candidate figures (thesis width, thesis style; local drafts)
 | | file | content | aspect |
 |---|---|---|---|
@@ -56,16 +71,24 @@ fragmented into Poissonian pieces, whatever the boundary.
 | C | `cand_C_resolution.pdf` | ⟨r⟩ vs N for 147 and 54, Krylov-only vs fully resolved | 0.42 |
 | D | `cand_D_singlets.pdf` | number of exact gate singlets vs N per class (log scale) | 0.55 |
 | E | `../fig_r32_bc_compare_H.pdf` | open chain vs ring: ⟨r⟩ (ring: real / complex momentum sectors) and block counts | 0.75 |
+| F | `../fig_r32_dynamics_N14.pdf` | quenches: S/Page vs t, open chain vs ring, and the scar defect | 0.36 |
+| G | `../fig_r32_eth_sff.pdf` | ETH fluctuations vs dimension, SFF / RMT ramp, t_2 vs N | 0.36 |
+| H | `../fig_r32_X_cycles.pdf` | X gate: longest cycle and <L>/2^N vs N, open chain vs ring | 0.42 |
 
 Optional, if space allows: a per-rule appendix figure (4 panels) for each of the 16 rules
 (`../fig_r32_rule_H_W*.pdf`).
 
-## Open points before this can be a thesis claim
-1. **The one-sided antiunitary symmetry.** On the ring, 153/195 are β = 1 in the shape of P(r) (χ² = 27 against GOE,
-   385 for the best Poisson+GUE mixture at N = 14), but they have no mirror symmetry. The symmetry was not found by a
-   brute-force search over reflections, translations and uniform or sublattice on-site X/Z/H. 60/102 are still rising
-   (0.511 at N = 14).
-2. **Rule 54** approaches its ensemble more slowly than the others on both boundaries (ring 0.483 at N = 14).
-3. **The entangled singlet** of 54 (both boundaries) and of 60/102 (ring only) has the same entropy for all of them,
-   0.4045 / 0.3447 / 0.2908 / 0.2430 for N = 8 … 14, and it decreases with N. It wants an analytic form.
-4. **The 57 outliers** (N-stable, θ/π ≈ ±0.312, ±0.688) are unexplained.
+## Open points before this can be a thesis claim (status 2026-10-15)
+Resolved since the first draft:
+- the one-sided antiunitary symmetry (a dressed bond reflection);
+- the identity of the entangled singlet (|h+>^N off the vacuum, closed form);
+- the 57 outliers (an edge mode);
+- the ring check;
+- one-sided on the open chain: no drift (plateau 0.424 for N = 13…16).
+
+Still open:
+1. Why the one-sided rules plateau at 0.424 on the open chain.
+2. Why the SFF shows a large short-time excess and ETH converges slowly for 54, 60 and 147. Presumably both are tied to
+   the |h+> vacuum.
+3. An analytic form of the 57 edge mode.
+4. Whether 54 reaches COE on the ring (0.510 at N = 16, still rising).
